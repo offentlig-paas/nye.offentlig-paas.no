@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     Nettverket ble startet som et initiativ mellom NAV og Skatteetaten i 2017 og har senere vokst til mer enn 1000 medlemmer på tvers av 50 offentlige etater og selskaper i Norge.`,
   alternates: {
     types: {
-      'application/rss+xml': `${process.env.NEXT_PUBLIC_SITE_URL}/feed.xml`,
+      'application/rss+xml': `${process.env.NEXT_PUBLIC_URL}/feed.xml`,
     },
   },
 }
