@@ -30,7 +30,7 @@ export function Footer() {
                 <NavLink href="/om">Om</NavLink>
                 <NavLink href="/projects">Plattformer</NavLink>
                 <NavLink href="/speaking">Fagdager</NavLink>
-                <NavLink href="/uses">Medlemmer</NavLink>
+                <NavLink href="/medlemmer">Medlemmer</NavLink>
               </div>
               <p className="text-sm text-zinc-400 dark:text-zinc-500">
                 CC BY-SA 4.0
