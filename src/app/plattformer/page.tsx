@@ -3,48 +3,40 @@ import Image from 'next/image'
 
 import { Card } from '@/components/Card'
 import { SimpleLayout } from '@/components/SimpleLayout'
-import logoAnimaginary from '@/images/logos/animaginary.svg'
-import logoCosmos from '@/images/logos/cosmos.svg'
-import logoHelioStream from '@/images/logos/helio-stream.svg'
-import logoOpenShuttle from '@/images/logos/open-shuttle.svg'
-import logoPlanetaria from '@/images/logos/planetaria.svg'
+import logoSkip from '@/images/platforms/skip.png'
+import logoAurora from '@/images/platforms/aurora.jpg'
+import logoNais from '@/images/platforms/nais.svg'
+import logoRadix from '@/images/platforms/radix.svg'
 
-const projects = [
+const plattformer = [
   {
-    name: 'Planetaria',
+    name: 'Aurora',
     description:
-      'Creating technology to empower civilians to explore space on their own terms.',
-    link: { href: 'http://planetaria.tech', label: 'planetaria.tech' },
-    logo: logoPlanetaria,
+      'Skatteetaten sin applikasjonsplattform basert på RedHat OpenShift',
+    link: { href: 'https://skatteetaten.github.io/aurora/', label: 'skatteetaten.github.io' },
+    logo: logoAurora,
   },
   {
-    name: 'Animaginary',
+    name: 'Skip',
     description:
-      'High performance web animation library, hand-written in optimized WASM.',
-    link: { href: '#', label: 'github.com' },
-    logo: logoAnimaginary,
+      'Statens Kartverks Infrastrukturplatform (Skip)',
+    link: { href: 'https://skip.kartverket.no/', label: 'skip.kartverket.no' },
+    logo: logoSkip,
   },
   {
-    name: 'HelioStream',
+    name: 'NAIS',
     description:
-      'Real-time video streaming library, optimized for interstellar transmission.',
-    link: { href: '#', label: 'github.com' },
-    logo: logoHelioStream,
+      'NAV sin applikasjonsplattform basert på Kubernetes',
+    link: { href: 'https://nais.io', label: 'nais.io' },
+    logo: logoNais,
   },
   {
-    name: 'cosmOS',
+    name: 'Radix',
     description:
-      'The operating system that powers our Planetaria space shuttles.',
-    link: { href: '#', label: 'github.com' },
-    logo: logoCosmos,
-  },
-  {
-    name: 'OpenShuttle',
-    description:
-      'The schematics for the first rocket I designed that successfully made it to orbit.',
-    link: { href: '#', label: 'github.com' },
-    logo: logoOpenShuttle,
-  },
+      'Equinor sin applikasjonsplattform basert på Kubernetes',
+    link: { href: 'https://www.radix.equinor.com/', label: 'radix.equinor.com' },
+    logo: logoRadix,
+  }
 ]
 
 function LinkIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
@@ -59,21 +51,21 @@ function LinkIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
 }
 
 export const metadata: Metadata = {
-  title: 'Projects',
-  description: 'Things I’ve made trying to put my dent in the universe.',
+  title: 'Plattformer',
+  description: 'Norske applikasjonsplattformer',
 }
 
-export default function Projects() {
+export default function Plattformer() {
   return (
     <SimpleLayout
-      title="Things I’ve made trying to put my dent in the universe."
-      intro="I’ve worked on tons of little projects over the years but these are the ones that I’m most proud of. Many of them are open-source, so if you see something that piques your interest, check out the code and contribute if you have ideas for how it can be improved."
+      title="Noske applikasjonsplattformer"
+      intro="I’ve worked on tons of little plattformer over the years but these are the ones that I’m most proud of. Many of them are open-source, so if you see something that piques your interest, check out the code and contribute if you have ideas for how it can be improved."
     >
       <ul
         role="list"
         className="grid grid-cols-1 gap-x-12 gap-y-16 sm:grid-cols-2 lg:grid-cols-3"
       >
-        {projects.map((project) => (
+        {plattformer.map((project) => (
           <Card as="li" key={project.name}>
             <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
               <Image
