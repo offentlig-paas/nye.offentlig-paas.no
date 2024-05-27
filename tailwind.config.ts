@@ -5,7 +5,7 @@ import typographyStyles from './typography'
 
 export default {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
-  darkMode: 'class',
+  darkMode: 'selector',
   plugins: [typographyPlugin],
   theme: {
     fontSize: {
