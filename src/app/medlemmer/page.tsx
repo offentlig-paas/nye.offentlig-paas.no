@@ -58,7 +58,7 @@ export default function Uses() {
   return (
     <SimpleLayout
       title="Medlemmer av Offentlig PaaS"
-      intro="Offentlig PaaS er for alle offentlige virksomheter i stat og kommune, eller private virksomheter hvor offentligheten eier 50%, med interesse for plattformteknologi og kunnskapsdeling."
+      intro="Offentlig PaaS er for alle offentlige virksomheter i stat og kommune, eller private virksomheter hvor offentligheten eier 50%, med interesse for plattformteknologi og kunnskapsdeling. Dette er en grasrotbevegelse for de som jobber med plattformer og det er ingen kostnad eller forpliktelser ved å være medlem."
       gitHubPage='src/data/members.ts'
     >
       <div className="mx-auto max-w-7xl">
