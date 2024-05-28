@@ -65,15 +65,13 @@ export default function Uses() {
             <button
               key={button}
               type="button"
-              className={`relative inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10 ${
-                activeButton === button ? 'bg-gray-100' : 'bg-white'
-              } ${
-                i === 0
+              className={`relative inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10 ${activeButton === button ? 'bg-gray-100' : 'bg-white'
+                } ${i === 0
                   ? 'rounded-l-md'
                   : i === types.length - 1
-                  ? '-ml-px rounded-r-md'
-                  : '-ml-px'
-              }`}
+                    ? '-ml-px rounded-r-md'
+                    : '-ml-px'
+                }`}
               onClick={() => handleClick(button)}
             >
               {button}
@@ -95,10 +93,10 @@ export default function Uses() {
                     height="200"
                     alt=""
                   />
-                  <h3 className="mt-6 text-lg font-semibold leading-8 tracking-tight text-gray-900">
+                  <h3 className="mt-6 text-lg font-semibold leading-8 tracking-tight text-gray-900 dark:text-gray-100">
                     {member.name}
                   </h3>
-                  <p className="text-base leading-7 text-gray-600">
+                  <p className="text-base leading-7 text-gray-600 dark:text-gray-400">
                     {member.type}
                   </p>
                   <ul role="list" className="mt-6 flex gap-x-6">

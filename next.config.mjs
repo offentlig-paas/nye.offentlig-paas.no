@@ -4,6 +4,9 @@ import remarkGfm from 'remark-gfm'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  publicRuntimeConfig: {
+    githubRepo: 'offentlig-paas/nye.offentlig-paas.no',
+  },
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'mdx'],
   images: {
     remotePatterns: [
@@ -23,4 +26,5 @@ const withMDX = nextMDX({
   },
 })
 
+export const publicRuntimeConfig = nextConfig.publicRuntimeConfig
 export default withMDX(nextConfig)

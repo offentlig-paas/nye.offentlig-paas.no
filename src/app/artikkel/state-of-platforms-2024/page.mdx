@@ -1,0 +1,63 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import maturityModel from './1-maturity-model.png'
+import respondents from './2-respondents.png'
+import motivation from './4-motivation.png'
+import capabilities from './5-capabilities.png'
+import teams from './6-teams-and-languages.png'
+import years from './8-years-in-prod.png'
+import tech from './10-cncf-tech.png'
+import maturity from './11-maturity-results.png'
+
+export const article = {
+  author: 'Hans Kristian Flaatten',
+  date: '2024-05-28',
+  title: 'State of Platform Maturity in the Norwegian Public Sector 2024',
+  description:
+    'The first ever State of platform maturity in the Norwegian public sector. Hwo are building platforms, how mature are they and what are the main challenges?',
+}
+
+export const metadata = {
+  title: article.title,
+  language: 'en',
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+This is the English version of the article. The Norwegian version can be found [here](/artikkel/tilstand-plattformmodenhet-2024).
+
+Platform Engineering is a relatively new discipline in the Norwegian public sector. The first application platforms were established back in 2016, and since then, the number of platforms has grown rapidly. In 2024, there are more than 50 known platforms in the public sector, and the number is expected to grow even more in the coming years.
+
+CNCF has developed a platform maturity model that can be used to assess the maturity of a platform. The model consists of five levels: Level 1 (Provisional), Level 2 (Operational), Level 3 (Scalable), and Level 4 (Optimizing) and covers aspects of platform maturity, such as how organizations are investing in platforms, how teams are adopting and interfacing with the platforms, how the platforms are operated and continously improved.
+
+<Image src={maturityModel} alt="" />
+
+## Methodology
+
+The survey consisted of 31 questions in three different categories: general platform engineering, kubernetes and cloud. The survey was distributed on Offentlig PaaS Slack and LinkedIn during the last quater of 2023. We recieved a total of 51 individual responses accross 35 unique organizations when filtering out duplicates.
+
+<Image src={respondents} alt="" />
+
+We do accnowledge that the survey is not representative for the entire public sector of Norway and that there is a strong sampling bias towards orgnaizations that has already adopted platform engineering principles. We do believe that the results can give an indication of the state of platform maturity in the Norwegian public sector.
+
+Only state agencies have been included in the final analysis, this represents one third of the state agencies in Norway in number of employees (35%), budget (35%) and number of agencies (28%).
+
+## Findings
+
+Not suprisingly the motivation for building platforms is to increase the speed and quality of software delivery. This is in line with the findings from the State of DevOps report, where high performing organizations are able to deliver software faster and with higher quality than low performing organizations.
+
+<Image src={motivation} alt="" />
+
+The majority of the respondents have between 11 and 50 software teams that are using the platform, but there is also a great number of smaller organizations that have less than 5 teams using the platform. The most common programming languages for applications running on these platforms are Java/Kotlin and JavaScript/TypeScript.
+
+<Image src={teams} alt="" />
+
+The platform engineering revolution started when the Labor and Welfare Administration (NAV) and Tax Administration (Skatt) adopted Kubernetes back in 2016, after creatng the Offentlig PaaS community you can see an explosive growth in Kubernetes adoption in the public sector. The majority of the respondents have been running Kubernetes in production for more than 3 years.
+
+<Image src={years} alt="" />
+
+Unsurprisingly, the most popular CNCF projects are Kubernetes, Prometheus, and Helm, but other projects within networking and security are being used to a large degree as welwithin networking and security are being used to a large degree as welll. It will be interesting to see the adoption of OpenTelemetry and Backstage in the coming years.
+<Image src={tech} alt="" />
+
+
+<Image src={maturity} alt="" />

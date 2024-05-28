@@ -9,13 +9,13 @@ export default function NotFound() {
           404
         </p>
         <h1 className="mt-4 text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-          Page not found
+          Ikke funnet
         </h1>
         <p className="mt-4 text-base text-zinc-600 dark:text-zinc-400">
-          Sorry, we couldn’t find the page you’re looking for.
+          Beklager, vi fant ikke siden du leter etter.
         </p>
         <Button href="/" variant="secondary" className="mt-4">
-          Go back home
+          Gå tilbake til forsiden
         </Button>
       </div>
     </Container>

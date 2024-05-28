@@ -58,8 +58,9 @@ export const metadata: Metadata = {
 export default function Plattformer() {
   return (
     <SimpleLayout
-      title="Noske applikasjonsplattformer"
-      intro="I’ve worked on tons of little plattformer over the years but these are the ones that I’m most proud of. Many of them are open-source, so if you see something that piques your interest, check out the code and contribute if you have ideas for how it can be improved."
+      title="Norske applikasjonsplattformer"
+      intro="Offentlig sektor i Norge har flere spennende applikasjonsplattformer som gjør det enklere for utviklere å lage og drifte applikasjoner. Her har vi samlet noen av de mest kjente med lenker til mer informasjon."
+      gitHubPage='src/app/plattformer/page.tsx'
     >
       <ul
         role="list"

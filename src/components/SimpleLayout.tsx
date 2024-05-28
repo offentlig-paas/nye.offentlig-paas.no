@@ -1,12 +1,16 @@
 import { Container } from '@/components/Container'
+import Link from 'next/link'
+import { PencilIcon } from '@heroicons/react/16/solid'
 
 export function SimpleLayout({
   title,
   intro,
+  gitHubPage,
   children,
 }: {
   title: string
   intro: string
+  gitHubPage?: string
   children?: React.ReactNode
 }) {
   return (
@@ -20,6 +24,17 @@ export function SimpleLayout({
         </p>
       </header>
       {children && <div className="mt-16 sm:mt-20">{children}</div>}
+
+      {gitHubPage && (
+        <div className="mt-12 pt-6 text-sm border-t border-gray-700 flex items-center">
+          <Link
+            href={`https://github.com/offentlig-paas/nye.offentlig-paas.no/edit/main/${gitHubPage}`}
+            className="transition hover:text-teal-500 dark:hover:text-teal-400 flex items-center"
+          >
+            <PencilIcon className='size-6' /> <span className="ml-1">Rediger denne siden på GitHub</span>
+          </Link>
+        </div>
+      )}
     </Container>
   )
 }
