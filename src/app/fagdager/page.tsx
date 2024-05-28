@@ -49,7 +49,7 @@ export const metadata: Metadata = {
 export default function Fagdager() {
   return (
     <SimpleLayout
-      title="Offentlig PaaS Fangdager"
+      title="Offentlig PaaS Fagdager"
       intro="Fagdager er Offentlig PaaS nettverket sin helt egen dag hvor vi inviterer til faglig påfyll, erfaringsdeling og nettverksbygging. Her finner du en oversikt over neste og tidligere arrangementer. Denne siden er fortsatt under utvikling og vi jobber med å lage en enda bedre oversikt over kommende fagdager."
     >
       <div className="space-y-20">
