@@ -1,0 +1,84 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import maturityModel from './1-maturity-model.png'
+import respondents from './2-respondents.png'
+import motivation from './4-motivation.png'
+import teams from './6-teams-and-languages.png'
+import years from './8-years-in-prod.png'
+import tech from './10-cncf-tech.png'
+import maturity from './11-maturity-results.png'
+
+export const article = {
+  author: 'Hans Kristian Flaatten',
+  date: '2024-05-28',
+  title: 'Plattformmodenhet i Norsk offentlig sektor 2024',
+  description:
+    'Den første noensinne tilstandsrapporten om plattformmodenhet i Norske offentlig sektor. Hvordan bygger de plattformer, hvor modne er de og hva er de største utfordringene?',
+}
+
+export const metadata = {
+  title: article.title,
+  language: 'no',
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+This is the Norwegian version of this article. The English version can be found [here](/artikkel/state-of-platforms-2024).
+
+Platformutvikling er en relativt ny disiplin i Norsk offentlig sektor. De første applikasjonsplattformene ble etablert tilbake i 2016, og siden den gang har antallet plattformer vokst raskt. I 2024 er det mer enn 50 kjente plattformer i offentlig sektor, og antallet forventes å øke enda mer i årene som kommer.
+
+CNCF har utviklet en modell for plattformmodenhet som kan brukes til å vurdere modenheten til en plattform. Modellen består av fem nivåer: Nivå 1 (Provisorisk), Nivå 2 (Operasjonell), Nivå 3 (Skalerbar) og Nivå 4 (Optimalisering) og dekker aspekter ved plattformmodenhet, som hvordan organisasjoner investerer i plattformer, hvordan teamene adopterer og samhandler med plattformene, hvordan plattformene driftes og kontinuerlig forbedres.
+
+<Image src={maturityModel} alt="" />
+
+## Metodologi
+
+Undersøkelsen bestod av 31 spørsmål i tre forskjellige kategorier: generell platformutvikling, Kubernetes og skytjenester. Undersøkelsen ble distribuert på Offentlig PaaS sin Slack og LinkedIn i løpet av siste kvartal i 2023. Vi mottok totalt 51 individuelle svar fra 35 unike organisasjoner når vi filtrerte ut duplikater.
+
+<Image src={respondents} alt="" />
+
+Vi erkjenner at undersøkelsen ikke er representativ for hele offentlig sektor i Norge, og at det er en sterk utvalgsbias mot organisasjoner som allerede har adoptert prinsipper for plattformteknologi. Vi mener likevel at resultatene kan gi en indikasjon på tilstanden for plattformmodenhet i Norsk offentlig sektor.
+
+Bare statlige etater er inkludert i den endelige analysen, dette representerer en tredjedel av det statlige Norge når det gjelder antall ansatte (35%), budsjett (35%) og antall etater (28%) representert i undersøkelsen.
+
+## Funn
+
+Ikke overraskende er motivasjonen for å bygge plattformer å øke hastigheten og kvaliteten i programvareleveranser. Dette er i tråd med funnene fra State of DevOps-rapporten, der høyt presterende organisasjoner er i stand til å levere programvare raskere og med høyere kvalitet enn lavt presterende organisasjoner.
+
+<Image src={motivation} alt="" />
+
+Flertallet av respondentene har mellom 11 og 50 utviklingsteam som benytter plattformen, men det er også et stort antall mindre organisasjoner som har mindre enn 5 team. De mest brukte programmeringsspråkene for applikasjoner som kjører på disse plattformene er Java/Kotlin og JavaScript/TypeScript.
+
+<Image src={teams} alt="" />
+
+Plattformrevolusjonen startet da NAV Skatt adopterte Kubernetes i 2016. Etter å ha opprettet Offentlig PaaS-fellesskapet kan man se en eksplosiv vekst i Kubernetes-adopteringen i offentlig sektor. Flertallet av respondentene har kjørt Kubernetes i produksjon i mer enn 3 år.
+
+<Image src={years} alt="" />
+
+Ikke overraskende er de mest populære CNCF-prosjektene Kubernetes, Prometheus og Helm, men andre prosjekter innen nettverk og sikkerhet blir også i stor grad benyttet. Det vil være interessant å se adopteringen av OpenTelemetry og Backstage i årene som kommer.
+
+<Image src={tech} alt="" />
+
+Dette bringer oss til den mest interessante delen av undersøkelsen, modenhetsresultatene. La oss bryte dem ned etter aspekt.
+
+**Investering** dekker hvordan plattformteamene er organisert, det spenner fra frivillig, dedikert team, produktteam, til etablert økosystem der brukerne av plattformen også bidrar tilbake til plattformen. De fleste organisasjonene er på nivå 2, med et dedikert team, men overgangen til en produktmentalitet er en utfordring for mange organisasjoner.
+
+**Adopsjon** dekker hvordan teamene blir ombord på plattformen, det spenner fra kaos og helt til selv-ombordstigning fordi de ser en klar fordel. Her ser vi det mest modne aspektet av undersøkelsen, med de fleste organisasjonene på nivå 3 eller 4. Utviklere ser tydeligvis fordelen med å bruke plattformen.
+
+**Grensesnitt** dekker hvordan plattformen samhandler med resten av organisasjonen, det spenner fra manuelle prosesser til fullstendig automatiserte og integrerte tjenester i organisasjonen. Her finner vi litt flere team som fortsatt er på nivå 1, men flertallet er på nivå 2 eller 3. Bare noen få organisasjoner har nådd nivå 4, noe som krever mye utviklingsinnsats for tilpassede integrasjoner.
+
+**Drift** dekker hvordan livssyklusen til plattformfunksjoner håndteres av plattformteamet, det spenner fra på forespørsel til fullstendig administrerte tjenester. Her ser vi en litt større forskjell mellom nivå 2 og 4. Dette var sannsynligvis det vanskeligste aspektet å forstå for respondentene på grunn av kompleksiteten i spørsmålet.
+
+**Målinger** dekker hvordan prosessen med å måle suksessen til plattformen, det spenner fra ad-hoc til en kultur for kontinuerlig forbedring. Her ser vi den laveste modenheten på tvers av bordet, med ingen organisasjoner som er høyere enn nivå 2 og en 50/50 fordeling mellom nivå 1 og 2. Jeg antar at dette er området vi må fokusere på i årene som kommer.
+
+<Image src={maturity} alt="" />
+
+## Konklusjon
+
+Undersøkelsen viser at offentlig sektor i Norge investerer tungt i plattformteknologi, og at flertallet av organisasjonene har adoptert Kubernetes og skybaserte teknologier.
+
+Hovedmotivasjonen for å bygge plattformer er å øke hastigheten og kvaliteten på programvareleveranser, dette resonerer bra med funn fra andre undersøkelser. Plattformene er mest modne når det gjelder hvordan de blir adoptert og brukt av teamene, og dette tyder på at utviklingsteam i stor grad ser verdien av en plattform.
+
+Det gjenstår fortsatt mer arbeid som må gjøres når det gjelder hvordan plattformteamene finansieres og hvordan suksessen til plattformene måles kontinuerlig.
+
+Undersøkelsen gir ikke innsikt i spesifikke utfordringer som organisasjonene står overfor, eller hva brukerne av plattformene faktisk synes om dem. Dette er noe vi må undersøke nærmere i årene som kommer.
