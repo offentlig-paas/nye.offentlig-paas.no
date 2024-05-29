@@ -114,6 +114,7 @@ export const members: Member[] = [
   new Member({
     name: 'MET',
     type: 'Forvaltningsorgan',
+    github: 'metno',
     linkedinUrl: 'https://www.linkedin.com/company/met-norway/'
   }),
   new Member({
