@@ -6,9 +6,7 @@ import clsx from 'clsx'
 import { Container } from '@/components/Container'
 import {
   GitHubIcon,
-  InstagramIcon,
-  LinkedInIcon,
-  XIcon,
+  SlackIcon,
 } from '@/components/SocialIcons'
 import portraitImage from '@/images/portrait.jpg'
 
@@ -50,10 +48,14 @@ function MailIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
 }
 
 export const metadata: Metadata = {
-  title: 'Om',
+  title: 'Historien om Offentlig PaaS',
+  description: `Offentlig PaaS ble startet som et initiativ mellom NAV og Skatteetaten etter at Audun Fauchald Strand og Are Vattekar møttes på KubeCon Europe i 2017 i Berlin og hørte andre norske stemmer.`,
 }
 
 export default function About() {
+  const githubUrl = `${globalMetadata.other?.github || '#'}`
+  const slackUrl = `${globalMetadata.other?.slack || '#'}`
+
   return (
     <Container className="mt-16 sm:mt-32">
       <div className="grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-y-12">
@@ -69,7 +71,7 @@ export default function About() {
         </div>
         <div className="lg:order-first lg:row-span-2">
           <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
-            Historien om {globalMetadata.applicationName}
+            Historien om hvordan {globalMetadata.applicationName} ble til
           </h1>
           <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
             <p>
@@ -109,17 +111,11 @@ export default function About() {
         </div>
         <div className="lg:pl-20">
           <ul role="list">
-            <SocialLink href="#" icon={XIcon}>
-              Follow on Twitter
+            <SocialLink href={githubUrl} icon={GitHubIcon} className="mt-4">
+              Følg på GitHub
             </SocialLink>
-            <SocialLink href="#" icon={InstagramIcon} className="mt-4">
-              Follow on Instagram
-            </SocialLink>
-            <SocialLink href="#" icon={GitHubIcon} className="mt-4">
-              Follow on GitHub
-            </SocialLink>
-            <SocialLink href="#" icon={LinkedInIcon} className="mt-4">
-              Follow on LinkedIn
+            <SocialLink href={slackUrl} icon={SlackIcon} className="mt-4">
+              Bli med på Slack
             </SocialLink>
             <SocialLink
               href="mailto:kontakt@offentlig-paas.no"

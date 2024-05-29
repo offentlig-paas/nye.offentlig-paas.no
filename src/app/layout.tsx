@@ -20,6 +20,10 @@ export const metadata: Metadata = {
       'application/rss+xml': `${process.env.NEXT_PUBLIC_URL}/feed.xml`,
     },
   },
+  other: {
+    github: 'https://github.com/offentlig-paas/offentlig-paas.no',
+    slack: 'https://join.slack.com/t/offentlig-paas-no/signup',
+  }
 }
 
 export default function RootLayout({
