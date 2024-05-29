@@ -104,7 +104,7 @@ export default function Uses() {
                   <ul role="list" className="mt-6 flex gap-x-6">
                     {member.github && (
                       <li>
-                        <a href={member.github} className="text-gray-400 hover:text-gray-500">
+                        <a href={`https://github.com/${member.github}`} className="text-gray-400 hover:text-gray-500">
                           <span className="sr-only">GitHub</span>
                           <GitHubIcon className="h-6 w-6 fill-current" />
                         </a>
