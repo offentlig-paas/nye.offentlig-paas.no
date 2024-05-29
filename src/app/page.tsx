@@ -17,7 +17,7 @@ import image4 from '@/images/photos/image-4.jpg'
 import image5 from '@/images/photos/image-5.jpg'
 import { type ArticleWithSlug, getAllArtikkel } from '@/lib/articles'
 import { formatDate } from '@/lib/formatDate'
-import { metadata } from './layout'
+import { metadata as globalMetadata } from './layout'
 
 function Article({ article }: { article: ArticleWithSlug }) {
   return (
@@ -48,6 +48,8 @@ function SocialLink({
 }
 
 function Community() {
+  const slackUrl = `${globalMetadata.other?.joinSlackUrl || '#'}`
+
   return (
     <form
       action="/thank-you"
@@ -61,7 +63,7 @@ function Community() {
         Offentlig PaaS har Norges største nettverk av plattformentusiaster samlet i en Slack-kanal!
       </p>
 
-      <Button href="https://join.slack.com/t/offentlig-paas-no/signup" variant="primary" className="group mt-6 w-full">
+      <Button href={slackUrl} variant="primary" className="group mt-6 w-full">
         Bli med i Slack
         <SlackIcon className="h-4 w-4 fill-white" />
       </Button>
@@ -97,6 +99,9 @@ function Photos() {
 }
 
 export default async function Home() {
+  const slackUrl = `${globalMetadata.other?.joinSlackUrl || '#'}`
+  const githubUrl = `${globalMetadata.other?.githubOrgUrl || '#'}`
+
   let artikkel = (await getAllArtikkel()).slice(0, 4)
 
   return (
@@ -104,20 +109,20 @@ export default async function Home() {
       <Container className="mt-9">
         <div className="max-w-2xl">
           <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-            {metadata.applicationName}
+            {globalMetadata.applicationName}
           </h1>
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            {metadata.description}
+            {globalMetadata.description}
           </p>
           <div className="mt-6 flex gap-6">
             <SocialLink
-              href="https://github.com/offentlig-paas"
-              aria-label="Find us on GitHub"
+              href={githubUrl}
+              aria-label="Følg oss på GitHub"
               icon={GitHubIcon}
             />
             <SocialLink
-              href="https://join.slack.com/t/offentlig-paas-no/signup"
-              aria-label="Join out Slack community"
+              href={slackUrl}
+              aria-label="Bli med i Slack"
               icon={SlackIcon}
             />
           </div>

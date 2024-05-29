@@ -21,8 +21,9 @@ export const metadata: Metadata = {
     },
   },
   other: {
-    github: 'https://github.com/offentlig-paas/offentlig-paas.no',
-    slack: 'https://join.slack.com/t/offentlig-paas-no/signup',
+    githubOrgUrl: 'https://github.com/offentlig-paas',
+    githubRepoUrl: 'https://github.com/offentlig-paas/offentlig-paas.no',
+    joinSlackUrl: 'https://join.slack.com/t/offentlig-paas-no/signup',
   }
 }
 

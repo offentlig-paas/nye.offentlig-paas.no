@@ -53,8 +53,8 @@ export const metadata: Metadata = {
 }
 
 export default function About() {
-  const githubUrl = `${globalMetadata.other?.github || '#'}`
-  const slackUrl = `${globalMetadata.other?.slack || '#'}`
+  const githubUrl = `${globalMetadata.other?.githubOrgUrl || '#'}`
+  const slackUrl = `${globalMetadata.other?.joinSlackUrl || '#'}`
 
   return (
     <Container className="mt-16 sm:mt-32">
