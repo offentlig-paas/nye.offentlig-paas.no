@@ -1,6 +1,7 @@
 import { Member } from "@/lib/members";
 import logoSpk from '@/images/logos/spk.svg'
 import logoStatkraft from '@/images/logos/statkraft_icon.svg'
+import logoArbeidstilsynet from '@/images/logos/arbeidstilsynet.svg'
 
 export const members: Member[] = [
   new Member({
@@ -220,5 +221,11 @@ export const members: Member[] = [
     type: 'Forvaltningsorgan',
     github: 'arkivverket',
     linkedinUrl: 'https://www.linkedin.com/company/arkivverket/'
+  }),
+  new Member({
+    name: 'Arbeidstilsynet',
+    type: 'Stat',
+    logo: logoArbeidstilsynet,
+    linkedinUrl: 'https://www.linkedin.com/company/arbeidstilsynet'
   }),
 ];
