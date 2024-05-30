@@ -2,6 +2,8 @@ import { type Metadata } from 'next'
 
 import { Providers } from '@/app/providers'
 import { Layout } from '@/components/Layout'
+import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 import '@/styles/tailwind.css'
 
@@ -40,6 +42,8 @@ export default function RootLayout({
             <Layout>{children}</Layout>
           </div>
         </Providers>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
