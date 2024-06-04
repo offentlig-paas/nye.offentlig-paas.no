@@ -7,6 +7,7 @@ import { Container } from '@/components/Container'
 import {
   GitHubIcon,
   SlackIcon,
+  YouTubeIcon,
 } from '@/components/SocialIcons'
 import portraitImage from '@/images/portrait.jpg'
 
@@ -55,6 +56,7 @@ export const metadata: Metadata = {
 export default function About() {
   const githubUrl = `${globalMetadata.other?.githubOrgUrl || '#'}`
   const slackUrl = `${globalMetadata.other?.joinSlackUrl || '#'}`
+  const youtubeUrl = `${globalMetadata.other?.youtubeUrl || '#'}`
 
   return (
     <Container className="mt-16 sm:mt-32">
@@ -116,6 +118,9 @@ export default function About() {
             </SocialLink>
             <SocialLink href={slackUrl} icon={SlackIcon} className="mt-4">
               Bli med på Slack
+            </SocialLink>
+            <SocialLink href={youtubeUrl} icon={YouTubeIcon} className="mt-4">
+              Følg på YouTube
             </SocialLink>
             <SocialLink
               href="mailto:kontakt@offentlig-paas.no"

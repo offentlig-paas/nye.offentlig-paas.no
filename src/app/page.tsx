@@ -9,6 +9,7 @@ import { Container } from '@/components/Container'
 import {
   GitHubIcon,
   SlackIcon,
+  YouTubeIcon,
 } from '@/components/SocialIcons'
 import image1 from '@/images/photos/image-1.jpg'
 import image2 from '@/images/photos/image-2.jpg'
@@ -101,6 +102,7 @@ function Photos() {
 export default async function Home() {
   const slackUrl = `${globalMetadata.other?.joinSlackUrl || '#'}`
   const githubUrl = `${globalMetadata.other?.githubOrgUrl || '#'}`
+  const youtubeUrl = `${globalMetadata.other?.youtubeUrl || '#'}`
 
   let artikkel = (await getAllArtikkel()).slice(0, 4)
 
@@ -122,8 +124,13 @@ export default async function Home() {
             />
             <SocialLink
               href={slackUrl}
-              aria-label="Bli med i Slack"
+              aria-label="Bli med på diskusjonen i Slack"
               icon={SlackIcon}
+            />
+            <SocialLink
+              href={youtubeUrl}
+              aria-label="Følg oss på YouTube"
+              icon={YouTubeIcon}
             />
           </div>
         </div>

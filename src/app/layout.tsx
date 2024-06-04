@@ -26,6 +26,7 @@ export const metadata: Metadata = {
     githubOrgUrl: 'https://github.com/offentlig-paas',
     githubRepoUrl: 'https://github.com/offentlig-paas/offentlig-paas.no',
     joinSlackUrl: 'https://join.slack.com/t/offentlig-paas-no/signup',
+    youtubeUrl: 'https://www.youtube.com/@OffentligPaaS',
   }
 }
 

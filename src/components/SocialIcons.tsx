@@ -42,3 +42,11 @@ export function SlackIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
     </svg >
   )
 }
+
+export function YouTubeIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" {...props}>
+      <path d="M21.6 7.2c-.2-.8-.8-1.4-1.6-1.6C18.4 5 12 5 12 5s-6.4 0-7.9.6c-.8.2-1.4.8-1.6 1.6C2 8.8 2 12 2 12s0 3.2.6 4.8c.2.8.8 1.4 1.6 1.6C5.6 19 12 19 12 19s6.4 0 7.9-.6c.8-.2 1.4-.8 1.6-1.6.6-1.6.6-4.8.6-4.8s0-3.2-.6-4.8zM9.6 15.6V8.4l6 3.6-6 3.6z" />
+    </svg>
+  )
+}
