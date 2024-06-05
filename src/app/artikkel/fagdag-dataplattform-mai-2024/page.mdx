@@ -1,0 +1,45 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import mingling from './1-mingling.jpg'
+import presentation from './2-presentasjon.jpg'
+import organisers from './3-komite.jpg'
+
+export const article = {
+  author: 'Trygve Falch & John Kasper Svergja',
+  date: '2024-06-04',
+  title: 'Vellykket dataplattform-fagdag',
+  description:
+    'Fredag 24. mai ble det avholdt Offentlig PaaS Fagdag om dataplattform hos Statistisk Sentralbyrå sine lokaler. 37 ulike virksomheter var representert for å dele deres erfaringer og knytte nye kjennskaper.',
+}
+
+export const metadata = {
+  title: article.title,
+  language: 'no',
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+Fredag 24. mai ble det arrangert en ny Offentlig Paas fagdag, denne gangen med fokus på dataplattformer. Programmet var variert og interessant, både for de som deltok fysisk hos Statistisk Sentralbyrå i Oslo og for de som fulgte med via stream. 37 virksomheter var representert fysisk, med rundt 70 til stede, og opptil 60 personer fulgte med via videostrøm. Plattformpodden er også ute med en ny sesong som omhandler dataplattformer.
+
+<Image src={mingling} alt="" />
+
+Programmet viste en økende modenhet innen utvikling av dataplattformer i det offentlige Norge. Det var stor variasjon i utfordringer og løsninger, men også mange som benyttet seg av lignende tilnærminger til løsninger. Foredragene inkluderte erfaringer fra Kystverket og Skatteetaten om erfaringer med bygging av dataplattformer. Andre foredrag hadde fokus på hvordan organisering rundt både bygging og utvikling av plattformene bør skje (Politiet, Posten). Mulighetene i felles nasjonale komponenter som Felles datakatalog og Skyporten (Samferdselsdata/Digdir) ble også diskutert. UKEs løsning basert på Microsoft Fabric, en ny plattformportefølje fra Microsoft, var også et tema. SSB presenterte en Open Source Datalab-stack (Onyxia.sh) utviklet av det franske statistikkbyrået INSEE, som forenkler utvikling og bruk av hyllevare Open Source for dataplattformbrukere. Andre foredrag hadde fokus på viktigheten av datakontrakter, og konkrete verktøy som dbt (Entur, Telenor).
+
+<Image src={presentation} alt="" />
+
+Takk til foredragsholdere, og spesielt til UKE (Pål de Vibe), Datasamarbeidet i samferdsel (Tine Kleivane) og SSB (Trygve Falch og Øyvind Bruer-Skarsbø) for initiativet og gjennomføringen av dagen!
+
+<Image src={organisers} alt="" />
+
+Agenda:
+
+* [Veien mot en datadrevet kommune](https://youtu.be/Tp8t41Xofwg?si=2uTyx-Xt5HJVhem_) / Erik Tuv & Andre Gulbrandsen, UKE
+* [Dataplattformer for fart og flyt i politiet](https://youtu.be/yqCiZ0CO03k?si=8jjY0fO_aAFoUElu) / Audun Vindenes Egge & Erlend Wiig, Politiet
+* [Datadeling med nasjonale felleskomponenter fra DigDir](https://youtu.be/yjHvCLwDa6c?si=VE1nMjgWzGipgOJx) / Tine Kleivane, Samferdselsdata
+* [Et hav av data - Kystverket](https://youtu.be/rcq8O5C6YvE?si=YKTPYXFnV3M17prT) / Stefan Ekehaug, Kystverket
+* [En Open Source datastack basert på Onyxia](https://youtu.be/7SuXRfQqdGM?si=WhRkHQrp1MuE3mNv) / Øyvind Bruer-Skarsbø, SSB
+* [Skatteetatens Data- og Analyseplattform - 1 år inn i produksjon](https://youtu.be/Por7NdaEJos?si=Uu2focuF9JgJU_a1) / Tron Magnus Svagård og Johanna Anker Kulmus
+* [Data as Code - hvorfor snakker alle om dbt og hva er det](https://youtu.be/Ra_awsiBBVQ?si=OurNVsudjZkJ9XUu)? / Anders Elton, Telenor
+* [Datakontrakter](https://youtu.be/B34_u5xKTJc?si=8XnCR5K6Rsc0CkVD) / Anders Dahlen, Entur
+* [MLOps hos Posten](https://youtu.be/cC6E5S1KGVs?si=-7qHbs8RVwOs5bzn) / Ella Johnsen, Simen Larsen, Posten Bring AS
+
