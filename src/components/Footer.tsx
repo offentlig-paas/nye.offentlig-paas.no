@@ -30,7 +30,7 @@ export function Footer() {
                 <NavLink href="/om">Om</NavLink>
                 <NavLink href="/artikkel">Artikler</NavLink>
                 <NavLink href="/plattformer">Plattformer</NavLink>
-                <NavLink href="/fagdager">Fagdager</NavLink>
+                <NavLink href="/fagdag">Fagdager</NavLink>
                 <NavLink href="/medlemmer">Medlemmer</NavLink>
               </div>
               <p className="text-sm text-zinc-400 dark:text-zinc-500">

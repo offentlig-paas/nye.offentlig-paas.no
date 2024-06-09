@@ -2,7 +2,7 @@ import { type Metadata } from 'next'
 
 import { Card } from '@/components/Card'
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { type ArticleWithSlug, getAllArtikkel } from '@/lib/articles'
+import { type ArticleWithSlug, getAllArticles } from '@/lib/articles'
 import { formatDate } from '@/lib/formatDate'
 
 function Article({ article }: { article: ArticleWithSlug }) {
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
 }
 
 export default async function ArtikkelIndex() {
-  let artikkel = await getAllArtikkel()
+  let artikkel = await getAllArticles()
 
   return (
     <SimpleLayout

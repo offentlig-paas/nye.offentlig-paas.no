@@ -3,6 +3,8 @@ import { type Metadata } from 'next'
 import { Card } from '@/components/Card'
 import { Section } from '@/components/Section'
 import { SimpleLayout } from '@/components/SimpleLayout'
+import { getAllEvents } from '@/lib/events/helpers'
+import { formatDate } from '@/lib/formatDate'
 
 function SpeakingSection({
   children,
@@ -47,6 +49,8 @@ export const metadata: Metadata = {
 }
 
 export default function Fagdager() {
+  const events = getAllEvents()
+
   return (
     <SimpleLayout
       title="Offentlig PaaS Fagdager"
@@ -54,20 +58,16 @@ export default function Fagdager() {
     >
       <div className="space-y-20">
         <SpeakingSection title="Fagdager">
-          <Appearance
-            href="https://forms.office.com/e/srPkwVU5rH"
-            title="Offentlig Observability Dag"
-            description="Vi inviterer til en dag fylt med spennende foredrag og erfaringsdeling om observability, OpenTelemetry og Grafana i offentlig sektor."
-            date="20. juni 2024"
-            cta="Registrer deg"
-          />
-          <Appearance
-            href="#"
-            title="Offentlig PaaS Fagdag om dataplattform"
-            description="Vi inviterer til en dag fylt med spennende foredrag og erfaringsdeling om dataplattform i offentlig sektor."
-            date="24. mai 2024"
-            cta=""
-          />
+          {events.map((event) => (
+            <Appearance
+              key={event.slug}
+              href={`/fagdag/${event.slug}`}
+              title={event.title}
+              description={event.ingress}
+              date={formatDate(event.start)}
+              cta="Mer informasjon"
+            />
+          ))}
         </SpeakingSection>
       </div>
     </SimpleLayout>
