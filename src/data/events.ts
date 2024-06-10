@@ -66,9 +66,9 @@ export const events: Event[] = [
       },
       {
         time: '12:40 - 13:05',
-        title: 'Kartverket presenterer',
-        description: 'Kartverket presenterer sin erfaring med observability.',
-        speaker: 'Thomas Berg & Eline Henriksen (Kartverket)',
+        title: 'Med kart og kompass på leting etter oversikt',
+        description: 'Kartverket presenterer sin erfaring med observability.Kartverkets reise mot helhetlig observability og de erfaringer som er gjort på veien.',
+        speaker: 'Thomas Berg (Kartverket)',
         type: ItemType.Talk,
       },
       {
