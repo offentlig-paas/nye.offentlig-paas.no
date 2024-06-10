@@ -4,11 +4,19 @@ import Image from 'next/image'
 import { Card } from '@/components/Card'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import logoSkip from '@/images/platforms/skip.png'
+import logoAltinn from '@/images/platforms/altinn.svg'
 import logoAurora from '@/images/platforms/aurora.jpg'
 import logoNais from '@/images/platforms/nais.svg'
 import logoRadix from '@/images/platforms/radix.svg'
 
 const plattformer = [
+  {
+    name: 'Altinn Studio',
+    description:
+      'Digdir sin applikasjonsplattform basert på Kubernetes',
+    link: { href: 'https://docs.altinn.studio/nb/altinn-studio/', label: 'docs.altinn.studio' },
+    logo: logoAltinn,
+  },
   {
     name: 'Aurora',
     description:
