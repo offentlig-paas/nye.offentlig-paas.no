@@ -1,4 +1,4 @@
-import { type Metadata } from 'next'
+import { ResolvingMetadata, type Metadata } from 'next'
 
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { formatDescription, getEvent, isAcceptingRegistrations } from '@/lib/events/helpers'
@@ -24,81 +24,38 @@ import { ItemType } from '@/lib/events/types'
 import { PresentationChartBarIcon } from '@heroicons/react/16/solid'
 import { Button } from '@/components/Button'
 
-//export const metadata: Metadata = {
-//  title: 'Fagdager',
-//  description:
-//    'Fagdager er Offentlig PaaS nettverket sin helt egen dag hvor vi inviterer til faglig påfyll, erfaringsdeling og nettverksbygging.',
-//}
-
-const invoice = {
-
-
-  subTotal: '$8,800.00',
-  tax: '$1,760.00',
-  total: '$10,560.00',
-  items: [
-    {
-      id: 1,
-      title: 'Logo redesign',
-      description: 'New logo and digital asset playbook.',
-      hours: '20.0',
-      rate: '$100.00',
-      price: '$2,000.00',
-    },
-    {
-      id: 2,
-      title: 'Website redesign',
-      description: 'Design and program new company website.',
-      hours: '52.0',
-      rate: '$100.00',
-      price: '$5,200.00',
-    },
-    {
-      id: 3,
-      title: 'Business cards',
-      description: 'Design and production of 3.5" x 2.0" business cards.',
-      hours: '12.0',
-      rate: '$100.00',
-      price: '$1,200.00',
-    },
-    {
-      id: 4,
-      title: 'T-shirt design',
-      description: 'Three t-shirt design concepts.',
-      hours: '4.0',
-      rate: '$100.00',
-      price: '$400.00',
-    },
-  ],
-}
-const activity = [
-
-
-  { id: 1, type: 'created', person: { name: 'Chelsea Hagon' }, date: '7d ago', dateTime: '2023-01-23T10:32' },
-  { id: 2, type: 'edited', person: { name: 'Chelsea Hagon' }, date: '6d ago', dateTime: '2023-01-23T11:03' },
-  { id: 3, type: 'sent', person: { name: 'Chelsea Hagon' }, date: '6d ago', dateTime: '2023-01-23T11:24' },
-  {
-    id: 4,
-    type: 'commented',
-    person: {
-      name: 'Chelsea Hagon',
-      imageUrl:
-        'https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    },
-    comment: 'Called client, they reassured me the invoice would be paid by the 25th.',
-    date: '3d ago',
-    dateTime: '2023-01-23T15:56',
-  },
-  { id: 5, type: 'viewed', person: { name: 'Alex Curren' }, date: '2d ago', dateTime: '2023-01-24T09:12' },
-  { id: 6, type: 'paid', person: { name: 'Alex Curren' }, date: '1d ago', dateTime: '2023-01-24T09:20' },
-]
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
+function EventIcon({ type, className }: { type: ItemType, className?: string }) {
+  switch (type) {
+    case ItemType.Talk:
+      return <PresentationChartLineIcon className={className} aria-hidden="true" />
+    case ItemType.Break:
+      return <Battery50Icon className={className} aria-hidden="true" />
+    default:
+      return <InformationCircleIcon className={className} aria-hidden="true" />
+  }
 }
 
+type Props = {
+  params: { slug: string }
+}
 
-export default async function Fagdag({ params }: { params: { slug: string } }) {
+export async function generateMetadata({ params }: Props, parent: ResolvingMetadata): Promise<Metadata> {
+  const event = getEvent(params.slug)
+
+  if (!event) {
+    return {
+      title: 'Fagdag ikke funnet',
+      description: 'Fagdagen du leter etter finnes ikke.',
+    }
+  }
+
+  return {
+    title: event.title,
+    description: event.ingress,
+  }
+}
+
+export default async function Fagdag({ params }: Props) {
   const event = getEvent(params.slug)
 
   if (!event) {
@@ -197,17 +154,9 @@ export default async function Fagdag({ params }: { params: { slug: string } }) {
             <ol className="mt-4 divide-y divide-gray-100 dark:divide-gray-800 text-sm leading-6 lg:col-span-7 xl:col-span-8">
               {event.schedule.map((item) => (
                 <li key={item.time} className="relative flex space-x-6 py-6 xl:static">
-                  {item.type === ItemType.Talk ? (
-                    <PresentationChartLineIcon className="h-8 w-8 flex-none text-gray-400" aria-hidden="true" />
-                  ) : (
-                    item.type === ItemType.Break ? (
-                      <Battery50Icon className="h-8 w-8 flex-none text-gray-400" aria-hidden="true" />
-                    ) : (
-                      <InformationCircleIcon className="h-8 w-8 flex-none text-gray-400" aria-hidden="true" />
-                    )
-                  )}
+                  <EventIcon type={item.type} className="h-8 w-8 flex-none text-gray-400" />
 
-                  <div className="flex-auto">
+                  < div className="flex-auto">
                     <h3 className="pr-10 font-semibold xl:pr-0">{item.title}</h3>
                     <p className="mt-2">{item.description}</p>
                     <dl className="mt-2 flex flex-col xl:flex-row">
