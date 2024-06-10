@@ -106,11 +106,22 @@ export const events: Event[] = [
     start: new Date('2024-05-24T09:00+02:00'),
     end: new Date('2024-05-24T15:00+02:00'),
     audience: Audience.PublicSector,
-    location: 'Digitalt',
+    location: 'UKE, Grensesvingen 6, 0661 Oslo',
     organizers: [
       {
-        name: 'Offentlig PaaS',
-        url: 'https://offentligpaas.no'
+        name: 'Tine Kleivan',
+        org: 'Samferdselsdata',
+        url: 'https://offentlig-paas-no.slack.com/team/U04HS5XGGGP',
+      },
+      {
+        name: 'Pål de Vibe',
+        org: 'Samferdselsdata',
+        url: 'https://offentlig-paas-no.slack.com/team/U03GY5ENCSF',
+      },
+      {
+        name: 'John Kasper Svergja',
+        org: 'SSB',
+        url: 'https://offentlig-paas-no.slack.com/team/UJJURGQQ1',
       }
     ],
     schedule: [
