@@ -1,7 +1,7 @@
 import { ResolvingMetadata, type Metadata } from 'next'
 
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { formatDescription, getEvent, isAcceptingRegistrations } from '@/lib/events/helpers'
+import { formatDescription, getEvent, getStatus, isAcceptingRegistrations } from '@/lib/events/helpers'
 import { formatDateTime } from '@/lib/formatDate'
 
 import {
@@ -20,7 +20,7 @@ import {
 } from '@heroicons/react/20/solid'
 import { Container } from '@/components/Container'
 import React from 'react'
-import { ItemType } from '@/lib/events/types'
+import { ItemType, Status } from '@/lib/events/types'
 import { PresentationChartBarIcon } from '@heroicons/react/16/solid'
 import { Button } from '@/components/Button'
 
@@ -33,6 +33,40 @@ function EventIcon({ type, className }: { type: ItemType, className?: string }) 
     default:
       return <InformationCircleIcon className={className} aria-hidden="true" />
   }
+}
+
+function EventStatus({ status }: { status: Status }) {
+  const statusClass = (status: Status) => {
+    switch (status) {
+      case Status.Upcoming:
+        return "bg-blue-50 text-blue-600 ring-blue-600/20";
+      case Status.Past:
+        return "bg-gray-50 text-gray-600 ring-gray-600/20";
+      case Status.Current:
+        return "bg-yellow-50 text-yellow-600 ring-yellow-600/20";
+      default:
+        return "bg-gray-50 text-gray-600 ring-gray-600/20";
+    }
+  };
+
+  const statusText = (status: Status) => {
+    switch (status) {
+      case Status.Upcoming:
+        return "Kommende";
+      case Status.Past:
+        return "Tidligere";
+      case Status.Current:
+        return "Pågående";
+      default:
+        return "Ukjent";
+    }
+  };
+
+  return (
+    <dd className={`rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${statusClass(status)}`}>
+      {statusText(status)}
+    </dd>
+  );
 }
 
 type Props = {
@@ -71,7 +105,7 @@ export default async function Fagdag({ params }: Props) {
         <div className="mx-auto grid max-w-2xl grid-cols-1 grid-rows-1 items-start gap-x-8 gap-y-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
           {/* Event summary */}
           <div className="lg:col-start-3 lg:row-end-1">
-            <h2 className="sr-only">Summary</h2>
+            <h2 className="sr-only">Oppsummering</h2>
             <div className="rounded-lg bg-gray-50 dark:bg-transparent shadow-sm ring-1 ring-gray-900/5 dark:ring-gray-400/5">
               <dl className="flex flex-wrap">
                 <div className="flex-auto pl-6 pt-6">
@@ -79,9 +113,7 @@ export default async function Fagdag({ params }: Props) {
                 </div>
                 <div className="flex-none self-end px-6 pt-4">
                   <dt className="sr-only">Status</dt>
-                  <dd className="rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-600 ring-1 ring-inset ring-green-600/20">
-                    Åpen
-                  </dd>
+                  <EventStatus status={getStatus(event)} />
                 </div>
                 <div className="mt-6 flex w-full flex-none gap-x-4 border-t border-gray-900/5 dark:border-gray-400/5 px-6 pt-6">
                   <dt className="flex-none">
@@ -95,7 +127,7 @@ export default async function Fagdag({ params }: Props) {
                     <span className="sr-only">Start</span>
                     <CalendarDaysIcon className="h-6 w-5 text-gray-400" aria-hidden="true" />
                   </dt>
-                  <dd className="text-sm leading-6 text-gray-500">
+                  <dd className="text-sm leading-6 text-gray-500 dark:text-gray-400">
                     <ul>
                       <li>
                         <time dateTime={event.start.toISOString()}>{formatDateTime(event.start)}</time>
@@ -111,14 +143,14 @@ export default async function Fagdag({ params }: Props) {
                     <span className="sr-only">Deltakere</span>
                     <UserGroupIcon className="h-6 w-5 text-gray-400" aria-hidden="true" />
                   </dt>
-                  <dd className="text-sm leading-6 text-gray-500">{event.audience}</dd>
+                  <dd className="text-sm leading-6 text-gray-500 dark:text-gray-400">{event.audience}</dd>
                 </div>
                 <div className="mt-4 flex w-full flex-none gap-x-4 px-6">
                   <dt className="flex-none">
                     <span className="sr-only">Pris</span>
                     <BanknotesIcon className="h-6 w-5 text-gray-400" aria-hidden="true" />
                   </dt>
-                  <dd className="text-sm leading-6 text-gray-500">{event.price ?? 'Ingen deltakeravgift'}</dd>
+                  <dd className="text-sm leading-6 text-gray-500 dark:text-gray-400">{event.price ?? 'Ingen deltakeravgift'}</dd>
                 </div>
               </dl>
 
@@ -128,7 +160,7 @@ export default async function Fagdag({ params }: Props) {
                     Registrer deg
                   </Button>
                 ) : (
-                  <p className="text-sm font-semibold leading-6">
+                  <p className="text-sm font-semibold leading-6 text-gray-500 dark:text-gray-400">
                     Registrering er stengt
                   </p>
                 )}
@@ -139,9 +171,9 @@ export default async function Fagdag({ params }: Props) {
           {/* Event details */}
           <div className="-mx-4 px-6 py-6 shadow-sm ring-1 ring-gray-900/5 dark:ring-gray-400/5 sm:mx-0 sm:rounded-lg lg:col-span-2 lg:row-span-2 lg:row-end-2">
             <h2 className="text-base font-semibold leading-6 mb-4">Beskrivelse</h2>
-            <p className="leading-6">{event.ingress}</p>
+            <p className="leading-6 text-gray-500 dark:text-gray-400">{event.ingress}</p>
             {event.description && (
-              <p className="leading-6 mt-4">
+              <p className="mt-4 leading-6 text-gray-500 dark:text-gray-400">
                 {event.description.split('\n').map((line, index) => (
                   <React.Fragment key={index}>
                     {line}
@@ -158,7 +190,7 @@ export default async function Fagdag({ params }: Props) {
 
                   < div className="flex-auto">
                     <h3 className="pr-10 font-semibold xl:pr-0">{item.title}</h3>
-                    <p className="mt-2">{item.description}</p>
+                    <p className="mt-2 text-gray-500 dark:text-gray-400">{item.description}</p>
                     <dl className="mt-2 flex flex-col xl:flex-row">
                       <div className="flex items-start space-x-3">
                         <dt className="mt-0.5">
