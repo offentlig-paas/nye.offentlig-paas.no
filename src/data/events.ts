@@ -98,7 +98,8 @@ export const events: Event[] = [
         type: ItemType.Talk,
       },
     ]
-  }, {
+  },
+  {
     slug: '2024-05-24-dataplattform-fagdag',
     title: 'Offentlig PaaS Fagdag om dataplattform',
     ingress: `Vi inviterer til en dag fylt med spennende foredrag og erfaringsdeling om dataplattform i offentlig sektor.`,
@@ -114,26 +115,104 @@ export const events: Event[] = [
     ],
     schedule: [
       {
-        title: 'Velkommen til Offentlig PaaS Fagdag om dataplattform',
-        speaker: 'Offentlig PaaS',
-        description: 'Velkommen til Offentlig PaaS Fagdag om dataplattform!',
-        time: '09:00',
+        time: '08:00 - 08:30',
+        title: 'Dørene åpner, mingling, kaffe, enkle mexicanske frokost-snacks',
+        type: ItemType.Registration,
+      },
+      {
+        time: '08:30 - 08:40',
+        title: 'Velkommen /UKE, SSB og Datasamarbeidet i samferdsel',
+        type: ItemType.Info,
+      },
+      {
+        time: '08:40 - 09:10',
+        title: 'Veien mot en datadrevet kommune',
+        description: 'Hvordan UKE skrur sammen teknologi og styresett for fellesdata i kommunen basert på Microsoft Fabric. Vi deler våre erfaringer og tanker for implementering av felles dataplattform for Oslo Kommune.',
+        speaker: 'Erik Tuv & Andre Gulbrandsen (UKE)',
         type: ItemType.Talk,
       },
       {
-        title: 'Foredrag om dataplattform',
-        speaker: 'Offentlig PaaS',
-        description: 'En dataplattform er en plattform for å lagre, prosessere og tilgjengeliggjøre data.',
-        time: '09:15',
+        time: '09:10 - 09:40',
+        title: 'Dataplattformer for fart og flyt i politiet',
+        description: 'Politiets IT Enhet organiserer seg rundt autonome produktteam for å skape mest mulig verdi for politiet og samfunnet. Med shift-left tankesett må autonome produktteam ta eit langt større ansvar for sine produkter enn før. Korleis kan dette skalere uten å lage enormt store team? Bli med og hør korleis PIT bygger dataplattformer for å skape fart og flyt!',
+        speaker: 'Audun Vindenes Egge & Erlend Wiig (PIT)',
         type: ItemType.Talk,
       },
       {
-        title: 'Erfaringsdeling fra Difi',
-        speaker: 'Difi',
-        description: 'Difi har tatt i bruk en dataplattform for å samle inn og analysere data.',
-        time: '10:00',
+        time: '09:40 - 09:50',
+        title: 'Pause',
+        type: ItemType.Break,
+      },
+      {
+        time: '09:50 - 10:20',
+        title: 'Datadeling med nasjonale felleskomponenter fra DigDir',
+        description: 'Samferdselsdata (Tverrsektorielt datasamarbeid for samferdsel) forteller om vårt samarbeid med DigDir og samferdselsvirksomhetene om å benytte DigDir sine nasjonale fellestjenester som data.norge.no, maskinporten, altinn og ansattporten for å muliggjøre datadeling på nasjonalt plan.',
+        speaker: 'Tine Kleivane (Samferdselsdata)',
         type: ItemType.Talk,
+      },
+      {
+        time: '10:20 - 10:50',
+        title: 'Et hav av data – Kystverket',
+        description: 'Kystverket startet i 2023 arbeidet med en skybasert dataplattform. Vi har mye forskjellig data - store datasett som skipstrafikk og mindre datasett som hvor fisk kan landes. Uten særlig teknisk gjeld i skyen stilte vi relativt fritt. Underveis har vi tatt veivalg, angret veivalg, testet teknologier og fått våre forventninger utfordret. Alt vi gjør skal bidra til å utføre vårt samfunnsoppdrag om å gjøre kysten til verdens sikreste og reneste.',
+        speaker: 'Stefan Ekehaug (Kystverket)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '10:50 - 11:00',
+        title: 'Pause',
+        type: ItemType.Break,
+      },
+      {
+        time: '11:00 - 11:30',
+        title: 'En Open Source datastack basert på Onyxia',
+        description: 'SSB presenterer arbeidet sitt med å implementere tjenesteplattform Onyxia i sin skybaserte dataplattform, Dapla. Onyxia er utviklet av det franske statistikkbyrået (INSEE) og bygger på åpne standarder som kubernetes, helm og oidc. Den gjør det lett å tilby open source verktøy pakket som containere, slik som Jupyter, RStudio, VS Code, MLFlow osv. på en enkel og brukervennlig måte.',
+        speaker: 'Øyvind Bruer-Skarsbø (SSB)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '11:30 - 12:15',
+        title: 'Lunsj',
+        description: 'Lunsj fra Tortas el Tommy',
+        type: ItemType.Break,
+      },
+      {
+        time: '12:15 - 12:45',
+        title: 'Skatteetatens Data- og Analyseplattform - 1 år inn i produksjon',
+        description: 'Siden fjorårets «skattesesong» har Skatteetaten vært i produksjon med sin data- og analyseplattform basert på Databricks i Azure. (Ja, vi vet, en «navnekonkurranse» er long overdue.) Vi mistenker at det vi lager og gjør, hver eneste dag, er noe mange andre foreløpig har som visjon. Så vi deler gjerne av våre erfaringer. I løpet av noen heseblesende minutter vil vi på Offentlig PaaS’ fagdag prøve å formidle: - Hvorfor vi bygger en plattform - Hvordan den er utviklet og videreutvikles - i smått og i stort - Hvordan vi organiserer arbeidet - i smått og i stort - Hva den brukes til akkurat nå',
+        speaker: 'Tron Magnus Svagård & Johanna Anker Kulmus (Skatt)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '12:45 - 13:15',
+        title: 'Foredrag: Data as Code – hvorfor snakker alle om dbt og hva er det?',
+        description: 'Data build tool er et meget populært verktøy i datalandskapet, og det har sett en utrolig vekst de siste årene. Det har nesten blitt standard å bruke dbt på plattformer som BigQuery, Snowflake og Databricks. Hva er det egentlig som gjør dette så fett? Hvordan passer dbt inn i en dataplattform og hvordan lar det deg jobbe?',
+        speaker: 'Anders Elton (Telenor)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '13:15 - 13:25',
+        title: 'Pause',
+        type: ItemType.Break,
+      },
+      {
+        time: '13:25 - 13:55',
+        title: 'Datakontrakter',
+        description: 'Entur implementerer Data kontrakter på GCP. Her forteller de om implikasjonene dette har for reaktiv-arkitektur, der kontrakten blir et kontrollplangrensesnitt for dataplattform-arkitekturen.',
+        speaker: 'Anders Dahlen (Entur)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '13:55 - 14:25',
+        title: 'MLOps hos Posten',
+        description: 'Posten Bring har i flere år utviklet maskinlæringsløsninger for produksjon og merket at forvaltning av disse løsningene begynte å stjele all kapasiteten til vår data science avdeling. Vi har derfor i over ett år nå jobbet med å bygge en MLOps plattform for å effektivisere utviklingen og forvaltningen av maskinlærings- og dataprodukter. I dette foredraget skal vi gi et innblikk i våre motivasjoner og erfaringer så langt, samt ta et dypdykk ned i vår tekniske arkitektur.',
+        speaker: 'Ella Johnsen & Simen Larsen (Posten Bring AS)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '14:25 - 14:30',
+        title: 'Avslutning',
+        type: ItemType.Info,
       }
     ]
-  },
+  }
 ];
