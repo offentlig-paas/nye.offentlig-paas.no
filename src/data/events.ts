@@ -92,9 +92,9 @@ export const events: Event[] = [
       },
       {
         time: '14:30 - 15:00',
-        title: 'TBA',
-        description: 'TBA',
-        speaker: 'TBA',
+        title: 'Argus - Digital signage',
+        description: 'Argus er en egenutviklet løsning for å vise frem observabilitydata i landskapet til Skatteetaten. Vi vil vise hvordan vi har bygget Argus, og hvordan vi bruker det i hverdagen.',
+        speaker: 'Robert Myhren (Skatteetaten)',
         type: ItemType.Talk,
       },
     ]
