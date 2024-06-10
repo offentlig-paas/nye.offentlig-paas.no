@@ -41,14 +41,14 @@ export const events: Event[] = [
       {
         time: '09:35 - 10:20',
         title: 'Introduction to OpenTelemetry & Tracing (in English)',
-        description: 'OpenTelemetry is a set of APIs, libraries, agents, and instrumentation to provide observability in your applications.',
+        description: 'OpenTelemetry is a set of APIs, libraries, agents, and instrumentation to provide observability in your applications. In this this talk, we will introduce OpenTelemetry and how it can be used to instrument your applications to collect traces, metrics, and logs. We will also show how to use OpenTelemetry with Grafana to visualize the collected data.',
         speaker: 'Grafana Labs & Sopra Steria',
         type: ItemType.Talk,
       },
       {
         time: '10:20 - 11:00',
         title: 'Observability i Skatteetaten',
-        description: 'Skatteetaten presenterer hvordan de jobber med robustet og innsikt i sine systemer.',
+        description: 'Skatteetaten presenterer hvordan de jobber med robusthet og innsikt i sine systemer og applikasjoner.',
         speaker: 'Skatteetaten',
         type: ItemType.Talk,
       },
@@ -59,8 +59,8 @@ export const events: Event[] = [
       },
       {
         time: '12:00 - 12:40',
-        title: 'Observability i NAV',
-        description: 'NAV presenterer hvordan de jobber med robustet og innsikt i sine systemer.',
+        title: 'Observability 2.0 i NAV',
+        description: 'I år startet NAV med å rulle ut støtte for OpenTelemetry for applikasjoner i NAIS med OpenTelemetry Operator, Grafana Tempo og Grafana Loki. I dette foredraget vil vi dele erfaringer og resultater fra dette arbeidet så langt, og kaste litt lys over hva som er planen videre.',
         speaker: 'Hans Kristian Flaatten (NAV)',
         type: ItemType.Talk,
       },
