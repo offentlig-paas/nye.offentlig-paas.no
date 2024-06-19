@@ -86,7 +86,7 @@ export default function About() {
             </p>
             <p>
               Like etter at KubeCon var over ble Offentlig PaaS Slacken
-              opprettet og den første fagdagen ble avhold host
+              opprettet og den første fagdagen ble avholdt hos
               Skattedirektoratet, senere på året var NAV vertskap for den andre
               fagdagen. I 2018 var det duket for fagdag hos Politiet og senere
               på året hos SSB og i 2019 hos Telenor. I 2019 ble nettstedet
@@ -94,7 +94,7 @@ export default function About() {
             </p>
             <p>
               Fagdagen er en dag hvor vi møtes for å dele erfaringer og lære av
-              hverandre. Fagdagen er som regel en havl dags arrangement med
+              hverandre. Fagdagen er som regel en halv dags arrangement med
               presentasjoner og diskusjoner. Det er også en god anledning til å
               bli kjent med likesinnede som jobber med de samme utfordringene.
             </p>
@@ -102,8 +102,8 @@ export default function About() {
               Like før pandemien traff oss i 2020 var det duket for fagdag hos
               Oslo Kommune i Oslo Rådhus, neste fagdag ble avhold digitalt hos
               SSB da det ikke var mulig å møtes fysisk. Etter en lang pause ble
-              Offentlig PaaS fagdagen rebootet i 2023 og det ble avhold fagdager
-              hos Politiet, Skatteetaten og Telenor med rekordmange deletaker.
+              Offentlig PaaS fagdagen rebootet i 2023 og det ble avholdt fagdager
+              hos Politiet, Skatteetaten og Telenor med rekordmange deltakere.
             </p>
             <p>
               Ved utgangen av 2023 hadde Offentlig PaaS Slacken over 1.100
