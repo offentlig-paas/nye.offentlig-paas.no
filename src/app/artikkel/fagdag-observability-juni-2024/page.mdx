@@ -1,0 +1,37 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import promo from './1-promo.png'
+import skatt from './2-skatt.png'
+
+export const article = {
+  author: 'Hans Kristian Flaatten',
+  date: '2024-06-21',
+  title: 'Offentlig Observability Dag',
+  description:
+    'Fagdag om Observability i offentlig sektor. Skatteetaten, NAV, Kartverket, Politiet og Norsk Helsenett delte sine erfaringer.',
+}
+
+export const metadata = {
+  title: article.title,
+  language: 'no',
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+Nok en fagdag er i boks, og denne gangen var det Observability som sto i fokus. Vi samlet 200 deltakere fra store deler av offentlig sektor, og fikk høre om hvordan flere av de største aktørene i Norge som Skatteetaten, NAV, Kartverket, Politiet og Norsk Helsenett jobber med Observability.
+
+<Image src={promo} />
+
+## Overvåking i Skatteetaten
+
+I Skatteetaten jobber det 900 med IT-systemer, av disse er det 18 stykker som jobber med overvåking.
+Nevn er verktøy for overvåking, og det er stor sansynlighet for at det er eller har vært i bruk i Skatteetaten.
+Gruppen som jobber med overvåking i Skatt har ansvar for å ha oversikt og status på alle applikasjoner og tjenester som er i drift i etaten.
+
+Stakcen til Skatteetaten består i dag primært av følgende verktøy: Splunk (logg), Grafana Enterprise (dashboards), Mimir (metrikker), og Grafana Enterprise Trace (sporing).
+Skatteetaten sier selv at de har mye data med 100 TB med lagring bare for telemetri data, 40 millioner tidsserier og 1250 dashboards i Grafana.
+
+<Image src={skatt} />
+
+Skatteetaten har etablert et eget arkitektur laug for overvåking og utarbeidet et målbilde for overvåking i Skatteetaten.
+Her har de også etablert OMG (Overvåking Modenhetsgrad) basert på GitLab, Grafana med flere sin modenhetsmodell. OMG har 5 nivåer langs de tre aksene, det administrative, innsamling av data og alarmer.
