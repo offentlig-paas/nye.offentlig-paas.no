@@ -1,6 +1,7 @@
 import { Member } from "@/lib/members";
 import logoSpk from '@/images/logos/spk.svg'
 import logoStatkraft from '@/images/logos/statkraft_icon.svg'
+import logoStatnettSf from '@/images/logos/statnett.jpg'
 import logoArbeidstilsynet from '@/images/logos/arbeidstilsynet.svg'
 
 export const members: Member[] = [
@@ -228,4 +229,10 @@ export const members: Member[] = [
     logo: logoArbeidstilsynet,
     linkedinUrl: 'https://www.linkedin.com/company/arbeidstilsynet'
   }),
+  new Member({
+    name: 'Statnett SF',
+    type: 'Andre',
+    logo: logoStatnettSf,
+    linkedinUrl: 'https://www.linkedin.com/company/statnett-sf/',
+  })
 ];
