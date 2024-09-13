@@ -232,6 +232,7 @@ export const members: Member[] = [
   new Member({
     name: 'Statnett SF',
     type: 'Andre',
+    github: 'statnett',
     logo: logoStatnettSf,
     linkedinUrl: 'https://www.linkedin.com/company/statnett-sf/',
   })
