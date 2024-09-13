@@ -89,7 +89,7 @@ export default function Uses() {
               (activeButton === member.type || activeButton === '') && (
                 <li key={member.name}>
                   <Image
-                    className="aspect-[3/2] w-full rounded-2xl object-cover bg-gray-100"
+                    className="w-full h-[120px] rounded-2xl object-contain bg-white"
                     src={member.image()}
                     width="200"
                     height="200"
