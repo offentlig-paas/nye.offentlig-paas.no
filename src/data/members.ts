@@ -1,7 +1,7 @@
 import { Member } from "@/lib/members";
 import logoSpk from '@/images/logos/spk.svg'
 import logoStatkraft from '@/images/logos/statkraft_icon.svg'
-import logoStatnettSf from '@/images/logos/statnett.jpg'
+import logoStatnettSf from '@/images/logos/statnett.svg'
 import logoArbeidstilsynet from '@/images/logos/arbeidstilsynet.svg'
 
 export const members: Member[] = [
