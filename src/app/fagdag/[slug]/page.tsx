@@ -2,7 +2,7 @@ import { ResolvingMetadata, type Metadata } from 'next'
 
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { formatDescription, getEvent, getStatus, isAcceptingRegistrations } from '@/lib/events/helpers'
-import { formatDateTime } from '@/lib/formatDate'
+import { formatDate, formatDateTime } from '@/lib/formatDate'
 
 import {
   CalendarDaysIcon,
@@ -76,17 +76,34 @@ type Props = {
 export async function generateMetadata({ params }: Props, parent: ResolvingMetadata): Promise<Metadata> {
   const event = getEvent(params.slug)
 
-  if (!event) {
-    return {
-      title: 'Fagdag ikke funnet',
-      description: 'Fagdagen du leter etter finnes ikke.',
-    }
+  let title = 'Fagdag ikke funnet';
+  let description = 'Fagdagen du leter etter finnes ikke.';
+
+  const metadata = {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      locale: 'nb_NO',
+      siteName: 'Offentlig PaaS',
+    },
+  };
+
+  if (event) {
+    const speakers = [
+      ...new Set(
+        event.schedule.filter((item) => item.speaker).map((item) => item.speaker),
+      ),
+    ].join(', ');
+
+    metadata.title = event.title;
+    metadata.openGraph.title = `${formatDate(event.start)} - ${event.title}`;
+    metadata.description = `${event.ingress} Sted: ${event.location}. Foredragsholdere: ${speakers}.`;
+    metadata.openGraph.description = metadata.description;
   }
 
-  return {
-    title: event.title,
-    description: event.ingress,
-  }
+  return metadata;
 }
 
 export default async function Fagdag({ params }: Props) {
