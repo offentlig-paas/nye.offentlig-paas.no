@@ -62,17 +62,17 @@ export default function Uses() {
       gitHubPage='src/data/members.ts'
     >
       <div className="mx-auto max-w-7xl">
-        <span className="isolate inline-flex rounded-md shadow-sm">
+        <span className="isolate shadow-sm">
           {types.map((button, i) => (
             <button
               key={button}
               type="button"
-              className={`relative inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10 ${activeButton === button ? 'bg-gray-100' : 'bg-white'
+              className={`relative px-3 py-2 mx-0.5 my-0.5 sm:mx-0 rounded sm:rounded-none text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10 ${activeButton === button ? 'bg-gray-100' : 'bg-white'
                 } ${i === 0
-                  ? 'rounded-l-md'
+                  ? 'sm:rounded-l-md'
                   : i === types.length - 1
-                    ? '-ml-px rounded-r-md'
-                    : '-ml-px'
+                    ? 'sm:rounded-r-md'
+                    : ''
                 }`}
               onClick={() => handleClick(button)}
             >
