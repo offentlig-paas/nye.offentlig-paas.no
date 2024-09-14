@@ -1,5 +1,5 @@
 import { events } from '@/data/events';
-import { Status, Event, ItemType } from "@/lib/events/types";
+import { Status, Event, EventLocation } from "@/lib/events/types";
 import { MegaphoneIcon } from '@heroicons/react/16/solid';
 
 export function getStatus(event: Event) {
@@ -19,6 +19,10 @@ export function isAcceptingRegistrations(event: Event) {
 
 export function formatDescription(description: string) {
   return description.replace(/\n/g, '<br>');
+}
+
+export function formatLocation(location: EventLocation) {
+  return `${location.name}, ${location.streetAddress}, ${location.postalCode} ${location.city}`
 }
 
 export function getAllEvents() {

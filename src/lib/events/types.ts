@@ -7,7 +7,7 @@ export interface Event {
   end: Date
   price?: string;
   audience: Audience;
-  location: string;
+  location: EventLocation;
   registrationUrl?: string;
   organizers: Organizer[];
   schedule: Item[];
@@ -45,4 +45,11 @@ export enum ItemType {
   Talk = 'Presentation',
   Break = 'Pause',
   Workshop = 'Workshop',
+}
+
+export interface EventLocation {
+  name: string,
+  streetAddress: string,
+  postalCode: string,
+  city: string,
 }

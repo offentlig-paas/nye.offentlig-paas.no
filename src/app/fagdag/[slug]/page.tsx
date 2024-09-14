@@ -1,7 +1,8 @@
 import { ResolvingMetadata, type Metadata } from 'next'
+import { Event, WithContext } from 'schema-dts'
 
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { formatDescription, getEvent, getStatus, isAcceptingRegistrations } from '@/lib/events/helpers'
+import { formatLocation, getEvent, getStatus, isAcceptingRegistrations } from '@/lib/events/helpers'
 import { formatDate, formatDateTime } from '@/lib/formatDate'
 
 import {
@@ -99,7 +100,7 @@ export async function generateMetadata({ params }: Props, parent: ResolvingMetad
 
     metadata.title = event.title;
     metadata.openGraph.title = `${formatDate(event.start)} - ${event.title}`;
-    metadata.description = `${event.ingress} Sted: ${event.location}. Foredragsholdere: ${speakers}.`;
+    metadata.description = `${event.ingress} Sted: ${formatLocation(event.location)}. Foredragsholdere: ${speakers}.`;
     metadata.openGraph.description = metadata.description;
   }
 
@@ -113,8 +114,41 @@ export default async function Fagdag({ params }: Props) {
     return <SimpleLayout title="Fagdag ikke funnet" intro='Fagdagen du leter etter finnes ikke.' />
   }
 
+  const jsonLd: WithContext<Event> = {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    'name': event.title,
+    'startDate': event.start.toJSON(),
+    'endDate': event.end.toJSON(),
+    'eventAttendanceMode': 'https://schema.org/OfflineEventAttendanceMode',
+    'eventStatus': 'https://schema.org/EventScheduled',
+    'location': {
+      '@type': 'Place',
+      'name': event.location.name,
+      'address': {
+        '@type': 'PostalAddress',
+        'streetAddress': event.location.streetAddress,
+        'addressLocality': event.location.city,
+        'postalCode': event.location.name,
+      }
+    },
+    'description': event.description,
+    'organizer': {
+      '@type': 'Person',
+      'name': event.organizers[0]?.name,
+      'worksFor': {
+        '@type': 'Organization',
+        'legalName': event.organizers[0]?.org,
+      },
+    }
+  }
+
   return (
     <Container className="mt-16 lg:mt-32">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <h1 className="mt-6 text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
         {event.title}
       </h1>
@@ -137,7 +171,7 @@ export default async function Fagdag({ params }: Props) {
                     <span className="sr-only">Lokasjon</span>
                     <MapPinIcon className="h-6 w-5 text-gray-400" aria-hidden="true" />
                   </dt>
-                  <dd className="text-sm font-medium leading-6">{event.location}</dd>
+                  <dd className="text-sm font-medium leading-6">{formatLocation(event.location)}</dd>
                 </div>
                 <div className="mt-4 flex w-full flex-none gap-x-4 px-6">
                   <dt className="flex-none">

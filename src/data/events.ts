@@ -11,7 +11,12 @@ export const events: Event[] = [
     start: new Date('2024-06-20T09:00+02:00'),
     end: new Date('2024-06-20T15:00+02:00'),
     audience: Audience.PublicSector,
-    location: 'NAV, Fyrstikkalleen 1, 0661 Oslo',
+    location: {
+      name: 'NAV',
+      streetAddress: 'Fyrstikkalleen 1',
+      postalCode: '0661',
+      city: 'Oslo',
+    },
     registrationUrl: 'https://forms.office.com/e/srPkwVU5rH',
     organizers: [
       {
@@ -106,7 +111,12 @@ export const events: Event[] = [
     start: new Date('2024-05-24T09:00+02:00'),
     end: new Date('2024-05-24T15:00+02:00'),
     audience: Audience.PublicSector,
-    location: 'UKE, Grensesvingen 6, 0661 Oslo',
+    location: {
+      name: 'UKE',
+      streetAddress: 'Grensesvingen 6',
+      postalCode: '0661',
+      city: 'Oslo',
+    },
     organizers: [
       {
         name: 'Tine Kleivan',
