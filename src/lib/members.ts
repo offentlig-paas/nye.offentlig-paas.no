@@ -4,6 +4,7 @@ export interface iMember {
     name: string;
     type: string;
     logo?: ImageProps['src'];
+    logoBackgroundColor?: string;
     github?: string;
     homepage?: string;
     linkedinUrl?: string;
@@ -13,14 +14,16 @@ export class Member implements iMember {
     name: string;
     type: string;
     logo?: ImageProps['src'];
+    logoBackgroundColor?: string;
     github?: string;
     homepage?: string;
     linkedinUrl?: string;
 
-    constructor({ name, type, logo, github, homepage, linkedinUrl }: iMember) {
+    constructor({ name, type, logo, logoBackgroundColor, github, homepage, linkedinUrl }: iMember) {
         this.name = name;
         this.type = type;
         this.logo = logo;
+        this.logoBackgroundColor = logoBackgroundColor;
         this.homepage = homepage;
         this.linkedinUrl = linkedinUrl;
         this.github = github;

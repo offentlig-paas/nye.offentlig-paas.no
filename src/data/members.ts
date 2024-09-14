@@ -9,13 +9,15 @@ export const members: Member[] = [
     name: 'NAV',
     type: 'Stat',
     github: 'navikt',
-    linkedinUrl: 'https://www.linkedin.com/company/nav'
+    linkedinUrl: 'https://www.linkedin.com/company/nav',
+    logoBackgroundColor: '#C20000',
   }),
   new Member({
     name: 'Skatteetaten',
     type: 'Stat',
     github: 'Skatteetaten',
-    linkedinUrl: 'https://www.linkedin.com/company/skatteetaten/'
+    linkedinUrl: 'https://www.linkedin.com/company/skatteetaten/',
+    logoBackgroundColor: '#000000',
   }),
   new Member({
     name: 'Kartverket',
@@ -39,7 +41,8 @@ export const members: Member[] = [
     name: 'NRK',
     type: 'Andre',
     github: 'nrkno',
-    linkedinUrl: 'https://www.linkedin.com/company/nrk/'
+    linkedinUrl: 'https://www.linkedin.com/company/nrk/',
+    logoBackgroundColor: '#000000',
   }),
   new Member({
     name: 'Husbanken',
@@ -105,7 +108,8 @@ export const members: Member[] = [
     name: 'Entur',
     type: 'Selskap',
     github: 'entur',
-    linkedinUrl: 'https://www.linkedin.com/company/entur-as/'
+    linkedinUrl: 'https://www.linkedin.com/company/entur-as/',
+    logoBackgroundColor: '#181C56',
   }),
   new Member({
     name: 'Vy',
@@ -158,7 +162,8 @@ export const members: Member[] = [
     name: 'Norsk Helsenett',
     type: 'Andre',
     github: 'NorskHelsenett',
-    linkedinUrl: 'https://www.linkedin.com/company/norsk-helsenett-sf/'
+    linkedinUrl: 'https://www.linkedin.com/company/norsk-helsenett-sf/',
+    logoBackgroundColor: '#035A46',
   }),
   new Member({
     name: 'Buypass',
@@ -187,7 +192,8 @@ export const members: Member[] = [
     name: 'Agder Energi',
     type: 'Selskap',
     github: 'agderenergi',
-    linkedinUrl: 'https://www.linkedin.com/company/agder-energi-as/'
+    linkedinUrl: 'https://www.linkedin.com/company/agder-energi-as/',
+    logoBackgroundColor: '#016494',
   }),
   new Member({
     name: 'Fiskeridirektoratet',

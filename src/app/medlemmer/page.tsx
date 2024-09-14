@@ -89,8 +89,11 @@ export default function Uses() {
               (activeButton === member.type || activeButton === '') && (
                 <li key={member.name}>
                   <Image
-                    className="w-full h-[120px] rounded-2xl object-contain bg-white"
+                    className="w-full h-[120px] rounded-2xl object-contain"
                     src={member.image()}
+                    style={{
+                      backgroundColor: member.logoBackgroundColor ?? "#ffffff",
+                    }}
                     width="200"
                     height="200"
                     alt=""
