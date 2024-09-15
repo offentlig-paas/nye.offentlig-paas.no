@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "bradlc.vscode-tailwindcss",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "foxundermoon.next-js",
+    "heybourn.headwind",
+    "ms-vscode.vscode-typescript-next",
+    "unifiedjs.vscode-mdx"
+  ]
+}

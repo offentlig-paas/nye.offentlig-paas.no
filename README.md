@@ -20,7 +20,8 @@ Sist, åpne [http://localhost:3000](http://localhost:3000) i nettleseren din for
 
 ### VS Code
 
-Hvis du bruker Visual Studio Code, anbefaler vi å installere følgende utvidelser for best mulig utviklingsopplevelse:
+Hvis du bruker Visual Studio Code, anbefaler vi å installere følgende utvidelser for best mulig utviklingsopplevelse.
+Det gjøres enkelt ved å godta popupen "Do you want to install the recommended extensions [..]?" når prosjektet åpnes.
 
 - [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
 - [Headwind](https://marketplace.visualstudio.com/items?itemName=heybourn.headwind)
