@@ -2,6 +2,25 @@ import { Audience, Event, ItemType } from "@/lib/events/types";
 
 export const events: Event[] = [
   {
+    slug: "2024-12-12-offentlig-paas-digital",
+    title: "Offentlig PaaS heldigital fagdag",
+    ingress: "Årets siste fagdag arrangeres digitalt. Velkommen!",
+    description: "Agenda kommer. Innsending av foredrag gjøres her: https://forms.gle/FcXPuZJQNX9txKLx7",
+    start: new Date('2024-12-12T09:00+01:00'),
+    end: new Date('2024-12-12T15:00+01:00'),
+    audience: Audience.PublicSector,
+    location: "Zoom",
+    registrationUrl: 'https://forms.gle/xdGHJ3L1o7hbqWs77',
+    organizers: [
+      {
+        name: 'Hans Kristian Flaatten',
+        org: 'NAV',
+        url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY'
+      }
+    ],
+    schedule: []
+  },
+  {
     slug: '2024-06-20-observability-dag',
     title: 'Offentlig Observability Dag',
     ingress: 'Vi inviterer til en dag fylt med spennende foredrag og erfaringsdeling om observability, OpenTelemetry og Grafana i offentlig sektor.',
