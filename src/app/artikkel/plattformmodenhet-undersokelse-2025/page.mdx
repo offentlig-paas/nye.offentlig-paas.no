@@ -1,0 +1,30 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Button } from '@/components/Button'
+
+export const article = {
+  author: 'Hans Kristian Flaatten',
+  date: '2024-12-02',
+  title: 'Ny undersøkelse om Plattformer i offentlig sektor',
+  description:
+    'Utvidelse av vår Plattformmodenhet i Offentlig Sektor: Del dine innspill gjennom vår nye spørreundersøkelse! Vi ønsker å høre fra deg som jobber med plattform!',
+}
+
+export const metadata = {
+  title: article.title,
+  language: 'no',
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+Vi fortsetter vår forskning for å forstå hvordan organisasjoner i Norsk Offentlig Sektor bygger sine interne plattformer. Etter å ha gjennomført vårt første undersøkelse i 2023, justerer vi nå fokuset mot "Plattform som et produkt". Dette innebærer å behandle plattformbrukere som kunder og sørge for at plattformen oppfyller deres behov. Selv om dette temaet ofte diskuteres i artikler og foredrag, vet vi ikke nøyaktig hvor mange organisasjoner som bruker denne tilnærmingen.
+
+Vi ønsker å høre fra alle som er involvert i byggingen av plattformer, ikke bare produktledere. Enten teamet ditt bruker produktledelse eller andre metoder, er dine svar viktige for vår forskning og svarene vil bli publisert på offentlig-paas.no og presentert på fagdag og konferanser.
+
+Hvis du ønsker å bidra til denne studien, kan du fylle ut spørreundersøkelsen <a href="https://forms.gle/P7HRraEFvRQB6Bi3A">her</a>!
+
+<div className="flex flex-col items-center">
+  <Button href="https://forms.gle/P7HRraEFvRQB6Bi3A" variant="primary" className="not-prose mt-4">
+    Ta undersøkelsen
+  </Button>
+</div>
