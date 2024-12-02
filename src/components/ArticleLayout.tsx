@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react';
 import { useContext } from 'react'
 import { useRouter } from 'next/navigation'
 
@@ -29,8 +30,8 @@ export function ArticleLayout({
   article: ArticleWithSlug
   children: React.ReactNode
 }) {
-  let router = useRouter()
-  let { previousPathname } = useContext(AppContext)
+  const router = useRouter()
+  const { previousPathname } = useContext(AppContext)
 
   return (
     <Container className="mt-16 lg:mt-32">

@@ -1,44 +1,11 @@
 'use client'
 
+import React from 'react';
 import Image from 'next/image'
-import { Card } from '@/components/Card'
-import { Section } from '@/components/Section'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { members } from '@/data/members'
 import { useState } from 'react'
 import { GitHubIcon, LinkedInIcon } from '@/components/SocialIcons'
-
-function ToolsSection({
-  children,
-  ...props
-}: React.ComponentPropsWithoutRef<typeof Section>) {
-  return (
-    <Section {...props}>
-      <ul role="list" className="space-y-16">
-        {children}
-      </ul>
-    </Section>
-  )
-}
-
-function Tool({
-  title,
-  href,
-  children,
-}: {
-  title: string
-  href?: string
-  children: React.ReactNode
-}) {
-  return (
-    <Card as="li">
-      <Card.Title as="h3" href={href}>
-        {title}
-      </Card.Title>
-      <Card.Description>{children}</Card.Description>
-    </Card>
-  )
-}
 
 const types = Array.from(new Set(members.map((member) => member.type))).sort(
   (a, b) => a.localeCompare(b),

@@ -1,6 +1,5 @@
 import { events } from '@/data/events';
-import { Status, Event, ItemType } from "@/lib/events/types";
-import { MegaphoneIcon } from '@heroicons/react/16/solid';
+import { Status, Event } from "@/lib/events/types";
 
 export function getStatus(event: Event) {
   const now = new Date();

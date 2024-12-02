@@ -1,3 +1,4 @@
+import React from 'react';
 import { useId } from 'react'
 
 export function Section({
@@ -7,7 +8,7 @@ export function Section({
   title: string
   children: React.ReactNode
 }) {
-  let id = useId()
+  const id = useId()
 
   return (
     <section

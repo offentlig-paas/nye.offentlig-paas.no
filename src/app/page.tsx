@@ -1,4 +1,5 @@
-import Image, { type ImageProps } from 'next/image'
+import React from 'react';
+import Image from 'next/image'
 import Link from 'next/link'
 import clsx from 'clsx'
 import { ChatBubbleLeftRightIcon } from '@heroicons/react/16/solid'
@@ -73,7 +74,7 @@ function Community() {
 }
 
 function Photos() {
-  let rotations = ['rotate-2', '-rotate-2', 'rotate-2', 'rotate-2', '-rotate-2']
+  const rotations = ['rotate-2', '-rotate-2', 'rotate-2', 'rotate-2', '-rotate-2']
 
   return (
     <div className="mt-16 sm:mt-20">
@@ -104,7 +105,7 @@ export default async function Home() {
   const githubUrl = `${globalMetadata.other?.githubOrgUrl || '#'}`
   const youtubeUrl = `${globalMetadata.other?.youtubeUrl || '#'}`
 
-  let artikkel = (await getAllArticles()).slice(0, 4)
+  const artikkel = (await getAllArticles()).slice(0, 4)
 
   return (
     <>

@@ -5,19 +5,20 @@ import { Feed } from 'feed'
 import { metadata } from '../layout'
 
 export async function GET(req: Request) {
-  let siteUrl = process.env.NEXT_PUBLIC_URL
+  const siteUrl = process.env.NEXT_PUBLIC_URL
 
   if (!siteUrl) {
     throw Error('Missing NEXT_PUBLIC_URL environment variable')
   }
 
-  let author = {
+  const author = {
     name: 'Offentlig PaaS',
     email: 'kontakt@offentlig-paas.no',
   }
 
-  let feed = new Feed({
+  const feed = new Feed({
     title: author.name,
+    // eslint-disable-next-line @typescript-eslint/no-extra-non-null-assertion
     description: metadata.description!!,
     author,
     id: siteUrl,
@@ -30,22 +31,22 @@ export async function GET(req: Request) {
     },
   })
 
-  let articleIds = require
+  const articleIds = require
     .context('../artikkel', true, /\/page\.mdx$/)
     .keys()
     .filter((key) => key.startsWith('./'))
     .map((key) => key.slice(2).replace(/\/page\.mdx$/, ''))
 
-  for (let id of articleIds) {
-    let url = String(new URL(`/artikkel/${id}`, req.url))
-    let html = await (await fetch(url)).text()
-    let $ = cheerio.load(html)
+  for (const id of articleIds) {
+    const url = String(new URL(`/artikkel/${id}`, req.url))
+    const html = await (await fetch(url)).text()
+    const $ = cheerio.load(html)
 
-    let publicUrl = `${siteUrl}/artikkel/${id}`
-    let article = $('article').first()
-    let title = article.find('h1').first().text()
-    let date = article.find('time').first().attr('datetime')
-    let content = article.find('[data-mdx-content]').first().html()
+    const publicUrl = `${siteUrl}/artikkel/${id}`
+    const article = $('article').first()
+    const title = article.find('h1').first().text()
+    const date = article.find('time').first().attr('datetime')
+    const content = article.find('[data-mdx-content]').first().html()
 
     assert(typeof title === 'string')
     assert(typeof date === 'string')

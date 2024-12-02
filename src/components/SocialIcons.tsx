@@ -1,3 +1,5 @@
+import React from 'react';
+
 export function XIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" {...props}>

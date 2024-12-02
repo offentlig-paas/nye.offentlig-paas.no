@@ -1,7 +1,7 @@
-import { ResolvingMetadata, type Metadata } from 'next'
+import { type Metadata } from 'next'
 
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { formatDescription, getEvent, getStatus, isAcceptingRegistrations } from '@/lib/events/helpers'
+import { getEvent, getStatus, isAcceptingRegistrations } from '@/lib/events/helpers'
 import { formatDateTime } from '@/lib/formatDate'
 
 import {
@@ -10,18 +10,14 @@ import {
   BanknotesIcon,
   UserGroupIcon,
   CalendarIcon,
-  MegaphoneIcon,
   InformationCircleIcon,
   PresentationChartLineIcon,
-  Battery0Icon,
   Battery50Icon,
-  UserCircleIcon,
   UsersIcon,
 } from '@heroicons/react/20/solid'
 import { Container } from '@/components/Container'
 import React from 'react'
 import { ItemType, Status } from '@/lib/events/types'
-import { PresentationChartBarIcon } from '@heroicons/react/16/solid'
 import { Button } from '@/components/Button'
 
 function EventIcon({ type, className }: { type: ItemType, className?: string }) {
@@ -69,12 +65,11 @@ function EventStatus({ status }: { status: Status }) {
   );
 }
 
-type Props = {
-  params: { slug: string }
-}
+type Params = Promise<{ slug: string[] }>;
 
-export async function generateMetadata({ params }: Props, parent: ResolvingMetadata): Promise<Metadata> {
-  const event = getEvent(params.slug)
+export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  const { slug } = await params;
+  const event = getEvent(slug[0])
 
   if (!event) {
     return {
@@ -89,9 +84,9 @@ export async function generateMetadata({ params }: Props, parent: ResolvingMetad
   }
 }
 
-export default async function Fagdag({ params }: Props) {
-  const event = getEvent(params.slug)
-
+export default async function Fagdag({ params }: { params: Params }) {
+  const { slug } = await params;
+  const event = getEvent(slug[0])
   if (!event) {
     return <SimpleLayout title="Fagdag ikke funnet" intro='Fagdagen du leter etter finnes ikke.' />
   }

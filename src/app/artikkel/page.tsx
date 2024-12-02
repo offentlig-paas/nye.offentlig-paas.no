@@ -1,3 +1,4 @@
+import React from 'react';
 import { type Metadata } from 'next'
 
 import { Card } from '@/components/Card'
@@ -41,7 +42,7 @@ export const metadata: Metadata = {
 }
 
 export default async function ArtikkelIndex() {
-  let artikkel = await getAllArticles()
+  const artikkel = await getAllArticles()
 
   return (
     <SimpleLayout
