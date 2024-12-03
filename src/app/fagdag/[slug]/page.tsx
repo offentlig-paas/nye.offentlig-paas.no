@@ -65,11 +65,11 @@ function EventStatus({ status }: { status: Status }) {
   );
 }
 
-type Params = Promise<{ slug: string[] }>;
+type Params = Promise<{ slug: string }>;
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { slug } = await params;
-  const event = getEvent(slug[0])
+  const event = getEvent(slug)
 
   if (!event) {
     return {
@@ -86,7 +86,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
 export default async function Fagdag({ params }: { params: Params }) {
   const { slug } = await params;
-  const event = getEvent(slug[0])
+  const event = getEvent(slug)
   if (!event) {
     return <SimpleLayout title="Fagdag ikke funnet" intro='Fagdagen du leter etter finnes ikke.' />
   }
