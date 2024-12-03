@@ -5,7 +5,7 @@ export const events: Event[] = [
     slug: "2024-12-12-offentlig-paas-digital",
     title: "Offentlig PaaS heldigital fagdag",
     ingress: "Årets siste fagdag arrangeres digitalt. Velkommen!",
-    description: "Agenda kommer. Innsending av foredrag gjøres her: https://forms.gle/FcXPuZJQNX9txKLx7",
+    description: "Velkommenn til årets siste fagdag med en rekke spennende foredrag! Dagen starter med en introduksjon til CloudNativePG, etterfulgt av erfaringer fra Vy om å støtte utviklere med et lite plattformteam. Etter en kort pause vil Norsk Tipping dele sine erfaringer med OpenTelemetry.",
     start: new Date('2024-12-12T10:00+01:00'),
     end: new Date('2024-12-12T14:00+01:00'),
     audience: Audience.PublicSector,
