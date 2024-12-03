@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image'
 import Link from 'next/link'
 import clsx from 'clsx'
-import { ChatBubbleLeftRightIcon } from '@heroicons/react/16/solid'
+import { CalendarIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/16/solid'
 
 import { Button } from '@/components/Button'
 import { Card } from '@/components/Card'
@@ -20,6 +20,9 @@ import image5 from '@/images/photos/image-5.jpg'
 import { type ArticleWithSlug, getAllArticles } from '@/lib/articles'
 import { formatDate } from '@/lib/formatDate'
 import { metadata as globalMetadata } from './layout'
+import { getUpcomingEvents } from '@/lib/events/helpers';
+
+export const revalidate = 3600
 
 function Article({ article }: { article: ArticleWithSlug }) {
   return (
@@ -46,6 +49,36 @@ function SocialLink({
     <Link className="group -m-1 p-1" {...props}>
       <Icon className="h-6 w-6 fill-zinc-500 transition group-hover:fill-zinc-600 dark:fill-zinc-400 dark:group-hover:fill-zinc-300" />
     </Link>
+  )
+}
+
+function UpcomingEvents() {
+  const events = getUpcomingEvents()
+
+  return (
+    <>
+      {events.length > 0 && (
+        <div className="relative space-y-10 rounded-2xl border-2 border-blue-500 bg-blue-50 p-6 dark:border-blue-400 dark:bg-blue-900/20">
+          {events.map((event) => (
+            <div key={event.slug} className="space-y-2">
+              <Link href={`/event/${event.slug}`} className="text-lg font-bold text-blue-700 dark:text-blue-300">
+                {event.title}
+              </Link>
+              <div className="flex items-center space-x-2">
+                <CalendarIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                <time dateTime={event.start.toISOString()} className="block text-sm text-gray-500 dark:text-gray-400">
+                  {formatDate(event.start)}
+                </time>
+                <span className="mx-2">|</span>
+                <Link href={`/event/${event.slug}`} className="text-sm text-blue-500 dark:text-blue-400">
+                  Les mer
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </>
   )
 }
 
@@ -145,6 +178,7 @@ export default async function Home() {
             ))}
           </div>
           <div className="space-y-10 lg:pl-16 xl:pl-24">
+            <UpcomingEvents />
             <Community />
           </div>
         </div>

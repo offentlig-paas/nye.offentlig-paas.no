@@ -27,3 +27,7 @@ export function getAllEvents() {
 export function getEvent(slug: string) {
   return events.find(event => event.slug === slug);
 }
+
+export function getUpcomingEvents() {
+  return events.filter(event => getStatus(event) === Status.Upcoming);
+}
