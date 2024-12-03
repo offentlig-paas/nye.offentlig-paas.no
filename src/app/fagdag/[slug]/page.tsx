@@ -17,8 +17,9 @@ import {
 } from '@heroicons/react/20/solid'
 import { Container } from '@/components/Container'
 import React from 'react'
-import { ItemType, Status } from '@/lib/events/types'
+import { Event, ItemType, Status } from '@/lib/events/types'
 import { Button } from '@/components/Button'
+import { headers } from 'next/headers'
 
 function EventIcon({ type, className }: { type: ItemType, className?: string }) {
   switch (type) {
@@ -65,6 +66,42 @@ function EventStatus({ status }: { status: Status }) {
   );
 }
 
+function getGoogleCalendarUrl(event: Event) {
+  const startTime = calenderDateTime(event.start)
+  const endTime = calenderDateTime(event.end)
+  const details = {
+    action: 'TEMPLATE',
+    text: event.title,
+    dates: `${startTime}/${endTime}`,
+    details: event.description || '',
+    location: event.location,
+  }
+  const params = new URLSearchParams(details)
+  return `https://www.google.com/calendar/render?${params.toString()}`
+}
+
+function calenderDateTime(date: Date) {
+  return date.toISOString().replace(/[-:]|\.\d{3}/g, '')
+}
+
+function getIcsFileContent(event: Event, url: string) {
+  return [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'BEGIN:VEVENT',
+    `UID:${event.slug}`,
+    `DTSTAMP:${calenderDateTime(new Date())}`,
+    `DTSTART:${calenderDateTime(event.start)}`,
+    `DTEND:${calenderDateTime(event.end)}`,
+    `SUMMARY:${event.title}`,
+    `DESCRIPTION:${event.description}`,
+    `LOCATION:${event.location}`,
+    `URL:${url}`,
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ].join('\n')
+}
+
 type Params = Promise<{ slug: string }>;
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
@@ -90,6 +127,16 @@ export default async function Fagdag({ params }: { params: Params }) {
   if (!event) {
     return <SimpleLayout title="Fagdag ikke funnet" intro='Fagdagen du leter etter finnes ikke.' />
   }
+
+  const headersList = await headers();
+  const protocol = headersList.get('x-forwarded-proto') || 'http';
+  const host = headersList.get('host');
+
+  const url = `${protocol}://${host}/fagdag/${slug}`;
+
+  const googleCalendarUrl = getGoogleCalendarUrl(event)
+  const icsFileContent = getIcsFileContent(event, url)
+  const icsFileUrl = `data:text/calendar;charset=utf8,${encodeURIComponent(icsFileContent)}`
 
   return (
     <Container className="mt-16 lg:mt-32">
@@ -151,9 +198,32 @@ export default async function Fagdag({ params }: { params: Params }) {
 
               <div className="mt-6 border-t border-gray-900/5 dark:border-gray-400/5 px-6 py-6">
                 {isAcceptingRegistrations(event) && event.registrationUrl ? (
-                  <Button href={event.registrationUrl} variant="primary" className="group w-full">
-                    Registrer deg
-                  </Button>
+                  <>
+                    <Button href={event.registrationUrl} variant="primary" className="group w-full">
+                      Registrer deg
+                    </Button>
+                    <div className="mt-4 flex flex-col gap-4">
+                      <Button
+                        href={googleCalendarUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        variant="secondary"
+                        className="w-full"
+                      >
+                        <CalendarIcon className="h-6 w-6 mr-2" aria-hidden="true" />
+                        Legg til i Google Kalender
+                      </Button>
+                      <Button
+                        href={icsFileUrl}
+                        download={`${event.slug}.ics`}
+                        variant="secondary"
+                        className="w-full"
+                      >
+                        <CalendarIcon className="h-6 w-6 mr-2" aria-hidden="true" />
+                        Legg til i kalender (.ics)
+                      </Button>
+                    </div>
+                  </>
                 ) : (
                   <p className="text-sm font-semibold leading-6 text-gray-500 dark:text-gray-400">
                     Registrering er stengt
