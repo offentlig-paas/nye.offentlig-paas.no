@@ -40,9 +40,10 @@ export interface Item {
 }
 
 export enum ItemType {
-  Registration = 'Registrering',
-  Info = 'Informasjon',
-  Talk = 'Presentation',
   Break = 'Pause',
+  Info = 'Informasjon',
+  Panel = 'Panel',
+  Registration = 'Registrering',
+  Talk = 'Presentation',
   Workshop = 'Workshop',
 }

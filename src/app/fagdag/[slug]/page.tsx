@@ -23,6 +23,8 @@ import { headers } from 'next/headers'
 
 function EventIcon({ type, className }: { type: ItemType, className?: string }) {
   switch (type) {
+    case ItemType.Panel:
+      return <UsersIcon className={className} aria-hidden="true" />
     case ItemType.Talk:
       return <PresentationChartLineIcon className={className} aria-hidden="true" />
     case ItemType.Break:
