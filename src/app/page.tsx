@@ -70,7 +70,7 @@ function UpcomingEvents() {
                   {formatDate(event.start)}
                 </time>
                 <span className="mx-2">|</span>
-                <Link href={`/event/${event.slug}`} className="text-sm text-teal-500 dark:text-teal-400">
+                <Link href={`/fagdag/${event.slug}`} className="text-sm text-teal-500 dark:text-teal-400">
                   Les mer
                 </Link>
               </div>
