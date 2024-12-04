@@ -58,10 +58,10 @@ function UpcomingEvents() {
   return (
     <>
       {events.length > 0 && (
-        <div className="relative space-y-10 rounded-2xl border-2 border-blue-500 bg-blue-50 p-6 dark:border-blue-400 dark:bg-blue-900/20">
+        <div className="relative space-y-10 rounded-2xl border border-teal-500 bg-teal-50 p-6 dark:border-teal-400 dark:bg-teal-900/20">
           {events.map((event) => (
             <div key={event.slug} className="space-y-2">
-              <Link href={`/fagdag/${event.slug}`} className="text-lg font-bold text-blue-700 dark:text-blue-300">
+              <Link href={`/fagdag/${event.slug}`} className="text-md font-semibold text-teal-700 dark:text-teal-300">
                 {event.title}
               </Link>
               <div className="flex items-center space-x-2">
@@ -70,7 +70,7 @@ function UpcomingEvents() {
                   {formatDate(event.start)}
                 </time>
                 <span className="mx-2">|</span>
-                <Link href={`/event/${event.slug}`} className="text-sm text-blue-500 dark:text-blue-400">
+                <Link href={`/event/${event.slug}`} className="text-sm text-teal-500 dark:text-teal-400">
                   Les mer
                 </Link>
               </div>
