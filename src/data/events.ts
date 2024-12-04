@@ -20,6 +20,32 @@ export const events: Event[] = [
     ],
     schedule: [
       {
+        time: "10:00 - 10:40",
+        title: "Paneldebatt: Plattformstrategi i offentlig sektor",
+        description: "Hvordan jobber offentlig sektor med plattformstrategi? Hva er de største utfordringene og mulighetene? Vi har invitert en rekke eksperter til en paneldebatt om temaet.",
+        speaker: "Paneldebatt",
+        type: ItemType.Talk,
+      },
+      {
+        time: "10:40 - 11:00",
+        title: "TBA",
+        description: "TBA",
+        speaker: "TBA",
+        type: ItemType.Talk,
+      },
+      {
+        time: "11:00 - 11:15",
+        title: "Pause",
+        type: ItemType.Break,
+      },
+      {
+        time: "11:15 - 12:00",
+        title: "TBA",
+        description: "TBA",
+        speaker: "TBA",
+        type: ItemType.Talk,
+      },
+      {
         time: "12:00 - 12:45",
         title: "CloudNativePG - PostgreSQL on Kubernetes",
         description: "CloudNativePG is a PostgreSQL Operator for Kubernetes. It is designed to be a simple, reliable, and easy-to-use way to run highly available PostgreSQL clusters on Kubernetes. We will hear from the creator of CloudNativePG, Gabriele Bartolini, about the project and technical details.",
