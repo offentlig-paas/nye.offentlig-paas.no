@@ -30,6 +30,8 @@ export async function getAllArticles() {
     cwd: './src/app/artikkel',
   })
 
+  console.log('Article Filenames:', articleFilenames)
+
   const artikkel = await Promise.all(articleFilenames.map(importArticle))
 
   return artikkel.sort((a, z) => +new Date(z.date) - +new Date(a.date))
