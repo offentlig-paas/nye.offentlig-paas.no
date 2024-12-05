@@ -36,7 +36,7 @@ export const events: Event[] = [
       {
         time: "11:00 - 11:30",
         title: "Plattformtjenester på UiO",
-        description: "UiO har bygget en plattform for å tilby tjenester til forskere og studenter. I dette foredraget vil vi høre mer om hvordan plattformen er bygget og hvilke tjenester som tilbys.",
+        description: "UiO har bygget en plattform for utviklere og ansatte på IT-avdelingen til å tilby tjenester til forskere og studenter. I dette foredraget vil vi høre mer om hvordan plattformen er bygget og hvilke tjenester som tilbys.",
         speaker: "Halvor Utby (UiO)",
         type: ItemType.Talk,
       },
