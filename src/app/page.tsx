@@ -139,7 +139,6 @@ export default async function Home() {
   const youtubeUrl = `${globalMetadata.other?.youtubeUrl || '#'}`
 
   const artikkel = (await getAllArticles()).slice(0, 4)
-  console.log(artikkel.map((article) => article.slug))
 
   return (
     <>
