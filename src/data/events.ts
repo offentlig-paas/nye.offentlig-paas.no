@@ -21,17 +21,17 @@ export const events: Event[] = [
     schedule: [
       {
         time: "10:00 - 10:30",
-        title: "Paneldebatt: Plattformstrategi i offentlig sektor",
-        description: "Hvordan jobber offentlig sektor med plattformstrategi? Hva er de største utfordringene og mulighetene? Vi har invitert en rekke eksperter til en paneldebatt om temaet.",
-        speaker: "PIT, Skatteetaten, Nav, Kartverket, Oslo Origo",
-        type: ItemType.Panel,
-      },
-      {
-        time: "10:30 - 11:00",
         title: "Det er Nais å være utvikler i SSB",
         description: "SSB har tatt i bruk Nais for å tilby en felles plattform for utviklere. I dette foredraget vil vi dele erfaringer fra prosessen og hvordan vi i Nav har jobbet med å gjøre Nais tilgjengelig for alle i offentlig sektor under Nais as a Service (NaaS).",
         speaker: "John Kasper Svergja (SSB) og Hans Kristian Flaatten (Nav)",
         type: ItemType.Talk,
+      },
+      {
+        time: "10:30 - 11:00",
+        title: "Paneldebatt: Plattformstrategi i offentlig sektor",
+        description: "Hvordan jobber offentlig sektor med plattformstrategi? Hva er de største utfordringene og mulighetene? Vi har invitert en rekke eksperter til en paneldebatt om temaet.",
+        speaker: "PIT, Skatteetaten, Nav, Kartverket, Oslo Origo",
+        type: ItemType.Panel,
       },
       {
         time: "11:00 - 11:30",
@@ -53,7 +53,7 @@ export const events: Event[] = [
         type: ItemType.Talk,
       },
       {
-        time: "12:45 - 13:00",
+        time: "12:50 - 13:00",
         title: "Erfaringer fra å støtte 100 utviklere med et platformteam på 2",
         description: "Vy har et team av over 100 utviklere, men bare to personer i plattformteamet. Hvordan får vi dette til å fungere? I dette foredraget deler vi våre erfaringer med å drive et lite plattformteam i en større utviklingsorganisasjon. Vi ser på hvordan skytjenester lar oss opprettholde høy hastighet og effektivitet, hvilke områder vi velger å bygge egne løsninger på, og hvordan vi skaper verdi ved å møte utviklerne der de er – gjennom en produktfokusert tilnærming. Bli med og få innblikk i våre suksesser, fallgruver og annen læring vi har fått fra reisen så langt.",
         speaker: "Nicolas Harlem Eide (Vy / Capra Consulting)",
