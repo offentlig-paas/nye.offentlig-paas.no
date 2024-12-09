@@ -30,7 +30,7 @@ export const events: Event[] = [
         time: "10:30 - 11:00",
         title: "Paneldebatt: Plattformstrategi i offentlig sektor",
         description: "Hvordan jobber offentlig sektor med plattformstrategi? Hva er de største utfordringene og mulighetene? Vi har invitert en rekke eksperter til en paneldebatt om temaet.",
-        speaker: "PIT, Skatteetaten, Nav, Kartverket, Oslo Origo",
+        speaker: "PIT, Skatteetaten, Nav, MET, og Oslo Origo",
         type: ItemType.Panel,
       },
       {
