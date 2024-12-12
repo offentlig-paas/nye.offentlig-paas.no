@@ -4,17 +4,23 @@ import { Feed } from 'feed'
 
 import { metadata } from '../layout'
 
-export async function GET(req: Request) {
-  const siteUrl = process.env.NEXT_PUBLIC_URL
+import { getAllEvents } from '@/lib/events/helpers'
 
+const author = {
+  name: 'Offentlig PaaS',
+  email: 'kontakt@offentlig-paas.no',
+}
+
+enum FeedContents { ARTICLES, EVENTS }
+
+const siteUrl = process.env.NEXT_PUBLIC_URL
+
+export async function GET(req: Request) {
   if (!siteUrl) {
     throw Error('Missing NEXT_PUBLIC_URL environment variable')
   }
 
-  const author = {
-    name: 'Offentlig PaaS',
-    email: 'kontakt@offentlig-paas.no',
-  }
+  const baseUrl = new URL(req.url)
 
   const feed = new Feed({
     title: author.name,
@@ -31,6 +37,25 @@ export async function GET(req: Request) {
     },
   })
 
+  const feedContents = baseUrl.searchParams.get('type') === 'events' ? 
+    FeedContents.EVENTS : FeedContents.ARTICLES
+
+  if (feedContents === FeedContents.ARTICLES) {
+    await addAllArticlesTo(feed, baseUrl)
+  } else {
+    addAllEventsTo(feed, new URL(siteUrl))
+  }
+
+  return new Response(feed.rss2(), {
+    status: 200,
+    headers: {
+      'content-type': 'application/xml',
+      'cache-control': 's-maxage=31556952',
+    },
+  })
+}
+
+const addAllArticlesTo = async (feed: Feed, baseURL: URL) => {
   const articleIds = require
     .context('../artikkel', true, /\/page\.mdx$/)
     .keys()
@@ -38,7 +63,7 @@ export async function GET(req: Request) {
     .map((key) => key.slice(2).replace(/\/page\.mdx$/, ''))
 
   for (const id of articleIds) {
-    const url = String(new URL(`/artikkel/${id}`, req.url))
+    const url = String(new URL(`/artikkel/${id}`, baseURL))
     const html = await (await fetch(url)).text()
     const $ = cheerio.load(html)
 
@@ -62,12 +87,18 @@ export async function GET(req: Request) {
       date: new Date(date),
     })
   }
+}
 
-  return new Response(feed.rss2(), {
-    status: 200,
-    headers: {
-      'content-type': 'application/xml',
-      'cache-control': 's-maxage=31556952',
-    },
+const addAllEventsTo = async (feed: Feed, siteURL: URL) => {
+  getAllEvents().forEach(event => {
+    feed.addItem({
+      title: event.title,
+      id: event.slug,
+      link: `${siteURL}fagdag/${event.slug}`,
+      content: event.description,
+      author: [author],
+      contributor: [author],
+      date: new Date(event.start),
+    })
   })
 }
