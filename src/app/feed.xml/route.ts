@@ -11,8 +11,6 @@ const author = {
   email: 'kontakt@offentlig-paas.no',
 }
 
-enum FeedContents { ARTICLES, EVENTS }
-
 const siteUrl = process.env.NEXT_PUBLIC_URL
 
 export async function GET(req: Request) {
@@ -37,13 +35,10 @@ export async function GET(req: Request) {
     },
   })
 
-  const feedContents = baseUrl.searchParams.get('type') === 'events' ? 
-    FeedContents.EVENTS : FeedContents.ARTICLES
-
-  if (feedContents === FeedContents.ARTICLES) {
-    await addAllArticlesTo(feed, baseUrl)
-  } else {
+  if (baseUrl.searchParams.get('type') === 'events') {
     addAllEventsTo(feed, new URL(siteUrl))
+  } else {
+    await addAllArticlesTo(feed, baseUrl)
   }
 
   return new Response(feed.rss2(), {
