@@ -53,22 +53,29 @@ export const events: Event[] = [
         type: ItemType.Talk,
       },
       {
-        time: "12:50 - 13:00",
+        time: "12:50 - 13:05",
         title: "Erfaringer fra å støtte 100 utviklere med et platformteam på 2",
         description: "Vy har et team av over 100 utviklere, men bare to personer i plattformteamet. Hvordan får vi dette til å fungere? I dette foredraget deler vi våre erfaringer med å drive et lite plattformteam i en større utviklingsorganisasjon. Vi ser på hvordan skytjenester lar oss opprettholde høy hastighet og effektivitet, hvilke områder vi velger å bygge egne løsninger på, og hvordan vi skaper verdi ved å møte utviklerne der de er – gjennom en produktfokusert tilnærming. Bli med og få innblikk i våre suksesser, fallgruver og annen læring vi har fått fra reisen så langt.",
         speaker: "Nicolas Harlem Eide (Vy / Capra Consulting)",
         type: ItemType.Talk,
       },
       {
-        time: "13:00 - 13:15",
+        time: "13:05 - 13:20",
         title: "Pause",
         type: ItemType.Break,
       },
       {
-        time: "13:15 - 13:45",
+        time: "13:20 - 13:50",
         title: "OpenTelemetry hos Norsk Tipping på vei til sky",
         description: "Tittel må sies å være en arbeidstittel... Norsk Tipping deler litt erfaringer de har sett med innføring av OpenTelemetry for å få innsikt ende-til-ende på tvers av sky (aws) og on-prem (wlp,k8s). Utfordringer, fordeler og veien videre. (Med håp om å finne noen som har vært i samme situasjon eller er på vei)",
         speaker: "Tom Andre Ska (Norsk Tipping)",
+        type: ItemType.Talk,
+      },
+      {
+        time: "13:55 - 14:00",
+        title: "Avsluttning og god jul",
+        description: "Tusen takk til alle som har vært med å gjøre Offentlig PaaS til nettverket for alle som er interessert i plattform i offentlig sektor i Norge.",
+        speaker: "Hans Kristian Flaatten (Nav)",
         type: ItemType.Talk,
       },
     ]
@@ -167,7 +174,7 @@ export const events: Event[] = [
         title: 'Argus - Digital signage',
         description: 'Argus er en egenutviklet løsning for å vise frem observabilitydata i landskapet til Skatteetaten. Vi vil vise hvordan vi har bygget Argus, og hvordan vi bruker det i hverdagen.',
         speaker: 'Robert Myhren (Skatteetaten)',
-        type: ItemType.Talk,
+        type: ItemType.Info,
       },
     ]
   },
