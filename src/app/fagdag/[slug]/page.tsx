@@ -14,12 +14,16 @@ import {
   PresentationChartLineIcon,
   Battery50Icon,
   UsersIcon,
+  ChatBubbleBottomCenterIcon,
+  VideoCameraIcon,
+  PaperClipIcon,
 } from '@heroicons/react/20/solid'
 import { Container } from '@/components/Container'
 import React from 'react'
-import { Event, ItemType, Status } from '@/lib/events/types'
+import { Attachment, AttachmentType, Event, ItemType, Status } from '@/lib/events/types'
 import { Button } from '@/components/Button'
 import { headers } from 'next/headers'
+import { Rating } from '@/components/Rating'
 
 function EventIcon({ type, className }: { type: ItemType, className?: string }) {
   switch (type) {
@@ -102,6 +106,39 @@ function getIcsFileContent(event: Event, url: string) {
     'END:VEVENT',
     'END:VCALENDAR',
   ].join('\n')
+}
+
+function AttachmentIcon({ type, className }: { type: AttachmentType, className?: string }) {
+  switch (type) {
+    case AttachmentType.Recording:
+      return <VideoCameraIcon className={className} aria-hidden="true" />;
+    case AttachmentType.Slides:
+      return <PresentationChartLineIcon className={className} aria-hidden="true" />;
+    case AttachmentType.Link:
+      return <PaperClipIcon className={className} aria-hidden="true" />;
+    default:
+      return <PaperClipIcon className={className} aria-hidden="true" />;
+  }
+}
+
+function AttachmentLink({ attachment, className }: { attachment: Attachment, className?: string }) {
+  return (
+    <a href={attachment.url} className={className}>
+      {(() => {
+        const hostname = new URL(attachment.url).hostname.split('.').slice(-2).join('.');
+        switch (attachment.type) {
+          case AttachmentType.Recording:
+            return `Se opptak (${hostname})`;
+          case AttachmentType.Slides:
+            return attachment.title || `Se presentasjon (${hostname})`;
+          case AttachmentType.Link:
+            return attachment.title || `Lenke (${hostname})`;
+          default:
+            return attachment.title || `Vedlegg (${attachment.type})`;
+        }
+      })()}
+    </a>
+  );
 }
 
 type Params = Promise<{ slug: string }>;
@@ -199,11 +236,13 @@ export default async function Fagdag({ params }: { params: Params }) {
               </dl>
 
               <div className="mt-6 border-t border-gray-900/5 dark:border-gray-400/5 px-6 py-6">
-                {isAcceptingRegistrations(event) && event.registrationUrl ? (
+                {isAcceptingRegistrations(event) ? (
                   <>
-                    <Button href={event.registrationUrl} variant="primary" className="group w-full">
-                      Registrer deg
-                    </Button>
+                    {event.registrationUrl && (
+                      <Button href={event.registrationUrl} variant="primary" className="group w-full">
+                        Registrer deg
+                      </Button>
+                    )}
                     <div className="mt-4 flex flex-col gap-4">
                       <Button
                         href={googleCalendarUrl}
@@ -227,12 +266,60 @@ export default async function Fagdag({ params }: { params: Params }) {
                     </div>
                   </>
                 ) : (
-                  <p className="text-sm font-semibold leading-6 text-gray-500 dark:text-gray-400">
-                    Registrering er stengt
-                  </p>
+                  event.recordingUrl ? (
+                    <Button
+                      href={event.recordingUrl}
+                      variant="secondary"
+                      className="w-full"
+                    >
+                      <VideoCameraIcon className="h-4 w-4 mr-1" aria-hidden="true" />
+                      Se opptak
+                    </Button>
+                  ) : (
+                    <p className="text-sm font-semibold leading-6 text-gray-500 dark:text-gray-400">
+                      Registrering er stengt
+                    </p>
+                  )
                 )}
               </div>
             </div>
+
+            {event.stats && (
+              <div className="rounded-lg bg-gray-50 dark:bg-transparent shadow-sm ring-1 ring-gray-900/5 dark:ring-gray-400/5">
+                <div className="mt-6 border-t border-gray-900/5 dark:border-gray-400/5 px-6 py-6">
+                  <h2 className="text-base font-semibold leading-6">Etter arrangementet</h2>
+                  <dl className="mt-4 grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+                    <div className="sm:col-span-1">
+                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Deltakere</dt>
+                      <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{event.stats.participants}</dd>
+                    </div>
+                    <div className="sm:col-span-1">
+                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Organisasjoner</dt>
+                      <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{event.stats.organisations}</dd>
+                    </div>
+                    <div className="sm:col-span-2">
+                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Gjennomsnittlig vurdering</dt>
+                      <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                        <Rating rating={event.stats.feedback?.averageRating ?? 0} />
+                      </dd>
+                    </div>
+                    <div className="sm:col-span-2">
+                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Tilbakemeldinger</dt>
+                      <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                        <ul>
+                          {event.stats.feedback?.comments.map((feedback, index) => (
+                            <li key={index} className="mt-2 flex items-start">
+                              <ChatBubbleBottomCenterIcon className="flex-none h-5 w-5 text-gray-400 mr-2" aria-hidden="true" />
+                              <span>&quot;{feedback}&quot;</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Event details */}
@@ -255,7 +342,7 @@ export default async function Fagdag({ params }: { params: Params }) {
                 <li key={item.time} className="relative flex space-x-6 py-6 xl:static">
                   <EventIcon type={item.type} className="h-8 w-8 flex-none text-gray-400" />
 
-                  < div className="flex-auto">
+                  <div className="flex-auto">
                     <h3 className="pr-10 font-semibold xl:pr-0">{item.title}</h3>
                     <p className="mt-2 text-gray-500 dark:text-gray-400">{item.description}</p>
                     <dl className="mt-2 flex flex-col xl:flex-row">
@@ -280,6 +367,20 @@ export default async function Fagdag({ params }: { params: Params }) {
                         </div>
                       )}
                     </dl>
+                    {item.attachments && item.attachments.length > 0 && (
+                      <dl className="mt-4 flex flex-col space-y-2">
+                        {item.attachments.map((attachment, index) => (
+                          <div key={index} className="flex items-start space-x-3">
+                            <dt className="mt-0.5">
+                              {AttachmentIcon({ type: attachment.type, className: "h-5 w-5 text-gray-400" })}
+                            </dt>
+                            <dd>
+                              {AttachmentLink({ attachment, className: "text-teal-600 hover:text-teal-500 dark:text-teal-400 dark:hover:text-teal-300" })}
+                            </dd>
+                          </div>
+                        ))}
+                      </dl>
+                    )}
                   </div>
                 </li>
               ))}
