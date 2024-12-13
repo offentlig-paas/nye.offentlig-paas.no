@@ -11,7 +11,7 @@ export const events: Event[] = [
     audience: Audience.PublicSector,
     location: "Zoom",
     registrationUrl: 'https://forms.gle/xdGHJ3L1o7hbqWs77',
-    recordingUrl: 'https://www.youtube.com/playlist?list=PLjI_oey9FG7QgEE_vqFY7RYDCj4a9UYh4',
+    recordingUrl: 'https://youtube.com/playlist?list=PLjI_oey9FG7QgEE_vqFY7RYDCj4a9UYh4',
     organizers: [
       {
         name: 'Hans Kristian Flaatten',
@@ -28,9 +28,13 @@ export const events: Event[] = [
         type: ItemType.Talk,
         attachments: [
           {
-            url: "https://www.youtube.com/watch?v=gIBBbNCAWfQ&list=PLjI_oey9FG7QgEE_vqFY7RYDCj4a9UYh4&index=1&pp=gAQBiAQB",
+            url: "https://youtube.com/watch?v=gIBBbNCAWfQ&list=PLjI_oey9FG7QgEE_vqFY7RYDCj4a9UYh4&index=1&pp=gAQBiAQB",
             type: AttachmentType.Recording,
-          }
+          },
+          {
+            url: "https://docs.google.com/presentation/d/1djO4tizaLao0iXYO_jYsiUWz4yptQjNu0n9aVcVuEf0/edit?usp=drive_link",
+            type: AttachmentType.Slides,
+          },
         ]
       },
       {
@@ -41,9 +45,9 @@ export const events: Event[] = [
         type: ItemType.Panel,
         attachments: [
           {
-            url: "https://www.youtube.com/watch?v=mZDrKhGujlM&list=PLjI_oey9FG7QgEE_vqFY7RYDCj4a9UYh4&index=2&pp=gAQBiAQB",
+            url: "https://youtube.com/watch?v=mZDrKhGujlM&list=PLjI_oey9FG7QgEE_vqFY7RYDCj4a9UYh4&index=2&pp=gAQBiAQB",
             type: AttachmentType.Recording,
-          }
+          },
         ]
       },
       {
@@ -54,9 +58,13 @@ export const events: Event[] = [
         type: ItemType.Talk,
         attachments: [
           {
-            url: "https://www.youtube.com/watch?v=luFDtrt0JvA&list=PLjI_oey9FG7QgEE_vqFY7RYDCj4a9UYh4&index=3&pp=gAQBiAQB",
+            url: "https://youtube.com/watch?v=luFDtrt0JvA&list=PLjI_oey9FG7QgEE_vqFY7RYDCj4a9UYh4&index=3&pp=gAQBiAQB",
             type: AttachmentType.Recording,
-          }
+          },
+          {
+            url: "https://drive.google.com/file/d/1eABnl5ABN_knfqDfgHgJtJzhhSf7TlGu/view?usp=drive_link",
+            type: AttachmentType.Slides,
+          },
         ]
       },
       {
@@ -72,7 +80,7 @@ export const events: Event[] = [
         type: ItemType.Talk,
         attachments: [
           {
-            url: "https://www.youtube.com/watch?v=N_1lbt2e1Wk&list=PLjI_oey9FG7QgEE_vqFY7RYDCj4a9UYh4&index=4&pp=gAQBiAQB",
+            url: "https://youtube.com/watch?v=N_1lbt2e1Wk&list=PLjI_oey9FG7QgEE_vqFY7RYDCj4a9UYh4&index=4&pp=gAQBiAQB",
             type: AttachmentType.Recording,
           }
         ]
@@ -85,9 +93,13 @@ export const events: Event[] = [
         type: ItemType.Talk,
         attachments: [
           {
-            url: "https://www.youtube.com/watch?v=MULI8qeevME&list=PLjI_oey9FG7QgEE_vqFY7RYDCj4a9UYh4&index=5&pp=gAQBiAQB",
+            url: "https://youtube.com/watch?v=MULI8qeevME&list=PLjI_oey9FG7QgEE_vqFY7RYDCj4a9UYh4&index=5&pp=gAQBiAQB",
             type: AttachmentType.Recording,
-          }
+          },
+          {
+            url: "https://drive.google.com/file/d/1t50cf9Qm20aKoUisptgUOjhW6G2oIpWD/view?usp=drive_link",
+            type: AttachmentType.Slides,
+          },
         ]
       },
       {
@@ -103,9 +115,13 @@ export const events: Event[] = [
         type: ItemType.Talk,
         attachments: [
           {
-            url: "https://www.youtube.com/watch?v=L0lJsuYfsNw&list=PLjI_oey9FG7QgEE_vqFY7RYDCj4a9UYh4&index=6&pp=gAQBiAQB",
+            url: "https://youtube.com/watch?v=L0lJsuYfsNw&list=PLjI_oey9FG7QgEE_vqFY7RYDCj4a9UYh4&index=6&pp=gAQBiAQB",
             type: AttachmentType.Recording,
-          }
+          },
+          {
+            url: "https://drive.google.com/file/d/1b73YBv3PgyldY1VyexiSKdk8wOtq4mFq/view?usp=drive_link",
+            type: AttachmentType.Slides,
+          },
         ]
       },
       {

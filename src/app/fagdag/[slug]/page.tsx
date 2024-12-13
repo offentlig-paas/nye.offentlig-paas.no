@@ -125,12 +125,12 @@ function AttachmentLink({ attachment, className }: { attachment: Attachment, cla
   return (
     <a href={attachment.url} className={className}>
       {(() => {
-        const hostname = new URL(attachment.url).hostname.split('.').slice(-2).join('.');
+        const hostname = new URL(attachment.url).hostname;
         switch (attachment.type) {
           case AttachmentType.Recording:
             return `Se opptak (${hostname})`;
           case AttachmentType.Slides:
-            return attachment.title || `Se presentasjon (${hostname})`;
+            return attachment.title || `Se slides (${hostname})`;
           case AttachmentType.Link:
             return attachment.title || `Lenke (${hostname})`;
           default:
