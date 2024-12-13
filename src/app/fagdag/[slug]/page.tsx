@@ -300,7 +300,7 @@ export default async function Fagdag({ params }: { params: Params }) {
                     <div className="sm:col-span-2">
                       <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Gjennomsnittlig vurdering</dt>
                       <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">
-                        <Rating rating={event.stats.feedback?.averageRating ?? 0} />
+                        <Rating rating={event.stats.feedback?.averageRating ?? 0} total={event.stats.feedback?.respondents ?? 0} />
                       </dd>
                     </div>
                     <div className="sm:col-span-2">

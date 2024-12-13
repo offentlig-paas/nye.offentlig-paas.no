@@ -1,8 +1,8 @@
 import React from 'react';
 
-export function Rating({ rating }: { rating: number }) {
+export function Rating({ rating, total }: { rating: number, total: number }) {
   return (
-    <div className="flex items-center" aria-label={`Vurdering: ${rating} av 5 stjerner`}>
+    <div className="flex items-center" aria-label={`Vurdering: ${rating} av 5 stjerner med ${total} vurderinger`}>
       {Array.from({ length: 5 }, (_, index) => {
         const isFullStar = index < Math.floor(rating);
         const isHalfStar = !isFullStar && index < rating;
@@ -37,6 +37,7 @@ export function Rating({ rating }: { rating: number }) {
           </div>
         );
       })}
+      <span className="ml-2 text-sm text-gray-500">{rating.toFixed(1)} ({total} vurderinger)</span>
     </div>
   );
 }
