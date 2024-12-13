@@ -160,6 +160,7 @@ export const events: Event[] = [
     audience: Audience.PublicSector,
     location: 'NAV, Fyrstikkalleen 1, 0661 Oslo',
     registrationUrl: 'https://forms.office.com/e/srPkwVU5rH',
+    recordingUrl: 'https://youtube.com/playlist?list=PLjI_oey9FG7RjrV--OaG9MfCcNtNpP7rf',
     organizers: [
       {
         name: 'Robert Myhren',
@@ -191,6 +192,15 @@ export const events: Event[] = [
         description: 'OpenTelemetry is a set of APIs, libraries, agents, and instrumentation to provide observability in your applications. In this this talk, we will introduce OpenTelemetry and how it can be used to instrument your applications to collect traces, metrics, and logs. We will also show how to use OpenTelemetry with Grafana to visualize the collected data.',
         speaker: 'Grafana Labs & Sopra Steria',
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: "https://youtube.com/watch?v=Z8UQM9lZsVU&list=PLjI_oey9FG7RjrV--OaG9MfCcNtNpP7rf",
+            type: AttachmentType.Recording,
+          }, {
+            url: "https://docs.google.com/presentation/d/1wNLwa-2edFGH3hp7poTw8Bsd62YQjtmIN730q94_2LA/edit?usp=drive_link",
+            type: AttachmentType.Slides,
+          },
+        ]
       },
       {
         time: '10:20 - 11:00',
@@ -198,6 +208,16 @@ export const events: Event[] = [
         description: 'Skatteetaten presenterer hvordan de jobber med robusthet og innsikt i sine systemer og applikasjoner.',
         speaker: 'Skatteetaten',
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: "https://youtube.com/watch?v=fhFZx2vnxcs&list=PLjI_oey9FG7RjrV--OaG9MfCcNtNpP7rf&index=2",
+            type: AttachmentType.Recording,
+          },
+          {
+            url: "https://docs.google.com/presentation/d/18L2e5Knpqos8-M_dgCkaO2yYe6Kxn9nj/edit?usp=drive_link&ouid=109381646868227443677&rtpof=true&sd=true",
+            type: AttachmentType.Slides,
+          },
+        ]
       },
       {
         time: '11:00 - 12:00',
@@ -210,6 +230,16 @@ export const events: Event[] = [
         description: 'I år startet NAV med å rulle ut støtte for OpenTelemetry for applikasjoner i NAIS med OpenTelemetry Operator, Grafana Tempo og Grafana Loki. I dette foredraget vil vi dele erfaringer og resultater fra dette arbeidet så langt, og kaste litt lys over hva som er planen videre.',
         speaker: 'Hans Kristian Flaatten (NAV)',
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: "https://youtube.com/watch?v=ZjNkpgMOarA&list=PLjI_oey9FG7RjrV--OaG9MfCcNtNpP7rf&index=3",
+            type: AttachmentType.Recording,
+          },
+          {
+            url: "https://drive.google.com/file/d/1bljMnHFrutKOR-JZc8EEzZBUoqK4Ik68/view?usp=drive_link",
+            type: AttachmentType.Slides,
+          },
+        ]
       },
       {
         time: '12:40 - 13:05',
@@ -217,6 +247,12 @@ export const events: Event[] = [
         description: 'Kartverket presenterer sin erfaring med observability.Kartverkets reise mot helhetlig observability og de erfaringer som er gjort på veien.',
         speaker: 'Thomas Berg (Kartverket)',
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: "https://youtube.com/watch?v=0wWt8knXs94&list=PLjI_oey9FG7RjrV--OaG9MfCcNtNpP7rf&index=4",
+            type: AttachmentType.Recording,
+          },
+        ]
       },
       {
         time: '13:05 - 13:30',
@@ -224,6 +260,16 @@ export const events: Event[] = [
         description: 'Hvordan kan vi bruke Pyrra til å overvåke tjenester og applikasjoner? Pyrra er et verktøy for å overvåke tjenester og applikasjoner, og gir deg mulighet til å sette opp Service Level Objectives (SLO).',
         speaker: 'Magnus Johansen (PIT)',
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: "https://youtube.com/watch?v=appTKEyEO_Y&list=PLjI_oey9FG7RjrV--OaG9MfCcNtNpP7rf&index=5",
+            type: AttachmentType.Recording,
+          },
+          {
+            url: "https://drive.google.com/file/d/1sWECdFHOf2LRfA9q5qZmShXqysp_z3SY/view?usp=drive_link",
+            type: AttachmentType.Slides,
+          },
+        ]
       },
       {
         time: '13:30 - 14:00',
@@ -236,6 +282,12 @@ export const events: Event[] = [
         description: 'Hvordan kan vi monitorere et system som er dynamisk og stadig endrer seg? Bygg dashbord som gir relevant tilbakemelding, ved å bruke OFFSET i PromQL for å sammenligne metrikker med tidligere data.',
         speaker: 'Juan Piola Sanchez (NHN)',
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: "https://youtube.com/watch?v=_ZqHn6m2DAs&list=PLjI_oey9FG7RjrV--OaG9MfCcNtNpP7rf&index=7&pp=gAQBiAQB",
+            type: AttachmentType.Recording,
+          },
+        ]
       },
       {
         time: '14:30 - 15:00',
@@ -243,8 +295,33 @@ export const events: Event[] = [
         description: 'Argus er en egenutviklet løsning for å vise frem observabilitydata i landskapet til Skatteetaten. Vi vil vise hvordan vi har bygget Argus, og hvordan vi bruker det i hverdagen.',
         speaker: 'Robert Myhren (Skatteetaten)',
         type: ItemType.Info,
+        attachments: [
+          {
+            url: "https://youtube.com/watch?v=1oHiHWUJLgw&list=PLjI_oey9FG7RjrV--OaG9MfCcNtNpP7rf&index=6&pp=gAQBiAQB",
+            type: AttachmentType.Recording,
+          },
+          {
+            url: "https://docs.google.com/presentation/d/1Z7dakgPqfKkBAgBx7hXvuOzNBdiK6q5c/edit?usp=drive_link&ouid=109381646868227443677&rtpof=true&sd=true",
+            type: AttachmentType.Slides,
+          },
+        ]
       },
-    ]
+    ],
+    stats: {
+      registrations: 212,
+      participants: 150,
+      organisations: 37,
+      feedback: {
+        url: 'https://forms.office.com/e/RsBK4J4kvc',
+        averageRating: 4.54,
+        respondents: 35,
+        comments: [
+          "Møte andre etater, erfare at andre også har lignende utfordringer som oss, tips og triks, inspirasjon",
+          "Networking, og å høre om andres erfaringer rundt observability!",
+          "Passe lavterskel og spennende selv for meg som utvikler.",
+        ]
+      }
+    }
   },
   {
     slug: '2024-05-24-dataplattform-fagdag',
