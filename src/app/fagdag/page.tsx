@@ -1,11 +1,15 @@
 import React from 'react'
 import { type Metadata } from 'next'
+import Image from 'next/image'
+import Link from 'next/link'
 
 import { Card } from '@/components/Card'
 import { Section } from '@/components/Section'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { getAllEvents } from '@/lib/events/helpers'
 import { formatDate } from '@/lib/formatDate'
+
+import rssLogo from '@/images/rss.svg' 
 
 function SpeakingSection({
   children,
@@ -71,6 +75,14 @@ export default function Fagdager() {
           ))}
         </SpeakingSection>
       </div>
+
+      <Link href="/feed.xml?type=events">
+      <Image
+        src={rssLogo}
+        className='size-6 mt-8 float-right'
+        alt="Events RSS feed"
+      />
+      </Link>
     </SimpleLayout>
   )
 }
