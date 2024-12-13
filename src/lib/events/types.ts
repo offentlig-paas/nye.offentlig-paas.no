@@ -9,8 +9,24 @@ export interface Event {
   audience: Audience;
   location: string;
   registrationUrl?: string;
+  recordingUrl?: string;
   organizers: Organizer[];
   schedule: Item[];
+  stats?: Stats;
+}
+
+export interface Stats {
+  registrations: number;
+  participants: number;
+  organisations: number;
+  feedback?: Feedback;
+}
+
+export interface Feedback {
+  url: string;
+  averageRating: number;
+  respondents: number;
+  comments: string[];
 }
 
 export enum Audience {
@@ -37,6 +53,23 @@ export interface Item {
   description?: string;
   time: string;
   type: ItemType;
+  attachments?: Attachment[];
+}
+
+export interface Attachment {
+  title?: string;
+  url: string;
+  type: AttachmentType;
+}
+
+export enum AttachmentType {
+  Link = 'Link',
+  PDF = 'PDF',
+  Video = 'Video',
+  Slides = 'Slides',
+  Code = 'Code',
+  Recording = 'Recording',
+  Other = 'Other',
 }
 
 export enum ItemType {

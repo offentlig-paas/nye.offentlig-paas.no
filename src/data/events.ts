@@ -1,4 +1,4 @@
-import { Audience, Event, ItemType } from "@/lib/events/types";
+import { AttachmentType, Audience, Event, ItemType } from "@/lib/events/types";
 
 export const events: Event[] = [
   {
@@ -11,6 +11,7 @@ export const events: Event[] = [
     audience: Audience.PublicSector,
     location: "Zoom",
     registrationUrl: 'https://forms.gle/xdGHJ3L1o7hbqWs77',
+    recordingUrl: 'https://www.youtube.com/playlist?list=PLjI_oey9FG7QgEE_vqFY7RYDCj4a9UYh4',
     organizers: [
       {
         name: 'Hans Kristian Flaatten',
@@ -25,6 +26,12 @@ export const events: Event[] = [
         description: "SSB har tatt i bruk Nais for å tilby en felles plattform for utviklere. I dette foredraget vil vi dele erfaringer fra prosessen og hvordan vi i Nav har jobbet med å gjøre Nais tilgjengelig for alle i offentlig sektor under Nais as a Service (NaaS).",
         speaker: "John Kasper Svergja (SSB) og Hans Kristian Flaatten (Nav)",
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: "https://www.youtube.com/watch?v=gIBBbNCAWfQ&list=PLjI_oey9FG7QgEE_vqFY7RYDCj4a9UYh4&index=1&pp=gAQBiAQB",
+            type: AttachmentType.Recording,
+          }
+        ]
       },
       {
         time: "10:30 - 11:00",
@@ -32,6 +39,12 @@ export const events: Event[] = [
         description: "Hvordan jobber offentlig sektor med plattformstrategi? Hva er de største utfordringene og mulighetene? Vi har invitert en rekke eksperter til en paneldebatt om temaet.",
         speaker: "PIT, Skatteetaten, Nav, MET, og Oslo Origo",
         type: ItemType.Panel,
+        attachments: [
+          {
+            url: "https://www.youtube.com/watch?v=mZDrKhGujlM&list=PLjI_oey9FG7QgEE_vqFY7RYDCj4a9UYh4&index=2&pp=gAQBiAQB",
+            type: AttachmentType.Recording,
+          }
+        ]
       },
       {
         time: "11:00 - 11:30",
@@ -39,6 +52,12 @@ export const events: Event[] = [
         description: "UiO har bygget en plattform for utviklere og ansatte på IT-avdelingen til å tilby tjenester til forskere og studenter. I dette foredraget vil vi høre mer om hvordan plattformen er bygget og hvilke tjenester som tilbys.",
         speaker: "Halvor Utby (UiO)",
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: "https://www.youtube.com/watch?v=luFDtrt0JvA&list=PLjI_oey9FG7QgEE_vqFY7RYDCj4a9UYh4&index=3&pp=gAQBiAQB",
+            type: AttachmentType.Recording,
+          }
+        ]
       },
       {
         time: "11:30 - 12:00",
@@ -51,6 +70,12 @@ export const events: Event[] = [
         description: "CloudNativePG is a PostgreSQL Operator for Kubernetes. It is designed to be a simple, reliable, and easy-to-use way to run highly available PostgreSQL clusters on Kubernetes. We will hear from the creator of CloudNativePG, Gabriele Bartolini, about the project and technical details.",
         speaker: "Gabriele Bartolini (EnterpriseDB)",
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: "https://www.youtube.com/watch?v=N_1lbt2e1Wk&list=PLjI_oey9FG7QgEE_vqFY7RYDCj4a9UYh4&index=4&pp=gAQBiAQB",
+            type: AttachmentType.Recording,
+          }
+        ]
       },
       {
         time: "12:50 - 13:05",
@@ -58,6 +83,12 @@ export const events: Event[] = [
         description: "Vy har et team av over 100 utviklere, men bare to personer i plattformteamet. Hvordan får vi dette til å fungere? I dette foredraget deler vi våre erfaringer med å drive et lite plattformteam i en større utviklingsorganisasjon. Vi ser på hvordan skytjenester lar oss opprettholde høy hastighet og effektivitet, hvilke områder vi velger å bygge egne løsninger på, og hvordan vi skaper verdi ved å møte utviklerne der de er – gjennom en produktfokusert tilnærming. Bli med og få innblikk i våre suksesser, fallgruver og annen læring vi har fått fra reisen så langt.",
         speaker: "Nicolas Harlem Eide (Vy / Capra Consulting)",
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: "https://www.youtube.com/watch?v=MULI8qeevME&list=PLjI_oey9FG7QgEE_vqFY7RYDCj4a9UYh4&index=5&pp=gAQBiAQB",
+            type: AttachmentType.Recording,
+          }
+        ]
       },
       {
         time: "13:05 - 13:20",
@@ -70,6 +101,12 @@ export const events: Event[] = [
         description: "Tittel må sies å være en arbeidstittel... Norsk Tipping deler litt erfaringer de har sett med innføring av OpenTelemetry for å få innsikt ende-til-ende på tvers av sky (aws) og on-prem (wlp,k8s). Utfordringer, fordeler og veien videre. (Med håp om å finne noen som har vært i samme situasjon eller er på vei)",
         speaker: "Tom Andre Ska (Norsk Tipping)",
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: "https://www.youtube.com/watch?v=L0lJsuYfsNw&list=PLjI_oey9FG7QgEE_vqFY7RYDCj4a9UYh4&index=6&pp=gAQBiAQB",
+            type: AttachmentType.Recording,
+          }
+        ]
       },
       {
         time: "13:55 - 14:00",
@@ -78,7 +115,22 @@ export const events: Event[] = [
         speaker: "Hans Kristian Flaatten (Nav)",
         type: ItemType.Talk,
       },
-    ]
+    ],
+    stats: {
+      registrations: 234,
+      participants: 175,
+      organisations: 53,
+      feedback: {
+        url: 'https://forms.gle/TBomJhjm7jvSnTEw6',
+        averageRating: 4.38,
+        respondents: 21,
+        comments: [
+          'Stor inspirasjon å høre om Cloud Native PG. Vi hadde en chat gående mens vi lyttet og kom overens at vi er frelste og skal bruke det i fremtiden fremfor DBaaS.',
+          'Effektiv gjennomføring og aktuelle tema',
+          'Veldig smooth og fungerte flott. Knall med talk fra CNPG-dev!',
+        ]
+      }
+    },
   },
   {
     slug: '2024-06-20-observability-dag',
