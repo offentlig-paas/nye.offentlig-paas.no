@@ -51,7 +51,7 @@ function MailIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
 
 export const metadata: Metadata = {
   title: 'Historien om Offentlig PaaS',
-  description: `Offentlig PaaS ble startet som et initiativ mellom NAV og Skatteetaten etter at Audun Fauchald Strand og Are Vattekar møttes på KubeCon Europe i 2017 i Berlin og hørte andre norske stemmer.`,
+  description: `Offentlig PaaS ble startet som et initiativ mellom Nav og Skatteetaten etter at Audun Fauchald Strand og Are Vattekar møttes på KubeCon Europe i 2017 i Berlin og hørte andre norske stemmer.`,
 }
 
 export default function About() {
@@ -78,17 +78,17 @@ export default function About() {
           </h1>
           <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
             <p>
-              Offentlig PaaS ble startet som et initiativ mellom NAV og
+              Offentlig PaaS ble startet som et initiativ mellom Nav og
               Skatteetaten etter at Audun Fauchald Strand og Are Vattekar møttes
               på KubeCon Europe i 2017 i Berlin og hørte andre norske stemmer.
-              Det viste seg at både NAV og Skatteetaten hadde samme tanken om å
+              Det viste seg at både Nav og Skatteetaten hadde samme tanken om å
               bygge en applikasjonsplattform for sine utviklere med mål om å få
               opp fart og kvaliteten på applikasjonene.
             </p>
             <p>
               Like etter at KubeCon var over ble Offentlig PaaS Slacken
               opprettet og den første fagdagen ble avholdt hos
-              Skattedirektoratet, senere på året var NAV vertskap for den andre
+              Skattedirektoratet, senere på året var Nav vertskap for den andre
               fagdagen. I 2018 var det duket for fagdag hos Politiet og senere
               på året hos SSB og i 2019 hos Telenor. I 2019 ble nettstedet
               offentlig-paas.no lansert.

@@ -15,7 +15,7 @@ export const events: Event[] = [
     organizers: [
       {
         name: 'Hans Kristian Flaatten',
-        org: 'NAV',
+        org: 'Nav',
         url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY'
       }
     ],
@@ -152,13 +152,13 @@ export const events: Event[] = [
     slug: '2024-06-20-observability-dag',
     title: 'Offentlig Observability Dag',
     ingress: 'Vi inviterer til en dag fylt med spennende foredrag og erfaringsdeling om observability, OpenTelemetry og Grafana i offentlig sektor.',
-    description: `For aller første gang arrangerer vi Offentlig Observability Dag i samarbeid med Skatteetaten og NAV. Vi har et spennende program med foredrag fra Grafana, Skatteetaten, NAV, Kartverket, NHN og PIT som vil dele sine erfaringer.
+    description: `For aller første gang arrangerer vi Offentlig Observability Dag i samarbeid med Skatteetaten og Nav. Vi har et spennende program med foredrag fra Grafana, Skatteetaten, Nav, Kartverket, NHN og PIT som vil dele sine erfaringer.
 
     Som vanlig blir det god tid til erfaringsdeling og nettverksbygging. Arrangement er gratis og åpent for alle ansatte i offentlig sektor. Vi gleder oss til å se deg!`,
     start: new Date('2024-06-20T09:00+02:00'),
     end: new Date('2024-06-20T15:00+02:00'),
     audience: Audience.PublicSector,
-    location: 'NAV, Fyrstikkalleen 1, 0661 Oslo',
+    location: 'Nav, Fyrstikkalleen 1, 0661 Oslo',
     registrationUrl: 'https://forms.office.com/e/srPkwVU5rH',
     recordingUrl: 'https://youtube.com/playlist?list=PLjI_oey9FG7RjrV--OaG9MfCcNtNpP7rf',
     organizers: [
@@ -169,7 +169,7 @@ export const events: Event[] = [
       },
       {
         name: 'Hans Kristian Flaatten',
-        org: 'NAV',
+        org: 'Nav',
         url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY'
       }
     ],
@@ -183,7 +183,7 @@ export const events: Event[] = [
         time: '09:30 - 09:35',
         title: 'Velkommen',
         description: 'Vi ønsker velkommen til Offentlig Observability Dag!',
-        speaker: 'NAV og Skatt',
+        speaker: 'Nav og Skatt',
         type: ItemType.Info,
       },
       {
@@ -226,9 +226,9 @@ export const events: Event[] = [
       },
       {
         time: '12:00 - 12:40',
-        title: 'Observability 2.0 i NAV',
-        description: 'I år startet NAV med å rulle ut støtte for OpenTelemetry for applikasjoner i NAIS med OpenTelemetry Operator, Grafana Tempo og Grafana Loki. I dette foredraget vil vi dele erfaringer og resultater fra dette arbeidet så langt, og kaste litt lys over hva som er planen videre.',
-        speaker: 'Hans Kristian Flaatten (NAV)',
+        title: 'Observability 2.0 i Nav',
+        description: 'I år startet Nav med å rulle ut støtte for OpenTelemetry for applikasjoner i NAIS med OpenTelemetry Operator, Grafana Tempo og Grafana Loki. I dette foredraget vil vi dele erfaringer og resultater fra dette arbeidet så langt, og kaste litt lys over hva som er planen videre.',
+        speaker: 'Hans Kristian Flaatten (Nav)',
         type: ItemType.Talk,
         attachments: [
           {

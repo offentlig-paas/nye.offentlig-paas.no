@@ -35,7 +35,7 @@ const plattformer = [
   {
     name: 'NAIS',
     description:
-      'NAV sin applikasjonsplattform basert på Kubernetes',
+      'Nav sin applikasjonsplattform basert på Kubernetes',
     link: { href: 'https://nais.io', label: 'nais.io' },
     logo: logoNais,
   },

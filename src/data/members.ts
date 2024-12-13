@@ -6,7 +6,7 @@ import logoArbeidstilsynet from '@/images/logos/arbeidstilsynet.svg'
 
 export const members: Member[] = [
   new Member({
-    name: 'NAV',
+    name: 'Nav',
     type: 'Stat',
     github: 'navikt',
     linkedinUrl: 'https://www.linkedin.com/company/nav',
