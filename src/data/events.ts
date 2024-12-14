@@ -331,6 +331,7 @@ export const events: Event[] = [
     end: new Date('2024-05-24T15:00+02:00'),
     audience: Audience.PublicSector,
     location: 'UKE, Grensesvingen 6, 0661 Oslo',
+    recordingUrl: 'https://www.youtube.com/watch?v=Tp8t41Xofwg&list=PLjI_oey9FG7Qr9IO8m0nf-pM-xR0jUcOJ',
     organizers: [
       {
         name: 'Tine Kleivan',
@@ -365,6 +366,12 @@ export const events: Event[] = [
         description: 'Hvordan UKE skrur sammen teknologi og styresett for fellesdata i kommunen basert på Microsoft Fabric. Vi deler våre erfaringer og tanker for implementering av felles dataplattform for Oslo Kommune.',
         speaker: 'Erik Tuv & Andre Gulbrandsen (UKE)',
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: 'https://www.youtube.com/watch?v=Tp8t41Xofwg&list=PLjI_oey9FG7Qr9IO8m0nf-pM-xR0jUcOJ&index=1&pp=iAQB',
+            type: AttachmentType.Recording,
+          },
+        ]
       },
       {
         time: '09:10 - 09:40',
@@ -372,6 +379,12 @@ export const events: Event[] = [
         description: 'Politiets IT Enhet organiserer seg rundt autonome produktteam for å skape mest mulig verdi for politiet og samfunnet. Med shift-left tankesett må autonome produktteam ta eit langt større ansvar for sine produkter enn før. Korleis kan dette skalere uten å lage enormt store team? Bli med og hør korleis PIT bygger dataplattformer for å skape fart og flyt!',
         speaker: 'Audun Vindenes Egge & Erlend Wiig (PIT)',
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: 'https://www.youtube.com/watch?v=yqCiZ0CO03k&list=PLjI_oey9FG7Qr9IO8m0nf-pM-xR0jUcOJ&index=3&pp=iAQB',
+            type: AttachmentType.Recording,
+          },
+        ]
       },
       {
         time: '09:40 - 09:50',
@@ -384,6 +397,12 @@ export const events: Event[] = [
         description: 'Samferdselsdata (Tverrsektorielt datasamarbeid for samferdsel) forteller om vårt samarbeid med DigDir og samferdselsvirksomhetene om å benytte DigDir sine nasjonale fellestjenester som data.norge.no, maskinporten, altinn og ansattporten for å muliggjøre datadeling på nasjonalt plan.',
         speaker: 'Tine Kleivane (Samferdselsdata)',
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: 'https://www.youtube.com/watch?v=yjHvCLwDa6c&list=PLjI_oey9FG7Qr9IO8m0nf-pM-xR0jUcOJ&index=2&pp=iAQB',
+            type: AttachmentType.Recording,
+          },
+        ]
       },
       {
         time: '10:20 - 10:50',
@@ -391,6 +410,12 @@ export const events: Event[] = [
         description: 'Kystverket startet i 2023 arbeidet med en skybasert dataplattform. Vi har mye forskjellig data - store datasett som skipstrafikk og mindre datasett som hvor fisk kan landes. Uten særlig teknisk gjeld i skyen stilte vi relativt fritt. Underveis har vi tatt veivalg, angret veivalg, testet teknologier og fått våre forventninger utfordret. Alt vi gjør skal bidra til å utføre vårt samfunnsoppdrag om å gjøre kysten til verdens sikreste og reneste.',
         speaker: 'Stefan Ekehaug (Kystverket)',
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: 'https://www.youtube.com/watch?v=rcq8O5C6YvE&list=PLjI_oey9FG7Qr9IO8m0nf-pM-xR0jUcOJ&index=4&pp=iAQB',
+            type: AttachmentType.Recording,
+          },
+        ]
       },
       {
         time: '10:50 - 11:00',
@@ -403,6 +428,12 @@ export const events: Event[] = [
         description: 'SSB presenterer arbeidet sitt med å implementere tjenesteplattform Onyxia i sin skybaserte dataplattform, Dapla. Onyxia er utviklet av det franske statistikkbyrået (INSEE) og bygger på åpne standarder som kubernetes, helm og oidc. Den gjør det lett å tilby open source verktøy pakket som containere, slik som Jupyter, RStudio, VS Code, MLFlow osv. på en enkel og brukervennlig måte.',
         speaker: 'Øyvind Bruer-Skarsbø (SSB)',
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: 'https://www.youtube.com/watch?v=7SuXRfQqdGM&list=PLjI_oey9FG7Qr9IO8m0nf-pM-xR0jUcOJ&index=5&pp=iAQB',
+            type: AttachmentType.Recording,
+          },
+        ]
       },
       {
         time: '11:30 - 12:15',
@@ -423,6 +454,12 @@ export const events: Event[] = [
         description: 'Data build tool er et meget populært verktøy i datalandskapet, og det har sett en utrolig vekst de siste årene. Det har nesten blitt standard å bruke dbt på plattformer som BigQuery, Snowflake og Databricks. Hva er det egentlig som gjør dette så fett? Hvordan passer dbt inn i en dataplattform og hvordan lar det deg jobbe?',
         speaker: 'Anders Elton (Telenor)',
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: 'https://www.youtube.com/watch?v=Ra_awsiBBVQ&list=PLjI_oey9FG7Qr9IO8m0nf-pM-xR0jUcOJ&index=6&pp=iAQB',
+            type: AttachmentType.Recording,
+          },
+        ]
       },
       {
         time: '13:15 - 13:25',
@@ -435,6 +472,12 @@ export const events: Event[] = [
         description: 'Entur implementerer Data kontrakter på GCP. Her forteller de om implikasjonene dette har for reaktiv-arkitektur, der kontrakten blir et kontrollplangrensesnitt for dataplattform-arkitekturen.',
         speaker: 'Anders Dahlen (Entur)',
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: 'https://www.youtube.com/watch?v=B34_u5xKTJc&list=PLjI_oey9FG7Qr9IO8m0nf-pM-xR0jUcOJ&index=7&pp=iAQB',
+            type: AttachmentType.Recording,
+          },
+        ]
       },
       {
         time: '13:55 - 14:25',
@@ -442,6 +485,12 @@ export const events: Event[] = [
         description: 'Posten Bring har i flere år utviklet maskinlæringsløsninger for produksjon og merket at forvaltning av disse løsningene begynte å stjele all kapasiteten til vår data science avdeling. Vi har derfor i over ett år nå jobbet med å bygge en MLOps plattform for å effektivisere utviklingen og forvaltningen av maskinlærings- og dataprodukter. I dette foredraget skal vi gi et innblikk i våre motivasjoner og erfaringer så langt, samt ta et dypdykk ned i vår tekniske arkitektur.',
         speaker: 'Ella Johnsen & Simen Larsen (Posten Bring AS)',
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: 'https://www.youtube.com/watch?v=cC6E5S1KGVs&list=PLjI_oey9FG7Qr9IO8m0nf-pM-xR0jUcOJ&index=8&pp=iAQB',
+            type: AttachmentType.Recording,
+          },
+        ]
       },
       {
         time: '14:25 - 14:30',
