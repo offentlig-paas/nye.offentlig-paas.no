@@ -396,7 +396,7 @@ export default async function Fagdag({ params }: { params: Params }) {
                   <img
                     className="flex-none h-10 w-10 rounded-full bg-gray-100"
                     src={`https://ui-avatars.com/api/?name=${organizer.name}`}
-                    alt=""
+                    alt={`Bildet av ${organizer.name}`}
                   />
                   <div className="flex-auto">
                     <h3 className="text-base font-semibold leading-6">

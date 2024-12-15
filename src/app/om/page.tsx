@@ -3,10 +3,14 @@ import { type Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import clsx from 'clsx'
+import { members } from '@/data/styre'
 
 import { Container } from '@/components/Container'
 import {
+  BlueskyIcon,
   GitHubIcon,
+  LinkedInIcon,
+  MailIcon,
   SlackIcon,
   YouTubeIcon,
 } from '@/components/SocialIcons'
@@ -35,17 +39,6 @@ function SocialLink({
         <span className="ml-4">{children}</span>
       </Link>
     </li>
-  )
-}
-
-function MailIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" {...props}>
-      <path
-        fillRule="evenodd"
-        d="M6 5a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6Zm.245 2.187a.75.75 0 0 0-.99 1.126l6.25 5.5a.75.75 0 0 0 .99 0l6.25-5.5a.75.75 0 0 0-.99-1.126L12 12.251 6.245 7.187Z"
-      />
-    </svg>
   )
 }
 
@@ -130,6 +123,55 @@ export default function About() {
             >
               kontakt@offentlig-paas.no
             </SocialLink>
+          </ul>
+        </div>
+      </div>
+      <div className="mt-16 sm:mt-32">
+        <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-2xl lg:mx-0">
+            <h2 id="styret" className="text-2xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-3xl">
+              Styret i Offentlig PaaS
+            </h2>
+            <p className="mt-6 text-lg/8 text-gray-600 dark:text-zinc-400">
+              Styret er Offentlig PaaS sitt øverste organ og består av representanter fra flere offentlige virksomheter.
+              Styret velges formelt på årsmøtet som avholdes innen april hvert år.
+            </p>
+          </div>
+          <ul
+            role="list"
+            className="mx-auto mt-20 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3"
+          >
+            {members.map((person) => (
+              <li key={person.name}>
+                <Image alt={`Bilde av ${person.name}`} src={person.imageUrl} width={300} height={200} className="aspect-[3/2] w-full rounded-2xl object-cover" />
+                <h3 className="mt-6 text-lg/8 font-semibold tracking-tight text-gray-900 dark:text-zinc-100">{person.name}</h3>
+                <p className="text-base/7 text-gray-600 dark:text-zinc-400">{person.role}</p>
+                <ul role="list" className="mt-6 flex gap-x-4">
+                  <li>
+                    <SocialLink href={person.slackUrl} icon={SlackIcon} className="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400">
+                      <span className="sr-only">Slack</span>
+                    </SocialLink>
+                  </li>
+                  <li>
+                    <SocialLink href={person.githubUrl} icon={GitHubIcon} className="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400">
+                      <span className="sr-only">GitHub</span>
+                    </SocialLink>
+                  </li>
+                  <li>
+                    <SocialLink href={person.linkedinUrl} icon={LinkedInIcon} className="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400">
+                      <span className="sr-only">LinkedIn</span>
+                    </SocialLink>
+                  </li>
+                  {person.bskyUrl && (
+                    <li>
+                      <SocialLink href={person.bskyUrl} icon={BlueskyIcon} className="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400">
+                        <span className="sr-only">Bluesky</span>
+                      </SocialLink>
+                    </li>
+                  )}
+                </ul>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
