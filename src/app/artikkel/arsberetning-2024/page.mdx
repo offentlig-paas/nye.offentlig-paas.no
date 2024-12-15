@@ -1,0 +1,85 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+export const article = {
+  author: 'Hans Kristian Flaatten',
+  date: '2024-12-16',
+  title: 'Årsberetning for 2024',
+  description:
+    'En oppsummering av aktivitetene og høydepunktene for Offentlig PaaS i 2024. Den dekker veksten i medlemskap, gjennomførte fagdager, nye prosjekter og initiativer, samt planer for fremtiden. Årsberetningen gir også innsikt i nettverkets kommunikasjon, finansiering og organisasjonsstruktur.',
+}
+
+export const metadata = {
+  title: article.title,
+  language: 'no',
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+## 1. Introduksjon
+
+Som definert i [vedtektene](https://github.com/offentlig-paas/organisasjon/blob/main/vedtekter.md) er Offentlig PaaS en interesseorganisasjon for platformutviklere som jobber i offentlig sektor med mål om å dele erfaringer og kunnskap om plattformteknologi.
+
+Offentlig PaaS ble startet som et initiativ mellom Nav og Skatteetaten etter at Audun Fauchald Strand og Are Vattekar møttes på KubeCon Europe i 2017 i Berlin og hørte andre norske stemmer. Det viste seg at både Nav og Skatteetaten hadde samme tanken om å bygge en applikasjonsplattform for sine utviklere med mål om å få opp fart og kvaliteten på applikasjonene.
+
+Offentlig PaaS teller nå 1889 brukere i Slack og har en [aktiv nettside](https://offentlig-paas.no), [organisasjon på GitHub](https://github.com/offentlig-paas) og en egen kanal på [YouTube](https://www.youtube.com/@OffentligPaaS).
+
+## 2. Høydepunkter fra året
+
+Antall brukere på Slack har økt med nesten 800 dette året. Vi har nå lagt inn alle medlemsorganisasjoner sine domener som gyldige eposter for automatisk oppretting av bruker. Ved utgangen av året var antall aktive brukere i Slack 673 og totalt ble det sendt 68,970 meldinger på Slack i løpet av året.
+
+Dette året har vi arrangert tre fagdager, en hos SSB i mai, en hos Nav i juni, og en digital i desember.
+
+* **Fagdagen hos SSB** handlet om Dataplattformer og ble arrangert av Tine Kleivan og Pål de Vibe fra Samferdselsdata samt John Kasper Svergja fra SSB. Det var XX deltakere fra YY ulike organisasjon tilstede.
+
+* **Fagdagen hos Nav** handlet om Observability og ble arrangert av Robert Myhren fra Skatteetaten og Hans Kristian Flaatten fra Nav med eksternt bidrag fra Grafana Labs. Det var 150 deltakere fra 37 ulike organisasjoner fordelt mellom fysisk og digital deltakelse. Fagdagen hadde en gjennomsnittlig vurdering på 4.5 på en skala fra 1 til 5 basert på 35 tilbakemeldinger.
+
+* **Årets siste fagdag** var digitalt på Zoom ble arrangert av Hans Kristian Flaatten fra Nav med eksternt bidrag fra EnterpriseDB om CloudNativePG. Det var 175 deltakere fra 53 ulike organisasjoner. Fagdagen hadde en gjennomsnittlig vurdering på 4.4 basert på 21 tilbakemeldinger.
+
+Alle fagdagene dette året ble tatt opp og opptakene er publisert på YouTube og offentlig-paas.no til stor glede for de som ikke kunne delta og for de som ønsker å se foredragene igjen.
+
+I tillegg til de offisielle fagdagene ble det arrangert flere ad hoc tematiske erfaringsutvekslinger om blant annet *OpenTelemetry*, *GitHub Copilot* og *Talos*, temaer som engasjerte deltakerne på grunn av deres aktualitet og relevans for moderne plattformutvikling.
+
+Disse tematiske erfaringsutvekslingene har gjerne mindre enn 10 deltakere og fungerer som en uformell arena for å dele praktiske erfaringer, diskutere løsninger på spesifikke teknologiske utfordringer og utforske nye ideer innen plattformutvikling.
+
+## 3. Prosjekter og aktiviteter
+
+Nytt av året var at vi fikk helt nye og moderne nettsider basert på Tailwind CSS og Next.js. Hans Kristian Flaatten har vært primus motor for å få de nye nettsidene lansert men har fått hjelp fra flere med [pull requests](https://github.com/offentlig-paas/nye.offentlig-paas.no/pulls?q=sort%3Aupdated-desc+is%3Apr+is%3Amerged) for å implementere manglende funksjonalitet.
+
+De nye nettsidene har artikler, oversikt over fagdager, oversikt over medlemsorganisasjoner, og dark mode! Vi har fremdeles en liste over funksjonalitet vi ønsker å få på plass i [issue trackeren for nettsidene](https://github.com/offentlig-paas/nye.offentlig-paas.no/issues?q=sort%3Aupdated-desc+is%3Aissue+is%3Aopen).
+
+Vi har også publisert den første undersøkelsen om [Plattformmodente i Norsk offentlig sektor](https://offentlig-paas.no/artikkel/plattformmodenhet-2024). Resultatene fra denne undersøkelsen ble også presentert på [KubeCon EU i Paris av Hans Kristian Flaatten](https://www.youtube.com/watch?v=3WFZhETlS9s). Undersøkelsen var basert på svar fra 35 organisasjoner og dekket temaer innen teknologibruk, plattformtjenester, og modenhet innen plattform.
+
+Undersøkelsen viser at offentlig sektor i Norge investerer tungt i plattformteknologi, og at flertallet av organisasjonene har adoptert Kubernetes og skybaserte teknologier. Vi har nå satt i gang innsamling av data for en oppfølgende undersøkelse basert på en CNCF-undersøkelse for å kunne sammenlikne offentlig sektor i Norge med resten av verden. Resultater fra denne undersøkelsen vil bli publisert i begynnelsen av 2025.
+
+Ved utgangen av året ble Offentlig PaaS registrert som en frivillig organisasjon. Hans Kristian Flaatten (Nav) ble valgt til styreleder, og Audun Fauchald Stand (Nav) og Are Vattekar (Skatteetaten) ble valgt til styremedlemmer. Første ordinære årsmøte blir avhold innen april 2025.
+
+## 4. Kommunikasjon og deltakelse
+
+Hjertet og styrken til nettveket ligger er Slack. Her kan alle medlemmene enkelt ta kontakt med andre organisasjoner og stille spørsmål og ta del i ulike diskusjoner.
+
+Vi har fått varsel om at Slack kommer til å slette eldre meldinger enn ett år og derfor har vi registrert Offentlig PaaS som en frivillig organisasjon i Brønnøysundregisteret for å kunne søke om Slack for non-proffit og beholde eldre meldinger. Hvis dette ikke fører frem får styret vurdere om det er andre plattformer som kan være mer egnet men vi ønsker først og fremst å forsette med Slack da dette er svært innarbeidet.
+
+## 5. Finansiering og støtte
+
+Offentlig PaaS mottar ingen finansiell støtte og stiftelsesmøtet vedtok at medlemsavgift i organisasjonen skulle settes til kr 0. Med unntak av utgifter til domene, epost og nettside (som dekkes av Hans Kristian Flaatten) har ikke nettverket andre utgifter.
+
+## 6. Planer for neste år
+
+Nettverket vokser organisk og det er viktig å sørge for at det blir arrangert fagdager på en regelmessig basis. Styret vurderer det som hensiktsmessig å få inn flere personer som er interessert i å være med å arrangere fagdager slik at vi ikke blir for avhengig av enkeltpersoner. Vi ser at en fagdag hvert tertial er en overkommelig mengde, vi ønsker å fortsette med en hybrid kombinasjon hvor fysiske fagdager også blir streamet.
+
+For å gjøre det enklere for flere å arrangere fagdager vil styret utarbeide en veileder for å arrangere fagdager. Vi ser at opptak av fagdager har vært en stor suksess og ønsker å fortsette med dette. Vi ser at det kan være hensiktsmessig å utarbeide generelle vilkår for deltakelse på fagdager som omfavner publisering av bilder og opptak fra fagdagene.
+
+Vi ser også at etter hvert som nettverket er blitt så stort og plattform i stor grad er blitt en moden teknologi er det hensiktsmessig å ha mer spissede og tematiske fagdager for at nettverket skal fortsette å oppleves som relevant og dagsaktuelt. Det kan også være aktuelt å se på muligheten å danne mer spissede interesegrupper (SIG) innen Offentlig PaaS (f.eks. observability, ci/cd osv.)  som kan ha sine egen møter. Styret vil utrede denne muligheten.
+
+Styret har også sett på muligheten til å arrangere en felles konferanse om teknoloigi i offentlig sektor sammen med Ofentlig Frontend og Security Champions Norge og kommer til å følge opp dette i 2025.
+
+## 7. Takk og anerkjennelse
+
+Styret vil benytte anledningen til å rette en stor takk til alle som har vært med å arrangere eller holde foredrag på Offentlig PaaS sine fagdager.
+
+Vi oppfordrer alle til å ta del i diskusjonen på Slack, og involvere seg å bygge Offentlig PaaS nettverket til den beste møteplasse for alle som jobber med eller er interessert i plattformer i offentlig sektor.
+
+## 8. Kontaktinformasjon og lenker
+
+Den enkleste måten å komme i kontakt er å ta kontakt med noen av styrets medlemmer på Slack. Det er også mulig å kontakte Offentlig PaaS på epost kontakt@offentlig-paas.no eller på https://github.com/offentlig-paas.
