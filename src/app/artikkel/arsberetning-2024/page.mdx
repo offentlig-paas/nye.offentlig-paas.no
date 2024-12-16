@@ -1,8 +1,20 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
+import {
+  GitHubIcon,
+  SlackIcon,
+  YouTubeIcon,
+  SocialLink,
+} from '@/components/SocialIcons'
+import { metadata as globalMetadata } from '@/app/layout'
+
+import fagdag from './1-fagdag.png'
+import nettsider from './2-nettsider.png'
+import akivitet from './3-aktivitet.png'
+import fremtiden from './4-fremtiden.png'
 
 export const article = {
   author: 'Hans Kristian Flaatten',
-  date: '2024-12-16',
+  date: '2024-12-17',
   title: 'Årsberetning for 2024',
   description:
     'En oppsummering av aktivitetene og høydepunktene for Offentlig PaaS i 2024. Den dekker veksten i medlemskap, gjennomførte fagdager, nye prosjekter og initiativer, samt planer for fremtiden. Årsberetningen gir også innsikt i nettverkets kommunikasjon, finansiering og organisasjonsstruktur.',
@@ -22,11 +34,31 @@ Som definert i [vedtektene](https://github.com/offentlig-paas/organisasjon/blob/
 
 Offentlig PaaS ble startet som et initiativ mellom Nav og Skatteetaten etter at Audun Fauchald Strand og Are Vattekar møttes på KubeCon Europe i 2017 i Berlin og hørte andre norske stemmer. Det viste seg at både Nav og Skatteetaten hadde samme tanken om å bygge en applikasjonsplattform for sine utviklere med mål om å få opp fart og kvaliteten på applikasjonene.
 
-Offentlig PaaS nettverket har i skivende stund 1889 brukere på Slack, en [aktiv nettside](https://offentlig-paas.no), [organisasjon på GitHub](https://github.com/offentlig-paas) og en egen kanal på [YouTube](https://www.youtube.com/@OffentligPaaS).
+Offentlig PaaS nettverket har i skivende stund 1889 brukere på Slack, en aktiv nettside, organisasjon på GitHub, og en egen kanal på YouTube.
+
+<div className="mt-6 flex gap-6 justify-center">
+  <SocialLink
+    href={globalMetadata.other?.githubOrgUrl || '#'}
+    aria-label="Følg oss på GitHub"
+    icon={GitHubIcon}
+  />
+  <SocialLink
+    href={globalMetadata.other?.slackUrl || '#'}
+    aria-label="Bli med på diskusjonen i Slack"
+    icon={SlackIcon}
+  />
+  <SocialLink
+    href={globalMetadata.other?.youtubeUrl || '#'}
+    aria-label="Følg oss på YouTube"
+    icon={YouTubeIcon}
+  />
+</div>
 
 ## 2. Høydepunkter fra året
 
 Antall brukere på Slack har økt med nesten 800 dette året. Vi har nå lagt inn alle medlemsorganisasjonene sine domener som gyldig adresse for automatisk registreing av bruker i workspacet. Ved utgangen av året var antall aktive brukere i Slack 673 og totalt ble det sendt 68,970 meldinger på Slack i løpet av året.
+
+<Image src={fagdag} alt="En kollage av utvalgte bilder fra året" />
 
 Dette året har nettverket arrangert tre fagdager, en hos SSB i mai, en hos Nav i juni, og en digital i desember.
 
@@ -46,6 +78,8 @@ Disse tematiske erfaringsutvekslingene har gjerne mindre enn 10 deltakere og fun
 
 Nytt av året var at vi fikk helt nye og moderne nettsider basert på Tailwind CSS og Next.js. Hans Kristian Flaatten har vært primus motor for å få de nye nettsidene lansert men har fått hjelp fra flere med [pull requests](https://github.com/offentlig-paas/nye.offentlig-paas.no/pulls?q=sort%3Aupdated-desc+is%3Apr+is%3Amerged) for å implementere manglende funksjonalitet.
 
+<Image src={nettsider} alt="Skjermbilde av de nye nettsidene" />
+
 De nye nettsidene har artikler, oversikt over fagdager, oversikt over medlemsorganisasjoner, og dark mode! Vi har fremdeles en liste over funksjonalitet vi ønsker å få på plass i [issue trackeren for nettsidene](https://github.com/offentlig-paas/nye.offentlig-paas.no/issues?q=sort%3Aupdated-desc+is%3Aissue+is%3Aopen).
 
 Vi har også publisert den første undersøkelsen om [Plattformmodenhet i Norsk offentlig sektor](https://offentlig-paas.no/artikkel/plattformmodenhet-2024). Resultatene fra denne undersøkelsen ble også presentert på [KubeCon EU i Paris av Hans Kristian Flaatten](https://www.youtube.com/watch?v=3WFZhETlS9s). Undersøkelsen var basert på svar fra 35 organisasjoner og dekket temaer innen teknologibruk, plattformtjenester, og modenhet innen plattform.
@@ -57,6 +91,8 @@ Ved utgangen av året ble Offentlig PaaS registrert som en frivillig organisasjo
 ## 4. Kommunikasjon og deltakelse
 
 Styrken til nettveket ligger i felleskapet på Slack. Her kan alle medlemmene enkelt ta kontakt med andre organisasjoner og stille spørsmål og ta del i ulike diskusjoner.
+
+<Image src={akivitet} alt="Graf over aktivitet på Slack" />
 
 Vi har fått varsel om at Slack kommer til å slette eldre meldinger enn ett år og derfor har vi registrert Offentlig PaaS som en frivillig organisasjon i Brønnøysundregisteret for å kunne søke om Slack for non-profit og beholde eldre meldinger. Hvis dette ikke fører frem får styret vurdere om det er andre plattformer som kan være mer egnet men vi ønsker først og fremst å forsette med Slack da dette er svært innarbeidet.
 
@@ -74,9 +110,11 @@ Vi ser også at etter hvert som nettverket er blitt så stort og plattform i sto
 
 Styret har også sett på muligheten til å arrangere en felles konferanse om teknologi i offentlig sektor sammen med Offentlig Frontend og Security Champions Norge og kommer til å følge opp dette i 2025.
 
+<Image src={fremtiden} alt="Bilde av en vei som går inn i solnedgangen" />
+
 ## 7. Takk og anerkjennelse
 
-Styret vil benytte anledningen til å rette en stor takk til alle som har vært med å arrangere eller holde foredrag på Offentlig PaaS sine fagdager.
+Styret vil benytte anledningen til å rette en stor takk til alle som har vært med å arrangere eller holde foredrag på Offentlig PaaS sine fagdager. Uten deres bidrag hadde ikke nettverket vært det samme.
 
 Vi oppfordrer alle til å ta del i diskusjonen på Slack, og involvere seg i å bygge Offentlig PaaS nettverket til den beste møteplassen for alle som jobber med eller er interessert i plattformer i offentlig sektor.
 
