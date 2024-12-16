@@ -138,8 +138,8 @@ export const events: Event[] = [
       organisations: 53,
       feedback: {
         url: 'https://forms.gle/TBomJhjm7jvSnTEw6',
-        averageRating: 4.38,
-        respondents: 21,
+        averageRating: 4.68,
+        respondents: 22,
         comments: [
           'Stor inspirasjon å høre om Cloud Native PG. Vi hadde en chat gående mens vi lyttet og kom overens at vi er frelste og skal bruke det i fremtiden fremfor DBaaS.',
           'Effektiv gjennomføring og aktuelle tema',
@@ -251,6 +251,10 @@ export const events: Event[] = [
           {
             url: "https://youtube.com/watch?v=0wWt8knXs94&list=PLjI_oey9FG7RjrV--OaG9MfCcNtNpP7rf&index=4",
             type: AttachmentType.Recording,
+          },
+          {
+            url: "https://drive.google.com/file/d/1FPVExcmLEEHyXpPWdWYflftMUW6kPsk3/view?usp=drive_link",
+            type: AttachmentType.Slides,
           },
         ]
       },
@@ -497,6 +501,11 @@ export const events: Event[] = [
         title: 'Avslutning',
         type: ItemType.Info,
       }
-    ]
+    ],
+    stats: {
+      organisations: 35,
+      participants: 93,
+      registrations: 93,
+    },
   }
 ];
