@@ -1,0 +1,31 @@
+export const members = [
+  {
+    name: 'Hans Kristian Flaatten',
+    organization: 'Nav',
+    role: 'Styreleder',
+    imageUrl: 'https://ca.slack-edge.com/T4TBZQE5T-U7DQV0KUY-af130be6fdd5-512',
+    slackUrl: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+    linkedinUrl: 'https://www.linkedin.com/in/hansflaatten/',
+    bskyUrl: 'https://bsky.app/profile/starefossen.bsky.social',
+    githubUrl: 'https://github.com/starefossen',
+  },
+  {
+    name: 'Audun Fauchald Strand',
+    organization: 'Nav',
+    role: 'Styremedlem',
+    imageUrl: 'https://ca.slack-edge.com/T4TBZQE5T-U4U0AJ4HM-08a1d3430e10-512',
+    slackUrl: 'https://offentlig-paas-no.slack.com/team/U4U0AJ4HM',
+    linkedinUrl: 'https://www.linkedin.com/in/audunstrand/',
+    bskyUrl: 'https://bsky.app/profile/audunstrand.bsky.social',
+    githubUrl: 'https://github.com/audunstrand',
+  },
+  {
+    name: 'Are Vattekar',
+    organization: 'Skatteetaten',
+    role: 'Styremedlem',
+    imageUrl: 'https://ca.slack-edge.com/T4TBZQE5T-U4SM25LUQ-08c6e6ec314c-512',
+    slackUrl: 'https://offentlig-paas-no.slack.com/team/U4SM25LUQ',
+    linkedinUrl: 'https://www.linkedin.com/in/are-vattekar-3013722/',
+    githubUrl: 'https://github.com/arevatte',
+  },
+]

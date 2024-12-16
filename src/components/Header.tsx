@@ -9,7 +9,7 @@ import { useTheme } from 'next-themes'
 import {
   Popover,
   PopoverButton,
-  PopoverOverlay,
+  PopoverBackdrop,
   PopoverPanel,
   Transition,
   TransitionChild,
@@ -114,7 +114,7 @@ function MobileNavigation(
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <PopoverOverlay className="fixed inset-0 z-50 bg-zinc-800/40 backdrop-blur-sm dark:bg-black/80" />
+          <PopoverBackdrop className="fixed inset-0 z-50 bg-zinc-800/40 backdrop-blur-sm dark:bg-black/80" />
         </TransitionChild>
         <TransitionChild
           enter="duration-150 ease-out"
