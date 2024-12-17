@@ -6,6 +6,8 @@ if (!SLACK_BOT_TOKEN) {
   throw new Error('SLACK_BOT_TOKEN is not defined');
 }
 
+export const revalidate = 3600;
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export async function GET(request: NextRequest) {
   try {
