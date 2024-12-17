@@ -10,6 +10,7 @@ import { Container } from '@/components/Container'
 import {
   GitHubIcon,
   SlackIcon,
+  SocialLink,
   YouTubeIcon,
 } from '@/components/SocialIcons'
 import image1 from '@/images/photos/image-1.jpg'
@@ -36,19 +37,6 @@ function Article({ article }: { article: ArticleWithSlug }) {
       <Card.Description>{article.description}</Card.Description>
       <Card.Cta>Lest artikkel</Card.Cta>
     </Card>
-  )
-}
-
-function SocialLink({
-  icon: Icon,
-  ...props
-}: React.ComponentPropsWithoutRef<typeof Link> & {
-  icon: React.ComponentType<{ className?: string }>
-}) {
-  return (
-    <Link className="group -m-1 p-1" {...props}>
-      <Icon className="h-6 w-6 fill-zinc-500 transition group-hover:fill-zinc-600 dark:fill-zinc-400 dark:group-hover:fill-zinc-300" />
-    </Link>
   )
 }
 
@@ -154,18 +142,15 @@ export default async function Home() {
             <SocialLink
               href={githubUrl}
               aria-label="Følg oss på GitHub"
-              icon={GitHubIcon}
-            />
+              icon={GitHubIcon} children={undefined} />
             <SocialLink
               href={slackUrl}
               aria-label="Bli med på diskusjonen i Slack"
-              icon={SlackIcon}
-            />
+              icon={SlackIcon} children={undefined} />
             <SocialLink
               href={youtubeUrl}
               aria-label="Følg oss på YouTube"
-              icon={YouTubeIcon}
-            />
+              icon={YouTubeIcon} children={undefined} />
           </div>
         </div>
       </Container>
