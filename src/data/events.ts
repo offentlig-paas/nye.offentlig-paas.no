@@ -536,6 +536,10 @@ export const events: Event[] = [
         time: '12:00 - 12:10',
         title: 'Velkommen',
         type: ItemType.Info,
+        attachments: [{
+          url: 'https://docs.google.com/presentation/d/19AqTGy8vPKOg-USBUlj10BitlxcRoyAK/edit?usp=drive_link&ouid=109381646868227443677&rtpof=true&sd=true',
+          type: AttachmentType.Slides,
+        }]
       },
       {
         time: '12:10 - 13:00',
@@ -786,15 +790,23 @@ export const events: Event[] = [
       },
       {
         time: '15:00',
-        title: 'Fra Kubernetes til AWS-native i Oslo Origo',
+        title: 'Brolagt sti i Oslo Origo - fra Kubernetes til AWS-native',
         speaker: 'Endre Midtgård Meckelborg (Oslo Origo)',
         type: ItemType.Talk,
+        attachments: [{
+          url: 'https://drive.google.com/file/d/1i9OaIECbYiPNjTFQ-WSyBUi6ayns-BTg/view?usp=drive_link',
+          type: AttachmentType.Slides,
+        }]
       },
       {
         time: '15:30',
         title: 'Som utvikler forventer jeg dette fra en god plattform',
         speaker: 'Johannes Brodwall (PIT)',
         type: ItemType.Talk,
+        attachments: [{
+          url: 'https://docs.google.com/presentation/d/1Mx_dCchSZ8nxCmMeT0DbKD1qAr1kF-Di/edit?usp=drive_link&ouid=109381646868227443677&rtpof=true&sd=true',
+          type: AttachmentType.Slides,
+        }]
       },
       {
         time: '16:00',
