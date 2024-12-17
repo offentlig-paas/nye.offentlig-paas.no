@@ -22,6 +22,8 @@ import { type ArticleWithSlug, getAllArticles } from '@/lib/articles'
 import { formatDate } from '@/lib/formatDate'
 import { metadata as globalMetadata } from './layout'
 import { getUpcomingEvents } from '@/lib/events/helpers';
+import { getUserCount } from '@/lib/slack/client';
+import { InfoCard } from '@/components/Stats';
 
 export const revalidate = 3600
 
@@ -70,27 +72,29 @@ function UpcomingEvents() {
   )
 }
 
-function Community() {
+async function Community() {
+  const slackUserCount = await getUserCount()
   const slackUrl = `${globalMetadata.other?.joinSlackUrl || '#'}`
 
   return (
-    <form
-      action="/thank-you"
-      className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40"
-    >
-      <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-        <ChatBubbleLeftRightIcon className="h-6 w-6 flex-none" />
-        <span className="ml-3">Bli med på diskusjonen!</span>
-      </h2>
-      <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-        Offentlig PaaS har Norges største nettverk av plattformentusiaster samlet i en Slack-kanal!
-      </p>
+    <>
+      <InfoCard title="Antall brukere på Slack" number={slackUserCount} label="kontoer" />
 
-      <Button href={slackUrl} variant="primary" className="group mt-6 w-full">
-        Bli med i Slack
-        <SlackIcon className="h-4 w-4 fill-white" />
-      </Button>
-    </form>
+      <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
+        <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+          <ChatBubbleLeftRightIcon className="h-6 w-6 flex-none" />
+          <span className="ml-3">Bli med på diskusjonen!</span>
+        </h2>
+        <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+          Offentlig PaaS har Norges største nettverk av plattformentusiaster samlet i en Slack-kanal!
+        </p>
+
+        <Button href={slackUrl} variant="primary" className="group mt-6 w-full">
+          Bli med i Slack
+          <SlackIcon className="h-4 w-4 fill-white" />
+        </Button>
+      </div>
+    </>
   )
 }
 
