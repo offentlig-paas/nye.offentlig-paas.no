@@ -723,5 +723,90 @@ export const events: Event[] = [
       participants: 87,
       registrations: 87,
     }
+  },
+  {
+    slug: '2023-02-16-fagdag',
+    title: 'Offentlig PaaS Fagdag',
+    ingress: 'Vi inviterer til en dag fylt med spennende foredrag og erfaringsdeling om plattformer i offentlig sektor.',
+    start: new Date('2023-02-16T11:30+01:00'),
+    end: new Date('2023-02-16T16:00+01:00'),
+    audience: Audience.PublicSector,
+    location: 'Politiets IT-enhet (PIT), Fridtjof Nansens vei 14, 0031 Oslo',
+    registrationUrl: 'https://forms.gle/hoUYRFyiVzydS5ej6',
+    organizers: [
+      {
+        name: 'Erlend Wiig',
+        org: 'Politiets IT-enhet',
+        url: 'https://offentlig-paas-no.slack.com/team/U0326RQ5PHB'
+      },
+      {
+        name: 'Roger Karlsson',
+        org: 'Politiets IT-enhet',
+        url: 'https://offentlig-paas-no.slack.com/team/U51A07M0V'
+      },
+      {
+        name: 'Hans Kristian Flaatten',
+        org: 'NAV',
+        url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY'
+      }
+    ],
+    schedule: [
+      {
+        time: '11:30',
+        title: 'Dørene åpner, mingling',
+        type: ItemType.Registration,
+      },
+      {
+        time: '12:00',
+        title: 'Velkommen (Menti)',
+        type: ItemType.Info,
+      },
+      {
+        time: '12:15',
+        title: 'Foredrag',
+        speaker: 'PIT',
+        type: ItemType.Talk,
+      },
+      {
+        time: '12:50',
+        title: 'Consul / Boundary',
+        speaker: 'Hashicorp',
+        type: ItemType.Talk,
+      },
+      {
+        time: '13:30',
+        title: 'Pause',
+        type: ItemType.Break,
+      },
+      {
+        time: '14:15',
+        title: 'Deling av plattform i almen sky',
+        speaker: 'Nav, PIT, Skatt, Digdir, Mattilsynet, NSM',
+        type: ItemType.Panel,
+      },
+      {
+        time: '15:00',
+        title: 'Fra Kubernetes til AWS-native i Oslo Origo',
+        speaker: 'Endre Midtgård Meckelborg (Oslo Origo)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '15:30',
+        title: 'Som utvikler forventer jeg dette fra en god plattform',
+        speaker: 'Johannes Brodwall (PIT)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '16:00',
+        title: 'Ut og spise?',
+        description: 'NB! Husk å svare i påmelding',
+        type: ItemType.Info,
+      }
+    ],
+    stats: {
+      organisations: 29,
+      participants: 110,
+      registrations: 110,
+    }
   }
 ];
