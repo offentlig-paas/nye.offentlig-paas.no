@@ -6,6 +6,7 @@ import {
   SocialLink,
 } from '@/components/SocialIcons'
 import { metadata as globalMetadata } from '@/app/layout'
+import { InfoCard } from '@/components/Stats'
 
 import fagdag from './1-fagdag.png'
 import nettsider from './2-nettsider.png'
@@ -58,21 +59,10 @@ Offentlig PaaS nettverket har i skivende stund 1889 brukere på Slack, en aktiv 
 
 Antall brukere på Slack har økt med nesten 800 dette året til 1889 på tvers av 85 ulike organisasjoner! Vi har nå lagt inn alle medlemsorganisasjonene sine domener som gyldig adresse for automatisk registreing av bruker i workspacet. Ved utgangen av året var antall aktive brukere i Slack 673 og totalt ble det sendt 68,970 meldinger på Slack i løpet av året.
 
-<div className="mt-6 flex gap-6 justify-center">
-<ul className="flex justify-center my-8 text-center">
-  <li className="group flex text-sm font-medium text-zinc-800 transition hover:text-teal-500 dark:text-zinc-200 dark:hover:text-teal-500">
-    <p className="text-4xl">1889</p>
-    <p className="block">brukere</p>
-  </li>
-  <li className="group flex text-sm font-medium text-zinc-800 transition hover:text-teal-500 dark:text-zinc-200 dark:hover:text-teal-500">
-    <p className="text-4xl">800</p>
-    <p>nye</p>
-  </li>
-  <li className="group flex text-sm font-medium text-zinc-800 transition hover:text-teal-500 dark:text-zinc-200 dark:hover:text-teal-500">
-    <p className="text-4xl">85</p>
-    <p>orgs</p>
-  </li>
-</ul>
+<div className="not-prose mt-6 flex flex-col gap-6 justify-center sm:flex-row">
+  <InfoCard title="Meldinger på Slack" number="68,970" />
+  <InfoCard title="Brukere på Slack" number="1889" />
+  <InfoCard title="Aktive brukere" number="673" />
 </div>
 
 Dette året har nettverket arrangert tre fagdager, en hos SSB i mai, en hos Nav i juni, og en digital i desember.

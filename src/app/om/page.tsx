@@ -1,8 +1,6 @@
 import React from 'react';
 import { type Metadata } from 'next'
 import Image from 'next/image'
-import Link from 'next/link'
-import clsx from 'clsx'
 import { members } from '@/data/styre'
 
 import { Container } from '@/components/Container'

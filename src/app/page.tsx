@@ -142,15 +142,15 @@ export default async function Home() {
             <SocialLink
               href={githubUrl}
               aria-label="Følg oss på GitHub"
-              icon={GitHubIcon} children={undefined} />
+              icon={GitHubIcon} />
             <SocialLink
               href={slackUrl}
               aria-label="Bli med på diskusjonen i Slack"
-              icon={SlackIcon} children={undefined} />
+              icon={SlackIcon} />
             <SocialLink
               href={youtubeUrl}
               aria-label="Følg oss på YouTube"
-              icon={YouTubeIcon} children={undefined} />
+              icon={YouTubeIcon} />
           </div>
         </div>
       </Container>
