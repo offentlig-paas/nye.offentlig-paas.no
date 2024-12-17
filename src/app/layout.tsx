@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   },
   description: `Offentlig PaaS er et nettverk for offentlige etater, og offentlig selskaper, som bygger nye og moderne applikasjonsplattformer basert på prinsippene rundt Plattform som en Tjeneste (PaaS).
 
-    Nettverket ble startet som et initiativ mellom Nav og Skatteetaten i 2017 og har senere vokst til mer enn 1000 medlemmer på tvers av 50 offentlige etater og selskaper i Norge.`,
+    Nettverket ble startet som et initiativ mellom Nav og Skatteetaten i 2017 og har senere vokst til nesten 2000 medlemmer på tvers av 60 offentlige etater og selskaper i Norge.`,
   alternates: {
     types: {
       'application/rss+xml': `${process.env.NEXT_PUBLIC_URL}/feed.xml`,

@@ -101,7 +101,17 @@ export default function About() {
             </p>
             <p>
               Ved utgangen av 2023 hadde Offentlig PaaS Slacken over 1.100
-              brukere på tvers av mer enn 50 forskjellige organisasjoner.
+              brukere og ett år senere var det tallet nesten bikket 2.000. I
+              2024 ble det arrangert tre fagdager hver med flere delakere enn
+              den forrige. Nytt av året var opptakt av foredragene som ble
+              publisert på Offentlig PaaS sin kanal på YouTube.
+            </p>
+            <p>
+              I 2024 ble den første undersøkelsen om plattform modenhet i norsk
+              offentlig sektor publisert og Offentlig PaaS fikk helt nye
+              nettsider og formelt etablert som en forening og met et initielle
+              styret bestående av Audun Fauchald Strand, Are Vattekar, og Hans
+              Kristian Flaatten.
             </p>
           </div>
         </div>
