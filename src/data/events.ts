@@ -615,6 +615,113 @@ export const events: Event[] = [
       organisations: 26,
       participants: 90,
       registrations: 90,
+    },
+  },
+  {
+    slug: '2023-05-04-fagdag',
+    title: 'Offentlig PaaS Fagdag',
+    ingress: 'Vi inviterer til en dag fylt med spennende foredrag og erfaringsdeling om plattformer i offentlig sektor i Skatteetatens sine fine lokaler.',
+    start: new Date('2023-05-04T11:30+02:00'),
+    end: new Date('2023-05-04T17:00+02:00'),
+    audience: Audience.PublicSector,
+    location: 'Skatteetaten, Fredrik Selmers vei 4, 0663 Oslo',
+    organizers: [
+      {
+        name: 'Are Vattekar',
+        org: 'Skatteetaten',
+        url: 'https://offentlig-paas-no.slack.com/team/U4SM25LUQ'
+      },
+      {
+        name: 'Ala Mehersia',
+        org: 'Skatteetaten',
+        url: 'https://offentlig-paas-no.slack.com/team/U052S0R4ZEZ'
+      },
+      {
+        name: 'Hans Kristian Flaatten',
+        org: 'Nav',
+        url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY'
+      }
+    ],
+    schedule: [
+      {
+        time: '11:30 - 12:00',
+        title: 'Dørene åpner, mingling',
+        type: ItemType.Registration,
+      },
+      {
+        time: '12:00 - 12:10',
+        title: 'Velkommen',
+        description: 'Thomas Heiskel, avdelingsdirektør for plattformer Skatteetaten ønsker velkommen.',
+        type: ItemType.Info,
+      },
+      {
+        time: '12:10 - 13:00',
+        title: 'Introduksjon til ny applikasjonsplattform på Azure',
+        speaker: 'Skatteetaten',
+        type: ItemType.Talk,
+      },
+      {
+        time: '13:00 - 14:00',
+        title: 'Adopting Network Policies in Highly Secure Environments',
+        description: 'In the world of distributed computing, everything goes over the network, but only some things should be public - especially in highly secured environments like financial services or telecommunications. Unfortunately, Kubernetes networking is open by default, and it is up to you to adopt network policies to secure it.',
+        speaker: 'Stephane Karagulmez (Isovalent)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '14:00 - 14:30',
+        title: 'Pause',
+        type: ItemType.Break,
+      },
+      {
+        time: '14:30 - 15:00',
+        title: 'Introduksjon til ny data og analyseplattform på Azure',
+        speaker: 'Skatteetaten',
+        type: ItemType.Talk,
+      },
+      {
+        time: '15:00 - 15:30',
+        title: 'Innebygget brukervennlighet i SKIP',
+        description: 'Det er et kjent dilemma at sikkerhet og lettvinthet ligger på en akse, og at høyere sikkerhet fører til lavere lettvinthet. Men må det være sånn? Plattform-teamet SKIP fra Statens Kartverk forteller om sine erfaringer med å bygge en plattform for en organisasjon som i varierende grad er kjent med sky og verktøyene vi bygget underveis for å sørge for innebygget sikkerhet',
+        speaker: 'Espen Henriksen (Kartverket)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '15:30 - 16:00',
+        title: 'Datasamarbeid i samferdselssektoren: erfaringer og fellesløsninger',
+        description: 'Tverrsektorielt datasamarbeid jobber for å støtte datadeling mellom virksomheter i samferdselssektoren. Hvilke utfordringer går igjen på tvers av virksomhetene her? Og hvilke utfordringer er egentlig nasjonale? Vi forsøker å adressere to av disse; tilgangsstyring og distribusjon; i en pilot sammen med Digdir.',
+        speaker: 'Tine Kleivane og Pål de Vibe - på oppdrag fra Samferdselsdepartementet',
+        type: ItemType.Talk,
+      },
+      {
+        time: '16:00 - 16:15',
+        title: 'Pause',
+        type: ItemType.Break,
+      },
+      {
+        time: '16:15 - 16:45',
+        title: 'Vy sin AWS Native Utvikler plattform',
+        description: 'Vy kjører hele produksjonen sin med AWS, og dermed også utviklerplattformen. Her går jeg inn i hvordan utviklerne arbeider med miljøene, og hvordan vi har snekret sammen plattformen med hjelp av AWS tjenester!',
+        speaker: 'Nicolas Harlem Eide (Vy)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '16:45 - 17:00',
+        title: 'Mitt skip er lastet med …',
+        description: 'Kubernetes etcd panic mode: konsekvens, feilretting og hvorfor Kyverno + fluxcd var en uheldig kombinasjon.',
+        speaker: 'Endre Lervik (Meteorologisk institut)t',
+        type: ItemType.Talk,
+      },
+      {
+        time: '17:00 - 20:30',
+        title: 'Ut og spise?',
+        description: 'NB! Husk å svare i påmelding',
+        type: ItemType.Info,
+      }
+    ],
+    stats: {
+      organisations: 29,
+      participants: 87,
+      registrations: 87,
     }
   }
 ];
