@@ -297,25 +297,29 @@ export default async function Fagdag({ params }: { params: Params }) {
                       <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Organisasjoner</dt>
                       <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{event.stats.organisations}</dd>
                     </div>
-                    <div className="sm:col-span-2">
-                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Gjennomsnittlig vurdering</dt>
-                      <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">
-                        <Rating rating={event.stats.feedback?.averageRating ?? 0} total={event.stats.feedback?.respondents ?? 0} />
-                      </dd>
-                    </div>
-                    <div className="sm:col-span-2">
-                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Tilbakemeldinger</dt>
-                      <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">
-                        <ul>
-                          {event.stats.feedback?.comments.map((feedback, index) => (
-                            <li key={index} className="mt-2 flex items-start">
-                              <ChatBubbleBottomCenterIcon className="flex-none h-5 w-5 text-gray-400 mr-2" aria-hidden="true" />
-                              <span>&quot;{feedback}&quot;</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </dd>
-                    </div>
+                    {event.stats.feedback && (
+                      <div className="sm:col-span-2">
+                        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Gjennomsnittlig vurdering</dt>
+                        <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                          <Rating rating={event.stats.feedback?.averageRating ?? 0} total={event.stats.feedback?.respondents ?? 0} />
+                        </dd>
+                      </div>
+                    )}
+                    {event.stats.feedback && event.stats.feedback?.comments.length > 0 && (
+                      <div className="sm:col-span-2">
+                        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Tilbakemeldinger</dt>
+                        <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                          <ul>
+                            {event.stats.feedback?.comments.map((feedback, index) => (
+                              <li key={index} className="mt-2 flex items-start">
+                                <ChatBubbleBottomCenterIcon className="flex-none h-5 w-5 text-gray-400 mr-2" aria-hidden="true" />
+                                <span>&quot;{feedback}&quot;</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </dd>
+                      </div>
+                    )}
                   </dl>
                 </div>
               </div>
