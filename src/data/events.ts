@@ -507,5 +507,114 @@ export const events: Event[] = [
       participants: 93,
       registrations: 93,
     },
+  },
+  {
+    slug: '2023-09-14-fagdag',
+    title: 'Offentlig PaaS Fagdag',
+    ingress: 'Vi inviterer til en dag fylt med spennende foredrag og erfaringsdeling om plattformer i offentlig sektor i Telenor sine fine lokaler på Fornebu.',
+    start: new Date('2023-09-14T11:30+02:00'),
+    end: new Date('2023-09-14T17:00+02:00'),
+    audience: Audience.PublicSector,
+    location: 'Telenor, Snarøyveien 30, 1360 Fornebu',
+    organizers: [
+      {
+        name: 'Mats André Bækkelund',
+        org: 'Telenor',
+      },
+      {
+        name: 'Hans Kristian Flaatten',
+        org: 'Nav',
+      },
+    ],
+    schedule: [
+      {
+        time: '11:30 - 12:00',
+        title: 'Dørene åpner, mingling.',
+        type: ItemType.Registration,
+      },
+      {
+        time: '12:00 - 12:10',
+        title: 'Velkommen',
+        type: ItemType.Info,
+      },
+      {
+        time: '12:10 - 13:00',
+        title: 'Creating a software company out of a 168 year old Telco company',
+        description: 'What Telenor have done in the last couple of years going from being driven by toll gates and bureaucracy to autonomy and cloud native.',
+        speaker: 'Frode Bjerkenes & Vaibhav Bansal, Telenor',
+        type: ItemType.Talk,
+        attachments: [{
+          url: 'https://docs.google.com/presentation/d/1_7vEoW1CUlO-o97hqPr7bo6ULc4wEhfl/edit?usp=drive_link&ouid=109381646868227443677&rtpof=true&sd=true',
+          type: AttachmentType.Slides,
+        }]
+      },
+      {
+        time: '13:10 - 14:00',
+        title: 'Infrastructure as Software',
+        description: 'Nav sin reise fra konfigurasjonsstyring av servere, til infrastruktur som kode (terraform) og videre til det vi i dag kaller infrastruktur som software som tar hele livssyklusen til infrastruktur – ikke bare det å sette den opp.',
+        speaker: 'Hans Kristian Flaatten (Nav)',
+        type: ItemType.Talk,
+        attachments: [{
+          url: 'https://drive.google.com/file/d/1Nk0Sv5IqwQjHTMJw28_wBkhnr7XdO9i5/view?usp=drive_link',
+          type: AttachmentType.Slides,
+        }]
+      },
+      {
+        time: '14:00 - 14:30',
+        title: 'Pause',
+        type: ItemType.Break,
+      },
+      {
+        time: '14:30 - 15:00',
+        title: 'Containers are awesome',
+        description: 'Technology finds more and more adaptation in our daily IT lifes. They are fast, agile and shareable. All those positives bring a downside to it - visibility. Can I trust every container content? Is my container behaving like it should? How do I detect anomalies in containers that are ephemeral by nature? We want to tackle those questions in our session and show you what Open-Source Falco and Sysdig can do for you to win back container visibility without compromising on the benefit of containers.',
+        speaker: 'Stefan Trimborn (Sysdig)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '15:00 - 15:30',
+        title: 'Entur sin reise til GCP',
+        description: 'I Entur har vi redesignet hele arkitekturen vår på GCP, og det siste året har vi satt det i drift. Alt ble rullet ut på nytt, og alle ressurser på GCP og Kubernetes er nå segmentert og tilgangsstyrt etter applikasjon og miljø, og alt er satt opp fra kode. I skrivende stund har vi 800 prosjekter, og flere skal det bli. Hva er det vi driver med?',
+        speaker: 'Sindre Lindstad (Entur)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '15:30 - 16:00',
+        title: '140+ cluster med ROR',
+        description: 'Se og hør hvordan NHN drifter 140+ cluster vårt egenutviklede verktøy ROR. ROR (Release - Operate - Report) er et verktøy som lar utviklere og driftsteam selv deploye, drifte og observere standardiserte cluster med organisasjonens tooling.',
+        speaker: 'Håvard Elnan (NHN)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '16:00 - 16:15',
+        title: 'Pause',
+        type: ItemType.Break,
+      },
+      {
+        time: '16:15 - 16:45',
+        title: 'Trøbbel med Skatteetatens nettsider',
+        description: 'Flere brukere rapporterte om problemer med innlevering av Skattemeldingen sin. Hva var bakgrunnen og hvilken lærdom tok vi?',
+        speaker: 'Are Vattekar (Skatteetaten)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '16:45 - 17:00',
+        title: 'Enklere onboarding til Maskinporten og Skyporten',
+        description: 'Vi lanserer i disse dager en pilot sammen med Digdir; en løsning for å forenkle onboarding til Maskinporten, og Skyporten for å dele store datamengder. Dette kan være aktuelt for virksomheter som enten tilbyr eller konsumerer Maskinporten-apier eller skal dele data ut i offentlig sektor.',
+        speaker: 'Tine Kleivane (Tverrsektorielt datasamarbeid)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '17:00 - 20:30',
+        title: 'Ut og spise?',
+        description: 'NB! Husk å svare i påmelding',
+        type: ItemType.Info,
+      }
+    ],
+    stats: {
+      organisations: 26,
+      participants: 90,
+      registrations: 90,
+    }
   }
 ];
