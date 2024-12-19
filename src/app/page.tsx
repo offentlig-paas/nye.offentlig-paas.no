@@ -13,6 +13,7 @@ import {
   SocialLink,
   YouTubeIcon,
 } from '@/components/SocialIcons'
+import bluesky from '@/images/bluesky.png'
 import image1 from '@/images/photos/image-1.jpg'
 import image2 from '@/images/photos/image-2.jpg'
 import image3 from '@/images/photos/image-3.jpg'
@@ -72,29 +73,42 @@ function UpcomingEvents() {
   )
 }
 
-async function Community() {
+function Bluesky() {
+  return (
+    <div className="space-y-2">
+      <a href="https://go.bsky.app/Qzx53N9" className="block">
+        <Image src={bluesky} alt="Offentlig PaaS Developer 1" className="w-full rounded-2xl" />
+      </a>
+    </div>
+  )
+}
+
+async function SlackUsers() {
   const slackUserCount = await getUserCount()
+
+  return (
+    <InfoCard title="Antall brukere på Slack" number={slackUserCount} label="kontoer" />
+  )
+}
+
+function SlackJoin() {
   const slackUrl = `${globalMetadata.other?.joinSlackUrl || '#'}`
 
   return (
-    <>
-      <InfoCard title="Antall brukere på Slack" number={slackUserCount} label="kontoer" />
+    <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
+      <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+        <ChatBubbleLeftRightIcon className="h-6 w-6 flex-none" />
+        <span className="ml-3">Bli med på diskusjonen!</span>
+      </h2>
+      <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+        Offentlig PaaS har Norges største nettverk av plattformentusiaster samlet i en Slack-kanal!
+      </p>
 
-      <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
-        <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-          <ChatBubbleLeftRightIcon className="h-6 w-6 flex-none" />
-          <span className="ml-3">Bli med på diskusjonen!</span>
-        </h2>
-        <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          Offentlig PaaS har Norges største nettverk av plattformentusiaster samlet i en Slack-kanal!
-        </p>
-
-        <Button href={slackUrl} variant="primary" className="group mt-6 w-full">
-          Bli med i Slack
-          <SlackIcon className="h-4 w-4 fill-white" />
-        </Button>
-      </div>
-    </>
+      <Button href={slackUrl} variant="primary" className="group mt-6 w-full">
+        Bli med i Slack
+        <SlackIcon className="h-4 w-4 fill-white" />
+      </Button>
+    </div>
   )
 }
 
@@ -168,7 +182,9 @@ export default async function Home() {
           </div>
           <div className="space-y-10 lg:pl-16 xl:pl-24">
             <UpcomingEvents />
-            <Community />
+            <Bluesky />
+            <SlackUsers />
+            <SlackJoin />
           </div>
         </div>
       </Container>
