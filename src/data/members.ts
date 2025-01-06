@@ -241,5 +241,11 @@ export const members: Member[] = [
     github: 'statnett',
     logo: logoStatnettSf,
     linkedinUrl: 'https://www.linkedin.com/company/statnett-sf/',
+  }),
+  new Member({
+    name: 'KS Digital',
+    type: 'Selskap',
+    github: 'ks-no',
+    linkedinUrl: 'https://www.linkedin.com/company/ksdigital-norge/',
   })
 ];
