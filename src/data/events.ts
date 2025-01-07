@@ -2,6 +2,80 @@ import { AttachmentType, Audience, Event, ItemType } from "@/lib/events/types";
 
 export const events: Event[] = [
   {
+    slug: "2025-02-04-fagdag-i-bergen",
+    title: "Offentlig PaaS Fadag (i Bergen)",
+    ingress: "Vi inviterer til fagdag sammen med KS Digital i Bergen fylt med spennende foredrag og erfaringsdeling om plattform i offentlig sektor.",
+    description: "Vi jobber med å lage agenda og vil oppdatere denne siden fortløpende. Arrangementet er gratis og åpent for alle ansatte i offentlig sektor.\n\nDu kan sende inn forslag til foredrag her: https://forms.gle/mRWgBYzBvSzXkzUu6",
+    start: new Date('2025-02-04T09:00+02:00'),
+    end: new Date('2025-02-04T15:00+02:00'),
+    audience: Audience.PublicSector,
+    location: "KS Digital, Bergen",
+    registrationUrl: "https://forms.gle/758mQFx6jG8jFp5D9",
+    organizers: [
+      {
+        name: "Børge Nese",
+        org: "KS Digital",
+        url: "https://offentlig-paas-no.slack.com/team/UDS102YDU",
+      },
+      {
+        name: 'Hans Kristian Flaatten',
+        org: 'Nav',
+        url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+      }
+    ],
+    schedule: [
+      {
+        time: "09:00 - 09:30",
+        title: "Registrering",
+        type: ItemType.Registration,
+      },
+      {
+        time: "09:30 - 09:45",
+        title: "Velkommen",
+        speaker: "TBD",
+        type: ItemType.Info,
+      },
+      {
+        time: "09:45 - 10:30",
+        title: "Åpningsforedrag",
+        description: "Placeholder description for the opening talk.",
+        speaker: "TBD",
+        type: ItemType.Talk,
+      },
+      {
+        time: "10:30 - 11:00",
+        title: "Pause",
+        type: ItemType.Break,
+      },
+      {
+        time: "11:00 - 11:45",
+        title: "Foredrag 1",
+        description: "Placeholder description for the first talk.",
+        speaker: "TBD",
+        type: ItemType.Talk,
+      },
+      {
+        time: "11:45 - 12:30",
+        title: "Foredrag 2",
+        description: "Placeholder description for the second talk.",
+        speaker: "TBD",
+        type: ItemType.Talk,
+      },
+      {
+        time: "12:30 - 13:30",
+        title: "Lunsj",
+        type: ItemType.Break,
+      },
+      {
+        time: "13:30 - 14:15",
+        title: "Foredrag 3",
+        description: "Placeholder description for the third talk.",
+        speaker: "TBD",
+        type: ItemType.Talk,
+      },
+    ],
+  },
+  {
     slug: "2024-12-12-offentlig-paas-digital",
     title: "Offentlig PaaS heldigital fagdag",
     ingress: "Årets siste fagdag arrangeres digitalt. Vi får blant annet besøk av Gabriele Bartolini, skaperen av CloudNativePG. Velkommen!",
