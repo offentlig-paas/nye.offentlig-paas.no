@@ -3,7 +3,7 @@ import { AttachmentType, Audience, Event, ItemType } from "@/lib/events/types";
 export const events: Event[] = [
   {
     slug: "2025-02-04-fagdag-i-bergen",
-    title: "Offentlig PaaS Fadag (i Bergen)",
+    title: "Offentlig PaaS Fagdag (i Bergen)",
     ingress: "Vi inviterer til fagdag sammen med KS Digital i Bergen fylt med spennende foredrag og erfaringsdeling om plattform i offentlig sektor.",
     description: "Vi jobber med å lage agenda og vil oppdatere denne siden fortløpende. Arrangementet er gratis og åpent for alle ansatte i offentlig sektor.\n\nDu kan sende inn forslag til foredrag her: https://forms.gle/mRWgBYzBvSzXkzUu6",
     start: new Date('2025-02-04T09:00+02:00'),
