@@ -24,11 +24,9 @@ const nextConfig = {
       }
     ],
   },
-  experimental: {
-    outputFileTracingIncludes: {
-      '/': ['./src/app/artikkel/**/*.mdx'],
-      '/artikkel': ['./src/app/artikkel/**/*.mdx'],
-    }
+  outputFileTracingIncludes: {
+    '/': ['./src/app/artikkel/**/*.mdx'],
+    '/artikkel': ['./src/app/artikkel/**/*.mdx'],
   }
 }
 
