@@ -57,7 +57,7 @@ export const events: Event[] = [
       {
         time: "12:00 - 12:40",
         title: "Framtidens PaaS",
-        description: "En no-bullshit approach til framtiden av plattformene våre i Telenopr og hvordan disse vil utvikle seg drastisk de kommende årene.",
+        description: "En no-bullshit approach til framtiden av plattformene våre i Telenor og hvordan disse vil utvikle seg drastisk de kommende årene.",
         speaker: "Martin Bergo (Telenor)",
         type: ItemType.Talk,
       },
