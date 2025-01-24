@@ -39,7 +39,7 @@ export const events: Event[] = [
         time: "09:45 - 10:30",
         title: "Fra Fiks-plattform til moderne tjenesteplattform: Økt fart på kommunal tjenesteutvikling",
         description: "KS Digital fornyer Fiks-plattformen til en moderne tjenesteplattform for kommunal sektor. En sentral del av denne fornyelsen er applikasjonsplattformen, som skal gjøre det enklere å utvikle, dele og gjenbruke digitale tjenester.\n\nPresentasjonen vil vise reisen fra dagens Fiks-plattform til fremtidens tjenesteplattform, med særlig fokus på den nye applikasjonsplattformen og hvordan den tilrettelegger for økt utviklingstakt og bedre samarbeid på tvers av sektoren.",
-        speaker: "Børge Nese (KS Digital)",
+        speaker: "Børge Nese og Bård Singstad (KS Digital)",
         type: ItemType.Talk,
       },
       {
@@ -63,9 +63,9 @@ export const events: Event[] = [
       },
       {
         time: "12:45 - 13:30",
-        title: "Foredrag 3",
-        description: "Placeholder description for the third talk.",
-        speaker: "TBD",
+        title: "Hvordan få 100+ team til å jobbe selvstendig",
+        description: "Hvordan vi har laget en selvbetjent plattform i Nav som gjør at teamene selv kan administrere sitt team og sine applikasjoner uten å vente på tickets eller tilganger!",
+        speaker: "Hans Kristian Flaatten (Nav)",
         type: ItemType.Talk,
       },
     ],
