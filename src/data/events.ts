@@ -5,11 +5,11 @@ export const events: Event[] = [
     slug: "2025-02-04-fagdag-i-bergen",
     title: "Offentlig PaaS Fagdag (i Bergen)",
     ingress: "Vi inviterer til fagdag sammen med KS Digital i Bergen fylt med spennende foredrag og erfaringsdeling om plattform i offentlig sektor.",
-    description: "Vi jobber med å lage agenda og vil oppdatere denne siden fortløpende. Arrangementet er gratis og åpent for alle ansatte i offentlig sektor.\n\nDu kan sende inn forslag til foredrag her: https://forms.gle/mRWgBYzBvSzXkzUu6",
+    description: "Vi jobber med å lage agenda og vil oppdatere denne siden fortløpende. Arrangementet er gratis og åpent for alle med tilknyttning til offentlig sektor.",
     start: new Date('2025-02-04T09:00+02:00'),
     end: new Date('2025-02-04T15:00+02:00'),
     audience: Audience.PublicSector,
-    location: "KS Digital, Bergen",
+    location: "KS Digital, Nøstegaten 58, 5011 Bergen",
     registrationUrl: "https://forms.gle/758mQFx6jG8jFp5D9",
     organizers: [
       {
@@ -63,6 +63,13 @@ export const events: Event[] = [
       },
       {
         time: "12:45 - 13:30",
+        title: "Managed Kubernetes service and clusters",
+        description: "It's about AKS automatic, and Azure K8s Fleet Manager how that can simplify even more how we work with PaaS K8s. This will come with demo and detailed architecture.",
+        speaker: "Majid Hajian and Nicholas Mork (Microsoft)",
+        type: ItemType.Talk,
+      },
+      {
+        time: "14:00 - 14:40",
         title: "Hvordan få 100+ team til å jobbe selvstendig",
         description: "Hvordan vi har laget en selvbetjent plattform i Nav som gjør at teamene selv kan administrere sitt team og sine applikasjoner uten å vente på tickets eller tilganger!",
         speaker: "Hans Kristian Flaatten (Nav)",
