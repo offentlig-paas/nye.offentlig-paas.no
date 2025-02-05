@@ -11,6 +11,7 @@ export const events: Event[] = [
     audience: Audience.PublicSector,
     location: "KS Digital, Nøstegaten 58, 5011 Bergen",
     registrationUrl: "https://forms.gle/758mQFx6jG8jFp5D9",
+    recordingUrl: "https://www.youtube.com/playlist?list=PLjI_oey9FG7T3jpWDXuCMyaht_ONKkLjx",
     organizers: [
       {
         name: "Børge Nese",
@@ -41,6 +42,16 @@ export const events: Event[] = [
         description: "KS Digital fornyer Fiks-plattformen til en moderne tjenesteplattform for kommunal sektor. En sentral del av denne fornyelsen er applikasjonsplattformen, som skal gjøre det enklere å utvikle, dele og gjenbruke digitale tjenester.\n\nPresentasjonen vil vise reisen fra dagens Fiks-plattform til fremtidens tjenesteplattform, med særlig fokus på den nye applikasjonsplattformen og hvordan den tilrettelegger for økt utviklingstakt og bedre samarbeid på tvers av sektoren.",
         speaker: "Børge Nese og Bård Singstad (KS Digital)",
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: "https://www.youtube.com/watch?v=W4ZpLMqx25c&list=PLjI_oey9FG7T3jpWDXuCMyaht_ONKkLjx&index=3",
+            type: AttachmentType.Recording,
+          },
+          {
+            url: "https://drive.google.com/file/d/11D_j7Ou9uPjz0MY3T0R49u9obeq76FFy/view",
+            type: AttachmentType.Slides,
+          }
+        ]
       },
       {
         time: "10:30 - 11:00",
@@ -48,6 +59,12 @@ export const events: Event[] = [
         description: "Alle medlemsland i EU er pålagda å ila 2026 kunne tilby innbyggere ei digital identitslommebok.  Lommeboka skal vere gratis å motta og gratis å bruke,  og offentleg sektor pliktar å ta den i bruk til pålogging og datadeling.\n\nI dette føredraget vil me fortelje litt om det nye regelverket og kva det innebærer, me vil demonstrere lommeboka slik den føreligg no, og gje ein overfladisk gjennomgang av sentrale protokollar og dataformat som vert nytta(OpenID4VCI, OpenID4VP og SD- jwt)",
         speaker: "Jørgen Binningsbø og Aamund Bremer (Digdir)",
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: "https://www.youtube.com/watch?v=OQuE2Y66tzo&list=PLjI_oey9FG7T3jpWDXuCMyaht_ONKkLjx&index=2",
+            type: AttachmentType.Recording,
+          }
+        ]
       },
       {
         time: "11:00 - 12:00",
@@ -60,6 +77,16 @@ export const events: Event[] = [
         description: "En no-bullshit approach til framtiden av plattformene våre i Telenor og hvordan disse vil utvikle seg drastisk de kommende årene.",
         speaker: "Martin Bergo (Telenor)",
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: "https://www.youtube.com/watch?v=wTwRw8MNvv8&list=PLjI_oey9FG7T3jpWDXuCMyaht_ONKkLjx&index=1",
+            type: AttachmentType.Recording,
+          },
+          {
+            url: "https://docs.google.com/presentation/d/1OzqwlnWM9OG64kUyTMRuiZ6owk7KUtMM/view",
+            type: AttachmentType.Slides,
+          }
+        ]
       },
       {
         time: "12:45 - 13:30",
@@ -67,6 +94,12 @@ export const events: Event[] = [
         description: "It's about AKS automatic, and Azure K8s Fleet Manager how that can simplify even more how we work with PaaS K8s. This will come with demo and detailed architecture.",
         speaker: "Majid Hajian and Nicholas Mork (Microsoft)",
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: "https://drive.google.com/file/d/12xPOQ6SZSms_MPoUdzMaRaXi0U8fex8L/view",
+            type: AttachmentType.Slides,
+          }
+        ]
       },
       {
         time: "14:00 - 14:40",
@@ -74,8 +107,32 @@ export const events: Event[] = [
         description: "Hvordan vi har laget en selvbetjent plattform i Nav som gjør at teamene selv kan administrere sitt team og sine applikasjoner uten å vente på tickets eller tilganger!",
         speaker: "Hans Kristian Flaatten (Nav)",
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: "https://www.youtube.com/watch?v=l1Pf94xlcLg&list=PLjI_oey9FG7T3jpWDXuCMyaht_ONKkLjx&index=4",
+            type: AttachmentType.Recording,
+          },
+          {
+            url: "https://drive.google.com/file/d/1Q6_-x16RQyWn7iazexPvNl7S8P3pLFUX/view",
+            type: AttachmentType.Slides,
+          }
+        ]
       },
     ],
+    stats: {
+      registrations: 75,
+      participants: 85,
+      organisations: 20,
+      feedback: {
+        url: "https://forms.gle/nmWzcGNUupLKVWoc8",
+        averageRating: 4.15,
+        respondents: 19,
+        comments: [
+          "Kjekt at det er aktivitet i Bergen :-)",
+          "Var ikke klar over at skyleverandørene har opinionated auto mode på toppen av Kubernetes.",
+        ]
+      }
+    }
   },
   {
     slug: "2024-12-12-offentlig-paas-digital",
