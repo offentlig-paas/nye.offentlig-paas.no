@@ -63,6 +63,10 @@ export const events: Event[] = [
           {
             url: "https://www.youtube.com/watch?v=OQuE2Y66tzo&list=PLjI_oey9FG7T3jpWDXuCMyaht_ONKkLjx&index=2",
             type: AttachmentType.Recording,
+          },
+          {
+            url: "https://drive.google.com/file/d/1pttZPYqznxOxKb0BKAw11qB5GSxnc9bS/view",
+            type: AttachmentType.Slides,
           }
         ]
       },
@@ -125,11 +129,12 @@ export const events: Event[] = [
       organisations: 20,
       feedback: {
         url: "https://forms.gle/nmWzcGNUupLKVWoc8",
-        averageRating: 4.15,
-        respondents: 19,
+        averageRating: 4.33,
+        respondents: 21,
         comments: [
           "Kjekt at det er aktivitet i Bergen :-)",
           "Var ikke klar over at skyleverandørene har opinionated auto mode på toppen av Kubernetes.",
+          "Innsikt i arbeid på tvers av organisasjonar/institusjonar.",
         ]
       }
     }
