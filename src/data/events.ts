@@ -2,6 +2,79 @@ import { AttachmentType, Audience, Event, ItemType } from "@/lib/events/types";
 
 export const events: Event[] = [
   {
+    slug: "2024-04-24-arsmote",
+    title: "Årsmøte for Offentlig PaaS",
+    ingress: "Digitalt årsmøtet for Offentlig PaaS.",
+    description: `Styret i Offenlig PaaS innkaller til årsmøte for 2024. Årsmøtet er åpent for alle medlemmer av Offentlig PaaS.
+
+    På årsmøtet vil vi gå gjennom følgende saker: gjennomgang av årsmelding, regnskap og budsjett, samt valg av styre. Det vil også bli en gjennomgang av reviderte vedtekter som adresserer noen mangler med de initielle vedtektene som ble påpekt på Slack.
+
+    Eventuelle andre saker må sendes skriftlig til styret senest to uker før årsmøtet.`,
+    start: new Date('2024-04-24T12:00+02:00'),
+    end: new Date('2024-04-24T13:00+02:00'),
+    audience: Audience.PublicSector,
+    location: "Zoom",
+    organizers: [
+      {
+        name: 'Hans Kristian Flaatten',
+        org: 'Styreleder',
+        url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+      },
+      {
+        name: 'Audun Fauchald Strand',
+        org: 'Nestleder',
+        url: 'https://offentlig-paas-no.slack.com/team/U4U0AJ4HM',
+      },
+      {
+        name: 'Are Vattekar',
+        org: 'Styremedlem',
+        url: 'https://offentlig-paas-no.slack.com/team/U4SM25LUQ',
+      }
+    ],
+    schedule: [
+      {
+        time: "12:00 - 12:10",
+        title: "Velkommen",
+        speaker: "Hans Kristian Flaatten (Styreleder)",
+        type: ItemType.Info,
+      },
+      {
+        time: "12:10 - 12:20",
+        title: "Godkjenning av årsmelding for 2024",
+        type: ItemType.Talk,
+      },
+      {
+        time: "12:20 - 12:25",
+        title: "Godkjenning av regnskap",
+        description: "Ingen regnskap foreligger da Offentlig PaaS ikke har noen midler.",
+        type: ItemType.Talk,
+      },
+      {
+        time: "12:25 - 12:30",
+        title: "Godkjenning av budsjett",
+        description: "Ingen budsjett foreligger da Offentlig PaaS ikke har noen midler.",
+        type: ItemType.Talk,
+      },
+      {
+        time: "12:30 - 13:00",
+        title: "Reviderte vedtekter",
+        description: "Gjennomgang av reviderte vedtekter (offentlig-paas/organisasjon#1) som adresserer mangler med de initielle vedtektene.",
+        type: ItemType.Talk,
+      },
+      {
+        time: "13:00 - 13:25",
+        title: "Valg av styre",
+        description: "Valg av styreleder, nestleder og styremedlem.",
+        type: ItemType.Talk,
+      },
+      {
+        time: "13:25 - 13:30",
+        title: "Eventuelt og avslutning",
+        type: ItemType.Info,
+      }
+    ]
+  },
+  {
     slug: "2025-02-04-fagdag-i-bergen",
     title: "Offentlig PaaS Fagdag (i Bergen)",
     ingress: "Vi inviterer til fagdag sammen med KS Digital i Bergen fylt med spennende foredrag og erfaringsdeling om plattform i offentlig sektor.",
