@@ -2,16 +2,16 @@ import { AttachmentType, Audience, Event, ItemType } from "@/lib/events/types";
 
 export const events: Event[] = [
   {
-    slug: "2024-04-24-arsmote",
+    slug: "2025-04-24-arsmote",
     title: "Årsmøte for Offentlig PaaS",
     ingress: "Digitalt årsmøtet for Offentlig PaaS.",
-    description: `Styret i Offenlig PaaS innkaller til årsmøte for 2024. Årsmøtet er åpent for alle medlemmer av Offentlig PaaS.
+    description: `Styret i Offenlig PaaS innkaller til årsmøte for 2025. Årsmøtet er åpent for alle medlemmer av Offentlig PaaS.
 
     På årsmøtet vil vi gå gjennom følgende saker: gjennomgang av årsmelding, regnskap og budsjett, samt valg av styre. Det vil også bli en gjennomgang av reviderte vedtekter som adresserer noen mangler med de initielle vedtektene som ble påpekt på Slack.
 
     Eventuelle andre saker må sendes skriftlig til styret senest to uker før årsmøtet.`,
-    start: new Date('2024-04-24T12:00+02:00'),
-    end: new Date('2024-04-24T13:00+02:00'),
+    start: new Date('2025-04-24T12:00+02:00'),
+    end: new Date('2025-04-24T13:00+02:00'),
     audience: Audience.PublicSector,
     location: "Zoom",
     organizers: [
