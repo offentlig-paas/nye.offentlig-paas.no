@@ -9,15 +9,17 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import '@/styles/tailwind.css'
 
 export const metadata: Metadata = {
-  applicationName: 'Offentlig PaaS',
+  applicationName: 'Offentlig PAAS',
   title: {
-    template: '%s - Offentlig PaaS',
+    template: '%s - Offentlig PAAS',
     default:
-      'Offentlig PaaS - et nettverk for all oss som bygger applikasjonsplattformer',
+      'Offentlig PAAS – Nettverk for offentlige plattformer og applikasjoner',
   },
-  description: `Offentlig PaaS er et nettverk for offentlige etater, og offentlig selskaper, som bygger nye og moderne applikasjonsplattformer basert på prinsippene rundt Plattform som en Tjeneste (PaaS).
+  description: `Offentlig PAAS er et nettverk for teknologer i offentlig sektor som bygger og drifter digitale tjenester – med fokus på plattformer, applikasjoner, arkitektur og sikkerhet.
 
-    Nettverket ble startet som et initiativ mellom Nav og Skatteetaten i 2017 og har senere vokst til nesten 2000 medlemmer på tvers av 60 offentlige etater og selskaper i Norge.`,
+  Startet i 2017 av NAV og Skatteetaten, har nettverket vokst til over 2000 medlemmer fra mer enn 80 offentlige virksomheter.
+
+  Med diskusjoner på Slack, og regelmessige fagdager, hjelper vi hverandre med å løse reelle tekniske utfordringer.`,
   alternates: {
     types: {
       'application/rss+xml': `${process.env.NEXT_PUBLIC_URL}/feed.xml`,
