@@ -10,6 +10,7 @@ export interface Event {
   location: string;
   registrationUrl?: string;
   callForPapersUrl?: string;
+  callForPapersClosedDate?: Date;
   recordingUrl?: string;
   organizers: Organizer[];
   schedule: Item[];

@@ -16,6 +16,22 @@ export function isAcceptingRegistrations(event: Event) {
   return getStatus(event) === Status.Upcoming;
 }
 
+export function isCallForPapersOpen(event: Event) {
+  if (!event.callForPapersUrl) {
+    return false;
+  }
+  
+  const now = new Date();
+  
+  // If there's a specific CFP closed date, use that
+  if (event.callForPapersClosedDate) {
+    return now < event.callForPapersClosedDate;
+  }
+  
+  // Default behavior: CFP is open as long as the event is accepting registrations
+  return isAcceptingRegistrations(event);
+}
+
 export function formatDescription(description: string) {
   return description.replace(/\n/g, '<br>');
 }

@@ -1,7 +1,7 @@
 import { type Metadata } from 'next'
 
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { getEvent, getStatus, isAcceptingRegistrations } from '@/lib/events/helpers'
+import { getEvent, getStatus, isAcceptingRegistrations, isCallForPapersOpen } from '@/lib/events/helpers'
 import { formatDateTime } from '@/lib/formatDate'
 
 import {
@@ -243,7 +243,7 @@ export default async function Fagdag({ params }: { params: Params }) {
                         Registrer deg
                       </Button>
                     )}
-                    {event.callForPapersUrl && (
+                    {isCallForPapersOpen(event) && (
                       <Button href={event.callForPapersUrl} variant="secondary" className="group w-full mt-4">
                         <PresentationChartLineIcon className="h-4 w-4 mr-1" aria-hidden="true" />
                         Send inn forslag
