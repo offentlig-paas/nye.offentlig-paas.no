@@ -9,6 +9,7 @@ export interface Event {
   audience: Audience;
   location: string;
   registrationUrl?: string;
+  callForPapersUrl?: string;
   recordingUrl?: string;
   organizers: Organizer[];
   schedule: Item[];

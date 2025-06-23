@@ -243,6 +243,12 @@ export default async function Fagdag({ params }: { params: Params }) {
                         Registrer deg
                       </Button>
                     )}
+                    {event.callForPapersUrl && (
+                      <Button href={event.callForPapersUrl} variant="secondary" className="group w-full mt-4">
+                        <PresentationChartLineIcon className="h-4 w-4 mr-1" aria-hidden="true" />
+                        Send inn forslag
+                      </Button>
+                    )}
                     <div className="mt-4 flex flex-col gap-4">
                       <Button
                         href={googleCalendarUrl}
