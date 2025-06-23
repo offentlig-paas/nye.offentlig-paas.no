@@ -346,6 +346,32 @@ export default async function Fagdag({ params }: { params: Params }) {
                 ))}
               </p>
             )}
+            {isCallForPapersOpen(event) && (
+              <div className="mt-6 rounded-lg bg-blue-50 dark:bg-blue-950/20 p-4 border border-blue-200 dark:border-blue-800">
+                <div className="flex items-start">
+                  <PresentationChartLineIcon className="h-6 w-6 text-blue-600 dark:text-blue-400 mt-1 mr-3 flex-shrink-0" aria-hidden="true" />
+                  <div>
+                    <h3 className="text-base font-semibold text-blue-900 dark:text-blue-100">
+                      Call for Papers er åpen
+                    </h3>
+                    <p className="mt-1 text-sm text-blue-700 dark:text-blue-200">
+                      Vi tar imot forslag til presentasjoner for denne fagdagen. Del din kunnskap og erfaring med fellesskapet!
+                    </p>
+                    {event.callForPapersClosedDate && (
+                      <p className="mt-2 text-sm font-medium text-blue-800 dark:text-blue-300">
+                        Frist: {event.callForPapersClosedDate.toLocaleDateString('nb-NO', { 
+                          year: 'numeric', 
+                          month: 'long', 
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
             <h2 className="mt-8 text-base font-semibold leading-6">Agenda</h2>
             <ol className="mt-4 divide-y divide-gray-100 dark:divide-gray-800 text-sm leading-6 lg:col-span-7 xl:col-span-8">
               {event.schedule.map((item) => (
