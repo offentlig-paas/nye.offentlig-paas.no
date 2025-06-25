@@ -1,6 +1,41 @@
 import { AttachmentType, Audience, Event, ItemType } from "@/lib/events/types";
 
 export const events: Event[] = [
+    {
+    slug: "2025-09-02-trondheim-fagdag",
+    title: "Offentlig PaaS Fagdag (i Trondheim)",
+    ingress: "Vi inviterer til fagdag sammen med Norsk helsenett SF i Trondheim fylt med spennende foredrag og erfaringsdeling om plattform i offentlig sektor.",
+    description: "Vi jobber med å lage agenda og vil oppdatere denne siden fortløpende. Arrangementet er gratis og åpent for alle med tilknyttning til offentlig sektor",
+    registrationUrl: "https://forms.cloud.microsoft/e/Z4QU9a8um9",
+    start: new Date('2025-09-02T09:00+02:00'),
+    end: new Date('2025-09-02T14:30+02:00'),
+    audience: Audience.PublicSector,   
+    location: "Digs - Mesh community, Krambugata 2, 7011 Trondheim",
+    organizers: [
+      {
+        name: 'Atle Meistad',
+        org: 'Norsk Helsenett SF',
+        url: 'https://offentlig-paas-no.slack.com/team/U0836NTGBQW',
+      },
+      {
+        name: 'Håvard Elnan',
+        org: 'Norsk Helsenett SF',
+        url: 'https://offentlig-paas-no.slack.com/team/UU4T4283X',
+      }
+    ],
+    schedule: [
+      {
+        time: "09:00 - 09:30",
+        title: "Registrering",
+        type: ItemType.Registration,
+      },
+      {
+        time: "09:30 - 04:30",
+        title: "Faglig innhold og lunch TBA",
+        type: ItemType.Registration,
+      },
+    ]
+  },
   {
     slug: "2025-04-24-arsmote",
     title: "Årsmøte for Offentlig PaaS",
