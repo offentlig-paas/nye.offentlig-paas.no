@@ -189,11 +189,10 @@ export const members: Member[] = [
     linkedinUrl: 'https://www.linkedin.com/company/norsk-tipping/'
   }),
   new Member({
-    name: 'Agder Energi',
+    name: 'Å Energi',
     type: 'Selskap',
-    github: 'agderenergi',
-    linkedinUrl: 'https://www.linkedin.com/company/agder-energi-as/',
-    logoBackgroundColor: '#016494',
+    github: 'aenergi',
+    linkedinUrl: 'https://www.linkedin.com/company/%C3%A5-energi/'
   }),
   new Member({
     name: 'Fiskeridirektoratet',
