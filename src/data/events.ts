@@ -3,10 +3,12 @@ import { AttachmentType, Audience, Event, ItemType } from "@/lib/events/types";
 export const events: Event[] = [
     {
     slug: "2025-09-02-trondheim-fagdag",
-    title: "Offentlig PaaS Fagdag (i Trondheim)",
+    title: "Offentlig PaaS Fagdag Trondheim",
     ingress: "Vi inviterer til fagdag sammen med Norsk helsenett SF i Trondheim fylt med spennende foredrag og erfaringsdeling om plattform i offentlig sektor.",
     description: "Vi jobber med å lage agenda og vil oppdatere denne siden fortløpende. Arrangementet er gratis og åpent for alle med tilknyttning til offentlig sektor",
     registrationUrl: "https://forms.cloud.microsoft/e/Z4QU9a8um9",
+    callForPapersUrl: "https://forms.cloud.microsoft/e/zZJq2nKFPs",
+    callForPapersClosedDate: new Date('2025-08-15T23:59+02:00'),
     start: new Date('2025-09-02T09:00+02:00'),
     end: new Date('2025-09-02T14:30+02:00'),
     audience: Audience.PublicSector,   
