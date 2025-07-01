@@ -231,6 +231,7 @@ export const members: Member[] = [
   new Member({
     name: 'Arbeidstilsynet',
     type: 'Stat',
+    github: 'Arbeidstilsynet'
     logo: logoArbeidstilsynet,
     linkedinUrl: 'https://www.linkedin.com/company/arbeidstilsynet'
   }),
