@@ -16,18 +16,14 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'ui-avatars.com',
-      },
-      {
-        protocol: 'https',
         hostname: 'ca.slack-edge.com',
-      }
+      },
     ],
   },
   outputFileTracingIncludes: {
     '/': ['./src/app/artikkel/**/*.mdx'],
     '/artikkel': ['./src/app/artikkel/**/*.mdx'],
-  }
+  },
 }
 
 const withMDX = nextMDX({
