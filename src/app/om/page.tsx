@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import { type Metadata } from 'next'
 import Image from 'next/image'
 import { members } from '@/data/styre'
@@ -41,7 +41,7 @@ export default function About() {
           </div>
         </div>
         <div className="lg:order-first lg:row-span-2">
-          <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
+          <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
             Historien om hvordan {globalMetadata.applicationName} ble til
           </h1>
           <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
@@ -71,8 +71,9 @@ export default function About() {
               Like før pandemien traff oss i 2020 var det duket for fagdag hos
               Oslo Kommune i Oslo Rådhus, neste fagdag ble avhold digitalt hos
               SSB da det ikke var mulig å møtes fysisk. Etter en lang pause ble
-              Offentlig PaaS fagdagen rebootet i 2023 og det ble avholdt fagdager
-              hos Politiet, Skatteetaten og Telenor med rekordmange deltakere.
+              Offentlig PaaS fagdagen rebootet i 2023 og det ble avholdt
+              fagdager hos Politiet, Skatteetaten og Telenor med rekordmange
+              deltakere.
             </p>
             <p>
               Ved utgangen av 2023 hadde Offentlig PaaS Slacken over 1.100
@@ -114,12 +115,16 @@ export default function About() {
       <div className="mt-16 sm:mt-32">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-2xl lg:mx-0">
-            <h2 id="styret" className="text-2xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-3xl">
+            <h2
+              id="styret"
+              className="text-2xl font-bold tracking-tight text-zinc-800 sm:text-3xl dark:text-zinc-100"
+            >
               Styret i Offentlig PaaS
             </h2>
             <p className="mt-6 text-lg/8 text-gray-600 dark:text-zinc-400">
-              Styret er Offentlig PaaS sitt øverste organ og består av representanter fra flere offentlige virksomheter.
-              Styret velges formelt på årsmøtet som avholdes innen april hvert år.
+              Styret er Offentlig PaaS sitt øverste organ og består av
+              representanter fra flere offentlige virksomheter. Styret velges
+              formelt på årsmøtet som avholdes innen april hvert år.
             </p>
           </div>
           <ul
@@ -128,28 +133,54 @@ export default function About() {
           >
             {members.map((person) => (
               <li key={person.name}>
-                <Image alt={`Bilde av ${person.name}`} src={person.imageUrl} width={300} height={200} className="aspect-[3/2] w-full rounded-2xl object-cover" />
-                <h3 className="mt-6 text-lg/8 font-semibold tracking-tight text-gray-900 dark:text-zinc-100">{person.name}</h3>
-                <p className="text-base/7 text-gray-600 dark:text-zinc-400">{person.role}</p>
+                <Image
+                  alt={`Bilde av ${person.name}`}
+                  src={person.imageUrl}
+                  width={300}
+                  height={200}
+                  className="aspect-[3/2] w-full rounded-2xl object-cover"
+                />
+                <h3 className="mt-6 text-lg/8 font-semibold tracking-tight text-gray-900 dark:text-zinc-100">
+                  {person.name}
+                </h3>
+                <p className="text-base/7 text-gray-600 dark:text-zinc-400">
+                  {person.role}
+                </p>
                 <ul role="list" className="mt-6 flex gap-x-4">
                   <li>
-                    <SocialLink href={person.slackUrl} icon={SlackIcon} className="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400">
+                    <SocialLink
+                      href={person.slackUrl}
+                      icon={SlackIcon}
+                      className="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400"
+                    >
                       <span className="sr-only">Slack</span>
                     </SocialLink>
                   </li>
                   <li>
-                    <SocialLink href={person.githubUrl} icon={GitHubIcon} className="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400">
+                    <SocialLink
+                      href={person.githubUrl}
+                      icon={GitHubIcon}
+                      className="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400"
+                    >
                       <span className="sr-only">GitHub</span>
                     </SocialLink>
                   </li>
                   <li>
-                    <SocialLink href={person.linkedinUrl} icon={LinkedInIcon} className="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400">
+                    <SocialLink
+                      href={person.linkedinUrl}
+                      icon={LinkedInIcon}
+                      className="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400"
+                    >
                       <span className="sr-only">LinkedIn</span>
                     </SocialLink>
                   </li>
                   {person.bskyUrl && (
                     <li>
-                      <SocialLink href={person.bskyUrl} icon={BlueskyIcon} className="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400">
+                      <SocialLink
+                        href={person.bskyUrl}
+                        icon={BlueskyIcon}
+                        className="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400"
+                      >
                         <span className="sr-only">Bluesky</span>
                       </SocialLink>
                     </li>

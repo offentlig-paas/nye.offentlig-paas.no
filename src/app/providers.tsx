@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react';
+import React from 'react'
 import { createContext, useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { ThemeProvider, useTheme } from 'next-themes'
@@ -39,7 +39,9 @@ function ThemeWatcher() {
   return null
 }
 
-export const AppContext = createContext<{ previousPathname?: string | null }>({})
+export const AppContext = createContext<{ previousPathname?: string | null }>(
+  {},
+)
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()

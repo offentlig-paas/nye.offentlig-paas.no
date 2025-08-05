@@ -1,10 +1,10 @@
-import React from 'react';
+import React from 'react'
 import { type Metadata } from 'next'
 
 import { Providers } from '@/app/providers'
 import { Layout } from '@/components/Layout'
-import { Analytics } from "@vercel/analytics/react"
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 import '@/styles/tailwind.css'
 
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     githubRepoUrl: 'https://github.com/offentlig-paas/offentlig-paas.no',
     joinSlackUrl: 'https://join.slack.com/t/offentlig-paas-no/signup',
     youtubeUrl: 'https://www.youtube.com/@OffentligPaaS',
-  }
+  },
 }
 
 export default function RootLayout({

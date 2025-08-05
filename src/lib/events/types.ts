@@ -1,34 +1,34 @@
 export interface Event {
-  slug: string;
-  title: string;
-  ingress: string;
-  description?: string;
+  slug: string
+  title: string
+  ingress: string
+  description?: string
   start: Date
   end: Date
-  price?: string;
-  audience: Audience;
-  location: string;
-  registrationUrl?: string;
-  callForPapersUrl?: string;
-  callForPapersClosedDate?: Date;
-  recordingUrl?: string;
-  organizers: Organizer[];
-  schedule: Item[];
-  stats?: Stats;
+  price?: string
+  audience: Audience
+  location: string
+  registrationUrl?: string
+  callForPapersUrl?: string
+  callForPapersClosedDate?: Date
+  recordingUrl?: string
+  organizers: Organizer[]
+  schedule: Item[]
+  stats?: Stats
 }
 
 export interface Stats {
-  registrations: number;
-  participants: number;
-  organisations: number;
-  feedback?: Feedback;
+  registrations: number
+  participants: number
+  organisations: number
+  feedback?: Feedback
 }
 
 export interface Feedback {
-  url: string;
-  averageRating: number;
-  respondents: number;
-  comments: string[];
+  url: string
+  averageRating: number
+  respondents: number
+  comments: string[]
 }
 
 export enum Audience {
@@ -44,24 +44,24 @@ export enum Status {
 }
 
 export interface Organizer {
-  name: string;
-  org?: string;
-  url?: string;
+  name: string
+  org?: string
+  url?: string
 }
 
 export interface Item {
-  title: string;
-  speaker?: string;
-  description?: string;
-  time: string;
-  type: ItemType;
-  attachments?: Attachment[];
+  title: string
+  speaker?: string
+  description?: string
+  time: string
+  type: ItemType
+  attachments?: Attachment[]
 }
 
 export interface Attachment {
-  title?: string;
-  url: string;
-  type: AttachmentType;
+  title?: string
+  url: string
+  type: AttachmentType
 }
 
 export enum AttachmentType {

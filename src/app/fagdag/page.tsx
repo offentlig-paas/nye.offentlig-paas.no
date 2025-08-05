@@ -9,7 +9,7 @@ import { SimpleLayout } from '@/components/SimpleLayout'
 import { getAllEvents } from '@/lib/events/helpers'
 import { formatDate } from '@/lib/formatDate'
 
-import rssLogo from '@/images/rss.svg' 
+import rssLogo from '@/images/rss.svg'
 
 function SpeakingSection({
   children,
@@ -42,7 +42,7 @@ function Appearance({
       </Card.Title>
       <Card.Eyebrow decorate>{date}</Card.Eyebrow>
       <Card.Description>{description}</Card.Description>
-      {cta && (<Card.Cta>{cta}</Card.Cta>)}
+      {cta && <Card.Cta>{cta}</Card.Cta>}
     </Card>
   )
 }
@@ -77,11 +77,11 @@ export default function Fagdager() {
       </div>
 
       <Link href="/feed.xml?type=events">
-      <Image
-        src={rssLogo}
-        className='size-6 mt-8 float-right'
-        alt="Events RSS feed"
-      />
+        <Image
+          src={rssLogo}
+          className="float-right mt-8 size-6"
+          alt="Events RSS feed"
+        />
       </Link>
     </SimpleLayout>
   )

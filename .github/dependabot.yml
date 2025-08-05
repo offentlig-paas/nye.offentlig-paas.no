@@ -1,43 +1,43 @@
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     groups:
       react-packages:
         patterns:
-          - "react"
-          - "react-dom"
-          - "@types/react"
-          - "@types/react-dom"
+          - 'react'
+          - 'react-dom'
+          - '@types/react'
+          - '@types/react-dom'
       next-packages:
         patterns:
-          - "next"
-          - "@next/*"
-          - "eslint-config-next"
+          - 'next'
+          - '@next/*'
+          - 'eslint-config-next'
       mdx-packages:
         patterns:
-          - "@mdx-js/*"
+          - '@mdx-js/*'
       tailwind-packages:
         patterns:
-          - "tailwindcss"
-          - "@tailwindcss/*"
+          - 'tailwindcss'
+          - '@tailwindcss/*'
       vercel-packages:
         patterns:
-          - "@vercel/*"
+          - '@vercel/*'
       eslint-packages:
         patterns:
-          - "eslint"
-          - "eslint-plugin-react"
-          - "typescript-eslint"
-          - "@eslint/*"
+          - 'eslint'
+          - 'eslint-plugin-react'
+          - 'typescript-eslint'
+          - '@eslint/*'
       prettier-packages:
         patterns:
-          - "prettier"
-          - "prettier-plugin-tailwindcss"
+          - 'prettier'
+          - 'prettier-plugin-tailwindcss'
       typescript-packages:
         patterns:
-          - "typescript"
-          - "@types/node"
-          - "@types/webpack-env"
+          - 'typescript'
+          - '@types/node'
+          - '@types/webpack-env'

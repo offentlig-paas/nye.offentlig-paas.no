@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import { type Metadata } from 'next'
 import Image from 'next/image'
 
@@ -13,39 +13,44 @@ import logoRadix from '@/images/platforms/radix.svg'
 const plattformer = [
   {
     name: 'Altinn Studio',
-    description:
-      'Digdir sin applikasjonsplattform basert på Kubernetes',
-    link: { href: 'https://docs.altinn.studio/nb/altinn-studio/', label: 'docs.altinn.studio' },
+    description: 'Digdir sin applikasjonsplattform basert på Kubernetes',
+    link: {
+      href: 'https://docs.altinn.studio/nb/altinn-studio/',
+      label: 'docs.altinn.studio',
+    },
     logo: logoAltinn,
   },
   {
     name: 'Aurora',
     description:
       'Skatteetaten sin applikasjonsplattform basert på RedHat OpenShift',
-    link: { href: 'https://skatteetaten.github.io/aurora/', label: 'skatteetaten.github.io' },
+    link: {
+      href: 'https://skatteetaten.github.io/aurora/',
+      label: 'skatteetaten.github.io',
+    },
     logo: logoAurora,
   },
   {
     name: 'Skip',
-    description:
-      'Statens Kartverks Infrastrukturplatform (Skip)',
+    description: 'Statens Kartverks Infrastrukturplatform (Skip)',
     link: { href: 'https://skip.kartverket.no/', label: 'skip.kartverket.no' },
     logo: logoSkip,
   },
   {
     name: 'NAIS',
-    description:
-      'Nav sin applikasjonsplattform basert på Kubernetes',
+    description: 'Nav sin applikasjonsplattform basert på Kubernetes',
     link: { href: 'https://nais.io', label: 'nais.io' },
     logo: logoNais,
   },
   {
     name: 'Radix',
-    description:
-      'Equinor sin applikasjonsplattform basert på Kubernetes',
-    link: { href: 'https://www.radix.equinor.com/', label: 'radix.equinor.com' },
+    description: 'Equinor sin applikasjonsplattform basert på Kubernetes',
+    link: {
+      href: 'https://www.radix.equinor.com/',
+      label: 'radix.equinor.com',
+    },
     logo: logoRadix,
-  }
+  },
 ]
 
 function LinkIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
@@ -69,7 +74,7 @@ export default function Plattformer() {
     <SimpleLayout
       title="Norske applikasjonsplattformer"
       intro="Offentlig sektor i Norge har flere spennende applikasjonsplattformer som gjør det enklere for utviklere å lage og drifte applikasjoner. Her har vi samlet noen av de mest kjente med lenker til mer informasjon."
-      gitHubPage='src/app/plattformer/page.tsx'
+      gitHubPage="src/app/plattformer/page.tsx"
     >
       <ul
         role="list"
@@ -77,7 +82,7 @@ export default function Plattformer() {
       >
         {plattformer.map((project) => (
           <Card as="li" key={project.name}>
-            <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
+            <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md ring-1 shadow-zinc-800/5 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
               <Image
                 src={project.logo}
                 alt=""
