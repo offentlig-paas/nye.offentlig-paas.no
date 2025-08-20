@@ -3,7 +3,7 @@ import { AttachmentType, Audience, Event, ItemType } from "@/lib/events/types";
 export const events: Event[] = [
     {
     slug: "2025-09-02-trondheim-fagdag",
-    title: "Offentlig PaaS Fagdag Trondheim",
+    title: "Offentlig PaaS Fagdag (i Trondheim)",
     ingress: "Vi inviterer til fagdag sammen med Norsk helsenett SF i Trondheim fylt med spennende foredrag og erfaringsdeling om plattform i offentlig sektor.",
     description: "Vi jobber med å lage agenda og vil oppdatere denne siden fortløpende. Arrangementet er gratis og åpent for alle med tilknyttning til offentlig sektor",
     registrationUrl: "https://forms.cloud.microsoft/e/Z4QU9a8um9",
