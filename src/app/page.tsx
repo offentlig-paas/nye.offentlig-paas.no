@@ -1,8 +1,11 @@
-import React from 'react';
+import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import clsx from 'clsx'
-import { CalendarIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/16/solid'
+import {
+  CalendarIcon,
+  ChatBubbleLeftRightIcon,
+} from '@heroicons/react/16/solid'
 
 import { Button } from '@/components/Button'
 import { Card } from '@/components/Card'
@@ -22,9 +25,9 @@ import image5 from '@/images/photos/image-5.jpg'
 import { type ArticleWithSlug, getAllArticles } from '@/lib/articles'
 import { formatDate } from '@/lib/formatDate'
 import { metadata as globalMetadata } from './layout'
-import { getUpcomingEvents } from '@/lib/events/helpers';
-import { getUserCount } from '@/lib/slack/client';
-import { InfoCard } from '@/components/Stats';
+import { getUpcomingEvents } from '@/lib/events/helpers'
+import { getUserCount } from '@/lib/slack/client'
+import { InfoCard } from '@/components/Stats'
 
 export const revalidate = 3600
 
@@ -52,16 +55,25 @@ function UpcomingEvents() {
         <div className="relative space-y-10 rounded-2xl border border-teal-500 bg-teal-50 p-6 dark:border-teal-400 dark:bg-teal-900/20">
           {events.map((event) => (
             <div key={event.slug} className="space-y-2">
-              <Link href={`/fagdag/${event.slug}`} className="text-md font-semibold text-teal-700 dark:text-teal-300">
+              <Link
+                href={`/fagdag/${event.slug}`}
+                className="text-md font-semibold text-teal-700 dark:text-teal-300"
+              >
                 {event.title}
               </Link>
               <div className="flex items-center space-x-2">
                 <CalendarIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-                <time dateTime={event.start.toISOString()} className="block text-sm text-gray-500 dark:text-gray-400">
+                <time
+                  dateTime={event.start.toISOString()}
+                  className="block text-sm text-gray-500 dark:text-gray-400"
+                >
                   {formatDate(event.start)}
                 </time>
                 <span className="mx-2">|</span>
-                <Link href={`/fagdag/${event.slug}`} className="text-sm text-teal-500 dark:text-teal-400">
+                <Link
+                  href={`/fagdag/${event.slug}`}
+                  className="text-sm text-teal-500 dark:text-teal-400"
+                >
                   Les mer
                 </Link>
               </div>
@@ -77,7 +89,11 @@ function Bluesky() {
   return (
     <div className="space-y-2">
       <a href="https://go.bsky.app/Qzx53N9" className="block">
-        <Image src={bluesky} alt="Offentlig PaaS Developer 1" className="w-full rounded-2xl" />
+        <Image
+          src={bluesky}
+          alt="Offentlig PaaS Developer 1"
+          className="w-full rounded-2xl"
+        />
       </a>
     </div>
   )
@@ -87,7 +103,11 @@ async function SlackUsers() {
   const slackUserCount = await getUserCount()
 
   return (
-    <InfoCard title="Antall brukere på Slack" number={slackUserCount} label="kontoer" />
+    <InfoCard
+      title="Antall brukere på Slack"
+      number={slackUserCount}
+      label="kontoer"
+    />
   )
 }
 
@@ -101,7 +121,8 @@ function SlackJoin() {
         <span className="ml-3">Bli med på diskusjonen!</span>
       </h2>
       <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-        Offentlig PaaS har Norges største nettverk av plattformentusiaster samlet i en Slack-kanal!
+        Offentlig PaaS har Norges største nettverk av plattformentusiaster
+        samlet i en Slack-kanal!
       </p>
 
       <Button href={slackUrl} variant="primary" className="group mt-6 w-full">
@@ -113,7 +134,13 @@ function SlackJoin() {
 }
 
 function Photos() {
-  const rotations = ['rotate-2', '-rotate-2', 'rotate-2', 'rotate-2', '-rotate-2']
+  const rotations = [
+    'rotate-2',
+    '-rotate-2',
+    'rotate-2',
+    'rotate-2',
+    '-rotate-2',
+  ]
 
   return (
     <div className="mt-16 sm:mt-20">
@@ -160,15 +187,18 @@ export default async function Home() {
             <SocialLink
               href={githubUrl}
               aria-label="Følg oss på GitHub"
-              icon={GitHubIcon} />
+              icon={GitHubIcon}
+            />
             <SocialLink
               href={slackUrl}
               aria-label="Bli med på diskusjonen i Slack"
-              icon={SlackIcon} />
+              icon={SlackIcon}
+            />
             <SocialLink
               href={youtubeUrl}
               aria-label="Følg oss på YouTube"
-              icon={YouTubeIcon} />
+              icon={YouTubeIcon}
+            />
           </div>
         </div>
       </Container>

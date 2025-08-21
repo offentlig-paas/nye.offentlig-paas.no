@@ -48,8 +48,7 @@ export const article = {
   author: 'Kari Nordmann',
   date: '2024-MM-DD',
   title: 'Tittel på artikkelen',
-  description:
-    'To tre setninger som beskriver hva artikkelen handler om.',
+  description: 'To tre setninger som beskriver hva artikkelen handler om.',
 }
 
 export const metadata = {

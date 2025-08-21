@@ -1,11 +1,14 @@
-import React from 'react';
+import React from 'react'
 
-export function Rating({ rating, total }: { rating: number, total: number }) {
+export function Rating({ rating, total }: { rating: number; total: number }) {
   return (
-    <div className="flex items-center" aria-label={`Vurdering: ${rating} av 5 stjerner med ${total} vurderinger`}>
+    <div
+      className="flex items-center"
+      aria-label={`Vurdering: ${rating} av 5 stjerner med ${total} vurderinger`}
+    >
       {Array.from({ length: 5 }, (_, index) => {
-        const isFullStar = index < Math.floor(rating);
-        const isHalfStar = !isFullStar && index < rating;
+        const isFullStar = index < Math.floor(rating)
+        const isHalfStar = !isFullStar && index < rating
         return (
           <div key={index} className="relative">
             <svg
@@ -26,7 +29,9 @@ export function Rating({ rating, total }: { rating: number, total: number }) {
               <path
                 d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.286 3.957c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.175 0l-3.37 2.448c-.784.57-1.838-.197-1.54-1.118l1.286-3.957a1 1 0 00-.364-1.118L2.05 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z"
                 clipPath="url(#left-half)"
-                className={isFullStar || isHalfStar ? 'text-yellow-400' : 'text-gray-300'}
+                className={
+                  isFullStar || isHalfStar ? 'text-yellow-400' : 'text-gray-300'
+                }
               />
               <path
                 d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.286 3.957c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.175 0l-3.37 2.448c-.784.57-1.838-.197-1.54-1.118l1.286-3.957a1 1 0 00-.364-1.118L2.05 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z"
@@ -35,9 +40,11 @@ export function Rating({ rating, total }: { rating: number, total: number }) {
               />
             </svg>
           </div>
-        );
+        )
       })}
-      <span className="ml-2 text-sm text-gray-500">{rating.toFixed(1)} ({total} vurderinger)</span>
+      <span className="ml-2 text-sm text-gray-500">
+        {rating.toFixed(1)} ({total} vurderinger)
+      </span>
     </div>
-  );
+  )
 }

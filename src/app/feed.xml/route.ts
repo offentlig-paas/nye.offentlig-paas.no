@@ -85,7 +85,7 @@ const addAllArticlesTo = async (feed: Feed, baseURL: URL) => {
 }
 
 const addAllEventsTo = async (feed: Feed, siteURL: URL) => {
-  getAllEvents().forEach(event => {
+  getAllEvents().forEach((event) => {
     feed.addItem({
       title: event.title,
       id: event.slug,

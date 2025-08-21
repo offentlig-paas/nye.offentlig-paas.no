@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react';
+import React from 'react'
 import Image from 'next/image'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { members } from '@/data/members'
@@ -26,7 +26,7 @@ export default function Uses() {
     <SimpleLayout
       title="Medlemmer av Offentlig PaaS"
       intro="Offentlig PaaS er for alle offentlige virksomheter i stat og kommune, eller private virksomheter hvor offentligheten eier 50%, med interesse for plattformteknologi og kunnskapsdeling. Dette er en grasrotbevegelse for de som jobber med plattformer og det er ingen kostnad eller forpliktelser ved å være medlem."
-      gitHubPage='src/data/members.ts'
+      gitHubPage="src/data/members.ts"
     >
       <div className="mx-auto max-w-7xl">
         <span className="isolate shadow-sm">
@@ -34,13 +34,15 @@ export default function Uses() {
             <button
               key={button}
               type="button"
-              className={`relative px-3 py-2 mx-0.5 my-0.5 sm:mx-0 rounded sm:rounded-none text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10 ${activeButton === button ? 'bg-gray-100' : 'bg-white'
-                } ${i === 0
+              className={`relative mx-0.5 my-0.5 rounded px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-10 sm:mx-0 sm:rounded-none ${
+                activeButton === button ? 'bg-gray-100' : 'bg-white'
+              } ${
+                i === 0
                   ? 'sm:rounded-l-md'
                   : i === types.length - 1
                     ? 'sm:rounded-r-md'
                     : ''
-                }`}
+              }`}
               onClick={() => handleClick(button)}
             >
               {button}
@@ -56,16 +58,16 @@ export default function Uses() {
               (activeButton === member.type || activeButton === '') && (
                 <li key={member.name}>
                   <Image
-                    className="w-full h-[60vw] sm:h-[120px] rounded-2xl object-contain"
+                    className="h-[60vw] w-full rounded-2xl object-contain sm:h-[120px]"
                     src={member.image()}
                     style={{
-                      backgroundColor: member.logoBackgroundColor ?? "#ffffff",
+                      backgroundColor: member.logoBackgroundColor ?? '#ffffff',
                     }}
                     width="200"
                     height="200"
                     alt=""
                   />
-                  <h3 className="mt-6 text-lg font-semibold leading-8 tracking-tight text-gray-900 dark:text-gray-100">
+                  <h3 className="mt-6 text-lg leading-8 font-semibold tracking-tight text-gray-900 dark:text-gray-100">
                     {member.name}
                   </h3>
                   <p className="text-base leading-7 text-gray-600 dark:text-gray-400">
@@ -74,7 +76,10 @@ export default function Uses() {
                   <ul role="list" className="mt-6 flex gap-x-6">
                     {member.github && (
                       <li>
-                        <a href={`https://github.com/${member.github}`} className="text-gray-400 hover:text-gray-500">
+                        <a
+                          href={`https://github.com/${member.github}`}
+                          className="text-gray-400 hover:text-gray-500"
+                        >
                           <span className="sr-only">GitHub</span>
                           <GitHubIcon className="h-6 w-6 fill-current" />
                         </a>
@@ -96,7 +101,7 @@ export default function Uses() {
               ),
           )}
         </ul>
-      </div >
-    </SimpleLayout >
+      </div>
+    </SimpleLayout>
   )
 }

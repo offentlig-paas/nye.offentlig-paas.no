@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import { useId } from 'react'
 
 export function Section({
