@@ -10,7 +10,7 @@ export const events: Event[] = [
       'Vi jobber med å lage agenda og vil oppdatere denne siden fortløpende. Arrangementet er gratis og åpent for alle med tilknyttning til offentlig sektor',
     registrationUrl: 'https://forms.cloud.microsoft/e/Z4QU9a8um9',
     callForPapersUrl: 'https://forms.cloud.microsoft/e/zZJq2nKFPs',
-    callForPapersClosedDate: new Date('2025-08-15T23:59+02:00'),
+    callForPapersClosedDate: new Date('2025-09-02T09:00+02:00'),
     start: new Date('2025-09-02T09:00+02:00'),
     end: new Date('2025-09-02T14:30+02:00'),
     audience: Audience.PublicSector,
@@ -34,9 +34,49 @@ export const events: Event[] = [
         type: ItemType.Registration,
       },
       {
-        time: '09:30 - 04:30',
-        title: 'Faglig innhold og lunch TBA',
-        type: ItemType.Registration,
+        time: '09:30 - 10:15',
+        title: 'Reengineering the stack',
+        description:
+          'NHN jobber med en helt ny containerplattform og vi vil presentere hvordan vi har tenkt.',
+        speaker: 'Håvard Elnan (Norsk helsenett)',
+        type: ItemType.Talk,
+      },
+        {
+        time: '10:15 - 11:00',
+        title: 'Kunstig intelligens i Skatteetaten',
+        description:
+          'Fra sparsom bruk av KI til innovasjon og faktisk tidsbesparelse / effektivisering. Skatteetaten presenterer reisen med vurderinger gjort underveis. Vi prater om blant annet sikkerhet, skalering, juridiske utfordringer, og gulroten i enden av tunnelen 🥕',
+        speaker: 'Tor Ivar Asbølmo og Geir Tore Johansen (Skatteetaten)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '11:00 - 11:45',
+        title: 'Lunch',
+        type: ItemType.Break,
+      },
+      {
+        time: '11:45 - 12:30',
+        title: 'NHNs Observability Plattform — Design & Erfaringer',
+        description:
+          'NHN har mange forskjellige team og ulike produkter vi lager som understøtter helsesektoren. I denne sesjonen ser vi på observability stack-en vi tilbyr til leveranseteamene våre. Vi kikker først på hva det er vi har satt opp, og hvordan det funker i praksis. Så litt på designet og tankene bak, før vi til slutt deler et innblikk i erfaringer med hvordan observability plattformen har oppført seg.',
+        speaker: 'Simon Randby (Norsk helsenett)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '12:30 - 13:15',
+        title: 'TBA / Openspace',
+        description:
+          'Meld deg gjerne til å bidra med temaer eller spørsmål du ønsker å ta opp.',
+        speaker: 'TBA',
+        type: ItemType.Talk,
+      },
+      {
+        time: '13:15 - 14:00',
+        title: 'TBA / Openspace',
+        description:
+          'Meld deg gjerne til å bidra med temaer eller spørsmål du ønsker å ta opp.',
+        speaker: 'TBA',
+        type: ItemType.Talk,
       },
     ],
   },
