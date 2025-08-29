@@ -10,7 +10,7 @@ export const events: Event[] = [
       'Vi jobber med å lage agenda og vil oppdatere denne siden fortløpende. Arrangementet er gratis og åpent for alle med tilknyttning til offentlig sektor',
     registrationUrl: 'https://forms.cloud.microsoft/e/Z4QU9a8um9',
     callForPapersUrl: 'https://forms.cloud.microsoft/e/zZJq2nKFPs',
-    callForPapersClosedDate: new Date('2025-08-27T23:59+02:00'),
+    callForPapersClosedDate: new Date('2025-09-02T09:00+02:00'),
     start: new Date('2025-09-02T09:00+02:00'),
     end: new Date('2025-09-02T14:30+02:00'),
     audience: Audience.PublicSector,
