@@ -71,11 +71,11 @@ new Member({
 ### Essential Commands
 
 ```bash
-npm run dev          # Development server (localhost:3000)
-npm run build        # Production build
-npm run lint         # ESLint checking
-npm run format       # Prettier formatting
-npm run typecheck    # TypeScript checking
+yarn dev             # Development server (localhost:3000)
+yarn build           # Production build
+yarn lint            # ESLint checking
+yarn format          # Prettier formatting
+yarn typecheck       # TypeScript checking
 ```
 
 ### Build System
@@ -84,6 +84,13 @@ npm run typecheck    # TypeScript checking
 - **Syntax Highlighting**: Uses `@mapbox/rehype-prism` for code blocks
 - **Images**: Remote patterns configured for GitHub and Slack avatars
 - **Analytics**: Vercel Analytics and Speed Insights integrated
+
+### Deployment & CI/CD
+
+- **Platform**: Vercel handles automatic deployments from Git
+- **Preview Builds**: Every PR gets a preview deployment
+- **Production**: Main branch auto-deploys to production
+- **Environment Variables**: `SLACK_BOT_TOKEN` required for API integration
 
 ### API Integration
 
