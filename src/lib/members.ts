@@ -1,4 +1,4 @@
-import { ImageProps } from 'next/image'
+import type { ImageProps } from 'next/image'
 
 export interface iMember {
   name: string

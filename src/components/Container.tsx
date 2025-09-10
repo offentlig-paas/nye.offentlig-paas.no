@@ -1,4 +1,5 @@
-import React, { forwardRef, ComponentPropsWithoutRef, ElementRef } from 'react'
+import React, { forwardRef } from 'react'
+import type { ComponentPropsWithoutRef, ElementRef } from 'react'
 import clsx from 'clsx'
 
 type OuterContainerProps = ComponentPropsWithoutRef<'div'> & {

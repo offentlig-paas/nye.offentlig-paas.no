@@ -1,5 +1,6 @@
 import { events } from '@/data/events'
-import { Status, Event } from '@/lib/events/types'
+import type { Event } from '@/lib/events/types'
+import { Status } from '@/lib/events/types'
 
 export function getStatus(event: Event) {
   const now = new Date()

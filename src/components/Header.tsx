@@ -1,6 +1,7 @@
 'use client'
 
-import React, { ComponentPropsWithoutRef } from 'react'
+import React from 'react'
+import type { ComponentPropsWithoutRef } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'

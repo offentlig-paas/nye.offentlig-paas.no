@@ -1,4 +1,5 @@
-import { AttachmentType, Audience, Event, ItemType } from '@/lib/events/types'
+import type { Event } from '@/lib/events/types'
+import { AttachmentType, Audience, ItemType } from '@/lib/events/types'
 
 export const events: Event[] = [
   {

@@ -35,7 +35,7 @@ export function Avatar({ name, size = 'md', className = '' }: AvatarProps) {
       hash = fullName.charCodeAt(i) + ((hash << 5) - hash)
     }
 
-    return colors[Math.abs(hash) % colors.length]
+    return colors[Math.abs(hash) % colors.length] ?? 'bg-blue-500'
   }
 
   const sizeClasses = {

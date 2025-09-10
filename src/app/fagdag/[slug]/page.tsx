@@ -25,10 +25,12 @@ import {
 } from '@heroicons/react/20/solid'
 import { Container } from '@/components/Container'
 import React from 'react'
-import {
+import type {
   Attachment,
-  AttachmentType,
   Event,
+} from '@/lib/events/types'
+import {
+  AttachmentType,
   ItemType,
   Status,
 } from '@/lib/events/types'
