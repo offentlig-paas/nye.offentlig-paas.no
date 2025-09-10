@@ -4,19 +4,30 @@ Dette er den nye nettsiden til Offentlig PaaS. Den er bygget med [Tailwind CSS](
 
 ## Lokal utvikling
 
-For å komme i gang med denne malen, installer først npm-avhengighetene:
+For å komme i gang med denne malen, installer først avhengighetene:
 
 ```bash
-npm install
+yarn install
 ```
 
 Kjør deretter utviklingsserveren:
 
 ```bash
-npm run dev
+yarn dev
 ```
 
 Sist, åpne [http://localhost:3000](http://localhost:3000) i nettleseren din for å se nettsiden.
+
+### Utviklingskommandoer
+
+```bash
+yarn dev             # Utviklingsserver (localhost:3000)
+yarn build           # Produksjonsbygg
+yarn start           # Start produksjonsserver
+yarn lint            # ESLint sjekking
+yarn format          # Prettier formatering
+yarn typecheck       # TypeScript sjekking
+```
 
 ### VS Code
 
