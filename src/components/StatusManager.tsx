@@ -25,7 +25,7 @@ function PortalMenu({
   isOpen,
 }: {
   children: React.ReactNode
-  buttonRef: React.RefObject<HTMLButtonElement>
+  buttonRef: React.RefObject<HTMLButtonElement | null>
   isOpen: boolean
 }) {
   const [mounted, setMounted] = useState(false)
