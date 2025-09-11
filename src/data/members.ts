@@ -7,8 +7,16 @@ import logoFiskeridirektoratet from '@/images/logos/fiskeridirektoratet.svg'
 import logoBanenor from '@/images/logos/banenor.svg'
 import logoSykehusapotekene from '@/images/logos/sykehusapotekene.svg'
 import logoUdi from '@/images/logos/udi.svg'
+import logoHKDir from '@/images/logos/hkdir.svh'
 
 export const members: Member[] = [
+  new Member({
+    name: 'Direktoratet for Høyere Utdanning og Kompetanse',
+    type: MemberType.DIRECTORATE,
+    homepage: 'https://hkdir.no/',
+    logo: logoHKDir,
+    linkedinUrl: 'https://www.linkedin.com/company/hk-dir/',
+  }),
   new Member({
     name: 'Nav',
     type: MemberType.DIRECTORATE,
