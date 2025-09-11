@@ -7,7 +7,7 @@ import logoFiskeridirektoratet from '@/images/logos/fiskeridirektoratet.svg'
 import logoBanenor from '@/images/logos/banenor.svg'
 import logoSykehusapotekene from '@/images/logos/sykehusapotekene.svg'
 import logoUdi from '@/images/logos/udi.svg'
-import logoHKDir from '@/images/logos/hkdir.svh'
+import logoHKDir from '@/images/logos/hkdir.svg'
 
 export const members: Member[] = [
   new Member({
