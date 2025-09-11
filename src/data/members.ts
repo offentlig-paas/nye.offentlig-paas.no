@@ -57,7 +57,7 @@ export const members: Member[] = [
   }),
   new Member({
     name: 'NRK',
-    type: MemberType.PUBLIC_CORPORATION,
+    type: MemberType.STATE_COMPANY,
     github: 'nrkno',
     homepage: 'https://www.nrk.no',
     linkedinUrl: 'https://www.linkedin.com/company/nrk/',
