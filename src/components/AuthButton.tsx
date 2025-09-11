@@ -14,7 +14,10 @@ export function AuthButton() {
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsDropdownOpen(false)
       }
     }
@@ -37,7 +40,7 @@ export function AuthButton() {
     const firstName = session.user.name?.split(' ')[0] || 'Bruker'
 
     return (
-      <div className="relative group" ref={dropdownRef}>
+      <div className="group relative" ref={dropdownRef}>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           className="flex items-center gap-2 rounded-full bg-white/90 px-3 py-2 shadow-lg ring-1 shadow-zinc-800/5 ring-zinc-900/5 backdrop-blur transition hover:bg-white/95 hover:ring-zinc-900/10 dark:bg-zinc-800/90 dark:ring-white/10 dark:hover:bg-zinc-800/95 dark:hover:ring-white/20"
@@ -63,20 +66,25 @@ export function AuthButton() {
             {firstName}
           </span>
           <svg
-            className={`h-4 w-4 text-zinc-500 transition-all dark:text-zinc-400 group-hover:text-zinc-700 dark:group-hover:text-zinc-300 ${isDropdownOpen ? 'rotate-180' : ''
-              }`}
+            className={`h-4 w-4 text-zinc-500 transition-all group-hover:text-zinc-700 dark:text-zinc-400 dark:group-hover:text-zinc-300 ${
+              isDropdownOpen ? 'rotate-180' : ''
+            }`}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
             strokeWidth={1.5}
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19 9l-7 7-7-7"
+            />
           </svg>
         </button>
 
         {isDropdownOpen && (
           <div className="absolute right-0 mt-2 w-64 rounded-lg bg-white shadow-lg ring-1 ring-black/5 dark:bg-zinc-900 dark:ring-white/10">
-            <div className="p-4 border-b border-zinc-100 dark:border-zinc-800">
+            <div className="border-b border-zinc-100 p-4 dark:border-zinc-800">
               <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
                 {session.user.name}
               </p>
@@ -89,7 +97,7 @@ export function AuthButton() {
                 </p>
               )}
               {session.user.isAdmin && (
-                <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200 mt-2">
+                <span className="mt-2 inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
                   Admin
                 </span>
               )}

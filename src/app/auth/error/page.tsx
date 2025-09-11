@@ -43,11 +43,7 @@ export default async function AuthErrorPage({
                 Prøv på nytt
               </Button>
 
-              <Button
-                href="/"
-                variant="secondary"
-                className="mt-4 w-full"
-              >
+              <Button href="/" variant="secondary" className="mt-4 w-full">
                 Tilbake til forsiden
               </Button>
             </div>

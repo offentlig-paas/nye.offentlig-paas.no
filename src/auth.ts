@@ -25,7 +25,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.picture = user.image
 
         // Extract team ID from account if available
-        if (account.team && typeof account.team === 'object' && 'id' in account.team) {
+        if (
+          account.team &&
+          typeof account.team === 'object' &&
+          'id' in account.team
+        ) {
           token.slackTeamId = account.team.id as string
         }
 
@@ -35,7 +39,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           providerAccountId: account.providerAccountId,
           slackUserId,
           accountKeys: Object.keys(account),
-          userKeys: Object.keys(user)
+          userKeys: Object.keys(user),
         })
 
         // Check admin status using bot token (with usergroups:read scope)
@@ -49,7 +53,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             if (adminStatus.userInfo) {
               token.title = adminStatus.userInfo.profile?.title
               token.statusText = adminStatus.userInfo.profile?.status_text
-              token.department = adminStatus.userInfo.profile?.fields?.department?.value
+              token.department =
+                adminStatus.userInfo.profile?.fields?.department?.value
               token.slackProfile = adminStatus.userInfo.profile
             }
           } catch (error) {
@@ -70,7 +75,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.statusText = token.statusText as string
         session.user.department = token.department as string
         session.user.adminGroups = token.adminGroups as string[]
-        session.user.slackProfile = token.slackProfile as any
+        session.user.slackProfile = token.slackProfile as Record<
+          string,
+          unknown
+        >
       }
       return session
     },

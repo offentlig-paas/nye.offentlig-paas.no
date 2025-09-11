@@ -3,6 +3,31 @@ import { AttachmentType, Audience, ItemType } from '@/lib/events/types'
 
 export const events: Event[] = [
   {
+    slug: '2025-10-15-selvbetjening-fagdag',
+    title: 'Offentlig PaaS Fagdag Selvbetjening',
+    ingress:
+      'Vi inviterer til fagdag om selvbetjening og autonome team hos Telenor på Fornebu.',
+    description:
+      'En dag fylt med spennende foredrag og erfaringsdeling om hvordan selvbetjening kan gi autonome team økt fart og flyt. Vi jobber med å lage agenda og vil oppdatere denne siden fortløpende. Arrangementet er gratis og åpent for alle med tilknytning til offentlig sektor.',
+    start: new Date('2025-10-15T11:00+02:00'),
+    end: new Date('2025-10-15T15:00+02:00'),
+    audience: Audience.OpenForAll,
+    location: 'Telenor Norge, Fornebuporten, Snarøyveien 30, 1360 Fornebu',
+    organizers: [
+      {
+        name: 'Mats Bækkelund',
+        org: 'Telenor Norge',
+        url: 'https://offentlig-paas-no.slack.com/team/U04QQLQ7KK8',
+      },
+      {
+        name: 'Hans Kristian Flaatten',
+        org: 'Nav',
+        url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+      },
+    ],
+    schedule: [],
+  },
+  {
     slug: '2025-09-02-trondheim-fagdag',
     title: 'Offentlig PaaS Fagdag Trondheim',
     ingress:

@@ -53,22 +53,26 @@ export default async function ProfilePage() {
                 {user.name}
               </h2>
               {user.email && (
-                <p className="mt-1 text-lg text-zinc-600 dark:text-zinc-400">{user.email}</p>
+                <p className="mt-1 text-lg text-zinc-600 dark:text-zinc-400">
+                  {user.email}
+                </p>
               )}
               <div className="mt-3 flex flex-wrap gap-2">
                 {user.isAdmin && (
-                  <span className="inline-flex items-center rounded-md bg-red-50 px-3 py-1 text-sm font-medium text-red-700 ring-1 ring-inset ring-red-600/10 dark:bg-red-400/10 dark:text-red-400 dark:ring-red-400/20">
+                  <span className="inline-flex items-center rounded-md bg-red-50 px-3 py-1 text-sm font-medium text-red-700 ring-1 ring-red-600/10 ring-inset dark:bg-red-400/10 dark:text-red-400 dark:ring-red-400/20">
                     Administrator
                   </span>
                 )}
-                {user.adminGroups && user.adminGroups.length > 0 && user.adminGroups.map((group) => (
-                  <span
-                    key={group}
-                    className="inline-flex items-center rounded-md bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10 dark:bg-blue-400/10 dark:text-blue-400 dark:ring-blue-400/30"
-                  >
-                    @{group}
-                  </span>
-                ))}
+                {user.adminGroups &&
+                  user.adminGroups.length > 0 &&
+                  user.adminGroups.map(group => (
+                    <span
+                      key={group}
+                      className="inline-flex items-center rounded-md bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700 ring-1 ring-blue-700/10 ring-inset dark:bg-blue-400/10 dark:text-blue-400 dark:ring-blue-400/30"
+                    >
+                      @{group}
+                    </span>
+                  ))}
               </div>
             </div>
           </div>
@@ -118,7 +122,7 @@ export default async function ProfilePage() {
                   <dt className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
                     Slack ID
                   </dt>
-                  <dd className="mt-1 text-base font-mono text-zinc-900 dark:text-zinc-100">
+                  <dd className="mt-1 font-mono text-base text-zinc-900 dark:text-zinc-100">
                     {user.slackId}
                   </dd>
                 </div>
@@ -133,38 +137,41 @@ export default async function ProfilePage() {
                     Slack-profil
                   </h3>
                   <dl className="mt-6 space-y-6">
-                    {user.slackProfile.display_name && (
+                    {user.slackProfile?.display_name &&
+                    typeof user.slackProfile.display_name === 'string' ? (
                       <div>
                         <dt className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
                           Visningsnavn
                         </dt>
                         <dd className="mt-1 text-base text-zinc-900 dark:text-zinc-100">
-                          {user.slackProfile.display_name}
+                          {user.slackProfile.display_name as string}
                         </dd>
                       </div>
-                    )}
+                    ) : null}
 
-                    {user.slackProfile.pronouns && (
+                    {user.slackProfile?.pronouns &&
+                    typeof user.slackProfile.pronouns === 'string' ? (
                       <div>
                         <dt className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
                           Pronomen
                         </dt>
                         <dd className="mt-1 text-base text-zinc-900 dark:text-zinc-100">
-                          {user.slackProfile.pronouns}
+                          {user.slackProfile.pronouns as string}
                         </dd>
                       </div>
-                    )}
+                    ) : null}
 
-                    {user.slackProfile.phone && (
+                    {user.slackProfile?.phone &&
+                    typeof user.slackProfile.phone === 'string' ? (
                       <div>
                         <dt className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
                           Telefon
                         </dt>
                         <dd className="mt-1 text-base text-zinc-900 dark:text-zinc-100">
-                          {user.slackProfile.phone}
+                          {user.slackProfile.phone as string}
                         </dd>
                       </div>
-                    )}
+                    ) : null}
                   </dl>
                 </>
               )}

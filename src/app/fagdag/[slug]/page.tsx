@@ -7,8 +7,10 @@ import {
   getStatus,
   isAcceptingRegistrations,
   isCallForPapersOpen,
+  canUserAccessEvent,
 } from '@/lib/events/helpers'
 import { formatDateTime } from '@/lib/formatDate'
+import { auth } from '@/auth'
 
 import {
   CalendarDaysIcon,
@@ -23,6 +25,7 @@ import {
   ChatBubbleBottomCenterIcon,
   VideoCameraIcon,
   PaperClipIcon,
+  CogIcon,
 } from '@heroicons/react/20/solid'
 import { Container } from '@/components/Container'
 import React from 'react'
@@ -58,13 +61,13 @@ function EventStatus({ status }: { status: Status }) {
   const statusClass = (status: Status) => {
     switch (status) {
       case Status.Upcoming:
-        return 'bg-blue-50 text-blue-600 ring-blue-600/20'
+        return 'bg-blue-50 text-blue-600 ring-blue-600/20 dark:bg-blue-950/20 dark:text-blue-400 dark:ring-blue-400/20'
       case Status.Past:
-        return 'bg-gray-50 text-gray-600 ring-gray-600/20'
+        return 'bg-gray-50 text-gray-600 ring-gray-600/20 dark:bg-gray-800/50 dark:text-gray-400 dark:ring-gray-400/20'
       case Status.Current:
-        return 'bg-yellow-50 text-yellow-600 ring-yellow-600/20'
+        return 'bg-yellow-50 text-yellow-600 ring-yellow-600/20 dark:bg-yellow-950/20 dark:text-yellow-400 dark:ring-yellow-400/20'
       default:
-        return 'bg-gray-50 text-gray-600 ring-gray-600/20'
+        return 'bg-gray-50 text-gray-600 ring-gray-600/20 dark:bg-gray-800/50 dark:text-gray-400 dark:ring-gray-400/20'
     }
   }
 
@@ -208,6 +211,12 @@ export default async function Fagdag({ params }: { params: Params }) {
     )
   }
 
+  // Check if user has admin access to this event
+  const session = await auth()
+  const hasAdminAccess = session?.user
+    ? canUserAccessEvent(event, session.user)
+    : false
+
   const headersList = await headers()
   const protocol = headersList.get('x-forwarded-proto') || 'http'
   const host = headersList.get('host')
@@ -220,9 +229,25 @@ export default async function Fagdag({ params }: { params: Params }) {
 
   return (
     <Container className="mt-16 lg:mt-32">
-      <h1 className="mt-6 text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-        {event.title}
-      </h1>
+      <div className="xl:relative">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex items-start justify-between">
+            <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
+              {event.title}
+            </h1>
+            {hasAdminAccess && (
+              <Button
+                href={`/admin/events/${slug}`}
+                variant="secondary"
+                className="mt-1 flex items-center gap-2"
+              >
+                <CogIcon className="h-4 w-4" aria-hidden="true" />
+                Admin
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
       <div className="mx-auto max-w-7xl py-8">
         <div className="mx-auto grid max-w-2xl grid-cols-1 grid-rows-1 items-start gap-x-8 gap-y-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
           {/* Event summary */}
@@ -231,9 +256,11 @@ export default async function Fagdag({ params }: { params: Params }) {
             <div className="rounded-lg bg-gray-50 shadow-sm ring-1 ring-gray-900/5 dark:bg-transparent dark:ring-gray-400/5">
               <dl className="flex flex-wrap">
                 <div className="flex-auto pt-6 pl-6">
-                  <dd className="text-base leading-6 font-semibold">Fagdag</dd>
+                  <dd className="text-base leading-6 font-semibold text-gray-900 dark:text-gray-100">
+                    Fagdag
+                  </dd>
                 </div>
-                <div className="flex-none self-end px-6 pt-4">
+                <div className="flex-none self-start px-6 pt-6">
                   <dt className="sr-only">Status</dt>
                   <EventStatus status={getStatus(event)} />
                 </div>
@@ -504,78 +531,101 @@ export default async function Fagdag({ params }: { params: Params }) {
               </div>
             )}
             <h2 className="mt-8 text-base leading-6 font-semibold">Agenda</h2>
-            <ol className="mt-4 divide-y divide-gray-100 text-sm leading-6 lg:col-span-7 xl:col-span-8 dark:divide-gray-800">
-              {event.schedule.map(item => (
-                <li
-                  key={item.time}
-                  className="relative flex space-x-6 py-6 xl:static"
-                >
-                  <EventIcon
-                    type={item.type}
-                    className="h-8 w-8 flex-none text-gray-400"
-                  />
+            {event.schedule.length > 0 ? (
+              <ol className="mt-4 divide-y divide-gray-100 text-sm leading-6 lg:col-span-7 xl:col-span-8 dark:divide-gray-800">
+                {event.schedule.map(item => (
+                  <li
+                    key={item.time}
+                    className="relative flex space-x-6 py-6 xl:static"
+                  >
+                    <EventIcon
+                      type={item.type}
+                      className="h-8 w-8 flex-none text-gray-400"
+                    />
 
-                  <div className="flex-auto">
-                    <h3 className="pr-10 font-semibold xl:pr-0">
-                      {item.title}
-                    </h3>
-                    <p className="mt-2 text-gray-500 dark:text-gray-400">
-                      {item.description}
-                    </p>
-                    <dl className="mt-2 flex flex-col xl:flex-row">
-                      <div className="flex items-start space-x-3">
-                        <dt className="mt-0.5">
-                          <span className="sr-only">Tidspunkt</span>
-                          <CalendarIcon
-                            className="h-5 w-5 text-gray-400"
-                            aria-hidden="true"
-                          />
-                        </dt>
-                        <dd>
-                          <time dateTime={item.time}>{item.time}</time>
-                        </dd>
-                      </div>
-                      {item.speaker && (
-                        <div className="xl:border-opacity-50 mt-2 flex items-start space-x-3 xl:mt-0 xl:ml-3.5 xl:border-l xl:border-gray-400 xl:pl-3.5">
+                    <div className="flex-auto">
+                      <h3 className="pr-10 font-semibold xl:pr-0">
+                        {item.title}
+                      </h3>
+                      <p className="mt-2 text-gray-500 dark:text-gray-400">
+                        {item.description}
+                      </p>
+                      <dl className="mt-2 flex flex-col xl:flex-row">
+                        <div className="flex items-start space-x-3">
                           <dt className="mt-0.5">
-                            <span className="sr-only">Type</span>
-                            <UsersIcon
+                            <span className="sr-only">Tidspunkt</span>
+                            <CalendarIcon
                               className="h-5 w-5 text-gray-400"
                               aria-hidden="true"
                             />
                           </dt>
-                          <dd>{item.speaker}</dd>
+                          <dd>
+                            <time dateTime={item.time}>{item.time}</time>
+                          </dd>
                         </div>
-                      )}
-                    </dl>
-                    {item.attachments && item.attachments.length > 0 && (
-                      <dl className="mt-4 flex flex-col space-y-2">
-                        {item.attachments.map((attachment, index) => (
-                          <div
-                            key={index}
-                            className="flex items-start space-x-3"
-                          >
+                        {item.speaker && (
+                          <div className="xl:border-opacity-50 mt-2 flex items-start space-x-3 xl:mt-0 xl:ml-3.5 xl:border-l xl:border-gray-400 xl:pl-3.5">
                             <dt className="mt-0.5">
-                              {AttachmentIcon({
-                                type: attachment.type,
-                                className: 'h-5 w-5 text-gray-400',
-                              })}
+                              <span className="sr-only">Type</span>
+                              <UsersIcon
+                                className="h-5 w-5 text-gray-400"
+                                aria-hidden="true"
+                              />
                             </dt>
-                            <dd>
-                              {AttachmentLink({
-                                attachment,
-                                className:
-                                  'text-teal-600 hover:text-teal-500 dark:text-teal-400 dark:hover:text-teal-300',
-                              })}
-                            </dd>
+                            <dd>{item.speaker}</dd>
                           </div>
-                        ))}
+                        )}
                       </dl>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ol>
+                      {item.attachments && item.attachments.length > 0 && (
+                        <dl className="mt-4 flex flex-col space-y-2">
+                          {item.attachments.map((attachment, index) => (
+                            <div
+                              key={index}
+                              className="flex items-start space-x-3"
+                            >
+                              <dt className="mt-0.5">
+                                {AttachmentIcon({
+                                  type: attachment.type,
+                                  className: 'h-5 w-5 text-gray-400',
+                                })}
+                              </dt>
+                              <dd>
+                                {AttachmentLink({
+                                  attachment,
+                                  className:
+                                    'text-teal-600 hover:text-teal-500 dark:text-teal-400 dark:hover:text-teal-300',
+                                })}
+                              </dd>
+                            </div>
+                          ))}
+                        </dl>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <div className="mt-4 rounded-lg border border-gray-200 bg-gray-50 p-6 text-center dark:border-gray-700 dark:bg-gray-800/50">
+                <CalendarIcon
+                  className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500"
+                  aria-hidden="true"
+                />
+                <h3 className="mt-2 text-sm font-semibold text-gray-900 dark:text-white">
+                  Agenda kommer snart
+                </h3>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  Vi jobber med å lage programmet for denne fagdagen.
+                  {getStatus(event) === Status.Upcoming &&
+                    ' Følg med for oppdateringer!'}
+                </p>
+                {hasAdminAccess && (
+                  <p className="mt-2 text-xs text-blue-600 dark:text-blue-400">
+                    Som arrangør kan du administrere dette arrangementet via
+                    admin-panelet.
+                  </p>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="lg:col-start-3">

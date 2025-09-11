@@ -7,6 +7,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTheme } from 'next-themes'
+import { useSession } from 'next-auth/react'
 import {
   Popover,
   PopoverButton,
@@ -101,6 +102,8 @@ function MobileNavItem({
 function MobileNavigation(
   props: React.ComponentPropsWithoutRef<typeof Popover>
 ) {
+  const { data: session } = useSession()
+
   return (
     <Popover {...props}>
       <PopoverButton className="group flex items-center rounded-full bg-white/90 px-4 py-2 text-sm font-medium text-zinc-800 shadow-lg ring-1 shadow-zinc-800/5 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/10 dark:hover:ring-white/20">
@@ -145,6 +148,11 @@ function MobileNavigation(
                 <MobileNavItem href="/plattformer">Plattformer</MobileNavItem>
                 <MobileNavItem href="/fagdag">Fagdager</MobileNavItem>
                 <MobileNavItem href="/medlemmer">Medlemmer</MobileNavItem>
+                {session?.user?.isAdmin && (
+                  <MobileNavItem href="/admin/events">
+                    Admin: Fagdager
+                  </MobileNavItem>
+                )}
               </ul>
             </nav>
           </PopoverPanel>
@@ -184,6 +192,8 @@ function NavItem({
 }
 
 function DesktopNavigation(props: React.ComponentPropsWithoutRef<'nav'>) {
+  const { data: session } = useSession()
+
   return (
     <nav {...props}>
       <ul className="flex rounded-full bg-white/90 px-3 text-sm font-medium text-zinc-800 shadow-lg ring-1 shadow-zinc-800/5 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/10">
@@ -192,6 +202,9 @@ function DesktopNavigation(props: React.ComponentPropsWithoutRef<'nav'>) {
         <NavItem href="/plattformer">Plattformer</NavItem>
         <NavItem href="/fagdag">Fagdager</NavItem>
         <NavItem href="/medlemmer">Medlemmer</NavItem>
+        {session?.user?.isAdmin && (
+          <NavItem href="/admin/events">Admin</NavItem>
+        )}
       </ul>
     </nav>
   )

@@ -42,10 +42,11 @@ export default function Uses() {
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
-              className={`rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 ${activeButton === ''
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'bg-white text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:hover:bg-gray-700'
-                }`}
+              className={`rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 ${
+                activeButton === ''
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'bg-white text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:hover:bg-gray-700'
+              }`}
               onClick={() => setActiveButton('')}
             >
               Alle ({members.length})
@@ -56,10 +57,11 @@ export default function Uses() {
                 <button
                   key={button}
                   type="button"
-                  className={`rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 ${activeButton === button
-                    ? 'bg-blue-600 text-white shadow-sm'
-                    : 'bg-white text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:hover:bg-gray-700'
-                    }`}
+                  className={`rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 ${
+                    activeButton === button
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'bg-white text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:hover:bg-gray-700'
+                  }`}
                   onClick={() => handleClick(button)}
                 >
                   {button} ({count})

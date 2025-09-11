@@ -1,0 +1,52 @@
+[tools]
+node = "22"
+yarn = "1"
+
+[env]
+# Load environment variables from .env files
+_.file = [".env", ".env.local"]
+
+[tasks.dev]
+run = "yarn dev"
+description = "Start the development server"
+
+[tasks.build]
+run = "yarn build"
+description = "Build the application for production"
+
+[tasks.typecheck]
+run = "yarn typecheck"
+description = "Run TypeScript type checking"
+
+[tasks.lint]
+run = "yarn lint"
+description = "Run ESLint"
+
+[tasks.format]
+run = "yarn format"
+description = "Format code with Prettier"
+
+[tasks.check]
+run = ["yarn typecheck", "yarn lint"]
+description = "Run all checks (lint, typecheck, format)"
+
+[tasks.sanity-studio]
+run = "yarn sanity studio"
+description = "Start Sanity Studio locally"
+
+[tasks.sanity-deploy]
+run = "yarn sanity deploy"
+description = "Deploy Sanity Studio"
+
+# Development workflow tasks
+[tasks.setup]
+run = [
+  "yarn install",
+  "echo 'Installing dependencies...'",
+  "echo 'Project setup complete!'",
+]
+description = "Set up the project for development"
+
+[tasks.fresh]
+run = ["rm -rf .next", "rm -rf node_modules/.cache", "yarn dev"]
+description = "Clean build artifacts and restart dev server"

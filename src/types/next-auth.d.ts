@@ -11,7 +11,7 @@ declare module 'next-auth' {
       statusText?: string
       department?: string
       adminGroups?: string[]
-      slackProfile?: any
+      slackProfile?: Record<string, unknown>
     } & DefaultSession['user']
   }
 
@@ -23,7 +23,7 @@ declare module 'next-auth' {
     statusText?: string
     department?: string
     adminGroups?: string[]
-    slackProfile?: any
+    slackProfile?: Record<string, unknown>
   }
 }
 
@@ -38,6 +38,6 @@ declare module 'next-auth/jwt' {
     statusText?: string
     department?: string
     adminGroups?: string[]
-    slackProfile?: any
+    slackProfile?: Record<string, unknown>
   }
 }

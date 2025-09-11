@@ -41,9 +41,17 @@ Følgende miljøvariabler må konfigureres for full funksjonalitet:
 - `SLACK_CLIENT_ID` - Slack OAuth app client ID
 - `SLACK_CLIENT_SECRET` - Slack OAuth app client secret
 
-#### Slack API (for medlemsinfo)
+#### Slack API (for admin checking)
 
-- `SLACK_BOT_TOKEN` - Slack bot token for å hente medlemsinfo
+- `SLACK_BOT_TOKEN` - Slack bot token for admin status checking
+
+#### Sanity CMS (for event registrations)
+
+- `NEXT_PUBLIC_SANITY_PROJECT_ID` - Sanity project ID (for client-side API calls)
+- `NEXT_PUBLIC_SANITY_DATASET` - Sanity dataset (usually 'production', for client-side API calls)
+- `SANITY_API_TOKEN` - Sanity API token with write permissions (for server-side operations)
+- `SANITY_STUDIO_PROJECT_ID` - Sanity project ID (for Studio configuration)
+- `SANITY_STUDIO_DATASET` - Sanity dataset (for Studio configuration)
 
 Se `.env.example` for eksempel på konfigurering.
 

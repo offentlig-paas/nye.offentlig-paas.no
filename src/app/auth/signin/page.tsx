@@ -37,7 +37,7 @@ export default async function SignInPage() {
                 <Button
                   type="submit"
                   variant="primary"
-                  className="w-full flex items-center justify-center gap-2"
+                  className="flex w-full items-center justify-center gap-2"
                 >
                   <svg
                     className="h-4 w-4"

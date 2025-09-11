@@ -53,7 +53,7 @@ export async function checkUserAdminStatus(userId: string): Promise<{
       isAdmin: false,
       isWorkspaceAdmin: false,
       isGroupAdmin: false,
-      adminGroups: []
+      adminGroups: [],
     }
   }
 
@@ -69,12 +69,16 @@ export async function checkUserAdminStatus(userId: string): Promise<{
         isAdmin: false,
         isWorkspaceAdmin: false,
         isGroupAdmin: false,
-        adminGroups: []
+        adminGroups: [],
       }
     }
 
     const userInfo = userInfoResult.user as SlackUserInfo
-    const isWorkspaceAdmin = !!(userInfo.is_admin || userInfo.is_owner || userInfo.is_primary_owner)
+    const isWorkspaceAdmin = !!(
+      userInfo.is_admin ||
+      userInfo.is_owner ||
+      userInfo.is_primary_owner
+    )
 
     // Check usergroup membership for admin groups
     const userGroupsResult = await slack.usergroups.list()
@@ -87,22 +91,26 @@ export async function checkUserAdminStatus(userId: string): Promise<{
         isWorkspaceAdmin,
         isGroupAdmin: false,
         adminGroups: [],
-        userInfo
+        userInfo,
       }
     }
 
     // Find admin groups - specifically looking for Styret
-    const adminGroups = userGroupsResult.usergroups.filter((group: any) => {
-      const handle = group.handle?.toLowerCase() || ''
-      const name = group.name?.toLowerCase() || ''
+    const adminGroups = userGroupsResult.usergroups.filter(
+      (group: { handle?: string; name?: string }) => {
+        const handle = group.handle?.toLowerCase() || ''
+        const name = group.name?.toLowerCase() || ''
 
-      return handle === 'styret' ||
-        handle === '@styret' ||
-        name === 'styret' ||
-        name === '@styret' ||
-        handle.includes('admin') ||
-        name.includes('admin')
-    })
+        return (
+          handle === 'styret' ||
+          handle === '@styret' ||
+          name === 'styret' ||
+          name === '@styret' ||
+          handle.includes('admin') ||
+          name.includes('admin')
+        )
+      }
+    )
 
     let isGroupAdmin = false
     const userAdminGroups: string[] = []
@@ -121,7 +129,10 @@ export async function checkUserAdminStatus(userId: string): Promise<{
           }
         }
       } catch (error) {
-        console.error(`Failed to check membership for group ${group.id}:`, error)
+        console.error(
+          `Failed to check membership for group ${group.id}:`,
+          error
+        )
       }
     }
 
@@ -130,16 +141,15 @@ export async function checkUserAdminStatus(userId: string): Promise<{
       isWorkspaceAdmin,
       isGroupAdmin,
       adminGroups: userAdminGroups,
-      userInfo
+      userInfo,
     }
-
   } catch (error) {
     console.error('Error checking user admin status:', error)
     return {
       isAdmin: false,
       isWorkspaceAdmin: false,
       isGroupAdmin: false,
-      adminGroups: []
+      adminGroups: [],
     }
   }
 }
