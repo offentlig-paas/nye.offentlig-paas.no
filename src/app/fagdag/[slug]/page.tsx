@@ -1,6 +1,7 @@
 import { type Metadata } from 'next'
 
 import { SimpleLayout } from '@/components/SimpleLayout'
+import { EventRegistration } from '@/components/EventRegistration'
 import {
   getEvent,
   getStatus,
@@ -300,14 +301,24 @@ export default async function Fagdag({ params }: { params: Params }) {
               <div className="mt-6 border-t border-gray-900/5 px-6 py-6 dark:border-gray-400/5">
                 {isAcceptingRegistrations(event) ? (
                   <>
+                    <EventRegistration
+                      eventSlug={slug}
+                      eventTitle={event.title}
+                      isAcceptingRegistrations={true}
+                    />
                     {event.registrationUrl && (
-                      <Button
-                        href={event.registrationUrl}
-                        variant="primary"
-                        className="group w-full"
-                      >
-                        Registrer deg
-                      </Button>
+                      <div className="mt-4">
+                        <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                          Eller bruk ekstern påmelding:
+                        </p>
+                        <Button
+                          href={event.registrationUrl}
+                          variant="secondary"
+                          className="w-full"
+                        >
+                          Ekstern registrering
+                        </Button>
+                      </div>
                     )}
                     {isCallForPapersOpen(event) && (
                       <Button
@@ -363,9 +374,11 @@ export default async function Fagdag({ params }: { params: Params }) {
                     Se opptak
                   </Button>
                 ) : (
-                  <p className="text-sm leading-6 font-semibold text-gray-500 dark:text-gray-400">
-                    Registrering er stengt
-                  </p>
+                  <EventRegistration
+                    eventSlug={slug}
+                    eventTitle={event.title}
+                    isAcceptingRegistrations={false}
+                  />
                 )}
               </div>
             </div>

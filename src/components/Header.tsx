@@ -18,6 +18,7 @@ import {
 import clsx from 'clsx'
 
 import { Container } from '@/components/Container'
+import { AuthButton } from '@/components/AuthButton'
 import avatarImage from '@/images/logo.png'
 
 function CloseIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
@@ -451,7 +452,8 @@ export function Header() {
                 <DesktopNavigation className="pointer-events-auto hidden md:block" />
               </div>
               <div className="flex justify-end md:flex-1">
-                <div className="pointer-events-auto">
+                <div className="pointer-events-auto flex items-center gap-4">
+                  <AuthButton />
                   <ThemeToggle />
                 </div>
               </div>

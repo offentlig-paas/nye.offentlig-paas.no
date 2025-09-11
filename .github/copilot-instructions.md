@@ -11,6 +11,7 @@ This is a **Next.js 15** website built with **TypeScript**, **Tailwind CSS**, an
 - **Data Management**: Static data in `src/data/` (members, platforms, events)
 - **Component Library**: Reusable UI components in `src/components/`
 - **Styling**: Tailwind CSS with custom typography configuration
+- **Authentication**: NextAuth.js v5 with Slack OAuth provider
 
 ## Key Patterns & Conventions
 
@@ -51,11 +52,88 @@ Members are defined as class instances in `src/data/members.ts`:
 new Member({
   name: 'Organization Name',
   type: 'Stat|Kommune|Selskap|Andre|Forvaltningsorgan',
-  github: 'github-org', // Optional, generates avatar
-  logo: logoImage, // Optional, imported SVG/image
-  logoBackgroundColor: '#color', // Optional
+  github: 'github-org',
+  logo: logoImage,
+  logoBackgroundColor: '#color',
   linkedinUrl: 'https://linkedin.com/company/...',
 })
+```
+
+### Authentication System
+
+NextAuth.js v5 with Slack OAuth:
+
+```typescript
+// src/auth.ts
+import NextAuth from 'next-auth'
+import Slack from 'next-auth/providers/slack'
+
+export const { handlers, signIn, signOut, auth } = NextAuth({
+  providers: [
+    Slack({
+      clientId: process.env.SLACK_CLIENT_ID!,
+      clientSecret: process.env.SLACK_CLIENT_SECRET!,
+    }),
+  ],
+})
+```
+
+```tsx
+// Authentication UI component
+import { useSession, signIn, signOut } from 'next-auth/react'
+
+export function AuthButton() {
+  const { data: session } = useSession()
+
+  if (session) {
+    return <button onClick={() => signOut()}>Logg ut</button>
+  }
+
+  return <button onClick={() => signIn('slack')}>Logg inn</button>
+}
+```
+
+### Event Registration System
+
+File-based JSON storage for event registrations:
+
+```typescript
+// src/lib/registrations.ts
+export async function addEventRegistration(
+  eventSlug: string,
+  registration: EventRegistration
+) {
+  const filePath = path.join(
+    process.cwd(),
+    'data',
+    'registrations',
+    `${eventSlug}.json`
+  )
+  const registrations = await getEventRegistrations(eventSlug)
+  registrations.push(registration)
+  await fs.writeFile(filePath, JSON.stringify(registrations, null, 2))
+}
+```
+
+```tsx
+// Event registration component
+export function EventRegistration({ eventSlug }: { eventSlug: string }) {
+  const { data: session } = useSession()
+
+  const handleRegister = async () => {
+    await fetch(`/api/events/${eventSlug}/registration`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ comments: '', dietary: '' }),
+    })
+  }
+
+  if (!session) {
+    return <AuthButton />
+  }
+
+  return <button onClick={handleRegister}>Meld deg på</button>
+}
 ```
 
 ### Styling System
@@ -78,6 +156,20 @@ yarn format          # Prettier formatting
 yarn typecheck       # TypeScript checking
 ```
 
+### Environment Variables
+
+```bash
+# NextAuth.js v5
+AUTH_SECRET="your-secret-key-here"
+
+# Slack OAuth
+SLACK_CLIENT_ID="your-slack-client-id"
+SLACK_CLIENT_SECRET="your-slack-client-secret"
+
+# Slack API (for member count)
+SLACK_BOT_TOKEN="xoxb-your-slack-bot-token"
+```
+
 ### Build System
 
 - **MDX Processing**: Custom Next.js configuration with `@next/mdx`
@@ -90,16 +182,6 @@ yarn typecheck       # TypeScript checking
 - **Platform**: Vercel handles automatic deployments from Git
 - **Preview Builds**: Every PR gets a preview deployment
 - **Production**: Main branch auto-deploys to production
-- **Environment Variables**: `SLACK_BOT_TOKEN` required for API integration
-
-### API Integration
-
-The site includes a Slack API integration:
-
-- `src/app/api/slack/userCount/route.ts` - Fetches member count
-- Requires `SLACK_BOT_TOKEN` environment variable
-- Implements cursor-based pagination for large member lists
-- 1-hour revalidation caching
 
 ## File Organization
 
@@ -108,14 +190,17 @@ The site includes a Slack API integration:
 - `Layout.tsx` - Main site layout wrapper
 - `ArticleLayout.tsx` - Article-specific layout with navigation
 - `SimpleLayout.tsx` - Basic page layout for static content
-- Component composition pattern with compound components (e.g., `Card.Title`, `Card.Description`)
+- `AuthButton.tsx` - Login/logout component
+- `EventRegistration.tsx` - Event signup component
+- Component composition pattern with compound components
 
 ### Data Flow
 
 - Static data exports from `src/data/` files
 - Dynamic article discovery via `fast-glob` in `src/lib/articles.ts`
 - Server-side data fetching in page components
-- No client-side state management (static site approach)
+- File-based JSON storage for event registrations
+- JWT sessions (no database required)
 
 ### Image Handling
 
@@ -137,3 +222,12 @@ Key terminology:
 - "Artikkel" = Article
 
 When adding content, maintain the professional tone and focus on practical technology insights relevant to Norwegian public sector developers and platform teams.
+
+## Coding Style Guidelines
+
+- Prefer code examples over long explanations
+- Do not add comments to code unless asked
+- Do not create new documentation files unless asked
+- Keep documentation simple, accurate and to the point
+- Avoid overly verbose or repetitious language
+- Do not create lengthy summaries after coding sessions

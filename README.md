@@ -10,18 +10,79 @@ For å komme i gang med denne malen, installer først avhengighetene:
 yarn install
 ```
 
+Konfigurer miljøvariabler:
+
+```bash
+cp .env.example .env.local
+# Rediger .env.local med dine verdier
+```
+
 Kjør deretter utviklingsserveren:
 
 ```bash
 yarn dev
 ```
 
-Sist, åpne [http://localhost:3000](http://localhost:3000) i nettleseren din for å se nettsiden.
+Sist, åpne [https://localhost:3000](https://localhost:3000) i nettleseren din for å se nettsiden.
+
+**Merk:** Utviklingsserveren kjører automatisk med HTTPS og selvgenererte sertifikater - ingen ekstra konfigurasjon nødvendig.
+
+### Miljøvariabler
+
+Følgende miljøvariabler må konfigureres for full funksjonalitet:
+
+#### NextAuth.js v5
+
+- `AUTH_SECRET` - Hemmelig nøkkel for JWT-kryptering (generer med `openssl rand -base64 32`)
+- `AUTH_URL` - Base URL for applikasjonen (f.eks. `http://localhost:3000`) - **kun nødvendig i produksjon**
+
+#### Slack OAuth
+
+- `SLACK_CLIENT_ID` - Slack OAuth app client ID
+- `SLACK_CLIENT_SECRET` - Slack OAuth app client secret
+
+#### Slack API (for medlemsinfo)
+
+- `SLACK_BOT_TOKEN` - Slack bot token for å hente medlemsinfo
+
+Se `.env.example` for eksempel på konfigurering.
+
+**Merk:** I utvikling vil NextAuth automatisk sette `AUTH_URL` til `http://localhost:3000`, så denne kan utelates lokalt.
+
+### Slack OAuth Setup
+
+For å sette opp Slack OAuth:
+
+1. Gå til [Slack API](https://api.slack.com/apps) og opprett en ny app
+2. Under "OAuth & Permissions", legg til følgende scopes:
+   - `openid`
+   - `email`
+   - `profile`
+   - `users:read` (for å hente brukerinfo)
+   - `usergroups:read` (for å sjekke admin-grupper)
+3. Under "OAuth & Permissions", legg til redirect URL:
+   - `https://localhost:3000/api/auth/callback/slack` (for lokal utvikling)
+   - `https://yourdomain.com/api/auth/callback/slack` (for produksjon)
+4. Kopier Client ID og Client Secret til miljøvariabler
+
+### User Authentication
+
+Applikasjonen bruker NextAuth.js v5 med Slack OAuth for autentisering. Brukere logger inn med Slack og får automatisk tilgang til å melde seg på fagdager.
+
+**Admin-tilgang:** Brukere som er workspace admin i Slack eller medlem av "styret" usergroup får automatisk admin-rettigheter. Admin-siden viser alle påmeldinger til fagdager.
+
+**Profil:** Brukerdata fra Slack (navn, e-post, profilbilde, stilling, status) lagres i sesjonen og vises på `/profil`.
+
+### Data Storage
+
+Event registrations are stored in JSON files in the `data/registrations/` directory. This approach eliminates the need for a database setup and makes the application easier to deploy and maintain.
+
+**Note:** The registration files contain personal data and are automatically ignored by git for privacy.
 
 ### Utviklingskommandoer
 
 ```bash
-yarn dev             # Utviklingsserver (localhost:3000)
+yarn dev             # Utviklingsserver med HTTPS (https://localhost:3000)
 yarn build           # Produksjonsbygg
 yarn start           # Start produksjonsserver
 yarn lint            # ESLint sjekking
