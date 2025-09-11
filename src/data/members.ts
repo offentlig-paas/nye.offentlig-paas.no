@@ -49,6 +49,13 @@ export const members: Member[] = [
     linkedinUrl: 'https://www.linkedin.com/company/politiets-it-enhet/',
   }),
   new Member({
+    name: 'Miljødirektoratet',
+    type: MemberType.DIRECTORATE,
+    github: 'miljodir',
+    homepage: 'https://www.miljodirektoratet.no/',
+    linkedinUrl: 'https://www.linkedin.com/company/miljodirektoratet/',
+  }),
+  new Member({
     name: 'Brreg',
     type: MemberType.AGENCY,
     github: 'brreg',
