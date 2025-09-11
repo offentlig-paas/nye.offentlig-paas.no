@@ -174,7 +174,7 @@ export const members: Member[] = [
   }),
   new Member({
     name: 'Mattilsynet',
-    type: MemberType.AGENCY,
+    type: MemberType.DIRECTORATE,
     github: 'Mattilsynet',
     homepage: 'https://www.mattilsynet.no',
     linkedinUrl:
