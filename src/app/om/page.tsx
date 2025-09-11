@@ -69,7 +69,7 @@ export default function About() {
             </p>
             <p>
               Like før pandemien traff oss i 2020 var det duket for fagdag hos
-              Oslo Kommune i Oslo Rådhus, neste fagdag ble avhold digitalt hos
+              Oslo kommune i Oslo Rådhus, neste fagdag ble avhold digitalt hos
               SSB da det ikke var mulig å møtes fysisk. Etter en lang pause ble
               Offentlig PaaS fagdagen rebootet i 2023 og det ble avholdt
               fagdager hos Politiet, Skatteetaten og Telenor med rekordmange

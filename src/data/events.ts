@@ -692,7 +692,7 @@ export const events: Event[] = [
         time: '08:40 - 09:10',
         title: 'Veien mot en datadrevet kommune',
         description:
-          'Hvordan UKE skrur sammen teknologi og styresett for fellesdata i kommunen basert på Microsoft Fabric. Vi deler våre erfaringer og tanker for implementering av felles dataplattform for Oslo Kommune.',
+          'Hvordan UKE skrur sammen teknologi og styresett for fellesdata i kommunen basert på Microsoft Fabric. Vi deler våre erfaringer og tanker for implementering av felles dataplattform for Oslo kommune.',
         speaker: 'Erik Tuv & Andre Gulbrandsen (UKE)',
         type: ItemType.Talk,
         attachments: [
