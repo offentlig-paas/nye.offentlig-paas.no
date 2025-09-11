@@ -186,7 +186,7 @@ export const members: Member[] = [
     linkedinUrl: 'https://www.linkedin.com/company/isikt/',
   }),
   new Member({
-    name: 'Oslo Kommune',
+    name: 'Oslo kommune',
     type: MemberType.MUNICIPALITY,
     github: 'oslokommune',
     homepage: 'https://www.oslo.kommune.no',
