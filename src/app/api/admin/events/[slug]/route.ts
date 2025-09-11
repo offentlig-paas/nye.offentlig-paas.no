@@ -77,6 +77,7 @@ export async function GET(
         organizers: event.organizers,
         schedule: event.schedule,
         eventStats: event.stats,
+        registration: event.registration,
         registrations: eventRegistrations.map(reg => ({
           _id: reg._id,
           name: reg.name,
@@ -84,6 +85,7 @@ export async function GET(
           organisation: reg.organisation,
           dietary: reg.dietary,
           comments: reg.comments,
+          attendanceType: reg.attendanceType,
           registeredAt: reg.registeredAt.toISOString(),
           status: reg.status,
         })),

@@ -14,7 +14,13 @@ export function getStatus(event: Event) {
 }
 
 export function isAcceptingRegistrations(event: Event) {
-  return getStatus(event) === Status.Upcoming
+  // Check if event is upcoming
+  if (getStatus(event) !== Status.Upcoming) {
+    return false
+  }
+
+  // Check if registration is not disabled (default is enabled)
+  return event.registration ? !event.registration.disabled : true
 }
 
 export function isCallForPapersOpen(event: Event) {

@@ -1,3 +1,5 @@
+import { AttendanceType } from '@/lib/events/types'
+
 // Domain types for event registration
 export interface EventRegistration {
   _id?: string
@@ -8,6 +10,7 @@ export interface EventRegistration {
   organisation: string
   dietary?: string
   comments?: string
+  attendanceType?: AttendanceType
   registeredAt: Date
   status: RegistrationStatus
   metadata?: RegistrationMetadata
@@ -35,6 +38,7 @@ export interface CreateEventRegistrationInput {
   organisation: string
   dietary?: string
   comments?: string
+  attendanceType?: AttendanceType
   metadata?: RegistrationMetadata
 }
 
@@ -43,6 +47,7 @@ export interface UpdateEventRegistrationInput {
   status?: RegistrationStatus
   dietary?: string
   comments?: string
+  attendanceType?: AttendanceType
   metadata?: RegistrationMetadata
 }
 

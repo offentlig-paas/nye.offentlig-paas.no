@@ -1,5 +1,10 @@
 import type { Event } from '@/lib/events/types'
-import { AttachmentType, Audience, ItemType } from '@/lib/events/types'
+import {
+  AttachmentType,
+  Audience,
+  ItemType,
+  AttendanceType,
+} from '@/lib/events/types'
 
 export const events: Event[] = [
   {
@@ -13,6 +18,9 @@ export const events: Event[] = [
     end: new Date('2025-10-15T15:00+02:00'),
     audience: Audience.OpenForAll,
     location: 'Telenor Norge, Fornebuporten, Snarøyveien 30, 1360 Fornebu',
+    registration: {
+      attendanceTypes: [AttendanceType.Physical],
+    },
     organizers: [
       {
         name: 'Mats Bækkelund',
@@ -41,6 +49,9 @@ export const events: Event[] = [
     end: new Date('2025-09-02T14:30+02:00'),
     audience: Audience.PublicSector,
     location: 'Digs - Mesh community, Krambugata 2, 7011 Trondheim',
+    registration: {
+      attendanceTypes: [AttendanceType.Physical, AttendanceType.Digital],
+    },
     organizers: [
       {
         name: 'Atle Meistad',
@@ -119,6 +130,9 @@ export const events: Event[] = [
     end: new Date('2025-04-24T13:00+02:00'),
     audience: Audience.PublicSector,
     location: 'Zoom',
+    registration: {
+      attendanceTypes: [AttendanceType.Digital],
+    },
     organizers: [
       {
         name: 'Hans Kristian Flaatten',
@@ -193,6 +207,10 @@ export const events: Event[] = [
     end: new Date('2025-02-04T15:00+02:00'),
     audience: Audience.PublicSector,
     location: 'KS Digital, Nøstegaten 58, 5011 Bergen',
+    registration: {
+      disabled: true,
+      attendanceTypes: [AttendanceType.Physical],
+    },
     registrationUrl: 'https://forms.gle/758mQFx6jG8jFp5D9',
     recordingUrl:
       'https://www.youtube.com/playlist?list=PLjI_oey9FG7T3jpWDXuCMyaht_ONKkLjx',
@@ -340,6 +358,10 @@ export const events: Event[] = [
     end: new Date('2024-12-12T14:00+01:00'),
     audience: Audience.PublicSector,
     location: 'Zoom',
+    registration: {
+      disabled: true,
+      attendanceTypes: [AttendanceType.Digital],
+    },
     registrationUrl: 'https://forms.gle/xdGHJ3L1o7hbqWs77',
     recordingUrl:
       'https://youtube.com/playlist?list=PLjI_oey9FG7QgEE_vqFY7RYDCj4a9UYh4',
@@ -498,6 +520,10 @@ export const events: Event[] = [
     end: new Date('2024-06-20T15:00+02:00'),
     audience: Audience.PublicSector,
     location: 'Nav, Fyrstikkalleen 1, 0661 Oslo',
+    registration: {
+      disabled: true,
+      attendanceTypes: [AttendanceType.Physical],
+    },
     registrationUrl: 'https://forms.office.com/e/srPkwVU5rH',
     recordingUrl:
       'https://youtube.com/playlist?list=PLjI_oey9FG7RjrV--OaG9MfCcNtNpP7rf',
@@ -683,6 +709,10 @@ export const events: Event[] = [
     end: new Date('2024-05-24T15:00+02:00'),
     audience: Audience.PublicSector,
     location: 'UKE, Grensesvingen 6, 0661 Oslo',
+    registration: {
+      disabled: true,
+      attendanceTypes: [AttendanceType.Physical],
+    },
     recordingUrl:
       'https://www.youtube.com/watch?v=Tp8t41Xofwg&list=PLjI_oey9FG7Qr9IO8m0nf-pM-xR0jUcOJ',
     organizers: [
@@ -877,6 +907,10 @@ export const events: Event[] = [
     end: new Date('2023-09-14T17:00+02:00'),
     audience: Audience.PublicSector,
     location: 'Telenor, Snarøyveien 30, 1360 Fornebu',
+    registration: {
+      disabled: true,
+      attendanceTypes: [AttendanceType.Physical],
+    },
     organizers: [
       {
         name: 'Mats André Bækkelund',
@@ -1005,6 +1039,10 @@ export const events: Event[] = [
     end: new Date('2023-05-04T17:00+02:00'),
     audience: Audience.PublicSector,
     location: 'Skatteetaten, Fredrik Selmers vei 4, 0663 Oslo',
+    registration: {
+      disabled: true,
+      attendanceTypes: [AttendanceType.Physical],
+    },
     organizers: [
       {
         name: 'Are Vattekar',
@@ -1121,6 +1159,10 @@ export const events: Event[] = [
     end: new Date('2023-02-16T16:00+01:00'),
     audience: Audience.PublicSector,
     location: 'Politiets IT-enhet (PIT), Fridtjof Nansens vei 14, 0031 Oslo',
+    registration: {
+      disabled: true,
+      attendanceTypes: [AttendanceType.Physical],
+    },
     registrationUrl: 'https://forms.gle/hoUYRFyiVzydS5ej6',
     organizers: [
       {

@@ -35,6 +35,7 @@ interface EventRegistration {
   organisation: string
   dietary?: string
   comments?: string
+  attendanceType?: string
   registeredAt: string
   status: RegistrationStatus
 }
@@ -67,6 +68,10 @@ interface EventDetails {
   registrationUrl?: string
   callForPapersUrl?: string
   recordingUrl?: string
+  registration: {
+    disabled?: boolean
+    attendanceTypes: string[]
+  }
   organizers: Organizer[]
   schedule: ScheduleItem[]
   eventStats?: {
@@ -510,6 +515,40 @@ export default function AdminEventDetailsPage() {
                 </div>
               </div>
 
+              <div className="flex items-start space-x-3">
+                <CheckCircleIcon className="mt-0.5 h-5 w-5 text-gray-400 dark:text-gray-500" />
+                <div>
+                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    Påmelding
+                  </dt>
+                  <dd className="text-sm text-gray-900 dark:text-white">
+                    <span
+                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                        !eventDetails.registration.disabled
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                          : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                      }`}
+                    >
+                      {!eventDetails.registration.disabled
+                        ? 'Aktivert'
+                        : 'Deaktivert'}
+                    </span>
+                  </dd>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-3">
+                <UsersIcon className="mt-0.5 h-5 w-5 text-gray-400 dark:text-gray-500" />
+                <div>
+                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    Deltakelsestyper
+                  </dt>
+                  <dd className="text-sm text-gray-900 dark:text-white">
+                    {eventDetails.registration.attendanceTypes.join(', ')}
+                  </dd>
+                </div>
+              </div>
+
               {eventDetails.price && (
                 <div className="flex items-start space-x-3">
                   <BanknotesIcon className="mt-0.5 h-5 w-5 text-gray-400 dark:text-gray-500" />
@@ -888,6 +927,9 @@ export default function AdminEventDetailsPage() {
                   Organisasjon
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-300">
+                  Deltakelse
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-300">
                   Status
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-300">
@@ -933,6 +975,9 @@ export default function AdminEventDetailsPage() {
                   </td>
                   <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
                     {registration.organisation}
+                  </td>
+                  <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+                    {registration.attendanceType || '-'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <StatusBadge status={registration.status} />

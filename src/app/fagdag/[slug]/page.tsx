@@ -17,11 +17,11 @@ import {
   MapPinIcon,
   BanknotesIcon,
   UserGroupIcon,
+  UsersIcon,
   CalendarIcon,
   InformationCircleIcon,
   PresentationChartLineIcon,
   Battery50Icon,
-  UsersIcon,
   ChatBubbleBottomCenterIcon,
   VideoCameraIcon,
   PaperClipIcon,
@@ -313,6 +313,18 @@ export default async function Fagdag({ params }: { params: Params }) {
                 </div>
                 <div className="mt-4 flex w-full flex-none gap-x-4 px-6">
                   <dt className="flex-none">
+                    <span className="sr-only">Deltakelse</span>
+                    <UsersIcon
+                      className="h-6 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                  </dt>
+                  <dd className="text-sm leading-6 text-gray-500 dark:text-gray-400">
+                    {event.registration.attendanceTypes.join(', ')}
+                  </dd>
+                </div>
+                <div className="mt-4 flex w-full flex-none gap-x-4 px-6">
+                  <dt className="flex-none">
                     <span className="sr-only">Pris</span>
                     <BanknotesIcon
                       className="h-6 w-5 text-gray-400"
@@ -332,6 +344,7 @@ export default async function Fagdag({ params }: { params: Params }) {
                       eventSlug={slug}
                       eventTitle={event.title}
                       isAcceptingRegistrations={true}
+                      attendanceTypes={event.registration.attendanceTypes}
                     />
                     {event.registrationUrl && (
                       <div className="mt-4">
@@ -405,6 +418,7 @@ export default async function Fagdag({ params }: { params: Params }) {
                     eventSlug={slug}
                     eventTitle={event.title}
                     isAcceptingRegistrations={false}
+                    attendanceTypes={event.registration.attendanceTypes}
                   />
                 )}
               </div>

@@ -8,13 +8,24 @@ export interface Event {
   price?: string
   audience: Audience
   location: string
-  registrationUrl?: string
+  registration: RegistrationSettings
+  registrationUrl?: string // legacy registration
   callForPapersUrl?: string
   callForPapersClosedDate?: Date
   recordingUrl?: string
   organizers: Organizer[]
   schedule: Item[]
   stats?: Stats
+}
+
+export interface RegistrationSettings {
+  disabled?: boolean
+  attendanceTypes: AttendanceType[]
+}
+
+export enum AttendanceType {
+  Physical = 'Fysisk oppmøte',
+  Digital = 'Digitalt',
 }
 
 export interface Stats {

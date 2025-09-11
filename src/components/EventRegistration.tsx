@@ -6,17 +6,20 @@ import { Button } from '@/components/Button'
 import { AuthButton } from '@/components/AuthButton'
 import { useToast } from '@/components/ToastProvider'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
+import { AttendanceType } from '@/lib/events/types'
 
 interface EventRegistrationProps {
   eventSlug: string
   eventTitle: string
   isAcceptingRegistrations: boolean
+  attendanceTypes: AttendanceType[]
 }
 
 export function EventRegistration({
   eventSlug,
   eventTitle,
   isAcceptingRegistrations,
+  attendanceTypes,
 }: EventRegistrationProps) {
   const { data: session, status } = useSession()
   const [isRegistered, setIsRegistered] = useState(false)
@@ -28,6 +31,8 @@ export function EventRegistration({
     comments: '',
     dietary: '',
     organisation: '',
+    attendanceType:
+      attendanceTypes.length === 1 ? attendanceTypes[0] : undefined,
   })
   const [showUnregisterModal, setShowUnregisterModal] = useState(false)
   const { showSuccess, showError } = useToast()
@@ -77,6 +82,9 @@ export function EventRegistration({
               session.user.statusText ||
               session.user.title ||
               '',
+            attendanceType:
+              prev.attendanceType ||
+              (attendanceTypes.length === 1 ? attendanceTypes[0] : undefined),
           }))
         }
       } else if (status !== 'loading') {
@@ -96,6 +104,7 @@ export function EventRegistration({
     session?.user?.title,
     status,
     checkRegistrationStatus,
+    attendanceTypes,
   ])
 
   const handleRegister = async () => {
@@ -118,6 +127,8 @@ export function EventRegistration({
           comments: '',
           dietary: '',
           organisation: session?.user?.statusText || session?.user?.title || '',
+          attendanceType:
+            attendanceTypes.length === 1 ? attendanceTypes[0] : undefined,
         })
         await checkRegistrationStatus()
         showSuccess('Påmelding bekreftet!', `Du er nå påmeldt ${eventTitle}.`)
@@ -183,7 +194,7 @@ export function EventRegistration({
     return (
       <div className="rounded-lg bg-gray-50 p-6 dark:bg-gray-800">
         <p className="text-sm font-semibold text-gray-500 dark:text-gray-400">
-          Registrering er stengt
+          Påmelding er stengt
         </p>
       </div>
     )
@@ -272,6 +283,53 @@ export function EventRegistration({
             </div>
           </div>
 
+          {attendanceTypes.length > 0 && (
+            <div>
+              <label className="block text-sm/6 font-medium text-zinc-900 dark:text-zinc-100">
+                Deltakelse *
+              </label>
+              <div className="mt-2 space-y-2">
+                {attendanceTypes.map(type => (
+                  <label
+                    key={type}
+                    className={`flex items-center gap-2 text-sm text-zinc-900 dark:text-zinc-100 ${
+                      attendanceTypes.length === 1
+                        ? 'opacity-75'
+                        : 'cursor-pointer'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="attendanceType"
+                      value={type}
+                      checked={registrationData.attendanceType === type}
+                      disabled={attendanceTypes.length === 1}
+                      onChange={e =>
+                        setRegistrationData(prev => ({
+                          ...prev,
+                          attendanceType: e.target.value as AttendanceType,
+                        }))
+                      }
+                      className="h-4 w-4 border-zinc-300 text-blue-600 focus:ring-blue-500 disabled:opacity-75 dark:border-zinc-600"
+                    />
+                    <span
+                      className={
+                        attendanceTypes.length === 1 ? 'font-medium' : ''
+                      }
+                    >
+                      {type}
+                    </span>
+                    {attendanceTypes.length === 1 && (
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        (automatisk valgt)
+                      </span>
+                    )}
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div>
             <label
               htmlFor="comments"
@@ -324,7 +382,11 @@ export function EventRegistration({
             <Button
               variant="primary"
               onClick={handleRegister}
-              disabled={isLoading || !registrationData.organisation.trim()}
+              disabled={
+                isLoading ||
+                !registrationData.organisation.trim() ||
+                (attendanceTypes.length > 1 && !registrationData.attendanceType)
+              }
               className="flex-1"
             >
               {isLoading ? 'Melder på...' : 'Bekreft påmelding'}
