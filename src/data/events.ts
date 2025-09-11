@@ -42,7 +42,7 @@ export const events: Event[] = [
         speaker: 'Håvard Elnan (Norsk helsenett)',
         type: ItemType.Talk,
       },
-        {
+      {
         time: '10:15 - 11:00',
         title: 'Kunstig intelligens i Skatteetaten',
         description:

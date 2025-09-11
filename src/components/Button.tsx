@@ -22,9 +22,9 @@ export function Button({
   ...props
 }: ButtonProps) {
   className = clsx(
-    'inline-flex items-center gap-2 justify-center rounded-md py-2 px-3 text-sm outline-offset-2 transition active:transition-none',
+    'inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm outline-offset-2 transition active:transition-none',
     variantStyles[variant],
-    className,
+    className
   )
 
   return typeof props.href === 'undefined' ? (

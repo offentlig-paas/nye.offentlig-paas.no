@@ -8,8 +8,8 @@ import { useState } from 'react'
 import { GitHubIcon, LinkedInIcon } from '@/components/SocialIcons'
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
 
-const types = Array.from(new Set(members.map((member) => member.type))).sort(
-  (a, b) => a.localeCompare(b),
+const types = Array.from(new Set(members.map(member => member.type))).sort(
+  (a, b) => a.localeCompare(b)
 )
 
 export default function Uses() {
@@ -24,7 +24,7 @@ export default function Uses() {
   }
 
   const filteredMembers = members.filter(
-    (member) => activeButton === '' || activeButton === member.type,
+    member => activeButton === '' || activeButton === member.type
   )
 
   return (
@@ -42,24 +42,26 @@ export default function Uses() {
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
-              className={`rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 ${activeButton === ''
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'bg-white text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:hover:bg-gray-700'
-                }`}
+              className={`rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 ${
+                activeButton === ''
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'bg-white text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:hover:bg-gray-700'
+              }`}
               onClick={() => setActiveButton('')}
             >
               Alle ({members.length})
             </button>
-            {types.map((button) => {
-              const count = members.filter((m) => m.type === button).length
+            {types.map(button => {
+              const count = members.filter(m => m.type === button).length
               return (
                 <button
                   key={button}
                   type="button"
-                  className={`rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 ${activeButton === button
-                    ? 'bg-blue-600 text-white shadow-sm'
-                    : 'bg-white text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:hover:bg-gray-700'
-                    }`}
+                  className={`rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 ${
+                    activeButton === button
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'bg-white text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:hover:bg-gray-700'
+                  }`}
                   onClick={() => handleClick(button)}
                 >
                   {button} ({count})
@@ -79,7 +81,7 @@ export default function Uses() {
           role="list"
           className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
         >
-          {filteredMembers.map((member) => (
+          {filteredMembers.map(member => (
             <li
               key={member.name}
               className="group overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200 transition-all duration-200 hover:shadow-md hover:ring-gray-300 dark:bg-gray-800 dark:ring-gray-700 dark:hover:ring-gray-600"
@@ -139,7 +141,9 @@ export default function Uses() {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <span className="sr-only">LinkedIn for {member.name}</span>
+                      <span className="sr-only">
+                        LinkedIn for {member.name}
+                      </span>
                       <LinkedInIcon className="h-5 w-5" />
                     </a>
                   )}
@@ -150,7 +154,9 @@ export default function Uses() {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <span className="sr-only">Hjemmeside for {member.name}</span>
+                      <span className="sr-only">
+                        Hjemmeside for {member.name}
+                      </span>
                       <ArrowTopRightOnSquareIcon className="h-5 w-5" />
                     </a>
                   )}

@@ -322,7 +322,8 @@ export const members: Member[] = [
     type: MemberType.DIRECTORATE,
     github: 'dfo-no',
     homepage: 'https://www.dfo.no',
-    linkedinUrl: 'https://www.linkedin.com/company/dfo-direktoratet-for-forvaltning-og-økonomistyring/',
+    linkedinUrl:
+      'https://www.linkedin.com/company/dfo-direktoratet-for-forvaltning-og-økonomistyring/',
   }),
   new Member({
     name: 'Direktoratet for e-helse',
@@ -379,7 +380,8 @@ export const members: Member[] = [
     name: 'NBIM',
     type: MemberType.PUBLIC_CORPORATION,
     homepage: 'https://www.nbim.no',
-    linkedinUrl: 'https://www.linkedin.com/company/norges-bank-investment-management/',
+    linkedinUrl:
+      'https://www.linkedin.com/company/norges-bank-investment-management/',
   }),
   new Member({
     name: 'NKOM',
@@ -392,7 +394,8 @@ export const members: Member[] = [
     type: MemberType.UNIVERSITY,
     github: 'nmbu-no',
     homepage: 'https://www.nmbu.no',
-    linkedinUrl: 'https://www.linkedin.com/school/norwegian-university-of-life-sciences/',
+    linkedinUrl:
+      'https://www.linkedin.com/school/norwegian-university-of-life-sciences/',
   }),
   new Member({
     name: 'Norad',
@@ -476,7 +479,8 @@ export const members: Member[] = [
     type: MemberType.UNIVERSITY,
     github: 'uit-no',
     homepage: 'https://www.uit.no',
-    linkedinUrl: 'https://www.linkedin.com/school/uit-the-arctic-university-of-norway/',
+    linkedinUrl:
+      'https://www.linkedin.com/school/uit-the-arctic-university-of-norway/',
   }),
   new Member({
     name: 'Vinmonopolet',
@@ -544,7 +548,8 @@ export const members: Member[] = [
     name: 'BKK',
     type: MemberType.MUNICIPAL_COMPANY,
     homepage: 'https://www.bkk.no',
-    linkedinUrl: 'https://www.linkedin.com/company/bkk-bergen-kommunale-kraftselskap/',
+    linkedinUrl:
+      'https://www.linkedin.com/company/bkk-bergen-kommunale-kraftselskap/',
   }),
   new Member({
     name: 'Eviny',

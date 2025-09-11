@@ -63,7 +63,7 @@ export default function Fagdager() {
     >
       <div className="space-y-20">
         <SpeakingSection title="Fagdager">
-          {events.map((event) => (
+          {events.map(event => (
             <Appearance
               key={event.slug}
               href={`/fagdag/${event.slug}`}

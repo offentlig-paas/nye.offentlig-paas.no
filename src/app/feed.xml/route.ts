@@ -54,8 +54,8 @@ const addAllArticlesTo = async (feed: Feed, baseURL: URL) => {
   const articleIds = require
     .context('../artikkel', true, /\/page\.mdx$/)
     .keys()
-    .filter((key) => key.startsWith('./'))
-    .map((key) => key.slice(2).replace(/\/page\.mdx$/, ''))
+    .filter(key => key.startsWith('./'))
+    .map(key => key.slice(2).replace(/\/page\.mdx$/, ''))
 
   for (const id of articleIds) {
     const url = String(new URL(`/artikkel/${id}`, baseURL))
@@ -85,7 +85,7 @@ const addAllArticlesTo = async (feed: Feed, baseURL: URL) => {
 }
 
 const addAllEventsTo = async (feed: Feed, siteURL: URL) => {
-  getAllEvents().forEach((event) => {
+  getAllEvents().forEach(event => {
     feed.addItem({
       title: event.title,
       id: event.slug,

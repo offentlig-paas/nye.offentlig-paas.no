@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
             Authorization: `Bearer ${SLACK_BOT_TOKEN}`,
             'Content-Type': 'application/json',
           },
-        },
+        }
       )
 
       const data = await fetchResponse.json()
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
       if (!data.ok) {
         return NextResponse.json(
           { error: 'Failed to fetch users from Slack' },
-          { status: 500 },
+          { status: 500 }
         )
       }
 
@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
       }
 
       userCount += (data as SlackUsersListResponse).members.filter(
-        (member: SlackUser) => !member.deleted,
+        (member: SlackUser) => !member.deleted
       ).length
       cursor = data.response_metadata?.next_cursor || ''
     } while (cursor)
@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
     console.error(error)
     return NextResponse.json(
       { error: 'Internal Server Error' },
-      { status: 500 },
+      { status: 500 }
     )
   }
 }

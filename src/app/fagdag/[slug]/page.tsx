@@ -25,15 +25,8 @@ import {
 } from '@heroicons/react/20/solid'
 import { Container } from '@/components/Container'
 import React from 'react'
-import type {
-  Attachment,
-  Event,
-} from '@/lib/events/types'
-import {
-  AttachmentType,
-  ItemType,
-  Status,
-} from '@/lib/events/types'
+import type { Attachment, Event } from '@/lib/events/types'
+import { AttachmentType, ItemType, Status } from '@/lib/events/types'
 import { Button } from '@/components/Button'
 import { headers } from 'next/headers'
 import { Rating } from '@/components/Rating'
@@ -433,7 +426,7 @@ export default async function Fagdag({ params }: { params: Params }) {
                                     />
                                     <span>&quot;{feedback}&quot;</span>
                                   </li>
-                                ),
+                                )
                               )}
                             </ul>
                           </dd>
@@ -489,7 +482,7 @@ export default async function Fagdag({ params }: { params: Params }) {
                             day: 'numeric',
                             hour: '2-digit',
                             minute: '2-digit',
-                          },
+                          }
                         )}
                       </p>
                     )}
@@ -499,7 +492,7 @@ export default async function Fagdag({ params }: { params: Params }) {
             )}
             <h2 className="mt-8 text-base leading-6 font-semibold">Agenda</h2>
             <ol className="mt-4 divide-y divide-gray-100 text-sm leading-6 lg:col-span-7 xl:col-span-8 dark:divide-gray-800">
-              {event.schedule.map((item) => (
+              {event.schedule.map(item => (
                 <li
                   key={item.time}
                   className="relative flex space-x-6 py-6 xl:static"
@@ -576,7 +569,7 @@ export default async function Fagdag({ params }: { params: Params }) {
             {/* Organizers */}
             <h2 className="text-sm leading-6 font-semibold">Arrangører</h2>
             <ul className="mt-6 grid grid-cols-1 gap-y-6 sm:grid-cols-1">
-              {event.organizers.map((organizer) => (
+              {event.organizers.map(organizer => (
                 <li key={organizer.name} className="flex gap-x-4">
                   <Avatar
                     name={organizer.name}

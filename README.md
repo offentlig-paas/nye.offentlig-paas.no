@@ -67,7 +67,7 @@ export const metadata = {
   description: article.description,
 }
 
-export default (props) => <ArticleLayout article={article} {...props} />
+export default props => <ArticleLayout article={article} {...props} />
 
 <!-- Innholdet til artikkelen -->
 ```

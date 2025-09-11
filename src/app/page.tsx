@@ -53,7 +53,7 @@ function UpcomingEvents() {
     <>
       {events.length > 0 && (
         <div className="relative space-y-10 rounded-2xl border border-teal-500 bg-teal-50 p-6 dark:border-teal-400 dark:bg-teal-900/20">
-          {events.map((event) => (
+          {events.map(event => (
             <div key={event.slug} className="space-y-2">
               <Link
                 href={`/fagdag/${event.slug}`}
@@ -150,7 +150,7 @@ function Photos() {
             key={image.src}
             className={clsx(
               'relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl dark:bg-zinc-800',
-              rotations[imageIndex % rotations.length],
+              rotations[imageIndex % rotations.length]
             )}
           >
             <Image
@@ -206,7 +206,7 @@ export default async function Home() {
       <Container className="mt-24 md:mt-28">
         <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2">
           <div className="flex flex-col gap-16">
-            {artikkel.map((article) => (
+            {artikkel.map(article => (
               <Article key={article.slug} article={article} />
             ))}
           </div>

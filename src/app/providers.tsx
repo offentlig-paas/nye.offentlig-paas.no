@@ -40,7 +40,7 @@ function ThemeWatcher() {
 }
 
 export const AppContext = createContext<{ previousPathname?: string | null }>(
-  {},
+  {}
 )
 
 export function Providers({ children }: { children: React.ReactNode }) {

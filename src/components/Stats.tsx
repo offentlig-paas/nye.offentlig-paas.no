@@ -15,7 +15,7 @@ export function InfoCard({
     <div
       className={clsx(
         'rounded-2xl bg-zinc-100 px-4 py-6 sm:px-6 lg:px-8 dark:bg-zinc-800',
-        className,
+        className
       )}
     >
       <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">

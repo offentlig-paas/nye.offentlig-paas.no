@@ -9,7 +9,7 @@ export function Avatar({ name, size = 'md', className = '' }: AvatarProps) {
   const getInitials = (fullName: string): string => {
     return fullName
       .split(' ')
-      .map((word) => word.charAt(0).toUpperCase())
+      .map(word => word.charAt(0).toUpperCase())
       .join('')
       .slice(0, 2) // Only take first 2 initials
   }
