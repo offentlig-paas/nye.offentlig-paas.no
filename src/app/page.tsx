@@ -46,13 +46,18 @@ function Article({ article }: { article: ArticleWithSlug }) {
   )
 }
 
-function UpcomingEvents() {
+function UpcomingEvents({ className }: { className?: string }) {
   const events = getUpcomingEvents()
 
   return (
     <>
       {events.length > 0 && (
-        <div className="relative space-y-10 rounded-2xl border border-teal-500 bg-teal-50 p-6 dark:border-teal-400 dark:bg-teal-900/20">
+        <div
+          className={clsx(
+            'relative space-y-10 rounded-2xl border border-teal-500 bg-teal-50 p-6 dark:border-teal-400 dark:bg-teal-900/20',
+            className
+          )}
+        >
           {events.map(event => (
             <div key={event.slug} className="space-y-2">
               <Link
@@ -205,13 +210,14 @@ export default async function Home() {
       <Photos />
       <Container className="mt-24 md:mt-28">
         <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2">
+          <UpcomingEvents className="lg:hidden" />
           <div className="flex flex-col gap-16">
             {artikkel.map(article => (
               <Article key={article.slug} article={article} />
             ))}
           </div>
           <div className="space-y-10 lg:pl-16 xl:pl-24">
-            <UpcomingEvents />
+            <UpcomingEvents className="hidden lg:block" />
             <Bluesky />
             <SlackUsers />
             <SlackJoin />
