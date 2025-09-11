@@ -6,6 +6,7 @@ import { SimpleLayout } from '@/components/SimpleLayout'
 import { members } from '@/data/members'
 import { useState } from 'react'
 import { GitHubIcon, LinkedInIcon } from '@/components/SocialIcons'
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
 
 const types = Array.from(new Set(members.map((member) => member.type))).sort(
   (a, b) => a.localeCompare(b),
@@ -22,6 +23,10 @@ export default function Uses() {
     setActiveButton(button)
   }
 
+  const filteredMembers = members.filter(
+    (member) => activeButton === '' || activeButton === member.type,
+  )
+
   return (
     <SimpleLayout
       title="Medlemmer av Offentlig PaaS"
@@ -29,77 +34,130 @@ export default function Uses() {
       gitHubPage="src/data/members.ts"
     >
       <div className="mx-auto max-w-7xl">
-        <span className="isolate shadow-sm">
-          {types.map((button, i) => (
+        {/* Filter buttons */}
+        <div className="mb-8">
+          <h3 className="mb-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+            Filtrer etter organisasjonstype:
+          </h3>
+          <div className="flex flex-wrap gap-2">
             <button
-              key={button}
               type="button"
-              className={`relative mx-0.5 my-0.5 rounded px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-10 sm:mx-0 sm:rounded-none ${
-                activeButton === button ? 'bg-gray-100' : 'bg-white'
-              } ${
-                i === 0
-                  ? 'sm:rounded-l-md'
-                  : i === types.length - 1
-                    ? 'sm:rounded-r-md'
-                    : ''
-              }`}
-              onClick={() => handleClick(button)}
+              className={`rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 ${activeButton === ''
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'bg-white text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:hover:bg-gray-700'
+                }`}
+              onClick={() => setActiveButton('')}
             >
-              {button}
+              Alle ({members.length})
             </button>
-          ))}
-        </span>
+            {types.map((button) => {
+              const count = members.filter((m) => m.type === button).length
+              return (
+                <button
+                  key={button}
+                  type="button"
+                  className={`rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 ${activeButton === button
+                    ? 'bg-blue-600 text-white shadow-sm'
+                    : 'bg-white text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:hover:bg-gray-700'
+                    }`}
+                  onClick={() => handleClick(button)}
+                >
+                  {button} ({count})
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Results count */}
+        <p className="mb-6 text-sm text-gray-600 dark:text-gray-400">
+          Viser {filteredMembers.length} av {members.length} medlemmer
+        </p>
+
+        {/* Members grid */}
         <ul
           role="list"
-          className="mx-auto mt-5 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-3 lg:mx-0 lg:max-w-none lg:grid-cols-5"
+          className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
         >
-          {members.map(
-            (member) =>
-              (activeButton === member.type || activeButton === '') && (
-                <li key={member.name}>
-                  <Image
-                    className="h-[60vw] w-full rounded-2xl object-contain sm:h-[120px]"
-                    src={member.image()}
+          {filteredMembers.map((member) => (
+            <li
+              key={member.name}
+              className="group overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200 transition-all duration-200 hover:shadow-md hover:ring-gray-300 dark:bg-gray-800 dark:ring-gray-700 dark:hover:ring-gray-600"
+            >
+              <div className="p-6">
+                {/* Logo */}
+                <div className="mb-4 flex justify-center">
+                  <div
+                    className="flex h-20 w-20 items-center justify-center rounded-xl shadow-sm"
                     style={{
                       backgroundColor: member.logoBackgroundColor ?? '#ffffff',
                     }}
-                    width="200"
-                    height="200"
-                    alt=""
-                  />
-                  <h3 className="mt-6 text-lg leading-8 font-semibold tracking-tight text-gray-900 dark:text-gray-100">
+                  >
+                    {member.image() ? (
+                      <Image
+                        className="h-16 w-16 object-contain"
+                        src={member.image()}
+                        width="64"
+                        height="64"
+                        alt={`Logo for ${member.name}`}
+                      />
+                    ) : (
+                      <div className="flex h-16 w-16 items-center justify-center text-2xl font-bold text-gray-400 dark:text-gray-500">
+                        {member.name.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Name and type */}
+                <div className="text-center">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                     {member.name}
                   </h3>
-                  <p className="text-base leading-7 text-gray-600 dark:text-gray-400">
+                  <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                     {member.type}
                   </p>
-                  <ul role="list" className="mt-6 flex gap-x-6">
-                    {member.github && (
-                      <li>
-                        <a
-                          href={`https://github.com/${member.github}`}
-                          className="text-gray-400 hover:text-gray-500"
-                        >
-                          <span className="sr-only">GitHub</span>
-                          <GitHubIcon className="h-6 w-6 fill-current" />
-                        </a>
-                      </li>
-                    )}
-                    {member.linkedinUrl && (
-                      <li>
-                        <a
-                          href={member.linkedinUrl}
-                          className="text-gray-400 hover:text-gray-500"
-                        >
-                          <span className="sr-only">LinkedIn</span>
-                          <LinkedInIcon className="h-6 w-6 fill-current" />
-                        </a>
-                      </li>
-                    )}
-                  </ul>
-                </li>
-              ),
-          )}
+                </div>
+
+                {/* Links */}
+                <div className="mt-4 flex justify-center space-x-3">
+                  {member.github && (
+                    <a
+                      href={`https://github.com/${member.github}`}
+                      className="text-gray-400 transition-colors duration-200 hover:text-gray-600 dark:hover:text-gray-300"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <span className="sr-only">GitHub for {member.name}</span>
+                      <GitHubIcon className="h-5 w-5" />
+                    </a>
+                  )}
+                  {member.linkedinUrl && (
+                    <a
+                      href={member.linkedinUrl}
+                      className="text-gray-400 transition-colors duration-200 hover:text-blue-600 dark:hover:text-blue-400"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <span className="sr-only">LinkedIn for {member.name}</span>
+                      <LinkedInIcon className="h-5 w-5" />
+                    </a>
+                  )}
+                  {member.homepage && (
+                    <a
+                      href={member.homepage}
+                      className="text-gray-400 transition-colors duration-200 hover:text-gray-600 dark:hover:text-gray-300"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <span className="sr-only">Hjemmeside for {member.name}</span>
+                      <ArrowTopRightOnSquareIcon className="h-5 w-5" />
+                    </a>
+                  )}
+                </div>
+              </div>
+            </li>
+          ))}
         </ul>
       </div>
     </SimpleLayout>
