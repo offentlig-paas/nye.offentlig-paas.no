@@ -9,6 +9,8 @@ import logoSykehusapotekene from '@/images/logos/sykehusapotekene.svg'
 import logoUdi from '@/images/logos/udi.svg'
 import logoHKDir from '@/images/logos/hkdir.svg'
 
+const logoSkagerakEnergi = logoStatkraft
+
 export const members: Member[] = [
   new Member({
     name: 'Direktoratet for Høyere Utdanning og Kompetanse',
@@ -579,7 +581,9 @@ export const members: Member[] = [
   }),
   new Member({
     name: 'Skagerak Energi',
-    type: MemberType.MUNICIPAL_COMPANY,
+    logo: logoSkagerakEnergi,
+    type: MemberType.STATE_COMPANY,
+    github: 'skagerakenergi',
     homepage: 'https://www.skagerakenergi.no',
     linkedinUrl: 'https://www.linkedin.com/company/skagerak-energi/',
   }),
