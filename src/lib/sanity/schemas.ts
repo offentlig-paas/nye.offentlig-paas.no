@@ -1,5 +1,11 @@
 import { defineType } from 'sanity'
 
+// Local attendance type display mapping for Sanity Studio
+const attendanceTypeDisplay: Record<string, string> = {
+  physical: 'Fysisk oppmøte',
+  digital: 'Digitalt',
+}
+
 // Sanity schema for event registrations
 export const eventRegistrationSchema = defineType({
   name: 'eventRegistration',
@@ -54,6 +60,20 @@ export const eventRegistrationSchema = defineType({
       description: 'Additional comments or notes from the registrant',
     },
     {
+      name: 'attendanceType',
+      title: 'Attendance Type',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Fysisk oppmøte', value: 'physical' },
+          { title: 'Digitalt', value: 'digital' },
+        ],
+        layout: 'radio',
+      },
+      validation: Rule => Rule.required(),
+      description: 'How the participant will attend the event',
+    },
+    {
       name: 'registeredAt',
       title: 'Registered At',
       type: 'datetime',
@@ -69,6 +89,8 @@ export const eventRegistrationSchema = defineType({
           { title: 'Confirmed', value: 'confirmed' },
           { title: 'Waitlist', value: 'waitlist' },
           { title: 'Cancelled', value: 'cancelled' },
+          { title: 'Attended', value: 'attended' },
+          { title: 'No-show', value: 'no-show' },
         ],
         layout: 'radio',
       },
@@ -107,12 +129,19 @@ export const eventRegistrationSchema = defineType({
     select: {
       title: 'name',
       subtitle: 'email',
+      attendanceType: 'attendanceType',
+      status: 'status',
     },
     prepare(selection) {
-      const { title, subtitle } = selection
+      const { title, subtitle, attendanceType, status } = selection
+      const attendanceDisplay = attendanceType
+        ? attendanceTypeDisplay[attendanceType] || attendanceType
+        : ''
+      const attendanceInfo = attendanceDisplay ? ` (${attendanceDisplay})` : ''
+      const statusInfo = status ? ` - ${status}` : ''
       return {
         title: title,
-        subtitle: subtitle,
+        subtitle: `${subtitle}${attendanceInfo}${statusInfo}`,
       }
     },
   },

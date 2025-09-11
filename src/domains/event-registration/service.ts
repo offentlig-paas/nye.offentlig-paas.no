@@ -240,6 +240,9 @@ export class EventRegistrationService {
     if (!input.eventSlug.trim()) {
       throw new Error('Event slug is required')
     }
+    if (!input.attendanceType) {
+      throw new Error('Attendance type is required')
+    }
 
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/

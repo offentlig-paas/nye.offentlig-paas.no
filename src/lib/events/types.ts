@@ -24,8 +24,14 @@ export interface RegistrationSettings {
 }
 
 export enum AttendanceType {
-  Physical = 'Fysisk oppmøte',
-  Digital = 'Digitalt',
+  Physical = 'physical',
+  Digital = 'digital',
+}
+
+// Display mapping for Norwegian UI
+export const AttendanceTypeDisplay: Record<AttendanceType, string> = {
+  [AttendanceType.Physical]: 'Fysisk oppmøte',
+  [AttendanceType.Digital]: 'Digitalt',
 }
 
 export interface Stats {

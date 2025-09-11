@@ -30,7 +30,12 @@ import {
 import { Container } from '@/components/Container'
 import React from 'react'
 import type { Attachment, Event } from '@/lib/events/types'
-import { AttachmentType, ItemType, Status } from '@/lib/events/types'
+import {
+  AttachmentType,
+  ItemType,
+  Status,
+  AttendanceTypeDisplay,
+} from '@/lib/events/types'
 import { Button } from '@/components/Button'
 import { headers } from 'next/headers'
 import { Rating } from '@/components/Rating'
@@ -320,7 +325,9 @@ export default async function Fagdag({ params }: { params: Params }) {
                     />
                   </dt>
                   <dd className="text-sm leading-6 text-gray-500 dark:text-gray-400">
-                    {event.registration.attendanceTypes.join(', ')}
+                    {event.registration.attendanceTypes
+                      .map(type => AttendanceTypeDisplay[type])
+                      .join(', ')}
                   </dd>
                 </div>
                 <div className="mt-4 flex w-full flex-none gap-x-4 px-6">

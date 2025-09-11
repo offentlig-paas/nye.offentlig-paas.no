@@ -29,7 +29,14 @@ export async function POST(
 
   try {
     const body = await request.json()
-    const { comments, dietary, organisation } = body
+    const { comments, dietary, organisation, attendanceType } = body
+
+    if (!attendanceType) {
+      return NextResponse.json(
+        { error: 'Attendance type is required' },
+        { status: 400 }
+      )
+    }
 
     // Create registration with user data from session
     const registration = await eventRegistrationService.registerForEvent({
@@ -40,6 +47,7 @@ export async function POST(
       organisation: organisation || session.user.statusText || 'Ikke oppgitt',
       dietary,
       comments,
+      attendanceType,
     })
 
     return NextResponse.json({

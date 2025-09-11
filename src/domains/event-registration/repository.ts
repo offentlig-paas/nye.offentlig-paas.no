@@ -147,6 +147,7 @@ export class EventRegistrationRepository {
       organisation: doc.organisation as string,
       dietary: doc.dietary as string | undefined,
       comments: doc.comments as string | undefined,
+      attendanceType: doc.attendanceType as EventRegistration['attendanceType'],
       registeredAt: new Date(doc.registeredAt as string),
       status: doc.status as EventRegistration['status'],
       metadata: doc.metadata as EventRegistration['metadata'],

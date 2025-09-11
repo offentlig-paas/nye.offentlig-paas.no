@@ -6,7 +6,7 @@ import { Button } from '@/components/Button'
 import { AuthButton } from '@/components/AuthButton'
 import { useToast } from '@/components/ToastProvider'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
-import { AttendanceType } from '@/lib/events/types'
+import { AttendanceType, AttendanceTypeDisplay } from '@/lib/events/types'
 
 interface EventRegistrationProps {
   eventSlug: string
@@ -317,7 +317,7 @@ export function EventRegistration({
                         attendanceTypes.length === 1 ? 'font-medium' : ''
                       }
                     >
-                      {type}
+                      {AttendanceTypeDisplay[type]}
                     </span>
                     {attendanceTypes.length === 1 && (
                       <span className="text-xs text-gray-500 dark:text-gray-400">

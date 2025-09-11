@@ -38,7 +38,7 @@ export interface CreateEventRegistrationInput {
   organisation: string
   dietary?: string
   comments?: string
-  attendanceType?: AttendanceType
+  attendanceType: AttendanceType // Required - must be set based on event configuration
   metadata?: RegistrationMetadata
 }
 

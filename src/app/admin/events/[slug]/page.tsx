@@ -27,6 +27,7 @@ import {
 import { StatusBadge } from '@/components/StatusBadge'
 import { ActionsMenu } from '@/components/ActionsMenu'
 import type { RegistrationStatus } from '@/domains/event-registration/types'
+import { AttendanceTypeDisplay } from '@/lib/events/types'
 
 interface EventRegistration {
   _id: string
@@ -257,6 +258,7 @@ export default function AdminEventDetailsPage() {
       'Navn',
       'E-post',
       'Organisasjon',
+      'Deltakelse',
       'Kommentarer',
       'Påmeldt',
       'Status',
@@ -268,6 +270,7 @@ export default function AdminEventDetailsPage() {
           `"${reg.name}"`,
           `"${reg.email}"`,
           `"${reg.organisation}"`,
+          `"${reg.attendanceType || ''}"`,
           `"${reg.comments || ''}"`,
           `"${new Date(reg.registeredAt).toLocaleString('nb-NO')}"`,
           `"${reg.status}"`,
@@ -304,8 +307,131 @@ export default function AdminEventDetailsPage() {
   if (status === 'loading' || isLoading) {
     return (
       <SimpleLayout title="Laster fagdag..." intro="Henter påmeldingsdata...">
-        <div className="flex items-center justify-center py-12">
-          <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
+        {/* Navigation Skeleton */}
+        <div className="mb-6">
+          <div className="flex items-center space-x-2">
+            <div className="h-4 w-4 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+            <div className="h-4 w-32 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+          </div>
+        </div>
+
+        {/* Stats Skeleton */}
+        <div className="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {[...Array(4)].map((_, i) => (
+            <div
+              key={i}
+              className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800"
+            >
+              <div className="p-5">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <div className="h-6 w-6 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+                  </div>
+                  <div className="ml-5 w-0 flex-1">
+                    <dl>
+                      <dt className="mb-2">
+                        <div className="h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+                      </dt>
+                      <dd>
+                        <div className="h-6 w-12 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Event Details Skeleton */}
+        <div className="mb-8 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+          <div className="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+            <div className="h-6 w-32 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+          </div>
+          <div className="space-y-6 p-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div className="space-y-4">
+                {[...Array(5)].map((_, i) => (
+                  <div key={i} className="flex items-start space-x-3">
+                    <div className="mt-0.5 h-5 w-5 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+                    <div className="flex-1">
+                      <div className="mb-1 h-4 w-20 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+                      <div className="h-4 w-32 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="space-y-4">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="flex items-start space-x-3">
+                    <div className="mt-0.5 h-5 w-5 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+                    <div className="flex-1">
+                      <div className="mb-1 h-4 w-16 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+                      <div className="h-4 w-40 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Actions Skeleton */}
+        <div className="mb-6 space-y-4">
+          <div className="flex flex-col justify-between gap-4 sm:flex-row">
+            <div className="flex flex-col gap-4 sm:flex-row">
+              <div className="h-10 w-64 animate-pulse rounded-lg bg-gray-200 dark:bg-gray-700"></div>
+              <div className="h-10 w-32 animate-pulse rounded-lg bg-gray-200 dark:bg-gray-700"></div>
+            </div>
+            <div className="h-10 w-32 animate-pulse rounded-lg bg-gray-200 dark:bg-gray-700"></div>
+          </div>
+        </div>
+
+        {/* Table Skeleton */}
+        <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+          <div className="overflow-visible">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-700/50">
+                <tr>
+                  {[...Array(7)].map((_, i) => (
+                    <th key={i} className="px-6 py-3 text-left">
+                      <div className="h-4 w-16 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
+                {[...Array(5)].map((_, i) => (
+                  <tr key={i}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="h-4 w-4 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="space-y-1">
+                        <div className="h-4 w-32 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+                        <div className="h-3 w-40 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="h-4 w-16 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="h-6 w-20 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700"></div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="h-4 w-16 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+                    </td>
+                    <td className="px-6 py-4 text-right whitespace-nowrap">
+                      <div className="h-8 w-8 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </SimpleLayout>
     )
@@ -442,6 +568,54 @@ export default function AdminEventDetailsPage() {
             </div>
           </div>
         </div>
+
+        {/* Attendance Type Breakdown */}
+        {eventDetails.registration.attendanceTypes.length > 1 && (
+          <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+            <div className="p-5">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <UsersIcon
+                    className="h-6 w-6 text-purple-500"
+                    aria-hidden="true"
+                  />
+                </div>
+                <div className="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt className="truncate text-sm font-medium text-gray-500 dark:text-gray-400">
+                      Deltakelsestyper
+                    </dt>
+                    <dd className="text-lg font-semibold text-gray-900 dark:text-white">
+                      <div className="space-y-1">
+                        {eventDetails.registration.attendanceTypes.map(type => {
+                          const count = eventDetails.registrations.filter(
+                            r =>
+                              r.attendanceType === type &&
+                              r.status === 'confirmed'
+                          ).length
+                          return (
+                            <div
+                              key={type}
+                              className="flex justify-between text-sm"
+                            >
+                              <span className="text-gray-600 dark:text-gray-400">
+                                {AttendanceTypeDisplay[
+                                  type as keyof typeof AttendanceTypeDisplay
+                                ] || type}
+                                :
+                              </span>
+                              <span className="font-medium">{count}</span>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Event Details */}
@@ -519,32 +693,34 @@ export default function AdminEventDetailsPage() {
                 <CheckCircleIcon className="mt-0.5 h-5 w-5 text-gray-400 dark:text-gray-500" />
                 <div>
                   <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Påmelding
+                    Påmeldingssystem
                   </dt>
                   <dd className="text-sm text-gray-900 dark:text-white">
-                    <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        !eventDetails.registration.disabled
-                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
-                          : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
-                      }`}
-                    >
-                      {!eventDetails.registration.disabled
-                        ? 'Aktivert'
-                        : 'Deaktivert'}
-                    </span>
-                  </dd>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-3">
-                <UsersIcon className="mt-0.5 h-5 w-5 text-gray-400 dark:text-gray-500" />
-                <div>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Deltakelsestyper
-                  </dt>
-                  <dd className="text-sm text-gray-900 dark:text-white">
-                    {eventDetails.registration.attendanceTypes.join(', ')}
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span
+                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                          !eventDetails.registration.disabled
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                            : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                        }`}
+                      >
+                        {!eventDetails.registration.disabled
+                          ? 'Aktivert'
+                          : 'Deaktivert'}
+                      </span>
+                      {eventDetails.registration.attendanceTypes.map(
+                        (type, index) => (
+                          <span
+                            key={index}
+                            className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+                          >
+                            {AttendanceTypeDisplay[
+                              type as keyof typeof AttendanceTypeDisplay
+                            ] || type}
+                          </span>
+                        )
+                      )}
+                    </div>
                   </dd>
                 </div>
               </div>
@@ -921,9 +1097,6 @@ export default function AdminEventDetailsPage() {
                   Navn
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-300">
-                  E-post
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-300">
                   Organisasjon
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-300">
@@ -967,17 +1140,25 @@ export default function AdminEventDetailsPage() {
                       className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700"
                     />
                   </td>
-                  <td className="px-6 py-4 text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-white">
-                    {registration.name}
-                  </td>
-                  <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
-                    {registration.email}
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div>
+                      <div className="text-sm font-semibold text-gray-900 dark:text-white">
+                        {registration.name}
+                      </div>
+                      <div className="text-sm text-gray-500 dark:text-gray-400">
+                        {registration.email}
+                      </div>
+                    </div>
                   </td>
                   <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
                     {registration.organisation}
                   </td>
                   <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
-                    {registration.attendanceType || '-'}
+                    {registration.attendanceType
+                      ? AttendanceTypeDisplay[
+                          registration.attendanceType as keyof typeof AttendanceTypeDisplay
+                        ] || registration.attendanceType
+                      : '-'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <StatusBadge status={registration.status} />
