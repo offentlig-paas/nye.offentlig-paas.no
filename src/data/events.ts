@@ -52,6 +52,11 @@ export const events: Event[] = [
     registration: {
       attendanceTypes: [AttendanceType.Physical, AttendanceType.Digital],
     },
+    stats: {
+      registrations: 34,
+      participants: 31,
+      organisations: 12,
+    },
     organizers: [
       {
         name: 'Atle Meistad',
