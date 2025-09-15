@@ -10,17 +10,14 @@ export async function getUserCount(): Promise<number> {
     try {
       const response = await fetch(`${host}/api/slack/userCount`)
       if (!response.ok) {
-        console.error('Failed to fetch user count:', response.statusText)
         return 0
       }
       const data = await response.json()
       if (data.error) {
-        console.error('Error in response data:', data.error)
         return 0
       }
       return data.userCount
-    } catch (error) {
-      console.error('Error fetching user count:', error)
+    } catch {
       return 0
     }
   }

@@ -135,7 +135,16 @@ export function AuthButton() {
   return (
     <Button
       variant="primary"
-      onClick={() => signIn('slack')}
+      onClick={() => {
+        const teamId = process.env.NEXT_PUBLIC_SLACK_TEAM_ID
+        if (teamId) {
+          // Pin to specific Slack workspace
+          signIn('slack', undefined, { team: teamId })
+        } else {
+          // Fallback to regular sign-in if team ID not configured
+          signIn('slack')
+        }
+      }}
       className="flex items-center gap-2"
     >
       <svg

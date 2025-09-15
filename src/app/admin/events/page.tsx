@@ -77,10 +77,10 @@ export default function AdminEventsPage() {
         const data = await response.json()
         setEventsData(data)
       } else {
-        console.error('Failed to fetch events data')
+        // Failed to fetch events data
       }
-    } catch (error) {
-      console.error('Error fetching events data:', error)
+    } catch {
+      // Error fetching events data
     } finally {
       setIsLoading(false)
     }

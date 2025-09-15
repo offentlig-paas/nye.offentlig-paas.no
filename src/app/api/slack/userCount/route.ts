@@ -61,10 +61,9 @@ export async function GET(request: NextRequest) {
     } while (cursor)
 
     return NextResponse.json({ userCount }, { status: 200 })
-  } catch (error) {
-    console.error(error)
+  } catch {
     return NextResponse.json(
-      { error: 'Internal Server Error' },
+      { error: 'Failed to fetch user count' },
       { status: 500 }
     )
   }

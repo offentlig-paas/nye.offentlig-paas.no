@@ -15,16 +15,40 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
+    async signIn({ account, profile }) {
+      // Restrict to specific Slack workspace
+      if (account?.provider === 'slack') {
+        const expectedTeamId = process.env.SLACK_TEAM_ID
+
+        let userTeamId: string | undefined
+
+        if (
+          account.team &&
+          typeof account.team === 'object' &&
+          'id' in account.team
+        ) {
+          userTeamId = account.team.id as string
+        }
+
+        if (!userTeamId && profile && typeof profile === 'object') {
+          userTeamId = (profile as Record<string, unknown>)?.[
+            'https://slack.com/team_id'
+          ] as string | undefined
+        }
+
+        if (expectedTeamId && userTeamId && userTeamId !== expectedTeamId) {
+          return false
+        }
+      }
+      return true
+    },
     async jwt({ token, user, account }) {
       if (user && account) {
-        // For Slack, the user ID should come from the account's providerAccountId
-        // or from the raw profile data
         const slackUserId = account.providerAccountId || user.id
 
         token.slackId = slackUserId
         token.picture = user.image
 
-        // Extract team ID from account if available
         if (
           account.team &&
           typeof account.team === 'object' &&
@@ -32,15 +56,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         ) {
           token.slackTeamId = account.team.id as string
         }
-
-        // Debug logging to see what we're getting
-        console.log('Auth Debug Info:', {
-          userId: user.id,
-          providerAccountId: account.providerAccountId,
-          slackUserId,
-          accountKeys: Object.keys(account),
-          userKeys: Object.keys(user),
-        })
 
         // Check admin status using bot token (with usergroups:read scope)
         if (slackUserId) {
@@ -57,8 +72,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 adminStatus.userInfo.profile?.fields?.department?.value
               token.slackProfile = adminStatus.userInfo.profile
             }
-          } catch (error) {
-            console.error('Error checking admin status during auth:', error)
+          } catch {
+            // Silently handle admin status check errors
           }
         }
       }

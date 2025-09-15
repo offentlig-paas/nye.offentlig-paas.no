@@ -64,7 +64,6 @@ export async function checkUserAdminStatus(userId: string): Promise<{
     })
 
     if (!userInfoResult.ok || !userInfoResult.user) {
-      console.error('Failed to fetch user info:', userInfoResult.error)
       return {
         isAdmin: false,
         isWorkspaceAdmin: false,
@@ -84,8 +83,6 @@ export async function checkUserAdminStatus(userId: string): Promise<{
     const userGroupsResult = await slack.usergroups.list()
 
     if (!userGroupsResult.ok || !userGroupsResult.usergroups) {
-      console.error('Failed to fetch usergroups:', userGroupsResult.error)
-      // Return workspace admin status even if usergroups check fails
       return {
         isAdmin: isWorkspaceAdmin,
         isWorkspaceAdmin,
@@ -128,11 +125,8 @@ export async function checkUserAdminStatus(userId: string): Promise<{
             userAdminGroups.push(group.handle)
           }
         }
-      } catch (error) {
-        console.error(
-          `Failed to check membership for group ${group.id}:`,
-          error
-        )
+      } catch {
+        // Continue checking other groups
       }
     }
 
@@ -143,8 +137,7 @@ export async function checkUserAdminStatus(userId: string): Promise<{
       adminGroups: userAdminGroups,
       userInfo,
     }
-  } catch (error) {
-    console.error('Error checking user admin status:', error)
+  } catch {
     return {
       isAdmin: false,
       isWorkspaceAdmin: false,
