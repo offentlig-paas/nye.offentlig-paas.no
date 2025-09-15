@@ -103,6 +103,12 @@ export const events: Event[] = [
           'NHN har mange forskjellige team og ulike produkter vi lager som understøtter helsesektoren. I denne sesjonen ser vi på observability stack-en vi tilbyr til leveranseteamene våre. Vi kikker først på hva det er vi har satt opp, og hvordan det funker i praksis. Så litt på designet og tankene bak, før vi til slutt deler et innblikk i erfaringer med hvordan observability plattformen har oppført seg.',
         speaker: 'Simon Randby (Norsk helsenett)',
         type: ItemType.Talk,
+        attachments: [
+          {
+            url: 'https://docs.google.com/presentation/d/1m5PYOx-ldNSqZfUFNOUA9T9r4hUbIIWM/edit?usp=drive_link&ouid=109381646868227443677&rtpof=true&sd=true',
+            type: AttachmentType.Slides,
+          },
+        ],
       },
       {
         time: '12:30 - 13:15',
