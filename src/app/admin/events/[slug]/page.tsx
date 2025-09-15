@@ -1069,7 +1069,7 @@ export default function AdminEventDetailsPage() {
 
       {/* Registrations Table */}
       <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-        <div className="overflow-visible">
+        <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead className="bg-gray-50 dark:bg-gray-700/50">
               <tr>
@@ -1105,11 +1105,8 @@ export default function AdminEventDetailsPage() {
                 <th className="px-6 py-3 text-left text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-300">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-300">
-                  Påmeldt
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-300">
-                  Handlinger
+                <th className="w-12 px-6 py-3">
+                  <span className="sr-only">Handlinger</span>
                 </th>
               </tr>
             </thead>
@@ -1140,35 +1137,44 @@ export default function AdminEventDetailsPage() {
                       className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700"
                     />
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div>
-                      <div className="text-sm font-semibold text-gray-900 dark:text-white">
-                        {registration.name}
-                      </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        {registration.email}
+                  <td className="px-6 py-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="min-w-0 flex-1">
+                        <div className="text-sm font-semibold text-gray-900 dark:text-white">
+                          {registration.name}
+                        </div>
+                        <div className="text-sm text-gray-500 dark:text-gray-400">
+                          {registration.email}
+                        </div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+                  <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                     {registration.organisation}
                   </td>
-                  <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+                  <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                     {registration.attendanceType
                       ? AttendanceTypeDisplay[
                           registration.attendanceType as keyof typeof AttendanceTypeDisplay
                         ] || registration.attendanceType
                       : '-'}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <StatusBadge status={registration.status} />
+                  <td className="px-6 py-4">
+                    <div className="space-y-0.5">
+                      <div>
+                        <StatusBadge
+                          status={registration.status}
+                          className="px-1 py-0.5 text-xs font-medium"
+                        />
+                      </div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        {new Date(registration.registeredAt).toLocaleDateString(
+                          'nb-NO'
+                        )}
+                      </div>
+                    </div>
                   </td>
-                  <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
-                    {new Date(registration.registeredAt).toLocaleDateString(
-                      'nb-NO'
-                    )}
-                  </td>
-                  <td className="px-6 py-4 text-right text-sm font-medium whitespace-nowrap">
+                  <td className="px-6 py-4 text-right text-sm font-medium">
                     <ActionsMenu
                       currentStatus={registration.status}
                       onStatusChange={(status: RegistrationStatus) =>
