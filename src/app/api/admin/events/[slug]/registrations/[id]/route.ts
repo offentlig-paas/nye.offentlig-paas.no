@@ -1,30 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/auth'
 import { eventRegistrationService } from '@/domains/event-registration'
-import { getEventBySlug, canUserAccessEvent } from '@/lib/events/helpers'
+import { authorizeEventAccess } from '@/lib/api/auth-middleware'
 
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string; id: string }> }
 ) {
-  const session = await auth()
-
-  // Check if user is authenticated
-  if (!session?.user) {
-    return NextResponse.json({ error: 'Ikke autentiseret' }, { status: 401 })
-  }
-
   const { slug, id } = await params
 
-  // Get the event to check organizer access
-  const event = getEventBySlug(slug)
-  if (!event) {
-    return NextResponse.json({ error: 'Fagdag ikke funnet' }, { status: 404 })
-  }
+  const authResult = await authorizeEventAccess(
+    request,
+    `/api/admin/events/${slug}/registrations/${id}`,
+    'DELETE',
+    slug,
+    { registrationId: id }
+  )
 
-  // Check if user is admin or organizer of this event
-  if (!canUserAccessEvent(event, session.user)) {
-    return NextResponse.json({ error: 'Ikke autoriseret' }, { status: 403 })
+  if (!authResult.success) {
+    return authResult.response
   }
 
   try {

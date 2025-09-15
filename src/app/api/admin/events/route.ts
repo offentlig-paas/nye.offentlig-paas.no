@@ -1,18 +1,21 @@
-import { NextResponse } from 'next/server'
-import { auth } from '@/auth'
+import { NextRequest, NextResponse } from 'next/server'
 import { eventRegistrationService } from '@/domains/event-registration'
 import { getAllEvents, canUserAccessEvent } from '@/lib/events/helpers'
+import { AuthMiddleware } from '@/lib/api/auth-middleware'
 
-export async function GET() {
-  const session = await auth()
+export async function GET(request: NextRequest) {
+  const authResult = await AuthMiddleware.requireAuthentication(request, {
+    endpoint: '/api/admin/events',
+    method: 'GET',
+  })
 
-  // Check if user is authenticated
-  if (!session?.user) {
-    return NextResponse.json({ error: 'Ikke autentiseret' }, { status: 401 })
+  if (!authResult.success) {
+    return authResult.response
   }
 
+  const { auth } = authResult
   // Non-admins need to be checked for organizer access per event
-  const isAdmin = session.user.isAdmin || false
+  const isAdmin = auth.user.isAdmin || false
 
   try {
     // Get all events from events.ts
@@ -78,7 +81,7 @@ export async function GET() {
 
       // Check if user is organizer of this event
       const event = allEvents.find(e => e.slug === eventData.slug)
-      return event && canUserAccessEvent(event, session.user)
+      return event && canUserAccessEvent(event, auth.user)
     })
 
     // Calculate total stats based on accessible events

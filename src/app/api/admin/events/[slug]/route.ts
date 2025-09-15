@@ -1,35 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/auth'
 import { eventRegistrationService } from '@/domains/event-registration'
-import {
-  getDetailedEventInfoFromSlug,
-  getEventBySlug,
-  canUserAccessEvent,
-} from '@/lib/events/helpers'
+import { authorizeEventAccess } from '@/lib/api/auth-middleware'
+import { getDetailedEventInfoFromSlug } from '@/lib/events/helpers'
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  const session = await auth()
-
-  // Check if user is authenticated
-  if (!session?.user) {
-    return NextResponse.json({ error: 'Ikke autentiseret' }, { status: 401 })
-  }
-
   const { slug } = await params
 
-  // Get the event to check organizer access
-  const event = getEventBySlug(slug)
-  if (!event) {
-    return NextResponse.json({ error: 'Fagdag ikke funnet' }, { status: 404 })
+  const authResult = await authorizeEventAccess(
+    request,
+    `/api/admin/events/${slug}`,
+    'GET',
+    slug
+  )
+
+  if (!authResult.success) {
+    return authResult.response
   }
 
-  // Check if user is admin or organizer of this event
-  if (!canUserAccessEvent(event, session.user)) {
-    return NextResponse.json({ error: 'Ikke autoriseret' }, { status: 403 })
-  }
+  const { auth } = authResult
 
   try {
     // Get registrations for specific event
@@ -65,19 +56,19 @@ export async function GET(
         date: eventInfo.date,
         location: eventInfo.location,
         // Additional event details from events.ts
-        ingress: event.ingress,
-        description: event.description,
-        audience: event.audience,
-        price: event.price,
-        startTime: event.start.toISOString(),
-        endTime: event.end.toISOString(),
-        registrationUrl: event.registrationUrl,
-        callForPapersUrl: event.callForPapersUrl,
-        recordingUrl: event.recordingUrl,
-        organizers: event.organizers,
-        schedule: event.schedule,
-        eventStats: event.stats,
-        registration: event.registration,
+        ingress: auth.event.ingress,
+        description: auth.event.description,
+        audience: auth.event.audience,
+        price: auth.event.price,
+        startTime: auth.event.start.toISOString(),
+        endTime: auth.event.end.toISOString(),
+        registrationUrl: auth.event.registrationUrl,
+        callForPapersUrl: auth.event.callForPapersUrl,
+        recordingUrl: auth.event.recordingUrl,
+        organizers: auth.event.organizers,
+        schedule: auth.event.schedule,
+        eventStats: auth.event.stats,
+        registration: auth.event.registration,
         registrations: eventRegistrations.map(reg => ({
           _id: reg._id,
           name: reg.name,
