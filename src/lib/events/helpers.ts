@@ -52,7 +52,7 @@ export function getEvent(slug: string) {
 }
 
 export function getUpcomingEvents() {
-  return events.filter(event => getStatus(event) === Status.Upcoming)
+  return events.filter(event => getStatus(event) !== Status.Past)
 }
 
 /**
