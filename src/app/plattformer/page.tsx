@@ -8,6 +8,7 @@ import logoSkip from '@/images/platforms/skip.png'
 import logoAltinn from '@/images/platforms/altinn.svg'
 import logoAurora from '@/images/platforms/aurora.jpg'
 import logoNais from '@/images/platforms/nais.svg'
+import logoNova from '@/images/platforms/nova.png'
 import logoRadix from '@/images/platforms/radix.svg'
 
 const plattformer = [
@@ -41,6 +42,12 @@ const plattformer = [
     description: 'Nav sin applikasjonsplattform basert på Kubernetes',
     link: { href: 'https://nais.io', label: 'nais.io' },
     logo: logoNais,
+  },
+  {
+    name: 'Nova',
+    description: 'Telenor sin applikasjonsplattform',
+    link: { href: 'https://cloud.telenor.no', label: 'cloud.telenor.no' },
+    logo: logoNova,
   },
   {
     name: 'Radix',
