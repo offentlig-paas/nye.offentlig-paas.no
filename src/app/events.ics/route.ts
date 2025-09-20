@@ -3,7 +3,7 @@ import type { Event } from '@/lib/events/types'
 
 const siteUrl = process.env.NEXT_PUBLIC_URL
 
-export async function GET(req: Request) {
+export async function GET() {
   if (!siteUrl) {
     throw Error('Missing NEXT_PUBLIC_URL environment variable')
   }
@@ -41,4 +41,4 @@ END:VCALENDAR`
 
 const customDateFormat = (when: Date) => `${when.getUTCFullYear()}${twoDigits(when.getUTCMonth() + 1)}${twoDigits(when.getUTCDate())}T${twoDigits(when.getUTCHours())}${twoDigits(when.getUTCMinutes())}00Z`
 
-const twoDigits = (num: Number) => num.toString().padStart(2, '0')
+const twoDigits = (num: number) => num.toString().padStart(2, '0')
