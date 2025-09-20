@@ -1,4 +1,4 @@
-import { getAllEvents } from '@/lib/events/helpers'
+import { getAllEvents, getUpcomingEvents } from '@/lib/events/helpers'
 import type { Event } from '@/lib/events/types'
 
 const siteUrl = process.env.NEXT_PUBLIC_URL
@@ -19,7 +19,7 @@ export async function GET() {
 }
 
 const createCalendar = async () => {
-  const eventsAsIcalString = getAllEvents().map(event => toIcal(event)).join("\n")
+  const eventsAsIcalString = getUpcomingEvents().map(event => toIcal(event)).join("\n")
   return icalBase.replace("{{ EVENTS }}", eventsAsIcalString)
 }
 
