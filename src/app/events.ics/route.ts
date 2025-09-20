@@ -1,4 +1,4 @@
-import { getAllEvents, getUpcomingEvents } from '@/lib/events/helpers'
+import { getUpcomingEvents } from '@/lib/events/helpers'
 import type { Event } from '@/lib/events/types'
 
 const siteUrl = process.env.NEXT_PUBLIC_URL
