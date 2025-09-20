@@ -19,6 +19,7 @@ import {
   UserGroupIcon,
   UsersIcon,
   CalendarIcon,
+  PencilSquareIcon,
   InformationCircleIcon,
   PresentationChartLineIcon,
   Battery50Icon,
@@ -405,6 +406,18 @@ export default async function Fagdag({ params }: { params: Params }) {
                           aria-hidden="true"
                         />
                         Legg til i kalender (.ics)
+                      </Button>
+                      <Button
+                        href="https://github.com/offentlig-paas/nye.offentlig-paas.no/edit/main/src/data/events.ts"
+                        target='blank'
+                        variant="secondary"
+                        className="w-full"
+                      >
+                        <PencilSquareIcon
+                          className="mr-2 h-6 w-6"
+                          aria-hidden="true"
+                        />
+                        Rediger event
                       </Button>
                     </div>
                   </>
