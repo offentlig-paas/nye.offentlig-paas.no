@@ -36,6 +36,7 @@ END:VEVENT`
 const icalBase = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//OFFENTLIGPAASNO//NONSGML offentlig-paas.no//nb-NO
+X-WR-CALNAME:Offentlig PaaS Fagdager
 {{ EVENTS }}
 END:VCALENDAR`
 
