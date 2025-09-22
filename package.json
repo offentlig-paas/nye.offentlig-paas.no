@@ -18,7 +18,7 @@
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
     "@next/mdx": "^15.5.2",
-    "@sanity/client": "^7.11.1",
+    "@sanity/client": "^7.11.2",
     "@sanity/image-url": "^1.2.0",
     "@slack/web-api": "^7.10.0",
     "@tailwindcss/postcss": "^4.1.13",
