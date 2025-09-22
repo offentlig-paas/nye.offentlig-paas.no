@@ -12,6 +12,9 @@ jobs:
     name: Typecheck, Lint & Build
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      NEXT_PUBLIC_SANITY_PROJECT_ID: 'your-sanity-project-id'
+      NEXT_PUBLIC_SANITY_DATASET: 'production'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
