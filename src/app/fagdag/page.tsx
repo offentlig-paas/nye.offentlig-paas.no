@@ -10,6 +10,7 @@ import { getAllEvents } from '@/lib/events/helpers'
 import { formatDate } from '@/lib/formatDate'
 
 import rssLogo from '@/images/rss.svg'
+import calendarIcon from '@/images/calendar.png'
 
 function SpeakingSection({
   children,
@@ -81,6 +82,13 @@ export default function Fagdager() {
           src={rssLogo}
           className="float-right mt-8 size-6"
           alt="Events RSS feed"
+        />
+      </Link>
+      <Link href="/events.ics">
+        <Image
+          src={calendarIcon}
+          className="float-right mt-8 mr-5 size-6"
+          alt="Events calendar feed"
         />
       </Link>
     </SimpleLayout>
