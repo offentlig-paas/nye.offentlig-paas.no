@@ -1,0 +1,35 @@
+name: PR CI
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Typecheck, Lint & Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Typecheck
+        run: yarn typecheck
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Build
+        run: yarn build
