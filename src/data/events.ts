@@ -33,7 +33,67 @@ export const events: Event[] = [
         url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
       },
     ],
-    schedule: [],
+    schedule: [
+      {
+        time: '11:00 - 11:30',
+        title: 'Registrering og velkommen',
+        type: ItemType.Registration,
+      },
+      {
+        time: '11:30 - 12:00',
+        title: 'Self-Service: A Schizophrenic historical review',
+        speaker: 'Olivier Cloux (Telenor)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '12:00 - 12:10',
+        title: 'After success comes failure',
+        description:
+          'Running fast and winning - then breaking a leg. A tale of self-service',
+        speaker: 'Anders Elton (Telenor)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '12:10 - 12:20',
+        title: 'Towards better UX - Straight as the Kro flies',
+        speaker: 'Eline Henriksen (Telenor)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '12:20 - 12:30',
+        title:
+          'Pick, Pay, Push - The rise of self-service, from Retail isles to Developer platform',
+        speaker: 'Sindre Lindstad (Telenor)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '12:30 - 13:30',
+        title: 'Lunsj',
+        type: ItemType.Break,
+      },
+      {
+        time: '13:30 - 14:10',
+        title:
+          'Selvbetjening er ikke bare en utviklerportal, men det er en del av kaka',
+        description:
+          'Hos Vy har vi lenge fokusert på hvordan vi kan bruke de få ressursene vi har til rådighet i utviklerplattformteamet best mulig. En stor del av dette er selvbetjening og hjelp til selvhjelp hos utviklerne i de forskjellige teamene. Hvilke metoder og strategier bruker vi for å få til dette, og hvordan kan man implementere en selvbetjeningsstrategi som faktisk er selvbetjent?',
+        speaker: 'Nicolas Harlem Eid (Vy)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '14:10 - 14:50',
+        title: 'Nais API og Console - veien til selvbetjening',
+        description:
+          'Hvordan Nais har jobbet med å lage en selvbetjeningsportal for utviklere i offentlig sektor. Vi vil gå gjennom arkitektur, utfordringer og løsninger vi har funnet på veien.',
+        speaker: 'Jonny Horvi (Nav) og Frode Sundby (Nav)',
+        type: ItemType.Talk,
+      },
+      {
+        time: '14:50 - 16:00',
+        title: 'Nettverksbygging og avslutning',
+        type: ItemType.Info,
+      },
+    ],
   },
   {
     slug: '2025-09-02-trondheim-fagdag',
