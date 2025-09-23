@@ -4,40 +4,19 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+      timezone: 'Europe/Oslo'
     groups:
-      react-packages:
+      production-dependencies:
+        dependency-type: 'production'
         patterns:
-          - 'react'
-          - 'react-dom'
-          - '@types/react'
-          - '@types/react-dom'
-      next-packages:
+          - '*'
+      development-dependencies:
+        dependency-type: 'development'
         patterns:
-          - 'next'
-          - '@next/*'
-          - 'eslint-config-next'
-      mdx-packages:
-        patterns:
-          - '@mdx-js/*'
-      tailwind-packages:
-        patterns:
-          - 'tailwindcss'
-          - '@tailwindcss/*'
-      vercel-packages:
-        patterns:
-          - '@vercel/*'
-      eslint-packages:
-        patterns:
-          - 'eslint'
-          - 'eslint-plugin-react'
-          - 'typescript-eslint'
-          - '@eslint/*'
-      prettier-packages:
-        patterns:
-          - 'prettier'
-          - 'prettier-plugin-tailwindcss'
-      typescript-packages:
-        patterns:
-          - 'typescript'
-          - '@types/node'
-          - '@types/webpack-env'
+          - '*'
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: 'deps'
+      include: 'scope'
