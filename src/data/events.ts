@@ -19,7 +19,7 @@ export const events: Event[] = [
     audience: Audience.OpenForAll,
     location: 'Telenor Norge, Fornebuporten, Snarøyveien 30, 1360 Fornebu',
     registration: {
-      attendanceTypes: [AttendanceType.Physical],
+      attendanceTypes: [AttendanceType.Physical, AttendanceType.Digital],
     },
     organizers: [
       {
