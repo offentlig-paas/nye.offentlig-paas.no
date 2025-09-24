@@ -1,6 +1,7 @@
 {
   "name": "offentlig-paas",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "dev": "next dev --experimental-https",
     "build": "next build",
@@ -8,8 +9,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "check": "next lint && tsc --noEmit && prettier --write .",
-    "lint": "next lint",
+    "check": "eslint . && tsc --noEmit && prettier --write .",
+    "lint": "eslint .",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
     "sanity": "sanity"
@@ -49,6 +50,7 @@
   },
   "devDependencies": {
     "@eslint/compat": "^1.4.0",
+    "@eslint/eslintrc": "^3",
     "@eslint/js": "^9.36.0",
     "@sanity/cli": "^4.9.0",
     "@sanity/vision": "^4.9.0",
