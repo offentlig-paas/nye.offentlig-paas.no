@@ -7,10 +7,6 @@ import type {
   RegistrationStatus,
 } from './types'
 
-/**
- * Service layer for event registration business logic
- * Handles validation, business rules, and coordination between components
- */
 export class EventRegistrationService {
   private repository: EventRegistrationRepository
 
@@ -18,14 +14,9 @@ export class EventRegistrationService {
     this.repository = new EventRegistrationRepository()
   }
 
-  /**
-   * Register a user for an event
-   * Includes business logic like duplicate checking
-   */
   async registerForEvent(
     input: CreateEventRegistrationInput
   ): Promise<EventRegistration> {
-    // Check if user is already registered for this event
     const existingRegistration = await this.repository.findByEventAndUser(
       input.eventSlug,
       input.slackUserId
@@ -35,29 +26,18 @@ export class EventRegistrationService {
       throw new Error('User is already registered for this event')
     }
 
-    // Validate required fields
     this.validateRegistrationInput(input)
-
     return await this.repository.create(input)
   }
 
-  /**
-   * Get all registrations for an event
-   */
   async getEventRegistrations(eventSlug: string): Promise<EventRegistration[]> {
     return await this.repository.findMany({ eventSlug })
   }
 
-  /**
-   * Get registration by ID
-   */
   async getRegistration(id: string): Promise<EventRegistration | null> {
     return await this.repository.findById(id)
   }
 
-  /**
-   * Update a registration
-   */
   async updateRegistration(
     id: string,
     input: UpdateEventRegistrationInput
@@ -70,9 +50,6 @@ export class EventRegistrationService {
     return await this.repository.update(id, input)
   }
 
-  /**
-   * Update registration status
-   */
   async updateRegistrationStatus(
     id: string,
     status: RegistrationStatus
@@ -85,30 +62,18 @@ export class EventRegistrationService {
     return await this.repository.update(id, { status })
   }
 
-  /**
-   * Move registration from waitlist to confirmed
-   */
   async confirmFromWaitlist(id: string): Promise<EventRegistration> {
     return await this.updateRegistrationStatus(id, 'confirmed')
   }
 
-  /**
-   * Mark registration as attended
-   */
   async markAsAttended(id: string): Promise<EventRegistration> {
     return await this.updateRegistrationStatus(id, 'attended')
   }
 
-  /**
-   * Mark registration as no-show
-   */
   async markAsNoShow(id: string): Promise<EventRegistration> {
     return await this.updateRegistrationStatus(id, 'no-show')
   }
 
-  /**
-   * Bulk update registration statuses
-   */
   async bulkUpdateStatus(
     ids: string[],
     status: RegistrationStatus
@@ -119,9 +84,6 @@ export class EventRegistrationService {
     return updates
   }
 
-  /**
-   * Get registration statistics by status for an event
-   */
   async getEventRegistrationStats(
     eventSlug: string
   ): Promise<Record<RegistrationStatus, number>> {
@@ -142,9 +104,6 @@ export class EventRegistrationService {
     return stats
   }
 
-  /**
-   * Get active registrations count (confirmed + attended)
-   */
   async getActiveRegistrationCount(eventSlug: string): Promise<number> {
     const registrations = await this.repository.findMany({ eventSlug })
     return registrations.filter(
@@ -152,16 +111,10 @@ export class EventRegistrationService {
     ).length
   }
 
-  /**
-   * Cancel a registration
-   */
   async cancelRegistration(id: string): Promise<EventRegistration> {
     return await this.updateRegistrationStatus(id, 'cancelled')
   }
 
-  /**
-   * Delete a registration permanently
-   */
   async deleteRegistration(id: string): Promise<void> {
     const existingRegistration = await this.repository.findById(id)
     if (!existingRegistration) {
@@ -171,9 +124,6 @@ export class EventRegistrationService {
     return await this.repository.delete(id)
   }
 
-  /**
-   * Check if user is registered for an event
-   */
   async isUserRegistered(
     eventSlug: string,
     slackUserId: string
@@ -185,25 +135,16 @@ export class EventRegistrationService {
     return registration !== null && registration.status !== 'cancelled'
   }
 
-  /**
-   * Get registration count for an event
-   */
   async getRegistrationCount(eventSlug: string): Promise<number> {
     return await this.getActiveRegistrationCount(eventSlug)
   }
 
-  /**
-   * Get all registrations with optional filtering
-   */
   async getAllRegistrations(
     query: EventRegistrationQuery = {}
   ): Promise<EventRegistration[]> {
     return await this.repository.findMany(query)
   }
 
-  /**
-   * Get registrations grouped by event slug
-   */
   async getRegistrationsByEvent(): Promise<
     Record<string, EventRegistration[]>
   > {
@@ -221,9 +162,59 @@ export class EventRegistrationService {
     )
   }
 
-  /**
-   * Validate registration input
-   */
+  async getRegistrationCountsByCategory(eventSlug: string): Promise<{
+    totalActive: number
+    persons: number
+    organizations: number
+    uniqueOrganizations: number
+  }> {
+    const registrations = await this.repository.findMany({ eventSlug })
+    const activeRegistrations = registrations.filter(
+      r => r.status === 'confirmed' || r.status === 'attended'
+    )
+
+    const organizationCounts = new Map<string, number>()
+
+    activeRegistrations.forEach(registration => {
+      const org = registration.organisation.trim()
+      if (org) {
+        organizationCounts.set(org, (organizationCounts.get(org) || 0) + 1)
+      }
+    })
+
+    return {
+      totalActive: activeRegistrations.length,
+      persons: activeRegistrations.length,
+      organizations: Array.from(organizationCounts.keys()).length,
+      uniqueOrganizations: organizationCounts.size,
+    }
+  }
+
+  async getOrganizationBreakdown(eventSlug: string): Promise<
+    Array<{
+      organization: string
+      count: number
+    }>
+  > {
+    const registrations = await this.repository.findMany({ eventSlug })
+    const activeRegistrations = registrations.filter(
+      r => r.status === 'confirmed' || r.status === 'attended'
+    )
+
+    const organizationCounts = new Map<string, number>()
+
+    activeRegistrations.forEach(registration => {
+      const org = registration.organisation.trim()
+      if (org) {
+        organizationCounts.set(org, (organizationCounts.get(org) || 0) + 1)
+      }
+    })
+
+    return Array.from(organizationCounts.entries())
+      .map(([organization, count]) => ({ organization, count }))
+      .sort((a, b) => b.count - a.count)
+  }
+
   private validateRegistrationInput(input: CreateEventRegistrationInput): void {
     if (!input.name.trim()) {
       throw new Error('Name is required')
@@ -252,5 +243,4 @@ export class EventRegistrationService {
   }
 }
 
-// Export singleton instance for use throughout the application
 export const eventRegistrationService = new EventRegistrationService()

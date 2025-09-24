@@ -38,7 +38,6 @@ export async function POST(
       )
     }
 
-    // Create registration with user data from session
     const registration = await eventRegistrationService.registerForEvent({
       eventSlug: slug,
       name: session.user.name,
@@ -84,7 +83,6 @@ export async function DELETE(
   const { slug } = await params
 
   try {
-    // Find the user's registration
     const registration =
       await eventRegistrationService.getEventRegistrations(slug)
     const userRegistration = registration.find(
@@ -98,7 +96,6 @@ export async function DELETE(
       )
     }
 
-    // Cancel the registration
     await eventRegistrationService.cancelRegistration(userRegistration._id!)
 
     return NextResponse.json({
@@ -131,10 +128,14 @@ export async function GET(
     const registrationCount =
       await eventRegistrationService.getRegistrationCount(slug)
 
+    const registrationCounts =
+      await eventRegistrationService.getRegistrationCountsByCategory(slug)
+
     return NextResponse.json(
       {
         isRegistered,
         registrationCount,
+        registrationCounts,
       },
       {
         headers: {

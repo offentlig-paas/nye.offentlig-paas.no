@@ -1,7 +1,13 @@
 import { type Metadata } from 'next'
+import { headers } from 'next/headers'
+import React from 'react'
 
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { EventRegistration } from '@/components/EventRegistration'
+import { Container } from '@/components/Container'
+import { Button } from '@/components/Button'
+import { Rating } from '@/components/Rating'
+import { Avatar } from '@/components/Avatar'
 import {
   getEvent,
   getStatus,
@@ -11,7 +17,13 @@ import {
 } from '@/lib/events/helpers'
 import { formatDateTime } from '@/lib/formatDate'
 import { auth } from '@/auth'
-
+import type { Attachment, Event } from '@/lib/events/types'
+import {
+  AttachmentType,
+  ItemType,
+  Status,
+  AttendanceTypeDisplay,
+} from '@/lib/events/types'
 import {
   CalendarDaysIcon,
   MapPinIcon,
@@ -28,19 +40,6 @@ import {
   PaperClipIcon,
   CogIcon,
 } from '@heroicons/react/20/solid'
-import { Container } from '@/components/Container'
-import React from 'react'
-import type { Attachment, Event } from '@/lib/events/types'
-import {
-  AttachmentType,
-  ItemType,
-  Status,
-  AttendanceTypeDisplay,
-} from '@/lib/events/types'
-import { Button } from '@/components/Button'
-import { headers } from 'next/headers'
-import { Rating } from '@/components/Rating'
-import { Avatar } from '@/components/Avatar'
 
 function EventIcon({
   type,
@@ -241,16 +240,27 @@ export default async function Fagdag({ params }: { params: Params }) {
             <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
               {event.title}
             </h1>
-            {hasAdminAccess && (
+            <div className="flex items-center gap-2">
               <Button
-                href={`/admin/events/${slug}`}
+                href="https://github.com/offentlig-paas/nye.offentlig-paas.no/edit/main/src/data/events.ts"
+                target="_blank"
                 variant="secondary"
                 className="mt-1 flex items-center gap-2"
               >
-                <CogIcon className="h-4 w-4" aria-hidden="true" />
-                Admin
+                <PencilSquareIcon className="h-4 w-4" aria-hidden="true" />
+                Rediger
               </Button>
-            )}
+              {hasAdminAccess && (
+                <Button
+                  href={`/admin/events/${slug}`}
+                  variant="secondary"
+                  className="mt-1 flex items-center gap-2"
+                >
+                  <CogIcon className="h-4 w-4" aria-hidden="true" />
+                  Admin
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -407,18 +417,6 @@ export default async function Fagdag({ params }: { params: Params }) {
                         />
                         Legg til i kalender (.ics)
                       </Button>
-                      <Button
-                        href="https://github.com/offentlig-paas/nye.offentlig-paas.no/edit/main/src/data/events.ts"
-                        target='blank'
-                        variant="secondary"
-                        className="w-full"
-                      >
-                        <PencilSquareIcon
-                          className="mr-2 h-6 w-6"
-                          aria-hidden="true"
-                        />
-                        Rediger event
-                      </Button>
                     </div>
                   </>
                 ) : event.recordingUrl ? (
@@ -443,74 +441,133 @@ export default async function Fagdag({ params }: { params: Params }) {
                 )}
               </div>
             </div>
+          </div>
 
-            {event.stats && (
-              <div className="rounded-lg bg-gray-50 shadow-sm ring-1 ring-gray-900/5 dark:bg-transparent dark:ring-gray-400/5">
-                <div className="mt-6 border-t border-gray-900/5 px-6 py-6 dark:border-gray-400/5">
-                  <h2 className="text-base leading-6 font-semibold">
-                    Etter arrangementet
-                  </h2>
-                  <dl className="mt-4 grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
-                    <div className="sm:col-span-1">
-                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                        Deltakere
+          {/* Organizers */}
+          <div className="lg:col-start-3">
+            <div className="rounded-xl bg-gray-50 p-6 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800/50 dark:ring-gray-700/50">
+              <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
+                <svg
+                  className="h-5 w-5 text-gray-600 dark:text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"
+                  />
+                </svg>
+                Arrangører
+              </h2>
+              <ul className="space-y-4">
+                {event.organizers.map(organizer => (
+                  <li key={organizer.name} className="flex gap-x-3">
+                    <Avatar
+                      name={organizer.name}
+                      size="md"
+                      className="bg-gray-100 dark:bg-gray-700"
+                    />
+                    <div className="flex-auto">
+                      <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                        <a
+                          href={organizer.url}
+                          className="transition hover:text-blue-600 dark:hover:text-blue-400"
+                        >
+                          {organizer.name}
+                        </a>
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {organizer.org}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {event.stats && (
+            <div className="lg:col-start-3">
+              <div className="rounded-xl bg-gray-50 p-6 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800/50 dark:ring-gray-700/50">
+                <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  <svg
+                    className="h-5 w-5 text-gray-600 dark:text-gray-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-5.5m5.5 0v1.5a1.5 1.5 0 01-1.5 1.5h-1.5a1.5 1.5 0 01-1.5-1.5v-1.5m0-5.5v-2.25"
+                    />
+                  </svg>
+                  Etter arrangementet
+                </h2>
+                <dl className="grid grid-cols-1 gap-4">
+                  <div>
+                    <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Deltakere
+                    </dt>
+                    <dd className="mt-1 text-xl font-semibold text-gray-900 dark:text-gray-100">
+                      {event.stats.participants}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Organisasjoner
+                    </dt>
+                    <dd className="mt-1 text-xl font-semibold text-gray-900 dark:text-gray-100">
+                      {event.stats.organisations}
+                    </dd>
+                  </div>
+                  {event.stats.feedback && (
+                    <div>
+                      <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                        Gjennomsnittlig vurdering
                       </dt>
-                      <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">
-                        {event.stats.participants}
+                      <dd className="mt-1">
+                        <Rating
+                          rating={event.stats.feedback?.averageRating ?? 0}
+                          total={event.stats.feedback?.respondents ?? 0}
+                        />
                       </dd>
                     </div>
-                    <div className="sm:col-span-1">
-                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                        Organisasjoner
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">
-                        {event.stats.organisations}
-                      </dd>
-                    </div>
-                    {event.stats.feedback && (
-                      <div className="sm:col-span-2">
-                        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                          Gjennomsnittlig vurdering
+                  )}
+                  {event.stats.feedback &&
+                    event.stats.feedback?.comments.length > 0 && (
+                      <div>
+                        <dt className="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">
+                          Tilbakemeldinger
                         </dt>
-                        <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">
-                          <Rating
-                            rating={event.stats.feedback?.averageRating ?? 0}
-                            total={event.stats.feedback?.respondents ?? 0}
-                          />
+                        <dd className="space-y-2">
+                          {event.stats.feedback?.comments.map(
+                            (feedback, index) => (
+                              <div
+                                key={index}
+                                className="flex items-start gap-2 rounded-lg bg-white/50 p-3 dark:bg-gray-900/30"
+                              >
+                                <ChatBubbleBottomCenterIcon
+                                  className="mt-0.5 h-4 w-4 flex-none text-gray-400"
+                                  aria-hidden="true"
+                                />
+                                <span className="text-sm text-gray-700 dark:text-gray-300">
+                                  &quot;{feedback}&quot;
+                                </span>
+                              </div>
+                            )
+                          )}
                         </dd>
                       </div>
                     )}
-                    {event.stats.feedback &&
-                      event.stats.feedback?.comments.length > 0 && (
-                        <div className="sm:col-span-2">
-                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                            Tilbakemeldinger
-                          </dt>
-                          <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">
-                            <ul>
-                              {event.stats.feedback?.comments.map(
-                                (feedback, index) => (
-                                  <li
-                                    key={index}
-                                    className="mt-2 flex items-start"
-                                  >
-                                    <ChatBubbleBottomCenterIcon
-                                      className="mr-2 h-5 w-5 flex-none text-gray-400"
-                                      aria-hidden="true"
-                                    />
-                                    <span>&quot;{feedback}&quot;</span>
-                                  </li>
-                                )
-                              )}
-                            </ul>
-                          </dd>
-                        </div>
-                      )}
-                  </dl>
-                </div>
+                </dl>
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* Event details */}
           <div className="-mx-4 px-6 py-6 shadow-sm ring-1 ring-gray-900/5 sm:mx-0 sm:rounded-lg lg:col-span-2 lg:row-span-2 lg:row-end-2 dark:ring-gray-400/5">
@@ -660,33 +717,6 @@ export default async function Fagdag({ params }: { params: Params }) {
                 )}
               </div>
             )}
-          </div>
-
-          <div className="lg:col-start-3">
-            {/* Organizers */}
-            <h2 className="text-sm leading-6 font-semibold">Arrangører</h2>
-            <ul className="mt-6 grid grid-cols-1 gap-y-6 sm:grid-cols-1">
-              {event.organizers.map(organizer => (
-                <li key={organizer.name} className="flex gap-x-4">
-                  <Avatar
-                    name={organizer.name}
-                    size="md"
-                    className="bg-gray-100"
-                  />
-                  <div className="flex-auto">
-                    <h3 className="text-base leading-6 font-semibold">
-                      <a
-                        href={organizer.url}
-                        className="transition hover:text-teal-500 dark:hover:text-teal-400"
-                      >
-                        {organizer.name}
-                      </a>
-                    </h3>
-                    <p className="text-sm leading-6">{organizer.org}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
           </div>
         </div>
       </div>
