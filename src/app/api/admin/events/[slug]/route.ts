@@ -56,6 +56,7 @@ export async function GET(
           name: reg.name,
           email: reg.email,
           organisation: reg.organisation,
+          slackUserId: reg.slackUserId,
           dietary: reg.dietary,
           comments: reg.comments,
           attendanceType: reg.attendanceType,

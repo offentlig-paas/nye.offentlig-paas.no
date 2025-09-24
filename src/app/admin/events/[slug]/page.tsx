@@ -37,6 +37,7 @@ interface EventRegistration {
   name: string
   email: string
   organisation: string
+  slackUserId?: string
   dietary?: string
   comments?: string
   attendanceType?: string
@@ -1163,6 +1164,12 @@ export default function AdminEventDetailsPage() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center space-x-3">
+                      <Avatar
+                        name={registration.name}
+                        slackUserId={registration.slackUserId}
+                        size="sm"
+                        className="flex-shrink-0"
+                      />
                       <div className="min-w-0 flex-1">
                         <div className="text-sm font-semibold text-gray-900 dark:text-white">
                           {registration.name}
