@@ -7,7 +7,7 @@ import { EventRegistration } from '@/components/EventRegistration'
 import { Container } from '@/components/Container'
 import { Button } from '@/components/Button'
 import { Rating } from '@/components/Rating'
-import { Avatar } from '@/components/Avatar'
+import { ServerAvatar } from '@/components/ServerAvatar'
 import {
   getEvent,
   getStatus,
@@ -465,8 +465,9 @@ export default async function Fagdag({ params }: { params: Params }) {
               <ul className="space-y-4">
                 {event.organizers.map(organizer => (
                   <li key={organizer.name} className="flex gap-x-3">
-                    <Avatar
+                    <ServerAvatar
                       name={organizer.name}
+                      slackUrl={organizer.url}
                       size="md"
                       className="bg-gray-100 dark:bg-gray-700"
                     />

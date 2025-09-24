@@ -28,6 +28,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { StatusBadge } from '@/components/StatusBadge'
 import { ActionsMenu } from '@/components/ActionsMenu'
+import { Avatar } from '@/components/Avatar'
 import type { RegistrationStatus } from '@/domains/event-registration/types'
 import { AttendanceTypeDisplay } from '@/lib/events/types'
 
@@ -904,9 +905,11 @@ export default function AdminEventDetailsPage() {
               <div className="flex flex-wrap gap-3">
                 {eventDetails.organizers.map((organizer, index) => (
                   <div key={index} className="flex items-center space-x-2">
-                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50">
-                      <UserIcon className="h-3 w-3 text-blue-600 dark:text-blue-400" />
-                    </div>
+                    <Avatar
+                      name={organizer.name}
+                      slackUrl={organizer.url}
+                      size="xs"
+                    />
                     <div className="text-sm">
                       {organizer.url ? (
                         <a
