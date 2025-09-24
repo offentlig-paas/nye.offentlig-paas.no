@@ -6,6 +6,7 @@ import { Button } from '@/components/Button'
 import { AuthButton } from '@/components/AuthButton'
 import { useToast } from '@/components/ToastProvider'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
+import { OverlappingAvatars } from '@/components/OverlappingAvatars'
 import { AttendanceType, AttendanceTypeDisplay } from '@/lib/events/types'
 import {
   UserGroupIcon,
@@ -18,6 +19,16 @@ interface RegistrationCounts {
   persons: number
   organizations: number
   uniqueOrganizations: number
+}
+
+interface Participant {
+  name: string
+  slackUserId?: string
+}
+
+interface ParticipantData {
+  participants: Participant[]
+  totalCount: number
 }
 
 interface EventRegistrationProps {
@@ -270,6 +281,8 @@ export function EventRegistration({
 
   const [registrationCounts, setRegistrationCounts] =
     useState<RegistrationCounts | null>(null)
+  const [participantData, setParticipantData] =
+    useState<ParticipantData | null>(null)
   const [registrationData, setRegistrationData] =
     useState<RegistrationFormData>({
       comments: '',
@@ -287,6 +300,7 @@ export function EventRegistration({
           const data = await response.json()
           setRegistrationCounts(data.registrationCounts)
         }
+        setParticipantData(null)
       } catch (error) {
         console.error('Error fetching public stats:', error)
       }
@@ -301,18 +315,40 @@ export function EventRegistration({
 
     setState(prev => ({ ...prev, isCheckingStatus: true }))
     try {
-      const response = await fetch(`/api/events/${eventSlug}/registration`)
-      if (response.ok) {
-        const data = await response.json()
+      const regResponse = await fetch(`/api/events/${eventSlug}/registration`)
+
+      if (regResponse.ok) {
+        const data = await regResponse.json()
         setState(prev => ({ ...prev, isRegistered: data.isRegistered }))
         if (data.registrationCounts) {
           setRegistrationCounts(data.registrationCounts)
         }
+
+        if (data.isRegistered) {
+          try {
+            const participantsResponse = await fetch(
+              `/api/events/${eventSlug}/participants`
+            )
+            if (participantsResponse.ok) {
+              const participantData = await participantsResponse.json()
+              setParticipantData(participantData)
+            } else {
+              setParticipantData(null)
+            }
+          } catch (error) {
+            console.error('Error fetching participants:', error)
+            setParticipantData(null)
+          }
+        } else {
+          setParticipantData(null)
+        }
       } else {
-        console.warn('Failed to check registration status:', response.status)
+        console.warn('Failed to check registration status:', regResponse.status)
+        setParticipantData(null)
       }
     } catch (error) {
       console.error('Error checking registration status:', error)
+      setParticipantData(null)
     } finally {
       setState(prev => ({ ...prev, isCheckingStatus: false }))
     }
@@ -461,6 +497,18 @@ export function EventRegistration({
           </div>
         )}
 
+        {participantData && participantData.participants.length > 0 && (
+          <div className="mb-3">
+            <OverlappingAvatars
+              participants={participantData.participants}
+              totalCount={participantData.totalCount}
+              maxVisible={5}
+              size="sm"
+              className="justify-center"
+            />
+          </div>
+        )}
+
         <Button
           variant="secondary"
           onClick={() =>
@@ -499,6 +547,18 @@ export function EventRegistration({
         {registrationCounts && registrationCounts.totalActive > 0 && (
           <div className="mb-3">
             <RegistrationStats counts={registrationCounts} variant="blue" />
+          </div>
+        )}
+
+        {participantData && participantData.participants.length > 0 && (
+          <div className="mb-3">
+            <OverlappingAvatars
+              participants={participantData.participants}
+              totalCount={participantData.totalCount}
+              maxVisible={5}
+              size="sm"
+              className="justify-center"
+            />
           </div>
         )}
 
