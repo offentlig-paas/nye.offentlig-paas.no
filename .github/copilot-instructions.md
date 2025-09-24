@@ -231,3 +231,4 @@ When adding content, maintain the professional tone and focus on practical techn
 - Keep documentation simple, accurate and to the point
 - Avoid overly verbose or repetitious language
 - Do not create lengthy summaries after coding sessions
+- Clean up comments and unused code before finalizing
