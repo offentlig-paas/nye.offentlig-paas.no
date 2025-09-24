@@ -22,16 +22,18 @@ export function getInitials(fullName: string): string {
 
 export function getBackgroundColor(fullName: string): string {
   const colors = [
-    'bg-red-500',
-    'bg-blue-500',
-    'bg-green-500',
-    'bg-yellow-500',
-    'bg-purple-500',
-    'bg-pink-500',
-    'bg-indigo-500',
-    'bg-gray-500',
-    'bg-orange-500',
-    'bg-teal-500',
+    'bg-slate-500',
+    'bg-stone-500',
+    'bg-blue-600',
+    'bg-indigo-600',
+    'bg-purple-600',
+    'bg-pink-600',
+    'bg-rose-600',
+    'bg-orange-600',
+    'bg-amber-600',
+    'bg-teal-600',
+    'bg-emerald-600',
+    'bg-cyan-600',
   ]
 
   let hash = 0
@@ -39,5 +41,5 @@ export function getBackgroundColor(fullName: string): string {
     hash = fullName.charCodeAt(i) + ((hash << 5) - hash)
   }
 
-  return colors[Math.abs(hash) % colors.length] ?? 'bg-blue-500'
+  return colors[Math.abs(hash) % colors.length] ?? 'bg-slate-600'
 }

@@ -52,16 +52,14 @@ export function Avatar({
 
   if (slackUserData?.avatarUrl && !hasError) {
     return (
-      <div className={`relative ${AVATAR_SIZE_CLASSES[size]} ${className}`}>
-        <Image
-          src={slackUserData.avatarUrl}
-          alt={slackUserData.displayName || name}
-          width={AVATAR_SIZE_PX[size]}
-          height={AVATAR_SIZE_PX[size]}
-          className="rounded-full object-cover"
-          unoptimized
-        />
-      </div>
+      <Image
+        src={slackUserData.avatarUrl}
+        alt={slackUserData.displayName || name}
+        width={AVATAR_SIZE_PX[size]}
+        height={AVATAR_SIZE_PX[size]}
+        className={`${AVATAR_SIZE_CLASSES[size]} rounded-full object-cover ${className}`}
+        unoptimized
+      />
     )
   }
 
@@ -70,7 +68,7 @@ export function Avatar({
 
   return (
     <div
-      className={`flex flex-none items-center justify-center rounded-full font-medium text-white ${AVATAR_SIZE_CLASSES[size]} ${backgroundColor} ${className}`}
+      className={`${AVATAR_SIZE_CLASSES[size]} flex flex-shrink-0 items-center justify-center rounded-full font-semibold text-white ${backgroundColor} ${className}`}
     >
       {initials}
     </div>
