@@ -23,6 +23,8 @@ import {
   UserGroupIcon,
   StarIcon,
   BanknotesIcon,
+  ChartBarIcon,
+  XCircleIcon,
 } from '@heroicons/react/24/outline'
 import { StatusBadge } from '@/components/StatusBadge'
 import { ActionsMenu } from '@/components/ActionsMenu'
@@ -105,6 +107,7 @@ export default function AdminEventDetailsPage() {
   const [statusFilter, setStatusFilter] = useState<RegistrationStatus | 'all'>(
     'all'
   )
+  const [attendanceFilter, setAttendanceFilter] = useState<string>('all')
   const [selectedRegistrations, setSelectedRegistrations] = useState<string[]>(
     []
   )
@@ -301,7 +304,11 @@ export default function AdminEventDetailsPage() {
       const matchesStatus =
         statusFilter === 'all' || registration.status === statusFilter
 
-      return matchesSearch && matchesStatus
+      const matchesAttendance =
+        attendanceFilter === 'all' ||
+        registration.attendanceType === attendanceFilter
+
+      return matchesSearch && matchesStatus && matchesAttendance
     }) || []
 
   if (status === 'loading' || isLoading) {
@@ -476,173 +483,258 @@ export default function AdminEventDetailsPage() {
       </div>
 
       {/* Stats */}
-      <div className="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-          <div className="p-5">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <UsersIcon
-                  className="h-6 w-6 text-gray-400 dark:text-gray-500"
-                  aria-hidden="true"
-                />
-              </div>
-              <div className="ml-5 w-0 flex-1">
-                <dl>
-                  <dt className="truncate text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Totalt påmeldinger
-                  </dt>
-                  <dd className="text-lg font-semibold text-gray-900 dark:text-white">
-                    {eventDetails.stats.totalRegistrations}
-                  </dd>
-                </dl>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="mb-8">
+        {(() => {
+          const eventDate = new Date(eventDetails.startTime)
+          const now = new Date()
+          const isFutureEvent = eventDate > now
 
-        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-          <div className="p-5">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <CheckCircleIcon
-                  className="h-6 w-6 text-green-500"
-                  aria-hidden="true"
-                />
-              </div>
-              <div className="ml-5 w-0 flex-1">
-                <dl>
-                  <dt className="truncate text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Aktive påmeldinger
-                  </dt>
-                  <dd className="text-lg font-semibold text-gray-900 dark:text-white">
-                    {eventDetails.stats.activeRegistrations}
-                  </dd>
-                </dl>
-              </div>
-            </div>
-          </div>
-        </div>
+          if (isFutureEvent) {
+            // Future event stats - focus on registrations
+            const physicalCount = eventDetails.registrations.filter(
+              r =>
+                r.attendanceType === 'physical' &&
+                ['confirmed', 'attended'].includes(r.status)
+            ).length
+            const digitalCount = eventDetails.registrations.filter(
+              r =>
+                r.attendanceType === 'digital' &&
+                ['confirmed', 'attended'].includes(r.status)
+            ).length
 
-        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-          <div className="p-5">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <UserIcon
-                  className="h-6 w-6 text-blue-500"
-                  aria-hidden="true"
-                />
-              </div>
-              <div className="ml-5 w-0 flex-1">
-                <dl>
-                  <dt className="truncate text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Deltok
-                  </dt>
-                  <dd className="text-lg font-semibold text-gray-900 dark:text-white">
-                    {eventDetails.stats.statusBreakdown.attended}
-                  </dd>
-                </dl>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-          <div className="p-5">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <BuildingOfficeIcon
-                  className="h-6 w-6 text-gray-400 dark:text-gray-500"
-                  aria-hidden="true"
-                />
-              </div>
-              <div className="ml-5 w-0 flex-1">
-                <dl>
-                  <dt className="truncate text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Unike organisasjoner
-                  </dt>
-                  <dd className="text-lg font-semibold text-gray-900 dark:text-white">
-                    {eventDetails.stats.uniqueOrganisations}
-                  </dd>
-                </dl>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Attendance Type Breakdown */}
-        {eventDetails.registration.attendanceTypes.length > 1 && (
-          <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <UsersIcon
-                    className="h-6 w-6 text-purple-500"
-                    aria-hidden="true"
-                  />
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="truncate text-sm font-medium text-gray-500 dark:text-gray-400">
-                      Deltakelsestyper
-                    </dt>
-                    <dd className="text-lg font-semibold text-gray-900 dark:text-white">
-                      <div className="space-y-1">
-                        {eventDetails.registration.attendanceTypes.map(type => {
-                          const count = eventDetails.registrations.filter(
-                            r =>
-                              r.attendanceType === type &&
-                              r.status === 'confirmed'
-                          ).length
-                          return (
-                            <div
-                              key={type}
-                              className="flex justify-between text-sm"
-                            >
-                              <span className="text-gray-600 dark:text-gray-400">
-                                {AttendanceTypeDisplay[
-                                  type as keyof typeof AttendanceTypeDisplay
-                                ] || type}
-                                :
-                              </span>
-                              <span className="font-medium">{count}</span>
-                            </div>
-                          )
-                        })}
+            return (
+              <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+                <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                  <div className="p-4">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <CheckCircleIcon
+                          className="h-5 w-5 text-green-500"
+                          aria-hidden="true"
+                        />
                       </div>
-                    </dd>
-                  </dl>
+                      <div className="ml-4 w-0 flex-1">
+                        <dl>
+                          <dt className="truncate text-xs font-medium text-gray-500 dark:text-gray-400">
+                            Påmeldte
+                          </dt>
+                          <dd className="text-lg font-semibold text-gray-900 dark:text-white">
+                            {eventDetails.stats.activeRegistrations}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                  <div className="p-4">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <MapPinIcon
+                          className="h-5 w-5 text-blue-500"
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <div className="ml-4 w-0 flex-1">
+                        <dl>
+                          <dt className="truncate text-xs font-medium text-gray-500 dark:text-gray-400">
+                            Fysisk
+                          </dt>
+                          <dd className="text-lg font-semibold text-gray-900 dark:text-white">
+                            {physicalCount}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                  <div className="p-4">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <VideoCameraIcon
+                          className="h-5 w-5 text-purple-500"
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <div className="ml-4 w-0 flex-1">
+                        <dl>
+                          <dt className="truncate text-xs font-medium text-gray-500 dark:text-gray-400">
+                            Digitalt
+                          </dt>
+                          <dd className="text-lg font-semibold text-gray-900 dark:text-white">
+                            {digitalCount}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                  <div className="p-4">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <BuildingOfficeIcon
+                          className="h-5 w-5 text-gray-400 dark:text-gray-500"
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <div className="ml-4 w-0 flex-1">
+                        <dl>
+                          <dt className="truncate text-xs font-medium text-gray-500 dark:text-gray-400">
+                            Organisasjoner
+                          </dt>
+                          <dd className="text-lg font-semibold text-gray-900 dark:text-white">
+                            {eventDetails.stats.uniqueOrganisations}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        )}
+            )
+          } else {
+            // Past event stats - focus on outcomes
+            const attendanceRate =
+              eventDetails.stats.totalRegistrations > 0
+                ? Math.round(
+                    (eventDetails.stats.statusBreakdown.attended /
+                      eventDetails.stats.totalRegistrations) *
+                      100
+                  )
+                : 0
+            const noShowCount =
+              eventDetails.stats.statusBreakdown['no-show'] || 0
+
+            return (
+              <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+                <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                  <div className="p-4">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <UserIcon
+                          className="h-5 w-5 text-green-500"
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <div className="ml-4 w-0 flex-1">
+                        <dl>
+                          <dt className="truncate text-xs font-medium text-gray-500 dark:text-gray-400">
+                            Deltok
+                          </dt>
+                          <dd className="text-lg font-semibold text-gray-900 dark:text-white">
+                            {eventDetails.stats.statusBreakdown.attended}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                  <div className="p-4">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <ChartBarIcon
+                          className="h-5 w-5 text-blue-500"
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <div className="ml-4 w-0 flex-1">
+                        <dl>
+                          <dt className="truncate text-xs font-medium text-gray-500 dark:text-gray-400">
+                            Oppmøte %
+                          </dt>
+                          <dd className="text-lg font-semibold text-gray-900 dark:text-white">
+                            {attendanceRate}%
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                  <div className="p-4">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <XCircleIcon
+                          className="h-5 w-5 text-red-500"
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <div className="ml-4 w-0 flex-1">
+                        <dl>
+                          <dt className="truncate text-xs font-medium text-gray-500 dark:text-gray-400">
+                            Ikke møtt
+                          </dt>
+                          <dd className="text-lg font-semibold text-gray-900 dark:text-white">
+                            {noShowCount}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                  <div className="p-4">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <BuildingOfficeIcon
+                          className="h-5 w-5 text-gray-400 dark:text-gray-500"
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <div className="ml-4 w-0 flex-1">
+                        <dl>
+                          <dt className="truncate text-xs font-medium text-gray-500 dark:text-gray-400">
+                            Organisasjoner
+                          </dt>
+                          <dd className="text-lg font-semibold text-gray-900 dark:text-white">
+                            {eventDetails.stats.uniqueOrganisations}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          }
+        })()}
       </div>
 
       {/* Event Details */}
       <div className="mb-8 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-        <div className="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+        <div className="border-b border-gray-200 px-6 py-3 dark:border-gray-700">
+          <h3 className="text-base font-semibold text-gray-900 dark:text-white">
             Fagdagdetaljer
           </h3>
         </div>
-        <div className="space-y-6 p-6">
-          {/* Basic Info */}
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="space-y-4">
-              <div className="flex items-start space-x-3">
-                <CalendarIcon className="mt-0.5 h-5 w-5 text-gray-400 dark:text-gray-500" />
-                <div>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+        <div className="p-4">
+          {/* Basic Info - Split into two rows */}
+          <div className="space-y-4">
+            {/* First Row - Core Event Info */}
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+              <div className="flex items-start space-x-2">
+                <CalendarIcon className="mt-0.5 h-4 w-4 text-gray-400 dark:text-gray-500" />
+                <div className="min-w-0">
+                  <dt className="text-xs font-medium text-gray-500 dark:text-gray-400">
                     Tid
                   </dt>
                   <dd className="text-sm text-gray-900 dark:text-white">
                     {new Date(eventDetails.startTime).toLocaleDateString(
                       'nb-NO',
                       {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
+                        weekday: 'short',
                         day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
                       }
                     )}
                     <br />
@@ -665,10 +757,10 @@ export default function AdminEventDetailsPage() {
                 </div>
               </div>
 
-              <div className="flex items-start space-x-3">
-                <MapPinIcon className="mt-0.5 h-5 w-5 text-gray-400 dark:text-gray-500" />
-                <div>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+              <div className="flex items-start space-x-2">
+                <MapPinIcon className="mt-0.5 h-4 w-4 text-gray-400 dark:text-gray-500" />
+                <div className="min-w-0">
+                  <dt className="text-xs font-medium text-gray-500 dark:text-gray-400">
                     Sted
                   </dt>
                   <dd className="text-sm text-gray-900 dark:text-white">
@@ -677,10 +769,10 @@ export default function AdminEventDetailsPage() {
                 </div>
               </div>
 
-              <div className="flex items-start space-x-3">
-                <UserGroupIcon className="mt-0.5 h-5 w-5 text-gray-400 dark:text-gray-500" />
-                <div>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+              <div className="flex items-start space-x-2">
+                <UserGroupIcon className="mt-0.5 h-4 w-4 text-gray-400 dark:text-gray-500" />
+                <div className="min-w-0">
+                  <dt className="text-xs font-medium text-gray-500 dark:text-gray-400">
                     Målgruppe
                   </dt>
                   <dd className="text-sm text-gray-900 dark:text-white">
@@ -688,17 +780,20 @@ export default function AdminEventDetailsPage() {
                   </dd>
                 </div>
               </div>
+            </div>
 
-              <div className="flex items-start space-x-3">
-                <CheckCircleIcon className="mt-0.5 h-5 w-5 text-gray-400 dark:text-gray-500" />
-                <div>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+            {/* Second Row - Registration & Additional Info */}
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              <div className="flex items-start space-x-2">
+                <CheckCircleIcon className="mt-0.5 h-4 w-4 text-gray-400 dark:text-gray-500" />
+                <div className="min-w-0">
+                  <dt className="text-xs font-medium text-gray-500 dark:text-gray-400">
                     Påmeldingssystem
                   </dt>
                   <dd className="text-sm text-gray-900 dark:text-white">
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-1">
                       <span
-                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                        className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                           !eventDetails.registration.disabled
                             ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
                             : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
@@ -712,7 +807,7 @@ export default function AdminEventDetailsPage() {
                         (type, index) => (
                           <span
                             key={index}
-                            className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+                            className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300"
                           >
                             {AttendanceTypeDisplay[
                               type as keyof typeof AttendanceTypeDisplay
@@ -726,10 +821,10 @@ export default function AdminEventDetailsPage() {
               </div>
 
               {eventDetails.price && (
-                <div className="flex items-start space-x-3">
-                  <BanknotesIcon className="mt-0.5 h-5 w-5 text-gray-400 dark:text-gray-500" />
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                <div className="flex items-start space-x-2">
+                  <BanknotesIcon className="mt-0.5 h-4 w-4 text-gray-400 dark:text-gray-500" />
+                  <div className="min-w-0">
+                    <dt className="text-xs font-medium text-gray-500 dark:text-gray-400">
                       Pris
                     </dt>
                     <dd className="text-sm text-gray-900 dark:text-white">
@@ -739,243 +834,159 @@ export default function AdminEventDetailsPage() {
                 </div>
               )}
             </div>
-
-            <div className="space-y-4">
-              {eventDetails.registrationUrl && (
-                <div className="flex items-start space-x-3">
-                  <LinkIcon className="mt-0.5 h-5 w-5 text-gray-400 dark:text-gray-500" />
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                      Påmelding
-                    </dt>
-                    <dd className="text-sm">
-                      <a
-                        href={eventDetails.registrationUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
-                      >
-                        Åpne påmeldingsskjema
-                      </a>
-                    </dd>
-                  </div>
-                </div>
-              )}
-
-              {eventDetails.callForPapersUrl && (
-                <div className="flex items-start space-x-3">
-                  <PresentationChartLineIcon className="mt-0.5 h-5 w-5 text-gray-400 dark:text-gray-500" />
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                      Call for Papers
-                    </dt>
-                    <dd className="text-sm">
-                      <a
-                        href={eventDetails.callForPapersUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
-                      >
-                        Send inn bidrag
-                      </a>
-                    </dd>
-                  </div>
-                </div>
-              )}
-
-              {eventDetails.recordingUrl && (
-                <div className="flex items-start space-x-3">
-                  <VideoCameraIcon className="mt-0.5 h-5 w-5 text-gray-400 dark:text-gray-500" />
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                      Opptak
-                    </dt>
-                    <dd className="text-sm">
-                      <a
-                        href={eventDetails.recordingUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
-                      >
-                        Se opptak
-                      </a>
-                    </dd>
-                  </div>
-                </div>
-              )}
-
-              {eventDetails.eventStats?.feedback && (
-                <div className="flex items-start space-x-3">
-                  <StarIcon className="mt-0.5 h-5 w-5 text-yellow-400" />
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                      Tilbakemelding
-                    </dt>
-                    <dd className="text-sm text-gray-900 dark:text-white">
-                      {eventDetails.eventStats.feedback.averageRating.toFixed(
-                        1
-                      )}
-                      /5 ({eventDetails.eventStats.feedback.respondents} svar)
-                      {eventDetails.eventStats.feedback.url && (
-                        <>
-                          <br />
-                          <a
-                            href={eventDetails.eventStats.feedback.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
-                          >
-                            Se tilbakemeldinger
-                          </a>
-                        </>
-                      )}
-                    </dd>
-                  </div>
-                </div>
-              )}
-            </div>
           </div>
 
-          {/* Description */}
-          {(eventDetails.ingress || eventDetails.description) && (
-            <div className="border-t border-gray-200 pt-6 dark:border-gray-700">
-              {eventDetails.ingress && (
-                <div className="mb-4">
-                  <h4 className="mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Beskrivelse
-                  </h4>
-                  <p className="text-sm leading-relaxed text-gray-900 dark:text-white">
-                    {eventDetails.ingress}
-                  </p>
-                </div>
-              )}
-              {eventDetails.description && (
-                <div>
-                  <h4 className="mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Detaljer
-                  </h4>
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap text-gray-900 dark:text-white">
-                    {eventDetails.description}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Organizers */}
-          {eventDetails.organizers.length > 0 && (
-            <div className="border-t border-gray-200 pt-6 dark:border-gray-700">
-              <h4 className="mb-3 text-sm font-medium text-gray-500 dark:text-gray-400">
-                Arrangører
-              </h4>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {eventDetails.organizers.map((organizer, index) => (
-                  <div key={index} className="flex items-center space-x-3">
-                    <div className="flex-shrink-0">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50">
-                        <UserIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                      </div>
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
-                        {organizer.url ? (
-                          <a
-                            href={organizer.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
-                          >
-                            {organizer.name}
-                          </a>
-                        ) : (
-                          organizer.name
-                        )}
-                      </p>
-                      {organizer.org && (
-                        <p className="truncate text-xs text-gray-500 dark:text-gray-400">
-                          {organizer.org}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Schedule Preview */}
-          {eventDetails.schedule.length > 0 && (
-            <div className="border-t border-gray-200 pt-6 dark:border-gray-700">
-              <h4 className="mb-3 text-sm font-medium text-gray-500 dark:text-gray-400">
-                Program ({eventDetails.schedule.length} punkter)
-              </h4>
-              <div className="max-h-60 space-y-3 overflow-y-auto">
-                {eventDetails.schedule.slice(0, 5).map((item, index) => (
-                  <div
-                    key={index}
-                    className="flex items-start space-x-3 rounded-lg bg-gray-50 p-3 dark:bg-gray-700/50"
+          {/* URLs in a more compact format */}
+          {(eventDetails.registrationUrl ||
+            eventDetails.callForPapersUrl ||
+            eventDetails.recordingUrl) && (
+            <div className="mt-4 border-t border-gray-200 pt-3 dark:border-gray-700">
+              <dt className="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">
+                Lenker
+              </dt>
+              <dd className="flex flex-wrap gap-3">
+                {eventDetails.registrationUrl && (
+                  <a
+                    href={eventDetails.registrationUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
                   >
-                    <div className="w-16 flex-shrink-0 text-xs font-medium text-gray-500 dark:text-gray-400">
-                      {item.time}
+                    <LinkIcon className="mr-1 h-3 w-3" />
+                    Påmelding
+                  </a>
+                )}
+                {eventDetails.callForPapersUrl && (
+                  <a
+                    href={eventDetails.callForPapersUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                  >
+                    <PresentationChartLineIcon className="mr-1 h-3 w-3" />
+                    Call for Papers
+                  </a>
+                )}
+                {eventDetails.recordingUrl && (
+                  <a
+                    href={eventDetails.recordingUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                  >
+                    <VideoCameraIcon className="mr-1 h-3 w-3" />
+                    Opptak
+                  </a>
+                )}
+                {eventDetails.eventStats?.feedback?.url && (
+                  <a
+                    href={eventDetails.eventStats.feedback.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                  >
+                    <StarIcon className="mr-1 h-3 w-3" />
+                    Tilbakemeldinger (
+                    {eventDetails.eventStats.feedback.averageRating.toFixed(1)}
+                    /5)
+                  </a>
+                )}
+              </dd>
+            </div>
+          )}
+
+          {/* Organizers - More compact */}
+          {eventDetails.organizers.length > 0 && (
+            <div className="mt-4 border-t border-gray-200 pt-3 dark:border-gray-700">
+              <dt className="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">
+                Arrangører
+              </dt>
+              <div className="flex flex-wrap gap-3">
+                {eventDetails.organizers.map((organizer, index) => (
+                  <div key={index} className="flex items-center space-x-2">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50">
+                      <UserIcon className="h-3 w-3 text-blue-600 dark:text-blue-400" />
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">
-                        {item.title}
-                      </p>
-                      {item.speaker && (
-                        <p className="text-xs text-gray-600 dark:text-gray-400">
-                          av {item.speaker}
-                        </p>
+                    <div className="text-sm">
+                      {organizer.url ? (
+                        <a
+                          href={organizer.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                        >
+                          {organizer.name}
+                        </a>
+                      ) : (
+                        <span className="font-medium text-gray-900 dark:text-white">
+                          {organizer.name}
+                        </span>
                       )}
-                      {item.type && (
-                        <span className="mt-1 inline-flex items-center rounded bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900/50 dark:text-blue-300">
-                          {item.type}
+                      {organizer.org && (
+                        <span className="ml-1 text-xs text-gray-500 dark:text-gray-400">
+                          ({organizer.org})
                         </span>
                       )}
                     </div>
                   </div>
                 ))}
-                {eventDetails.schedule.length > 5 && (
-                  <div className="text-center">
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      ... og {eventDetails.schedule.length - 5} flere
-                      programpunkter
-                    </p>
-                  </div>
-                )}
               </div>
             </div>
           )}
 
-          {/* Event Stats from events.ts */}
+          {/* Schedule Summary - Very compact */}
+          {eventDetails.schedule.length > 0 && (
+            <div className="mt-4 border-t border-gray-200 pt-3 dark:border-gray-700">
+              <dt className="mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">
+                Program
+              </dt>
+              <dd className="text-sm text-gray-900 dark:text-white">
+                {eventDetails.schedule.length} programpunkter
+                {(() => {
+                  const firstItem = eventDetails.schedule[0]
+                  const lastItem =
+                    eventDetails.schedule[eventDetails.schedule.length - 1]
+                  return eventDetails.schedule.length > 0 &&
+                    firstItem &&
+                    lastItem ? (
+                    <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
+                      ({firstItem.time} - {lastItem.time})
+                    </span>
+                  ) : null
+                })()}
+              </dd>
+            </div>
+          )}
+
+          {/* Event Stats - More compact */}
           {eventDetails.eventStats && (
-            <div className="border-t border-gray-200 pt-6 dark:border-gray-700">
-              <h4 className="mb-3 text-sm font-medium text-gray-500 dark:text-gray-400">
+            <div className="mt-4 border-t border-gray-200 pt-3 dark:border-gray-700">
+              <dt className="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">
                 Statistikk fra arrangementet
-              </h4>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <div className="rounded-lg bg-gray-50 p-4 text-center dark:bg-gray-700/50">
-                  <div className="text-lg font-semibold text-gray-900 dark:text-white">
+              </dt>
+              <div className="flex flex-wrap gap-4">
+                <div className="text-center">
+                  <div className="text-sm font-semibold text-gray-900 dark:text-white">
                     {eventDetails.eventStats.participants}
                   </div>
                   <div className="text-xs text-gray-500 dark:text-gray-400">
-                    Faktiske deltakere
+                    Deltakere
                   </div>
                 </div>
-                <div className="rounded-lg bg-gray-50 p-4 text-center dark:bg-gray-700/50">
-                  <div className="text-lg font-semibold text-gray-900 dark:text-white">
+                <div className="text-center">
+                  <div className="text-sm font-semibold text-gray-900 dark:text-white">
                     {eventDetails.eventStats.organisations}
                   </div>
                   <div className="text-xs text-gray-500 dark:text-gray-400">
-                    Organisasjoner deltok
+                    Organisasjoner
                   </div>
                 </div>
-                <div className="rounded-lg bg-gray-50 p-4 text-center dark:bg-gray-700/50">
-                  <div className="text-lg font-semibold text-gray-900 dark:text-white">
+                <div className="text-center">
+                  <div className="text-sm font-semibold text-gray-900 dark:text-white">
                     {eventDetails.eventStats.registrations}
                   </div>
                   <div className="text-xs text-gray-500 dark:text-gray-400">
-                    Totale påmeldinger
+                    Påmeldinger
                   </div>
                 </div>
               </div>
@@ -1017,6 +1028,16 @@ export default function AdminEventDetailsPage() {
               <option value="attended">Deltok</option>
               <option value="no-show">Ikke møtt</option>
               <option value="cancelled">Avbrutt</option>
+            </select>
+
+            <select
+              value={attendanceFilter}
+              onChange={e => setAttendanceFilter(e.target.value)}
+              className="rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+            >
+              <option value="all">Alle deltakelser</option>
+              <option value="physical">Fysisk oppmøte</option>
+              <option value="digital">Digitalt</option>
             </select>
           </div>
 
