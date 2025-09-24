@@ -277,7 +277,7 @@ export const members: Member[] = [
   }),
   new Member({
     name: 'DSB',
-    type: MemberType.AGENCY,
+    type: MemberType.DIRECTORATE,
     github: 'dsb-norge',
     homepage: 'https://www.dsb.no',
     linkedinUrl:
