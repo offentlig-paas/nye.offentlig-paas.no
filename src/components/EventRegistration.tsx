@@ -475,7 +475,7 @@ export function EventRegistration({
             ? `Allerede ${registrationCounts.persons} påmeldte fra ${registrationCounts.organizations} ulike organisasjoner! Logg inn med Slack for å bli med.`
             : 'Du må logge inn med Slack for å melde deg på fagdagen.'}
         </p>
-        <AuthButton />
+        <AuthButton className="w-full" showFullText />
       </div>
     )
   }
