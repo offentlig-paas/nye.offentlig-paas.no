@@ -8,10 +8,36 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: Typecheck, Lint & Build
+  quality-checks:
+    name: Quality Checks
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
+    env:
+      NEXT_PUBLIC_SANITY_PROJECT_ID: 'your-sanity-project-id'
+      NEXT_PUBLIC_SANITY_DATASET: 'production'
+    strategy:
+      matrix:
+        check: [typecheck, lint, test]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run ${{ matrix.check }}
+        run: yarn ${{ matrix.check }}
+
+  test-coverage:
+    name: Test Coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     env:
       NEXT_PUBLIC_SANITY_PROJECT_ID: 'your-sanity-project-id'
       NEXT_PUBLIC_SANITY_DATASET: 'production'
@@ -28,11 +54,29 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Typecheck
-        run: yarn typecheck
+      - name: Run tests with coverage
+        run: yarn test:coverage
 
-      - name: Lint
-        run: yarn lint
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [quality-checks, test-coverage]
+    env:
+      NEXT_PUBLIC_SANITY_PROJECT_ID: 'your-sanity-project-id'
+      NEXT_PUBLIC_SANITY_DATASET: 'production'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
 
       - name: Build
         run: yarn build --experimental-build-mode compile

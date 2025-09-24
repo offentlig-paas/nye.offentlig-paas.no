@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import { eventRegistrationService } from '@/domains/event-registration'
 import { authorizeEventAccess } from '@/lib/api/auth-middleware'
 import { getDetailedEventInfoFromSlug } from '@/lib/events/helpers'
+import { getUniqueCleanedOrganizations } from '@/lib/organization-utils'
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params
-
   const authResult = await authorizeEventAccess(
     request,
     `/api/admin/events/${slug}`,
@@ -16,59 +16,41 @@ export async function GET(
     slug
   )
 
-  if (!authResult.success) {
-    return authResult.response
-  }
-
-  const { auth } = authResult
+  if (!authResult.success) return authResult.response
 
   try {
-    // Get registrations for specific event
     const registrations =
       await eventRegistrationService.getEventRegistrations(slug)
-
-    // Get event info
     const eventInfo = getDetailedEventInfoFromSlug(slug)
-
-    // Handle events with no registrations
     const eventRegistrations = registrations || []
-    const uniqueOrganisations = new Set(
+
+    const uniqueOrganisations = getUniqueCleanedOrganizations(
       eventRegistrations.map(r => r.organisation)
     ).size
 
-    // Get stats - if no registrations, provide empty stats
-    let statusStats
-    if (eventRegistrations.length > 0) {
-      statusStats =
-        await eventRegistrationService.getEventRegistrationStats(slug)
-    } else {
-      statusStats = {
-        confirmed: 0,
-        attended: 0,
-        cancelled: 0,
-        pending: 0,
-      }
-    }
+    const statusStats =
+      eventRegistrations.length > 0
+        ? await eventRegistrationService.getEventRegistrationStats(slug)
+        : { confirmed: 0, attended: 0, cancelled: 0, pending: 0 }
 
     return NextResponse.json(
       {
         title: eventInfo.title,
         date: eventInfo.date,
         location: eventInfo.location,
-        // Additional event details from events.ts
-        ingress: auth.event.ingress,
-        description: auth.event.description,
-        audience: auth.event.audience,
-        price: auth.event.price,
-        startTime: auth.event.start.toISOString(),
-        endTime: auth.event.end.toISOString(),
-        registrationUrl: auth.event.registrationUrl,
-        callForPapersUrl: auth.event.callForPapersUrl,
-        recordingUrl: auth.event.recordingUrl,
-        organizers: auth.event.organizers,
-        schedule: auth.event.schedule,
-        eventStats: auth.event.stats,
-        registration: auth.event.registration,
+        ingress: authResult.auth.event.ingress,
+        description: authResult.auth.event.description,
+        audience: authResult.auth.event.audience,
+        price: authResult.auth.event.price,
+        startTime: authResult.auth.event.start.toISOString(),
+        endTime: authResult.auth.event.end.toISOString(),
+        registrationUrl: authResult.auth.event.registrationUrl,
+        callForPapersUrl: authResult.auth.event.callForPapersUrl,
+        recordingUrl: authResult.auth.event.recordingUrl,
+        organizers: authResult.auth.event.organizers,
+        schedule: authResult.auth.event.schedule,
+        eventStats: authResult.auth.event.stats,
+        registration: authResult.auth.event.registration,
         registrations: eventRegistrations.map(reg => ({
           _id: reg._id,
           name: reg.name,
