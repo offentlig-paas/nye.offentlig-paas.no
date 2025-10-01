@@ -33,6 +33,12 @@ export const events: Event[] = [
         url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
       },
     ],
+    socialEvent: {
+      description:
+        'Bli med på mingling og nettverksbygging i Telenors kantine. En uformell anledning til å møte andre deltakere, dele erfaringer og bygge nettverk over mat og drikke.',
+      start: new Date('2025-10-15T16:00+02:00'),
+      location: 'Telenor Kantine, Fornebuporten',
+    },
     schedule: [
       {
         time: '11:00 - 11:30',
