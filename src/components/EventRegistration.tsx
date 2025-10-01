@@ -7,6 +7,7 @@ import { AuthButton } from '@/components/AuthButton'
 import { useToast } from '@/components/ToastProvider'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
 import { OverlappingAvatars } from '@/components/OverlappingAvatars'
+import type { SocialEvent } from '@/lib/events/types'
 import { AttendanceType, AttendanceTypeDisplay } from '@/lib/events/types'
 import {
   UserGroupIcon,
@@ -36,6 +37,7 @@ interface EventRegistrationProps {
   eventTitle: string
   isAcceptingRegistrations: boolean
   attendanceTypes: AttendanceType[]
+  socialEvent?: SocialEvent
 }
 
 function RegistrationStats({
@@ -101,12 +103,14 @@ interface RegistrationFormData {
   dietary: string
   organisation: string
   attendanceType: AttendanceType | undefined
+  attendingSocialEvent?: boolean
 }
 
 function RegistrationForm({
   registrationData,
   setRegistrationData,
   attendanceTypes,
+  socialEvent,
   onSubmit,
   onCancel,
   isLoading,
@@ -116,6 +120,7 @@ function RegistrationForm({
     React.SetStateAction<RegistrationFormData>
   >
   attendanceTypes: AttendanceType[]
+  socialEvent?: SocialEvent
   onSubmit: () => void
   onCancel: () => void
   isLoading: boolean
@@ -236,6 +241,43 @@ function RegistrationForm({
         </div>
       </div>
 
+      {socialEvent && (
+        <div className="rounded-lg border border-teal-200 bg-teal-50 p-4 dark:border-teal-800 dark:bg-teal-950/20">
+          <h4 className="mb-2 text-sm font-semibold text-teal-900 dark:text-teal-100">
+            Sosialt arrangement
+          </h4>
+          <p className="mb-3 text-sm text-teal-700 dark:text-teal-300">
+            {socialEvent.description}
+          </p>
+          <div className="mb-3 space-y-1 text-sm text-teal-600 dark:text-teal-400">
+            <div>📍 {socialEvent.location}</div>
+            <div>
+              🕐{' '}
+              {socialEvent.start.toLocaleString('nb-NO', {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </div>
+          </div>
+          <label className="flex items-center gap-2 text-sm text-teal-900 dark:text-teal-100">
+            <input
+              type="checkbox"
+              checked={registrationData.attendingSocialEvent ?? false}
+              onChange={e =>
+                setRegistrationData(prev => ({
+                  ...prev,
+                  attendingSocialEvent: e.target.checked,
+                }))
+              }
+              className="h-4 w-4 rounded border-teal-300 text-teal-600 focus:ring-teal-500 dark:border-teal-600"
+            />
+            <span className="font-medium">
+              Ja, jeg ønsker å delta på det sosiale arrangementet
+            </span>
+          </label>
+        </div>
+      )}
+
       <div className="flex gap-3 pt-2">
         <Button
           variant="primary"
@@ -267,6 +309,7 @@ export function EventRegistration({
   eventTitle,
   isAcceptingRegistrations,
   attendanceTypes,
+  socialEvent,
 }: EventRegistrationProps) {
   const { data: session, status } = useSession()
   const { showSuccess, showError } = useToast()
@@ -283,6 +326,9 @@ export function EventRegistration({
     useState<RegistrationCounts | null>(null)
   const [participantData, setParticipantData] =
     useState<ParticipantData | null>(null)
+  const [currentRegistration, setCurrentRegistration] = useState<{
+    attendingSocialEvent?: boolean
+  } | null>(null)
   const [registrationData, setRegistrationData] =
     useState<RegistrationFormData>({
       comments: '',
@@ -290,6 +336,7 @@ export function EventRegistration({
       organisation: '',
       attendanceType:
         attendanceTypes.length === 1 ? attendanceTypes[0] : undefined,
+      attendingSocialEvent: false,
     })
 
   const fetchData = useCallback(async () => {
@@ -322,6 +369,12 @@ export function EventRegistration({
         setState(prev => ({ ...prev, isRegistered: data.isRegistered }))
         if (data.registrationCounts) {
           setRegistrationCounts(data.registrationCounts)
+        }
+        
+        if (data.registration) {
+          setCurrentRegistration({
+            attendingSocialEvent: data.registration.attendingSocialEvent,
+          })
         }
 
         if (data.isRegistered) {
@@ -481,6 +534,41 @@ export function EventRegistration({
   }
 
   if (state.isRegistered) {
+    const handleUpdateSocialEvent = async (attending: boolean) => {
+      setState(prev => ({ ...prev, isLoading: true }))
+      try {
+        const response = await fetch(`/api/events/${eventSlug}/registration`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ attendingSocialEvent: attending }),
+        })
+
+        if (response.ok) {
+          setCurrentRegistration(prev => ({
+            ...prev,
+            attendingSocialEvent: attending,
+          }))
+          showSuccess(
+            'Oppdatert!',
+            attending
+              ? 'Du er nå påmeldt det sosiale arrangementet.'
+              : 'Du er nå avmeldt det sosiale arrangementet.'
+          )
+        } else {
+          const data = await response.json()
+          showError(
+            'Feil ved oppdatering',
+            data.error || 'Noe gikk galt under oppdateringen.'
+          )
+        }
+      } catch (error) {
+        console.error('Update error:', error)
+        showError('Feil ved oppdatering', 'Noe gikk galt under oppdateringen.')
+      } finally {
+        setState(prev => ({ ...prev, isLoading: false }))
+      }
+    }
+
     return (
       <div className="rounded-lg bg-green-50 p-6 dark:bg-green-900/20">
         <h3 className="mb-2 flex items-center gap-2 text-base font-semibold text-green-900 dark:text-green-100">
@@ -506,6 +594,54 @@ export function EventRegistration({
               size="sm"
               className="justify-center"
             />
+          </div>
+        )}
+
+        {socialEvent && (
+          <div className="mb-4 rounded-lg border border-teal-200 bg-teal-50 p-4 dark:border-teal-800 dark:bg-teal-950/20">
+            <h4 className="mb-2 text-sm font-semibold text-teal-900 dark:text-teal-100">
+              Sosialt arrangement
+            </h4>
+            <p className="mb-2 text-sm text-teal-700 dark:text-teal-300">
+              {socialEvent.description}
+            </p>
+            <div className="mb-3 space-y-1 text-sm text-teal-600 dark:text-teal-400">
+              <div>📍 {socialEvent.location}</div>
+              <div>
+                🕐{' '}
+                {socialEvent.start.toLocaleString('nb-NO', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </div>
+            </div>
+            {currentRegistration?.attendingSocialEvent ? (
+              <div className="space-y-2">
+                <p className="flex items-center gap-2 text-sm font-medium text-teal-900 dark:text-teal-100">
+                  <CheckCircleIcon className="h-4 w-4" />
+                  Du er påmeldt det sosiale arrangementet
+                </p>
+                <Button
+                  variant="secondary"
+                  onClick={() => handleUpdateSocialEvent(false)}
+                  disabled={state.isLoading}
+                  className="w-full text-sm"
+                >
+                  Meld av sosialt arrangement
+                </Button>
+              </div>
+            ) : (
+              <Button
+                variant="primary"
+                onClick={() => handleUpdateSocialEvent(true)}
+                disabled={state.isLoading}
+                className="w-full text-sm"
+              >
+                {state.isLoading
+                  ? 'Melder på...'
+                  : 'Meld deg på sosialt arrangement'}
+              </Button>
+            )}
           </div>
         )}
 
@@ -585,6 +721,7 @@ export function EventRegistration({
           registrationData={registrationData}
           setRegistrationData={setRegistrationData}
           attendanceTypes={attendanceTypes}
+          socialEvent={socialEvent}
           onSubmit={handleRegister}
           onCancel={() =>
             setState(prev => ({ ...prev, showRegistrationForm: false }))

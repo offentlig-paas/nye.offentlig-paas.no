@@ -363,6 +363,7 @@ export default async function Fagdag({ params }: { params: Params }) {
                       eventTitle={event.title}
                       isAcceptingRegistrations={true}
                       attendanceTypes={event.registration.attendanceTypes}
+                      socialEvent={event.socialEvent}
                     />
                     {event.registrationUrl && (
                       <div className="mt-4">
@@ -437,6 +438,7 @@ export default async function Fagdag({ params }: { params: Params }) {
                     eventTitle={event.title}
                     isAcceptingRegistrations={false}
                     attendanceTypes={event.registration.attendanceTypes}
+                    socialEvent={event.socialEvent}
                   />
                 )}
               </div>
@@ -618,6 +620,38 @@ export default async function Fagdag({ params }: { params: Params }) {
                         )}
                       </p>
                     )}
+                  </div>
+                </div>
+              </div>
+            )}
+            {event.socialEvent && (
+              <div className="mt-6 rounded-lg border border-teal-200 bg-teal-50 p-4 dark:border-teal-800 dark:bg-teal-950/20">
+                <h3 className="mb-2 text-base font-semibold text-teal-900 dark:text-teal-100">
+                  🎉 Sosialt arrangement etter fagdagen
+                </h3>
+                <p className="mb-3 text-sm text-teal-700 dark:text-teal-300">
+                  {event.socialEvent.description}
+                </p>
+                <div className="space-y-1 text-sm text-teal-600 dark:text-teal-400">
+                  <div className="flex items-center gap-2">
+                    <MapPinIcon className="h-4 w-4 flex-shrink-0" />
+                    <span>{event.socialEvent.location}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CalendarDaysIcon className="h-4 w-4 flex-shrink-0" />
+                    <span>
+                      {event.socialEvent.start.toLocaleDateString('nb-NO', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })}{' '}
+                      kl.{' '}
+                      {event.socialEvent.start.toLocaleTimeString('nb-NO', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </span>
                   </div>
                 </div>
               </div>

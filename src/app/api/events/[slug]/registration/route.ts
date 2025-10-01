@@ -29,7 +29,7 @@ export async function POST(
 
   try {
     const body = await request.json()
-    const { comments, dietary, organisation, attendanceType } = body
+    const { comments, dietary, organisation, attendanceType, attendingSocialEvent } = body
 
     if (!attendanceType) {
       return NextResponse.json(
@@ -47,6 +47,7 @@ export async function POST(
       dietary,
       comments,
       attendanceType,
+      attendingSocialEvent,
     })
 
     return NextResponse.json({
@@ -120,10 +121,13 @@ export async function GET(
   const { slug } = await params
 
   try {
-    const isRegistered = await eventRegistrationService.isUserRegistered(
-      slug,
-      session.user.slackId
+    const registrations =
+      await eventRegistrationService.getEventRegistrations(slug)
+    const userRegistration = registrations.find(
+      r => r.slackUserId === session.user.slackId
     )
+
+    const isRegistered = !!userRegistration
 
     const registrationCount =
       await eventRegistrationService.getRegistrationCount(slug)
@@ -134,6 +138,7 @@ export async function GET(
     return NextResponse.json(
       {
         isRegistered,
+        registration: userRegistration,
         registrationCount,
         registrationCounts,
       },
@@ -150,6 +155,51 @@ export async function GET(
     console.error('Registration check error:', error)
     return NextResponse.json(
       { error: 'Feil ved henting av påmelding' },
+      { status: 500 }
+    )
+  }
+}
+
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ slug: string }> }
+) {
+  const session = await auth()
+
+  if (!session?.user?.slackId) {
+    return NextResponse.json({ error: 'Ikke autentisert' }, { status: 401 })
+  }
+
+  const { slug } = await params
+
+  try {
+    const registration =
+      await eventRegistrationService.getEventRegistrations(slug)
+    const userRegistration = registration.find(
+      r => r.slackUserId === session.user.slackId
+    )
+
+    if (!userRegistration) {
+      return NextResponse.json(
+        { error: 'Du er ikke påmeldt denne fagdagen' },
+        { status: 404 }
+      )
+    }
+
+    const body = await request.json()
+    const { attendingSocialEvent } = body
+
+    await eventRegistrationService.updateRegistration(userRegistration._id!, {
+      attendingSocialEvent,
+    })
+
+    return NextResponse.json({
+      message: 'Påmelding oppdatert!',
+    })
+  } catch (error) {
+    console.error('Update error:', error)
+    return NextResponse.json(
+      { error: 'Feil ved oppdatering av påmelding' },
       { status: 500 }
     )
   }
