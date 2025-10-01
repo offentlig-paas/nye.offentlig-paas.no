@@ -370,7 +370,7 @@ export function EventRegistration({
         if (data.registrationCounts) {
           setRegistrationCounts(data.registrationCounts)
         }
-        
+
         if (data.registration) {
           setCurrentRegistration({
             attendingSocialEvent: data.registration.attendingSocialEvent,

@@ -34,7 +34,7 @@ export const members: Member[] = [
     linkedinUrl: 'https://www.linkedin.com/company/skatteetaten/',
     homepage: 'https://www.skatteetaten.no',
   }),
-    new Member({
+  new Member({
     name: 'Miljødirektoratet',
     type: MemberType.DIRECTORATE,
     github: 'miljodir',

@@ -29,7 +29,13 @@ export async function POST(
 
   try {
     const body = await request.json()
-    const { comments, dietary, organisation, attendanceType, attendingSocialEvent } = body
+    const {
+      comments,
+      dietary,
+      organisation,
+      attendanceType,
+      attendingSocialEvent,
+    } = body
 
     if (!attendanceType) {
       return NextResponse.json(

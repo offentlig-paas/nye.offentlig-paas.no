@@ -77,7 +77,8 @@ export const eventRegistrationSchema = defineType({
       name: 'attendingSocialEvent',
       title: 'Attending Social Event',
       type: 'boolean',
-      description: 'Whether the participant will attend the social event after the fagdag',
+      description:
+        'Whether the participant will attend the social event after the fagdag',
     },
     {
       name: 'registeredAt',
