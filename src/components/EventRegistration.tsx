@@ -1,18 +1,21 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, memo } from 'react'
 import { useSession } from 'next-auth/react'
 import { Button } from '@/components/Button'
 import { AuthButton } from '@/components/AuthButton'
 import { useToast } from '@/components/ToastProvider'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
 import { OverlappingAvatars } from '@/components/OverlappingAvatars'
+import { useEventRegistration } from '@/contexts/EventRegistrationContext'
 import type { SocialEvent } from '@/lib/events/types'
 import { AttendanceType, AttendanceTypeDisplay } from '@/lib/events/types'
 import {
   UserGroupIcon,
   BuildingOfficeIcon,
   CheckCircleIcon,
+  MapPinIcon,
+  CalendarDaysIcon,
 } from '@heroicons/react/20/solid'
 
 interface RegistrationCounts {
@@ -22,25 +25,16 @@ interface RegistrationCounts {
   uniqueOrganizations: number
 }
 
-interface Participant {
-  name: string
-  slackUserId?: string
-}
-
-interface ParticipantData {
-  participants: Participant[]
-  totalCount: number
-}
-
 interface EventRegistrationProps {
   eventSlug: string
   eventTitle: string
   isAcceptingRegistrations: boolean
   attendanceTypes: AttendanceType[]
   socialEvent?: SocialEvent
+  showOnlySocialEvent?: boolean
 }
 
-function RegistrationStats({
+const RegistrationStats = memo(function RegistrationStats({
   counts,
   variant = 'blue',
 }: {
@@ -96,7 +90,7 @@ function RegistrationStats({
       </div>
     </div>
   )
-}
+})
 
 interface RegistrationFormData {
   comments: string
@@ -106,7 +100,7 @@ interface RegistrationFormData {
   attendingSocialEvent?: boolean
 }
 
-function RegistrationForm({
+const RegistrationForm = memo(function RegistrationForm({
   registrationData,
   setRegistrationData,
   attendanceTypes,
@@ -250,13 +244,18 @@ function RegistrationForm({
             {socialEvent.description}
           </p>
           <div className="mb-3 space-y-1 text-sm text-teal-600 dark:text-teal-400">
-            <div>📍 {socialEvent.location}</div>
-            <div>
-              🕐{' '}
-              {socialEvent.start.toLocaleString('nb-NO', {
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
+            <div className="flex items-center gap-2">
+              <MapPinIcon className="h-4 w-4 flex-shrink-0" />
+              <span>{socialEvent.location}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CalendarDaysIcon className="h-4 w-4 flex-shrink-0" />
+              <span>
+                {socialEvent.start.toLocaleString('nb-NO', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </span>
             </div>
           </div>
           <label className="flex items-center gap-2 text-sm text-teal-900 dark:text-teal-100">
@@ -302,33 +301,35 @@ function RegistrationForm({
       </div>
     </div>
   )
-}
+})
 
-export function EventRegistration({
+export const EventRegistration = memo(function EventRegistration({
   eventSlug,
   eventTitle,
   isAcceptingRegistrations,
   attendanceTypes,
   socialEvent,
+  showOnlySocialEvent = false,
 }: EventRegistrationProps) {
-  const { data: session, status } = useSession()
+  const { data: session } = useSession()
   const { showSuccess, showError } = useToast()
 
+  // Use shared context for registration data
+  const {
+    isRegistered,
+    registration,
+    registrationCounts,
+    participantData,
+    isCheckingStatus,
+    refetch,
+  } = useEventRegistration()
+
   const [state, setState] = useState({
-    isRegistered: false,
     isLoading: false,
-    isCheckingStatus: true,
     showRegistrationForm: false,
     showUnregisterModal: false,
   })
 
-  const [registrationCounts, setRegistrationCounts] =
-    useState<RegistrationCounts | null>(null)
-  const [participantData, setParticipantData] =
-    useState<ParticipantData | null>(null)
-  const [currentRegistration, setCurrentRegistration] = useState<{
-    attendingSocialEvent?: boolean
-  } | null>(null)
   const [registrationData, setRegistrationData] =
     useState<RegistrationFormData>({
       comments: '',
@@ -339,77 +340,7 @@ export function EventRegistration({
       attendingSocialEvent: false,
     })
 
-  const fetchData = useCallback(async () => {
-    if (!session?.user?.slackId && status !== 'loading') {
-      try {
-        const response = await fetch(`/api/events/${eventSlug}/stats`)
-        if (response.ok) {
-          const data = await response.json()
-          setRegistrationCounts(data.registrationCounts)
-        }
-        setParticipantData(null)
-      } catch (error) {
-        console.error('Error fetching public stats:', error)
-      }
-      setState(prev => ({ ...prev, isCheckingStatus: false }))
-      return
-    }
-
-    if (!session?.user?.slackId) {
-      setState(prev => ({ ...prev, isCheckingStatus: false }))
-      return
-    }
-
-    setState(prev => ({ ...prev, isCheckingStatus: true }))
-    try {
-      const regResponse = await fetch(`/api/events/${eventSlug}/registration`)
-
-      if (regResponse.ok) {
-        const data = await regResponse.json()
-        setState(prev => ({ ...prev, isRegistered: data.isRegistered }))
-        if (data.registrationCounts) {
-          setRegistrationCounts(data.registrationCounts)
-        }
-
-        if (data.registration) {
-          setCurrentRegistration({
-            attendingSocialEvent: data.registration.attendingSocialEvent,
-          })
-        }
-
-        if (data.isRegistered) {
-          try {
-            const participantsResponse = await fetch(
-              `/api/events/${eventSlug}/participants`
-            )
-            if (participantsResponse.ok) {
-              const participantData = await participantsResponse.json()
-              setParticipantData(participantData)
-            } else {
-              setParticipantData(null)
-            }
-          } catch (error) {
-            console.error('Error fetching participants:', error)
-            setParticipantData(null)
-          }
-        } else {
-          setParticipantData(null)
-        }
-      } else {
-        console.warn('Failed to check registration status:', regResponse.status)
-        setParticipantData(null)
-      }
-    } catch (error) {
-      console.error('Error checking registration status:', error)
-      setParticipantData(null)
-    } finally {
-      setState(prev => ({ ...prev, isCheckingStatus: false }))
-    }
-  }, [eventSlug, session?.user?.slackId, status])
-
   useEffect(() => {
-    fetchData()
-
     if (session?.user && (session.user.statusText || session.user.title)) {
       setRegistrationData(prev => ({
         ...prev,
@@ -420,7 +351,8 @@ export function EventRegistration({
           '',
       }))
     }
-  }, [fetchData, session?.user])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session?.user?.slackId, session?.user?.statusText, session?.user?.title])
   const handleRegister = async () => {
     if (!session?.user?.slackId) return
 
@@ -435,7 +367,6 @@ export function EventRegistration({
       if (response.ok) {
         setState(prev => ({
           ...prev,
-          isRegistered: true,
           showRegistrationForm: false,
         }))
         setRegistrationData(prev => ({
@@ -444,7 +375,7 @@ export function EventRegistration({
           dietary: '',
           organisation: session?.user?.statusText || session?.user?.title || '',
         }))
-        await fetchData()
+        await refetch()
         showSuccess('Påmelding bekreftet!', `Du er nå påmeldt ${eventTitle}.`)
       } else {
         const data = await response.json()
@@ -473,10 +404,9 @@ export function EventRegistration({
       if (response.ok) {
         setState(prev => ({
           ...prev,
-          isRegistered: false,
           showUnregisterModal: false,
         }))
-        await fetchData()
+        await refetch()
         showSuccess('Avmelding bekreftet', `Du er nå avmeldt ${eventTitle}.`)
       } else {
         const data = await response.json()
@@ -493,7 +423,7 @@ export function EventRegistration({
     }
   }
 
-  if (status === 'loading' || state.isCheckingStatus) {
+  if (isCheckingStatus) {
     return (
       <div className="rounded-lg bg-gray-50 p-6 dark:bg-gray-800">
         <p className="text-sm text-gray-500 dark:text-gray-400">Laster...</p>
@@ -533,42 +463,79 @@ export function EventRegistration({
     )
   }
 
-  if (state.isRegistered) {
-    const handleUpdateSocialEvent = async (attending: boolean) => {
-      setState(prev => ({ ...prev, isLoading: true }))
-      try {
-        const response = await fetch(`/api/events/${eventSlug}/registration`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ attendingSocialEvent: attending }),
-        })
+  const handleUpdateSocialEvent = async (attending: boolean) => {
+    setState(prev => ({ ...prev, isLoading: true }))
+    try {
+      const response = await fetch(`/api/events/${eventSlug}/registration`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ attendingSocialEvent: attending }),
+      })
 
-        if (response.ok) {
-          setCurrentRegistration(prev => ({
-            ...prev,
-            attendingSocialEvent: attending,
-          }))
-          showSuccess(
-            'Oppdatert!',
-            attending
-              ? 'Du er nå påmeldt det sosiale arrangementet.'
-              : 'Du er nå avmeldt det sosiale arrangementet.'
-          )
-        } else {
-          const data = await response.json()
-          showError(
-            'Feil ved oppdatering',
-            data.error || 'Noe gikk galt under oppdateringen.'
-          )
-        }
-      } catch (error) {
-        console.error('Update error:', error)
-        showError('Feil ved oppdatering', 'Noe gikk galt under oppdateringen.')
-      } finally {
-        setState(prev => ({ ...prev, isLoading: false }))
+      if (response.ok) {
+        await refetch()
+        showSuccess(
+          'Oppdatert!',
+          attending
+            ? 'Du er nå påmeldt det sosiale arrangementet.'
+            : 'Du er nå avmeldt det sosiale arrangementet.'
+        )
+      } else {
+        const data = await response.json()
+        showError(
+          'Feil ved oppdatering',
+          data.error || 'Noe gikk galt under oppdateringen.'
+        )
       }
+    } catch (error) {
+      console.error('Update error:', error)
+      showError('Feil ved oppdatering', 'Noe gikk galt under oppdateringen.')
+    } finally {
+      setState(prev => ({ ...prev, isLoading: false }))
+    }
+  }
+
+  if (showOnlySocialEvent && socialEvent) {
+    if (isCheckingStatus) {
+      return (
+        <div className="mt-4">
+          <div className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-gray-100 px-3 py-2 text-sm font-semibold text-gray-400 dark:bg-gray-800 dark:text-gray-500">
+            Laster...
+          </div>
+        </div>
+      )
     }
 
+    if (!isRegistered) {
+      return null
+    }
+
+    if (registration?.attendingSocialEvent) {
+      return (
+        <div className="mt-4 rounded-lg border border-teal-300/50 bg-teal-100/50 px-4 py-3 dark:border-teal-700/50 dark:bg-teal-900/30">
+          <p className="flex items-center gap-2 text-sm font-medium text-teal-900 dark:text-teal-100">
+            <CheckCircleIcon className="h-5 w-5 text-teal-600 dark:text-teal-400" />
+            Du er påmeldt
+          </p>
+        </div>
+      )
+    }
+
+    return (
+      <div className="mt-4">
+        <Button
+          variant="primary"
+          onClick={() => handleUpdateSocialEvent(true)}
+          disabled={state.isLoading}
+          className="w-full text-sm"
+        >
+          {state.isLoading ? 'Melder på...' : 'Meld deg på sosialt arrangement'}
+        </Button>
+      </div>
+    )
+  }
+
+  if (isRegistered) {
     return (
       <div className="rounded-lg bg-green-50 p-6 dark:bg-green-900/20">
         <h3 className="mb-2 flex items-center gap-2 text-base font-semibold text-green-900 dark:text-green-100">
@@ -594,54 +561,6 @@ export function EventRegistration({
               size="sm"
               className="justify-center"
             />
-          </div>
-        )}
-
-        {socialEvent && (
-          <div className="mb-4 rounded-lg border border-teal-200 bg-teal-50 p-4 dark:border-teal-800 dark:bg-teal-950/20">
-            <h4 className="mb-2 text-sm font-semibold text-teal-900 dark:text-teal-100">
-              Sosialt arrangement
-            </h4>
-            <p className="mb-2 text-sm text-teal-700 dark:text-teal-300">
-              {socialEvent.description}
-            </p>
-            <div className="mb-3 space-y-1 text-sm text-teal-600 dark:text-teal-400">
-              <div>📍 {socialEvent.location}</div>
-              <div>
-                🕐{' '}
-                {socialEvent.start.toLocaleString('nb-NO', {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })}
-              </div>
-            </div>
-            {currentRegistration?.attendingSocialEvent ? (
-              <div className="space-y-2">
-                <p className="flex items-center gap-2 text-sm font-medium text-teal-900 dark:text-teal-100">
-                  <CheckCircleIcon className="h-4 w-4" />
-                  Du er påmeldt det sosiale arrangementet
-                </p>
-                <Button
-                  variant="secondary"
-                  onClick={() => handleUpdateSocialEvent(false)}
-                  disabled={state.isLoading}
-                  className="w-full text-sm"
-                >
-                  Meld av sosialt arrangement
-                </Button>
-              </div>
-            ) : (
-              <Button
-                variant="primary"
-                onClick={() => handleUpdateSocialEvent(true)}
-                disabled={state.isLoading}
-                className="w-full text-sm"
-              >
-                {state.isLoading
-                  ? 'Melder på...'
-                  : 'Meld deg på sosialt arrangement'}
-              </Button>
-            )}
           </div>
         )}
 
@@ -731,4 +650,4 @@ export function EventRegistration({
       )}
     </div>
   )
-}
+})

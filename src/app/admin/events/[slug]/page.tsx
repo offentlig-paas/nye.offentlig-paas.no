@@ -41,6 +41,7 @@ interface EventRegistration {
   dietary?: string
   comments?: string
   attendanceType?: string
+  attendingSocialEvent?: boolean
   registeredAt: string
   status: RegistrationStatus
 }
@@ -110,6 +111,7 @@ export default function AdminEventDetailsPage() {
     'all'
   )
   const [attendanceFilter, setAttendanceFilter] = useState<string>('all')
+  const [socialEventFilter, setSocialEventFilter] = useState<string>('all')
   const [selectedRegistrations, setSelectedRegistrations] = useState<string[]>(
     []
   )
@@ -170,7 +172,7 @@ export default function AdminEventDetailsPage() {
 
       if (response.ok) {
         showSuccess('Slettet', 'Påmeldingen ble slettet')
-        fetchEventDetails() // Refresh the data
+        fetchEventDetails()
       } else {
         showError('Feil', 'Kunne ikke slette påmeldingen')
       }
@@ -201,7 +203,7 @@ export default function AdminEventDetailsPage() {
 
       if (response.ok) {
         showSuccess('Oppdatert', 'Status ble oppdatert')
-        fetchEventDetails() // Refresh the data
+        fetchEventDetails()
       } else {
         showError('Feil', 'Kunne ikke oppdatere status')
       }
@@ -246,7 +248,7 @@ export default function AdminEventDetailsPage() {
         const result = await response.json()
         showSuccess('Oppdatert', result.message)
         setSelectedRegistrations([])
-        fetchEventDetails() // Refresh the data
+        fetchEventDetails()
       } else {
         showError('Feil', 'Kunne ikke oppdatere status for valgte påmeldinger')
       }
@@ -310,7 +312,17 @@ export default function AdminEventDetailsPage() {
         attendanceFilter === 'all' ||
         registration.attendanceType === attendanceFilter
 
-      return matchesSearch && matchesStatus && matchesAttendance
+      const matchesSocialEvent =
+        socialEventFilter === 'all' ||
+        (socialEventFilter === 'yes' && registration.attendingSocialEvent) ||
+        (socialEventFilter === 'no' && !registration.attendingSocialEvent)
+
+      return (
+        matchesSearch &&
+        matchesStatus &&
+        matchesAttendance &&
+        matchesSocialEvent
+      )
     }) || []
 
   if (status === 'loading' || isLoading) {
@@ -503,9 +515,14 @@ export default function AdminEventDetailsPage() {
                 r.attendanceType === 'digital' &&
                 ['confirmed', 'attended'].includes(r.status)
             ).length
+            const socialEventCount = eventDetails.registrations.filter(
+              r =>
+                r.attendingSocialEvent &&
+                ['confirmed', 'attended'].includes(r.status)
+            ).length
 
             return (
-              <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+              <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
                 <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
                   <div className="p-4">
                     <div className="flex items-center">
@@ -568,6 +585,29 @@ export default function AdminEventDetailsPage() {
                           </dt>
                           <dd className="text-lg font-semibold text-gray-900 dark:text-white">
                             {digitalCount}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                  <div className="p-4">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <UserGroupIcon
+                          className="h-5 w-5 text-orange-500"
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <div className="ml-4 w-0 flex-1">
+                        <dl>
+                          <dt className="truncate text-xs font-medium text-gray-500 dark:text-gray-400">
+                            Sosialt
+                          </dt>
+                          <dd className="text-lg font-semibold text-gray-900 dark:text-white">
+                            {socialEventCount}
                           </dd>
                         </dl>
                       </div>
@@ -1043,6 +1083,16 @@ export default function AdminEventDetailsPage() {
               <option value="physical">Fysisk oppmøte</option>
               <option value="digital">Digitalt</option>
             </select>
+
+            <select
+              value={socialEventFilter}
+              onChange={e => setSocialEventFilter(e.target.value)}
+              className="rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+            >
+              <option value="all">Sosialt arrangement</option>
+              <option value="yes">Deltar sosialt</option>
+              <option value="no">Ikke sosialt</option>
+            </select>
           </div>
 
           <button
@@ -1128,6 +1178,9 @@ export default function AdminEventDetailsPage() {
                   Deltakelse
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-300">
+                  Sosialt
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-300">
                   Status
                 </th>
                 <th className="w-12 px-6 py-3">
@@ -1189,6 +1242,18 @@ export default function AdminEventDetailsPage() {
                           registration.attendanceType as keyof typeof AttendanceTypeDisplay
                         ] || registration.attendanceType
                       : '-'}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {registration.attendingSocialEvent ? (
+                      <span className="inline-flex items-center rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-medium text-orange-800 dark:bg-orange-900/50 dark:text-orange-300">
+                        <UserGroupIcon className="mr-1 h-3 w-3" />
+                        Ja
+                      </span>
+                    ) : (
+                      <span className="text-xs text-gray-400 dark:text-gray-500">
+                        -
+                      </span>
+                    )}
                   </td>
                   <td className="px-6 py-4">
                     <div className="space-y-0.5">
