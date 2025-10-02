@@ -440,28 +440,6 @@ export const EventRegistration = memo(function EventRegistration({
       </div>
     )
   }
-  if (!session) {
-    return (
-      <div className="rounded-lg bg-gray-50 p-6 dark:bg-gray-800">
-        <h3 className="mb-4 text-base font-semibold text-gray-900 dark:text-gray-100">
-          Bli med på fagdagen
-        </h3>
-
-        {registrationCounts && registrationCounts.totalActive > 0 && (
-          <div className="mb-4">
-            <RegistrationStats counts={registrationCounts} variant="blue" />
-          </div>
-        )}
-
-        <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
-          {registrationCounts && registrationCounts.totalActive > 0
-            ? `Allerede ${registrationCounts.persons} påmeldte fra ${registrationCounts.organizations} ulike organisasjoner! Logg inn med Slack for å bli med.`
-            : 'Du må logge inn med Slack for å melde deg på fagdagen.'}
-        </p>
-        <AuthButton className="w-full" showFullText />
-      </div>
-    )
-  }
 
   const handleUpdateSocialEvent = async (attending: boolean) => {
     setState(prev => ({ ...prev, isLoading: true }))
@@ -496,14 +474,8 @@ export const EventRegistration = memo(function EventRegistration({
   }
 
   if (showOnlySocialEvent && socialEvent) {
-    if (isCheckingStatus) {
-      return (
-        <div className="mt-4">
-          <div className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-gray-100 px-3 py-2 text-sm font-semibold text-gray-400 dark:bg-gray-800 dark:text-gray-500">
-            Laster...
-          </div>
-        </div>
-      )
+    if (!session) {
+      return null
     }
 
     if (!isRegistered) {
@@ -531,6 +503,29 @@ export const EventRegistration = memo(function EventRegistration({
         >
           {state.isLoading ? 'Melder på...' : 'Meld deg på sosialt arrangement'}
         </Button>
+      </div>
+    )
+  }
+
+  if (!session) {
+    return (
+      <div className="rounded-lg bg-gray-50 p-6 dark:bg-gray-800">
+        <h3 className="mb-4 text-base font-semibold text-gray-900 dark:text-gray-100">
+          Bli med på fagdagen
+        </h3>
+
+        {registrationCounts && registrationCounts.totalActive > 0 && (
+          <div className="mb-4">
+            <RegistrationStats counts={registrationCounts} variant="blue" />
+          </div>
+        )}
+
+        <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
+          {registrationCounts && registrationCounts.totalActive > 0
+            ? `Allerede ${registrationCounts.persons} påmeldte fra ${registrationCounts.organizations} ulike organisasjoner! Logg inn med Slack for å bli med.`
+            : 'Du må logge inn med Slack for å melde deg på fagdagen.'}
+        </p>
+        <AuthButton className="w-full" showFullText />
       </div>
     )
   }
