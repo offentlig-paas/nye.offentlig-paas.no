@@ -201,9 +201,67 @@ export async function generateMetadata({
     }
   }
 
+  // Format date and location
+  const eventDate = event.start.toLocaleDateString('nb-NO', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+  const eventTime = `${event.start.toLocaleTimeString('nb-NO', {
+    hour: '2-digit',
+    minute: '2-digit',
+  })} - ${event.end.toLocaleTimeString('nb-NO', {
+    hour: '2-digit',
+    minute: '2-digit',
+  })}`
+
+  // Get speakers from schedule (unique list)
+  const speakers = Array.from(
+    new Set(
+      event.schedule
+        .filter(item => item.speaker && item.type === ItemType.Talk)
+        .map(item => item.speaker)
+    )
+  )
+
+  // Create agenda summary (talks only, max 5)
+  const talks = event.schedule
+    .filter(item => item.type === ItemType.Talk && item.title)
+    .slice(0, 5)
+    .map(item => `• ${item.title}${item.speaker ? ` (${item.speaker})` : ''}`)
+    .join('\n')
+
+  // Create enhanced description with date, location, agenda and speakers
+  const enhancedDescription = [
+    event.ingress,
+    '',
+    `📅 ${eventDate}`,
+    `🕐 ${eventTime}`,
+    `📍 ${event.location}`,
+    '',
+    talks ? `Agenda:\n${talks}` : '',
+    '',
+    speakers.length > 0 ? `Foredragsholdere: ${speakers.join(', ')}` : '',
+  ]
+    .filter(Boolean)
+    .join('\n')
+
   return {
     title: event.title,
     description: event.ingress,
+    openGraph: {
+      title: event.title,
+      description: enhancedDescription,
+      type: 'website',
+      locale: 'nb_NO',
+      siteName: 'Offentlig PaaS',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: event.title,
+      description: enhancedDescription,
+    },
   }
 }
 
