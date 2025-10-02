@@ -1,3 +1,9 @@
+export interface SocialEvent {
+  description: string
+  start: Date
+  location: string
+}
+
 export interface Event {
   slug: string
   title: string
@@ -16,6 +22,7 @@ export interface Event {
   organizers: Organizer[]
   schedule: Item[]
   stats?: Stats
+  socialEvent?: SocialEvent
 }
 
 export interface RegistrationSettings {

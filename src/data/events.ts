@@ -17,7 +17,7 @@ export const events: Event[] = [
     start: new Date('2025-10-15T11:00+02:00'),
     end: new Date('2025-10-15T15:00+02:00'),
     audience: Audience.OpenForAll,
-    location: 'Telenor Norge, Fornebuporten, Snarøyveien 30, 1360 Fornebu',
+    location: 'Telenor Fornebu, Snarøyveien 30, 1360 Fornebu',
     registration: {
       attendanceTypes: [AttendanceType.Physical, AttendanceType.Digital],
     },
@@ -33,6 +33,12 @@ export const events: Event[] = [
         url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
       },
     ],
+    socialEvent: {
+      description:
+        'Bli med på mingling og nettverksbygging på Telenors Café Expo. En uformell anledning til å møte andre deltakere, dele erfaringer og bygge nettverk over pizza og drikke.',
+      start: new Date('2025-10-15T16:00+02:00'),
+      location: 'Café Expo, Telenor Fornebu',
+    },
     schedule: [
       {
         time: '11:00 - 11:30',

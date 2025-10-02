@@ -11,6 +11,7 @@ export interface EventRegistration {
   dietary?: string
   comments?: string
   attendanceType?: AttendanceType
+  attendingSocialEvent?: boolean
   registeredAt: Date
   status: RegistrationStatus
   metadata?: RegistrationMetadata
@@ -39,6 +40,7 @@ export interface CreateEventRegistrationInput {
   dietary?: string
   comments?: string
   attendanceType: AttendanceType // Required - must be set based on event configuration
+  attendingSocialEvent?: boolean
   metadata?: RegistrationMetadata
 }
 
@@ -48,6 +50,7 @@ export interface UpdateEventRegistrationInput {
   dietary?: string
   comments?: string
   attendanceType?: AttendanceType
+  attendingSocialEvent?: boolean
   metadata?: RegistrationMetadata
 }
 

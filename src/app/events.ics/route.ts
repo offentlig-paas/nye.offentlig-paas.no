@@ -19,14 +19,16 @@ export async function GET() {
 }
 
 const createCalendar = async () => {
-  const eventsAsIcalString = getUpcomingEvents().map(event => toIcal(event)).join("\n")
-  return icalBase.replace("{{ EVENTS }}", eventsAsIcalString)
+  const eventsAsIcalString = getUpcomingEvents()
+    .map(event => toIcal(event))
+    .join('\n')
+  return icalBase.replace('{{ EVENTS }}', eventsAsIcalString)
 }
 
 const toIcal = (event: Event) => `BEGIN:VEVENT
 UID:${event.slug}
 SUMMARY:${event.title}
-LOCATION:${event.location ?? "Ukjent"}
+LOCATION:${event.location ?? 'Ukjent'}
 DTSTAMP:${customDateFormat(event.start)}
 DTSTART:${customDateFormat(event.start)}
 DTEND:${customDateFormat(event.end)}
@@ -40,6 +42,7 @@ X-WR-CALNAME:Offentlig PaaS Fagdager
 {{ EVENTS }}
 END:VCALENDAR`
 
-const customDateFormat = (when: Date) => `${when.getUTCFullYear()}${twoDigits(when.getUTCMonth() + 1)}${twoDigits(when.getUTCDate())}T${twoDigits(when.getUTCHours())}${twoDigits(when.getUTCMinutes())}00Z`
+const customDateFormat = (when: Date) =>
+  `${when.getUTCFullYear()}${twoDigits(when.getUTCMonth() + 1)}${twoDigits(when.getUTCDate())}T${twoDigits(when.getUTCHours())}${twoDigits(when.getUTCMinutes())}00Z`
 
 const twoDigits = (num: number) => num.toString().padStart(2, '0')

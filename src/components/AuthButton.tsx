@@ -11,7 +11,10 @@ interface AuthButtonProps {
   showFullText?: boolean
 }
 
-export function AuthButton({ className, showFullText = false }: AuthButtonProps = {}) {
+export function AuthButton({
+  className,
+  showFullText = false,
+}: AuthButtonProps = {}) {
   const { data: session, status } = useSession()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)

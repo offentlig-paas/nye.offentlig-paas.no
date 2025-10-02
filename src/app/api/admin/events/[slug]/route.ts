@@ -60,6 +60,7 @@ export async function GET(
           dietary: reg.dietary,
           comments: reg.comments,
           attendanceType: reg.attendanceType,
+          attendingSocialEvent: reg.attendingSocialEvent,
           registeredAt: reg.registeredAt.toISOString(),
           status: reg.status,
         })),
