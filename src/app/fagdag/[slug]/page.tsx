@@ -4,6 +4,7 @@ import React from 'react'
 
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { EventRegistration } from '@/components/EventRegistration'
+import { EventSecretInfo } from '@/components/EventSecretInfo'
 import { EventRegistrationProvider } from '@/contexts/EventRegistrationContext'
 import { Container } from '@/components/Container'
 import { Button } from '@/components/Button'
@@ -427,6 +428,7 @@ export default async function Fagdag({ params }: { params: Params }) {
                         attendanceTypes={event.registration.attendanceTypes}
                         socialEvent={event.socialEvent}
                       />
+                      <EventSecretInfo eventSlug={slug} />
                       {event.registrationUrl && (
                         <div className="mt-4">
                           <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">
@@ -483,25 +485,31 @@ export default async function Fagdag({ params }: { params: Params }) {
                       </div>
                     </>
                   ) : event.recordingUrl ? (
-                    <Button
-                      href={event.recordingUrl}
-                      variant="secondary"
-                      className="w-full"
-                    >
-                      <VideoCameraIcon
-                        className="mr-1 h-4 w-4"
-                        aria-hidden="true"
-                      />
-                      Se opptak
-                    </Button>
+                    <>
+                      <Button
+                        href={event.recordingUrl}
+                        variant="secondary"
+                        className="w-full"
+                      >
+                        <VideoCameraIcon
+                          className="mr-1 h-4 w-4"
+                          aria-hidden="true"
+                        />
+                        Se opptak
+                      </Button>
+                      <EventSecretInfo eventSlug={slug} />
+                    </>
                   ) : (
-                    <EventRegistration
-                      eventSlug={slug}
-                      eventTitle={event.title}
-                      isAcceptingRegistrations={false}
-                      attendanceTypes={event.registration.attendanceTypes}
-                      socialEvent={event.socialEvent}
-                    />
+                    <>
+                      <EventRegistration
+                        eventSlug={slug}
+                        eventTitle={event.title}
+                        isAcceptingRegistrations={false}
+                        attendanceTypes={event.registration.attendanceTypes}
+                        socialEvent={event.socialEvent}
+                      />
+                      <EventSecretInfo eventSlug={slug} />
+                    </>
                   )}
                 </div>
               </div>

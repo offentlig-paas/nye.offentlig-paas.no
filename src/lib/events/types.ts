@@ -4,6 +4,11 @@ export interface SocialEvent {
   location: string
 }
 
+export interface EventSecretInfo {
+  streamingUrl?: string
+  notes?: string
+}
+
 export interface Event {
   slug: string
   title: string
@@ -23,6 +28,7 @@ export interface Event {
   schedule: Item[]
   stats?: Stats
   socialEvent?: SocialEvent
+  secretInfo?: EventSecretInfo // Only populated for authorized users
 }
 
 export interface RegistrationSettings {

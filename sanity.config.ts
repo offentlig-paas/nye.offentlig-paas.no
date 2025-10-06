@@ -35,6 +35,13 @@ export default defineConfig({
                     { field: 'registeredAt', direction: 'desc' },
                   ])
               ),
+            S.listItem()
+              .title('Event Secret Info')
+              .child(
+                S.documentTypeList('eventSecretInfo')
+                  .title('Event Secret Info')
+                  .filter('_type == "eventSecretInfo"')
+              ),
           ]),
     }),
     visionTool({

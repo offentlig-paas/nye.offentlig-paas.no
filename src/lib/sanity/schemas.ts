@@ -166,5 +166,48 @@ export const eventRegistrationSchema = defineType({
   ],
 })
 
+// Sanity schema for event secret information (streaming URLs, etc.)
+export const eventSecretInfoSchema = defineType({
+  name: 'eventSecretInfo',
+  title: 'Event Secret Info',
+  type: 'document',
+  fields: [
+    {
+      name: 'eventSlug',
+      title: 'Event Slug',
+      type: 'string',
+      validation: Rule => Rule.required(),
+      description:
+        'The slug identifier for the event (must match the event slug in events.ts)',
+    },
+    {
+      name: 'streamingUrl',
+      title: 'Streaming URL',
+      type: 'url',
+      description:
+        'Private streaming URL - only visible to registered participants',
+    },
+    {
+      name: 'notes',
+      title: 'Private Notes',
+      type: 'text',
+      description: 'Internal notes or additional private information',
+    },
+  ],
+  preview: {
+    select: {
+      title: 'eventSlug',
+      subtitle: 'streamingUrl',
+    },
+    prepare(selection) {
+      const { title, subtitle } = selection
+      return {
+        title: `Secret Info: ${title}`,
+        subtitle: subtitle || 'No streaming URL',
+      }
+    },
+  },
+})
+
 // Export the schema for use in Sanity Studio
-export const schemas = [eventRegistrationSchema]
+export const schemas = [eventRegistrationSchema, eventSecretInfoSchema]
