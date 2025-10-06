@@ -57,7 +57,7 @@ export async function upsertEventParticipantInfo(
         })
         .commit()
 
-      return updated as SanityEventParticipantInfo
+      return updated as unknown as SanityEventParticipantInfo
     } else {
       const created = await sanityWriteClient.create({
         _type: 'eventParticipantInfo',
@@ -66,7 +66,7 @@ export async function upsertEventParticipantInfo(
         notes: info.notes,
       })
 
-      return created as SanityEventParticipantInfo
+      return created as unknown as SanityEventParticipantInfo
     }
   } catch (error) {
     console.error('Error upserting participant info:', error)
