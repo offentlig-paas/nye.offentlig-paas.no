@@ -128,7 +128,15 @@ export default function AdminEventDetailsPage() {
 
   const fetchParticipantInfo = useCallback(async () => {
     try {
-      const response = await fetch(`/api/admin/events/${slug}/participant-info`)
+      const response = await fetch(
+        `/api/admin/events/${slug}/participant-info`,
+        {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache',
+          },
+        }
+      )
       if (response.ok) {
         const data = await response.json()
         setParticipantInfo({
@@ -182,13 +190,16 @@ export default function AdminEventDetailsPage() {
   const handleSaveParticipantInfo = async () => {
     setIsSavingParticipantInfo(true)
     try {
-      const response = await fetch(`/api/admin/events/${slug}/participant-info`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(participantInfo),
-      })
+      const response = await fetch(
+        `/api/admin/events/${slug}/participant-info`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(participantInfo),
+        }
+      )
 
       if (response.ok) {
         showSuccess('Lagret', 'Deltakerinformasjon ble lagret')
@@ -1096,17 +1107,17 @@ export default function AdminEventDetailsPage() {
           {!isEditingParticipantInfo && (
             <button
               onClick={() => setIsEditingParticipantInfo(true)}
-              className="text-sm font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+              className="cursor-pointer text-sm font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
             >
               Rediger
             </button>
           )}
         </div>
-        <div className="p-6 space-y-4">
+        <div className="space-y-4 p-6">
           <div>
             <label
               htmlFor="streamingUrl"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
             >
               Streaming URL
             </label>
@@ -1126,7 +1137,17 @@ export default function AdminEventDetailsPage() {
               />
             ) : (
               <div className="text-sm text-gray-900 dark:text-white">
-                {participantInfo.streamingUrl || (
+                {participantInfo.streamingUrl ? (
+                  <a
+                    href={participantInfo.streamingUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                  >
+                    <VideoCameraIcon className="mr-1.5 h-4 w-4" />
+                    Åpne streaming
+                  </a>
+                ) : (
                   <span className="text-gray-500 dark:text-gray-400">
                     Ikke satt
                   </span>
@@ -1138,10 +1159,14 @@ export default function AdminEventDetailsPage() {
           <div>
             <label
               htmlFor="notes"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
             >
               Notater
             </label>
+            <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Disse notatene er synlige for alle påmeldte deltakere etter at de
+              har registrert seg.
+            </p>
             {isEditingParticipantInfo ? (
               <textarea
                 id="notes"

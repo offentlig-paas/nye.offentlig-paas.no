@@ -1,4 +1,4 @@
-import { sanityWriteClient } from '@/lib/sanity/config'
+import { sanityClient } from '@/lib/sanity/config'
 import type {
   EventRegistration,
   CreateEventRegistrationInput,
@@ -25,7 +25,7 @@ export class EventRegistrationRepository {
       status: 'confirmed' as const,
     }
 
-    const result = await sanityWriteClient.create(doc)
+    const result = await sanityClient.create(doc)
     return this.mapSanityToEventRegistration(result)
   }
 
@@ -34,7 +34,7 @@ export class EventRegistrationRepository {
    */
   async findById(id: string): Promise<EventRegistration | null> {
     const query = groq`*[_type == "eventRegistration" && _id == $id][0]`
-    const result = await sanityWriteClient.fetch(query, { id })
+    const result = await sanityClient.fetch(query, { id })
 
     return result ? this.mapSanityToEventRegistration(result) : null
   }
@@ -47,7 +47,7 @@ export class EventRegistrationRepository {
     slackUserId: string
   ): Promise<EventRegistration | null> {
     const query = groq`*[_type == "eventRegistration" && eventSlug == $eventSlug && slackUserId == $slackUserId][0]`
-    const result = await sanityWriteClient.fetch(query, {
+    const result = await sanityClient.fetch(query, {
       eventSlug,
       slackUserId,
     })
@@ -87,7 +87,7 @@ export class EventRegistrationRepository {
       query += `[${offset}...${offset + queryParams.limit}]`
     }
 
-    const results = await sanityWriteClient.fetch(query, params)
+    const results = await sanityClient.fetch(query, params)
     return results.map((result: Record<string, unknown>) =>
       this.mapSanityToEventRegistration(result)
     )
@@ -100,7 +100,7 @@ export class EventRegistrationRepository {
     id: string,
     input: UpdateEventRegistrationInput
   ): Promise<EventRegistration> {
-    const result = await sanityWriteClient.patch(id).set(input).commit()
+    const result = await sanityClient.patch(id).set(input).commit()
 
     return this.mapSanityToEventRegistration(result)
   }
@@ -109,7 +109,7 @@ export class EventRegistrationRepository {
    * Delete a registration
    */
   async delete(id: string): Promise<void> {
-    await sanityWriteClient.delete(id)
+    await sanityClient.delete(id)
   }
 
   /**
@@ -129,7 +129,7 @@ export class EventRegistrationRepository {
 
     query += `])`
 
-    return await sanityWriteClient.fetch(query, params)
+    return await sanityClient.fetch(query, params)
   }
 
   /**

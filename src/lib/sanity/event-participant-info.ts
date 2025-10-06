@@ -1,4 +1,4 @@
-import { sanityClient, sanityWriteClient } from './config'
+import { sanityClient } from './config'
 import type { EventParticipantInfo } from '@/lib/events/types'
 
 export interface SanityEventParticipantInfo {
@@ -20,7 +20,8 @@ export async function getEventParticipantInfo(
 
     const result = await sanityClient.fetch<SanityEventParticipantInfo | null>(
       query,
-      { eventSlug }
+      { eventSlug },
+      { cache: 'no-store', next: { revalidate: 0 } }
     )
 
     if (!result) {
@@ -43,13 +44,17 @@ export async function upsertEventParticipantInfo(
 ): Promise<SanityEventParticipantInfo | null> {
   try {
     const query = `*[_type == "eventParticipantInfo" && eventSlug == $eventSlug][0]`
-    const existing = await sanityClient.fetch<SanityEventParticipantInfo | null>(
-      query,
-      { eventSlug }
-    )
+    const existing =
+      await sanityClient.fetch<SanityEventParticipantInfo | null>(
+        query,
+        {
+          eventSlug,
+        },
+        { cache: 'no-store' }
+      )
 
     if (existing) {
-      const updated = await sanityWriteClient
+      const updated = await sanityClient
         .patch(existing._id)
         .set({
           streamingUrl: info.streamingUrl,
@@ -59,7 +64,7 @@ export async function upsertEventParticipantInfo(
 
       return updated as unknown as SanityEventParticipantInfo
     } else {
-      const created = await sanityWriteClient.create({
+      const created = await sanityClient.create({
         _type: 'eventParticipantInfo',
         eventSlug,
         streamingUrl: info.streamingUrl,

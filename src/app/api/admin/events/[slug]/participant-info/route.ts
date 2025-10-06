@@ -6,6 +6,9 @@ import {
   upsertEventParticipantInfo,
 } from '@/lib/sanity/event-participant-info'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
@@ -25,7 +28,14 @@ export async function GET(
 
   try {
     const participantInfo = await getEventParticipantInfo(slug)
-    return NextResponse.json(participantInfo || {})
+    return NextResponse.json(participantInfo || {}, {
+      headers: {
+        'Cache-Control':
+          'no-store, no-cache, must-revalidate, proxy-revalidate',
+        Pragma: 'no-cache',
+        Expires: '0',
+      },
+    })
   } catch (error) {
     console.error('Error fetching participant info:', error)
     return NextResponse.json(

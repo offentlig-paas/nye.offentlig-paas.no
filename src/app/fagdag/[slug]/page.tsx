@@ -5,6 +5,7 @@ import React from 'react'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { EventRegistration } from '@/components/EventRegistration'
 import { EventParticipantInfo } from '@/components/EventParticipantInfo'
+import { EventCalendarDownload } from '@/components/EventCalendarDownload'
 import { EventRegistrationProvider } from '@/contexts/EventRegistrationContext'
 import { Container } from '@/components/Container'
 import { Button } from '@/components/Button'
@@ -19,7 +20,8 @@ import {
 } from '@/lib/events/helpers'
 import { formatDateTime } from '@/lib/formatDate'
 import { auth } from '@/auth'
-import type { Attachment, Event } from '@/lib/events/types'
+import type { Attachment } from '@/lib/events/types'
+import { getGoogleCalendarUrl } from '@/lib/calendar-utils'
 import {
   AttachmentType,
   ItemType,
@@ -100,42 +102,6 @@ function EventStatus({ status }: { status: Status }) {
       {statusText(status)}
     </dd>
   )
-}
-
-function getGoogleCalendarUrl(event: Event) {
-  const startTime = calenderDateTime(event.start)
-  const endTime = calenderDateTime(event.end)
-  const details = {
-    action: 'TEMPLATE',
-    text: event.title,
-    dates: `${startTime}/${endTime}`,
-    details: event.description || '',
-    location: event.location,
-  }
-  const params = new URLSearchParams(details)
-  return `https://www.google.com/calendar/render?${params.toString()}`
-}
-
-function calenderDateTime(date: Date) {
-  return date.toISOString().replace(/[-:]|\.\d{3}/g, '')
-}
-
-function getIcsFileContent(event: Event, url: string) {
-  return [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'BEGIN:VEVENT',
-    `UID:${event.slug}`,
-    `DTSTAMP:${calenderDateTime(new Date())}`,
-    `DTSTART:${calenderDateTime(event.start)}`,
-    `DTEND:${calenderDateTime(event.end)}`,
-    `SUMMARY:${event.title}`,
-    `DESCRIPTION:${event.description}`,
-    `LOCATION:${event.location}`,
-    `URL:${url}`,
-    'END:VEVENT',
-    'END:VCALENDAR',
-  ].join('\n')
 }
 
 function AttachmentIcon({
@@ -291,8 +257,6 @@ export default async function Fagdag({ params }: { params: Params }) {
   const url = `${protocol}://${host}/fagdag/${slug}`
 
   const googleCalendarUrl = getGoogleCalendarUrl(event)
-  const icsFileContent = getIcsFileContent(event, url)
-  const icsFileUrl = `data:text/calendar;charset=utf8,${encodeURIComponent(icsFileContent)}`
 
   return (
     <EventRegistrationProvider eventSlug={slug}>
@@ -456,32 +420,12 @@ export default async function Fagdag({ params }: { params: Params }) {
                           Send inn forslag
                         </Button>
                       )}
-                      <div className="mt-4 flex flex-col gap-4">
-                        <Button
-                          href={googleCalendarUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          variant="secondary"
-                          className="w-full"
-                        >
-                          <CalendarIcon
-                            className="mr-2 h-6 w-6"
-                            aria-hidden="true"
-                          />
-                          Legg til i Google Kalender
-                        </Button>
-                        <Button
-                          href={icsFileUrl}
-                          download={`${event.slug}.ics`}
-                          variant="secondary"
-                          className="w-full"
-                        >
-                          <CalendarIcon
-                            className="mr-2 h-6 w-6"
-                            aria-hidden="true"
-                          />
-                          Legg til i kalender (.ics)
-                        </Button>
+                      <div className="mt-4 flex flex-col gap-2">
+                        <EventCalendarDownload
+                          event={event}
+                          url={url}
+                          googleCalendarUrl={googleCalendarUrl}
+                        />
                       </div>
                     </>
                   ) : event.recordingUrl ? (

@@ -4,8 +4,6 @@ import { sanityClient } from '../config'
 jest.mock('../config', () => ({
   sanityClient: {
     fetch: jest.fn(),
-  },
-  sanityWriteClient: {
     patch: jest.fn(),
     create: jest.fn(),
   },
@@ -14,6 +12,11 @@ jest.mock('../config', () => ({
 describe('getEventParticipantInfo', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    jest.spyOn(console, 'error').mockImplementation(() => {})
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   it('should return participant info when found', async () => {
