@@ -4,7 +4,6 @@ import { visionTool } from '@sanity/vision'
 
 import { schemas } from './src/lib/sanity/schemas'
 
-// Get environment variables - use SANITY_STUDIO_ for Studio configuration
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID
 const dataset = process.env.SANITY_STUDIO_DATASET || 'production'
 
@@ -34,6 +33,13 @@ export default defineConfig({
                   .defaultOrdering([
                     { field: 'registeredAt', direction: 'desc' },
                   ])
+              ),
+            S.listItem()
+              .title('Event Participant Info')
+              .child(
+                S.documentTypeList('eventParticipantInfo')
+                  .title('Event Participant Info')
+                  .filter('_type == "eventParticipantInfo"')
               ),
           ]),
     }),

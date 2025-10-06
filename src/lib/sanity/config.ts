@@ -15,17 +15,12 @@ export const sanityConfig = {
   useCdn: process.env.NODE_ENV === 'production',
 }
 
-// Client for reading data (no token needed for public data)
-export const sanityClient = createClient(sanityConfig)
-
-// Client for writing data (requires API token)
-export const sanityWriteClient = createClient({
+export const sanityClient = createClient({
   ...sanityConfig,
   token: process.env.SANITY_API_TOKEN,
-  useCdn: false, // Always use fresh data for writes
+  useCdn: false,
 })
 
-// Ensure we have write permissions when needed
 if (!process.env.SANITY_API_TOKEN && process.env.NODE_ENV !== 'development') {
   console.warn('Missing SANITY_API_TOKEN - write operations will fail')
 }
