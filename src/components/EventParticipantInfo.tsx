@@ -3,16 +3,16 @@
 import { useEffect, useState } from 'react'
 import { VideoCameraIcon } from '@heroicons/react/20/solid'
 import { useEventRegistration } from '@/contexts/EventRegistrationContext'
-import type { EventSecretInfo as EventSecretInfoType } from '@/lib/events/types'
+import type { EventParticipantInfo as EventParticipantInfoType } from '@/lib/events/types'
 
-interface EventSecretInfoProps {
+interface EventParticipantInfoProps {
   eventSlug: string
 }
 
-export function EventSecretInfo({ eventSlug }: EventSecretInfoProps) {
+export function EventParticipantInfo({ eventSlug }: EventParticipantInfoProps) {
   const { isRegistered, isCheckingStatus } = useEventRegistration()
-  const [secretInfo, setSecretInfo] =
-    useState<EventSecretInfoType | null>(null)
+  const [participantInfo, setParticipantInfo] =
+    useState<EventParticipantInfoType | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
@@ -20,32 +20,34 @@ export function EventSecretInfo({ eventSlug }: EventSecretInfoProps) {
       return
     }
 
-    const fetchSecretInfo = async () => {
+    const fetchParticipantInfo = async () => {
       setIsLoading(true)
 
       try {
-        const response = await fetch(`/api/events/${eventSlug}/secret-info`)
+        const response = await fetch(
+          `/api/events/${eventSlug}/participant-info`
+        )
 
         if (response.status === 404) {
-          setSecretInfo(null)
+          setParticipantInfo(null)
           return
         }
 
         if (!response.ok) {
-          setSecretInfo(null)
+          setParticipantInfo(null)
           return
         }
 
         const data = await response.json()
-        setSecretInfo(data)
+        setParticipantInfo(data)
       } catch {
-        setSecretInfo(null)
+        setParticipantInfo(null)
       } finally {
         setIsLoading(false)
       }
     }
 
-    fetchSecretInfo()
+    fetchParticipantInfo()
   }, [eventSlug, isRegistered, isCheckingStatus])
 
   if (isCheckingStatus || isLoading) {
@@ -56,7 +58,7 @@ export function EventSecretInfo({ eventSlug }: EventSecretInfoProps) {
     return null
   }
 
-  if (!secretInfo || !secretInfo.streamingUrl) {
+  if (!participantInfo || !participantInfo.streamingUrl) {
     return null
   }
 
@@ -79,7 +81,7 @@ export function EventSecretInfo({ eventSlug }: EventSecretInfoProps) {
               fagdagen.
             </p>
             <a
-              href={secretInfo.streamingUrl}
+              href={participantInfo.streamingUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 dark:bg-blue-700 dark:hover:bg-blue-600"
@@ -87,9 +89,9 @@ export function EventSecretInfo({ eventSlug }: EventSecretInfoProps) {
               <VideoCameraIcon className="-ml-0.5 mr-1.5 h-5 w-5" />
               Åpne strømming
             </a>
-            {secretInfo.notes && (
+            {participantInfo.notes && (
               <p className="mt-3 text-xs text-blue-600 dark:text-blue-400">
-                {secretInfo.notes}
+                {participantInfo.notes}
               </p>
             )}
           </div>

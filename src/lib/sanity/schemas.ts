@@ -1,12 +1,10 @@
 import { defineType } from 'sanity'
 
-// Local attendance type display mapping for Sanity Studio
 const attendanceTypeDisplay: Record<string, string> = {
   physical: 'Fysisk oppmøte',
   digital: 'Digitalt',
 }
 
-// Sanity schema for event registrations
 export const eventRegistrationSchema = defineType({
   name: 'eventRegistration',
   title: 'Event Registration',
@@ -17,47 +15,40 @@ export const eventRegistrationSchema = defineType({
       title: 'Event Slug',
       type: 'string',
       validation: Rule => Rule.required(),
-      description: 'The slug identifier for the event',
     },
     {
       name: 'name',
       title: 'Name',
       type: 'string',
       validation: Rule => Rule.required(),
-      description: 'Full name of the registrant',
     },
     {
       name: 'email',
       title: 'Email',
       type: 'string',
       validation: Rule => Rule.required().email(),
-      description: 'Email address of the registrant',
     },
     {
       name: 'slackUserId',
       title: 'Slack User ID',
       type: 'string',
       validation: Rule => Rule.required(),
-      description: 'Slack user ID for the registrant',
     },
     {
       name: 'organisation',
       title: 'Organisation',
       type: 'string',
       validation: Rule => Rule.required(),
-      description: 'Organisation or company the registrant represents',
     },
     {
       name: 'dietary',
       title: 'Dietary Requirements',
       type: 'text',
-      description: 'Any dietary requirements or restrictions',
     },
     {
       name: 'comments',
       title: 'Comments',
       type: 'text',
-      description: 'Additional comments or notes from the registrant',
     },
     {
       name: 'attendanceType',
@@ -71,21 +62,17 @@ export const eventRegistrationSchema = defineType({
         layout: 'radio',
       },
       validation: Rule => Rule.required(),
-      description: 'How the participant will attend the event',
     },
     {
       name: 'attendingSocialEvent',
       title: 'Attending Social Event',
       type: 'boolean',
-      description:
-        'Whether the participant will attend the social event after the fagdag',
     },
     {
       name: 'registeredAt',
       title: 'Registered At',
       type: 'datetime',
       validation: Rule => Rule.required(),
-      description: 'When the registration was submitted',
     },
     {
       name: 'status',
@@ -104,18 +91,15 @@ export const eventRegistrationSchema = defineType({
       initialValue: 'confirmed',
       validation: Rule => Rule.required(),
     },
-    // Extensible metadata field for future enhancements
     {
       name: 'metadata',
       title: 'Additional Metadata',
       type: 'object',
-      description: 'Extensible field for additional registration data',
       fields: [
         {
           name: 'source',
           title: 'Registration Source',
           type: 'string',
-          description: 'How the user found out about the event',
         },
         {
           name: 'experience',
@@ -166,10 +150,9 @@ export const eventRegistrationSchema = defineType({
   ],
 })
 
-// Sanity schema for event secret information (streaming URLs, etc.)
-export const eventSecretInfoSchema = defineType({
-  name: 'eventSecretInfo',
-  title: 'Event Secret Info',
+export const eventParticipantInfoSchema = defineType({
+  name: 'eventParticipantInfo',
+  title: 'Event Participant Info',
   type: 'document',
   fields: [
     {
@@ -177,21 +160,16 @@ export const eventSecretInfoSchema = defineType({
       title: 'Event Slug',
       type: 'string',
       validation: Rule => Rule.required(),
-      description:
-        'The slug identifier for the event (must match the event slug in events.ts)',
     },
     {
       name: 'streamingUrl',
       title: 'Streaming URL',
       type: 'url',
-      description:
-        'Private streaming URL - only visible to registered participants',
     },
     {
       name: 'notes',
-      title: 'Private Notes',
+      title: 'Notes',
       type: 'text',
-      description: 'Internal notes or additional private information',
     },
   ],
   preview: {
@@ -202,12 +180,11 @@ export const eventSecretInfoSchema = defineType({
     prepare(selection) {
       const { title, subtitle } = selection
       return {
-        title: `Secret Info: ${title}`,
+        title: `Participant Info: ${title}`,
         subtitle: subtitle || 'No streaming URL',
       }
     },
   },
 })
 
-// Export the schema for use in Sanity Studio
-export const schemas = [eventRegistrationSchema, eventSecretInfoSchema]
+export const schemas = [eventRegistrationSchema, eventParticipantInfoSchema]

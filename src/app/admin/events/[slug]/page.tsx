@@ -117,7 +117,29 @@ export default function AdminEventDetailsPage() {
   )
   const [isDeleting, setIsDeleting] = useState<string | null>(null)
   const [isUpdatingStatus, setIsUpdatingStatus] = useState<string | null>(null)
+  const [participantInfo, setParticipantInfo] = useState<{
+    streamingUrl: string
+    notes: string
+  }>({ streamingUrl: '', notes: '' })
+  const [isEditingParticipantInfo, setIsEditingParticipantInfo] =
+    useState(false)
+  const [isSavingParticipantInfo, setIsSavingParticipantInfo] = useState(false)
   const { showSuccess, showError } = useToast()
+
+  const fetchParticipantInfo = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/admin/events/${slug}/participant-info`)
+      if (response.ok) {
+        const data = await response.json()
+        setParticipantInfo({
+          streamingUrl: data.streamingUrl || '',
+          notes: data.notes || '',
+        })
+      }
+    } catch (error) {
+      console.error('Error fetching participant info:', error)
+    }
+  }, [slug])
 
   const fetchEventDetails = useCallback(async () => {
     try {
@@ -154,7 +176,33 @@ export default function AdminEventDetailsPage() {
     }
 
     fetchEventDetails()
-  }, [session, status, slug, fetchEventDetails])
+    fetchParticipantInfo()
+  }, [session, status, slug, fetchEventDetails, fetchParticipantInfo])
+
+  const handleSaveParticipantInfo = async () => {
+    setIsSavingParticipantInfo(true)
+    try {
+      const response = await fetch(`/api/admin/events/${slug}/participant-info`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(participantInfo),
+      })
+
+      if (response.ok) {
+        showSuccess('Lagret', 'Deltakerinformasjon ble lagret')
+        setIsEditingParticipantInfo(false)
+      } else {
+        showError('Feil', 'Kunne ikke lagre deltakerinformasjon')
+      }
+    } catch (error) {
+      console.error('Error saving participant info:', error)
+      showError('Feil', 'Noe gikk galt ved lagring')
+    } finally {
+      setIsSavingParticipantInfo(false)
+    }
+  }
 
   const handleDeleteRegistration = async (registrationId: string) => {
     if (!confirm('Er du sikker på at du vil slette denne påmeldingen?')) {
@@ -1034,6 +1082,110 @@ export default function AdminEventDetailsPage() {
                   </div>
                 </div>
               </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Participant Info */}
+      <div className="mb-8 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+        <div className="flex items-center justify-between border-b border-gray-200 px-6 py-3 dark:border-gray-700">
+          <h3 className="text-base font-semibold text-gray-900 dark:text-white">
+            Deltakerinformasjon
+          </h3>
+          {!isEditingParticipantInfo && (
+            <button
+              onClick={() => setIsEditingParticipantInfo(true)}
+              className="text-sm font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+            >
+              Rediger
+            </button>
+          )}
+        </div>
+        <div className="p-6 space-y-4">
+          <div>
+            <label
+              htmlFor="streamingUrl"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              Streaming URL
+            </label>
+            {isEditingParticipantInfo ? (
+              <input
+                type="url"
+                id="streamingUrl"
+                value={participantInfo.streamingUrl}
+                onChange={e =>
+                  setParticipantInfo(prev => ({
+                    ...prev,
+                    streamingUrl: e.target.value,
+                  }))
+                }
+                placeholder="https://zoom.us/j/..."
+                className="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+              />
+            ) : (
+              <div className="text-sm text-gray-900 dark:text-white">
+                {participantInfo.streamingUrl || (
+                  <span className="text-gray-500 dark:text-gray-400">
+                    Ikke satt
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div>
+            <label
+              htmlFor="notes"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              Notater
+            </label>
+            {isEditingParticipantInfo ? (
+              <textarea
+                id="notes"
+                value={participantInfo.notes}
+                onChange={e =>
+                  setParticipantInfo(prev => ({
+                    ...prev,
+                    notes: e.target.value,
+                  }))
+                }
+                rows={3}
+                placeholder="Interne notater..."
+                className="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+              />
+            ) : (
+              <div className="text-sm text-gray-900 dark:text-white">
+                {participantInfo.notes || (
+                  <span className="text-gray-500 dark:text-gray-400">
+                    Ingen notater
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+
+          {isEditingParticipantInfo && (
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={handleSaveParticipantInfo}
+                disabled={isSavingParticipantInfo}
+                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500 disabled:opacity-50 dark:bg-blue-700 dark:hover:bg-blue-600"
+              >
+                {isSavingParticipantInfo ? 'Lagrer...' : 'Lagre'}
+              </button>
+              <button
+                onClick={() => {
+                  setIsEditingParticipantInfo(false)
+                  fetchParticipantInfo()
+                }}
+                disabled={isSavingParticipantInfo}
+                className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+              >
+                Avbryt
+              </button>
             </div>
           )}
         </div>

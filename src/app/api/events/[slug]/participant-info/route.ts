@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { getEvent } from '@/lib/events/helpers'
-import { getEventSecretInfo } from '@/lib/sanity/event-secret-info'
+import { getEventParticipantInfo } from '@/lib/sanity/event-participant-info'
 import { eventRegistrationService } from '@/domains/event-registration'
 
 export async function GET(
@@ -11,17 +11,14 @@ export async function GET(
   const session = await auth()
 
   if (!session?.user?.slackId) {
-    return NextResponse.json(
-      { error: 'Du må være logget inn' },
-      { status: 401 }
-    )
+    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
   }
 
   const { slug } = await params
   const event = getEvent(slug)
 
   if (!event) {
-    return NextResponse.json({ error: 'Fagdag ikke funnet' }, { status: 404 })
+    return NextResponse.json({ error: 'Event not found' }, { status: 404 })
   }
 
   try {
@@ -33,23 +30,21 @@ export async function GET(
 
     if (!userRegistration) {
       return NextResponse.json(
-        {
-          error: 'Du må være påmeldt fagdagen for å få tilgang til denne informasjonen',
-        },
+        { error: 'Not registered for event' },
         { status: 403 }
       )
     }
 
-    const secretInfo = await getEventSecretInfo(slug)
+    const participantInfo = await getEventParticipantInfo(slug)
 
-    if (!secretInfo) {
+    if (!participantInfo) {
       return NextResponse.json(
-        { error: 'Ingen hemmelig informasjon tilgjengelig' },
+        { error: 'No participant info available' },
         { status: 404 }
       )
     }
 
-    return NextResponse.json(secretInfo, {
+    return NextResponse.json(participantInfo, {
       headers: {
         'Cache-Control':
           'private, no-store, no-cache, must-revalidate, proxy-revalidate',
@@ -58,9 +53,9 @@ export async function GET(
       },
     })
   } catch (error) {
-    console.error('Error fetching secret info:', error)
+    console.error('Error fetching participant info:', error)
     return NextResponse.json(
-      { error: 'Feil ved henting av hemmelig informasjon' },
+      { error: 'Error fetching participant info' },
       { status: 500 }
     )
   }

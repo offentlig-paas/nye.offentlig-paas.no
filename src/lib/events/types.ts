@@ -4,7 +4,7 @@ export interface SocialEvent {
   location: string
 }
 
-export interface EventSecretInfo {
+export interface EventParticipantInfo {
   streamingUrl?: string
   notes?: string
 }
@@ -20,7 +20,7 @@ export interface Event {
   audience: Audience
   location: string
   registration: RegistrationSettings
-  registrationUrl?: string // legacy registration
+  registrationUrl?: string
   callForPapersUrl?: string
   callForPapersClosedDate?: Date
   recordingUrl?: string
@@ -28,7 +28,7 @@ export interface Event {
   schedule: Item[]
   stats?: Stats
   socialEvent?: SocialEvent
-  secretInfo?: EventSecretInfo // Only populated for authorized users
+  participantInfo?: EventParticipantInfo
 }
 
 export interface RegistrationSettings {
@@ -41,7 +41,6 @@ export enum AttendanceType {
   Digital = 'digital',
 }
 
-// Display mapping for Norwegian UI
 export const AttendanceTypeDisplay: Record<AttendanceType, string> = {
   [AttendanceType.Physical]: 'Fysisk oppmøte',
   [AttendanceType.Digital]: 'Digitalt',

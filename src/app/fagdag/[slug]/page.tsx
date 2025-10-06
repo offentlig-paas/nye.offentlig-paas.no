@@ -4,7 +4,7 @@ import React from 'react'
 
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { EventRegistration } from '@/components/EventRegistration'
-import { EventSecretInfo } from '@/components/EventSecretInfo'
+import { EventParticipantInfo } from '@/components/EventParticipantInfo'
 import { EventRegistrationProvider } from '@/contexts/EventRegistrationContext'
 import { Container } from '@/components/Container'
 import { Button } from '@/components/Button'
@@ -428,7 +428,7 @@ export default async function Fagdag({ params }: { params: Params }) {
                         attendanceTypes={event.registration.attendanceTypes}
                         socialEvent={event.socialEvent}
                       />
-                      <EventSecretInfo eventSlug={slug} />
+                      <EventParticipantInfo eventSlug={slug} />
                       {event.registrationUrl && (
                         <div className="mt-4">
                           <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">
@@ -497,7 +497,7 @@ export default async function Fagdag({ params }: { params: Params }) {
                         />
                         Se opptak
                       </Button>
-                      <EventSecretInfo eventSlug={slug} />
+                      <EventParticipantInfo eventSlug={slug} />
                     </>
                   ) : (
                     <>
@@ -508,7 +508,7 @@ export default async function Fagdag({ params }: { params: Params }) {
                         attendanceTypes={event.registration.attendanceTypes}
                         socialEvent={event.socialEvent}
                       />
-                      <EventSecretInfo eventSlug={slug} />
+                      <EventParticipantInfo eventSlug={slug} />
                     </>
                   )}
                 </div>
