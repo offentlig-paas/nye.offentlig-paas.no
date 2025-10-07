@@ -173,13 +173,16 @@ export async function generateMetadata({
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+    timeZone: 'Europe/Oslo',
   })
   const eventTime = `${event.start.toLocaleTimeString('nb-NO', {
     hour: '2-digit',
     minute: '2-digit',
+    timeZone: 'Europe/Oslo',
   })} - ${event.end.toLocaleTimeString('nb-NO', {
     hour: '2-digit',
     minute: '2-digit',
+    timeZone: 'Europe/Oslo',
   })}`
 
   // Get speakers from schedule (unique list)
