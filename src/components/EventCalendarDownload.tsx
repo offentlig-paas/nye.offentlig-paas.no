@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import { CalendarIcon } from '@heroicons/react/20/solid'
 import type { Event } from '@/lib/events/types'
 import { getIcsFileContent, getGoogleCalendarUrl } from '@/lib/calendar-utils'
-import { useEventParticipantInfoContext } from '@/contexts/EventParticipantInfoContext'
+import { useEventRegistration } from '@/contexts/EventRegistrationContext'
 
 interface EventCalendarDownloadProps {
   event: Event
@@ -15,7 +15,8 @@ export function EventCalendarDownload({
   event,
   url,
 }: EventCalendarDownloadProps) {
-  const { streamingUrl } = useEventParticipantInfoContext()
+  const { participantInfo } = useEventRegistration()
+  const streamingUrl = participantInfo?.streamingUrl
 
   const description = useMemo(() => {
     let desc = event.description || ''

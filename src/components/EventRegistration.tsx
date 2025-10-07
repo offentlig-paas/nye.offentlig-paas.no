@@ -9,6 +9,7 @@ import { ConfirmationModal } from '@/components/ConfirmationModal'
 import { OverlappingAvatars } from '@/components/OverlappingAvatars'
 import { useEventRegistration } from '@/contexts/EventRegistrationContext'
 import type { SocialEvent } from '@/lib/events/types'
+import type { RegistrationStats } from '@/types/api/registration'
 import { AttendanceType, AttendanceTypeDisplay } from '@/lib/events/types'
 import {
   UserGroupIcon,
@@ -17,13 +18,6 @@ import {
   MapPinIcon,
   CalendarDaysIcon,
 } from '@heroicons/react/20/solid'
-
-interface RegistrationCounts {
-  totalActive: number
-  persons: number
-  organizations: number
-  uniqueOrganizations: number
-}
 
 interface EventRegistrationProps {
   eventSlug: string
@@ -38,7 +32,7 @@ const RegistrationStats = memo(function RegistrationStats({
   counts,
   variant = 'blue',
 }: {
-  counts: RegistrationCounts
+  counts: RegistrationStats
   variant?: 'blue' | 'green'
 }) {
   const colorClasses = {
@@ -315,14 +309,8 @@ export const EventRegistration = memo(function EventRegistration({
   const { showSuccess, showError } = useToast()
 
   // Use shared context for registration data
-  const {
-    isRegistered,
-    registration,
-    registrationCounts,
-    participantData,
-    isCheckingStatus,
-    refetch,
-  } = useEventRegistration()
+  const { isRegistered, registration, stats, isCheckingStatus, refetch } =
+    useEventRegistration()
 
   const [state, setState] = useState({
     isLoading: false,
@@ -514,15 +502,15 @@ export const EventRegistration = memo(function EventRegistration({
           Bli med på fagdagen
         </h3>
 
-        {registrationCounts && registrationCounts.totalActive > 0 && (
+        {stats && stats.total > 0 && (
           <div className="mb-4">
-            <RegistrationStats counts={registrationCounts} variant="blue" />
+            <RegistrationStats counts={stats} variant="blue" />
           </div>
         )}
 
         <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
-          {registrationCounts && registrationCounts.totalActive > 0
-            ? `Allerede ${registrationCounts.persons} påmeldte fra ${registrationCounts.organizations} ulike organisasjoner! Logg inn med Slack for å bli med.`
+          {stats && stats.total > 0
+            ? `Allerede ${stats.persons} påmeldte fra ${stats.organizations} ulike organisasjoner! Logg inn med Slack for å bli med.`
             : 'Du må logge inn med Slack for å melde deg på fagdagen.'}
         </p>
         <AuthButton className="w-full" showFullText />
@@ -541,17 +529,17 @@ export const EventRegistration = memo(function EventRegistration({
           Du er påmeldt
         </h3>
 
-        {registrationCounts && registrationCounts.totalActive > 0 && (
+        {stats && stats.total > 0 && (
           <div className="mb-3">
-            <RegistrationStats counts={registrationCounts} variant="green" />
+            <RegistrationStats counts={stats} variant="green" />
           </div>
         )}
 
-        {participantData && participantData.participants.length > 0 && (
+        {stats && stats.participants.length > 0 && (
           <div className="mb-3">
             <OverlappingAvatars
-              participants={participantData.participants}
-              totalCount={participantData.totalCount}
+              participants={stats.participants}
+              totalCount={stats.total}
               maxVisible={5}
               size="sm"
               className="justify-center"
@@ -594,17 +582,17 @@ export const EventRegistration = memo(function EventRegistration({
           Meld deg på fagdagen
         </h3>
 
-        {registrationCounts && registrationCounts.totalActive > 0 && (
+        {stats && stats.total > 0 && (
           <div className="mb-3">
-            <RegistrationStats counts={registrationCounts} variant="blue" />
+            <RegistrationStats counts={stats} variant="blue" />
           </div>
         )}
 
-        {participantData && participantData.participants.length > 0 && (
+        {stats && stats.participants.length > 0 && (
           <div className="mb-3">
             <OverlappingAvatars
-              participants={participantData.participants}
-              totalCount={participantData.totalCount}
+              participants={stats.participants}
+              totalCount={stats.total}
               maxVisible={5}
               size="sm"
               className="justify-center"
@@ -612,10 +600,10 @@ export const EventRegistration = memo(function EventRegistration({
           </div>
         )}
 
-        {registrationCounts && registrationCounts.totalActive > 0 && (
+        {stats && stats.total > 0 && (
           <p className="mb-3 text-sm text-blue-700 dark:text-blue-300">
-            Bli en av {registrationCounts.persons + 1} deltakere fra{' '}
-            {registrationCounts.organizations}+ organisasjoner.
+            Bli en av {stats.persons + 1} deltakere fra {stats.organizations}+
+            organisasjoner.
           </p>
         )}
       </div>

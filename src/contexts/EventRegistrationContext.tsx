@@ -9,37 +9,18 @@ import {
   type ReactNode,
 } from 'react'
 import { useSession } from 'next-auth/react'
-import type { AttendanceType } from '@/lib/events/types'
-
-interface RegistrationCounts {
-  totalActive: number
-  persons: number
-  organizations: number
-  uniqueOrganizations: number
-}
-
-interface Participant {
-  name: string
-  slackUserId?: string
-}
-
-interface ParticipantData {
-  participants: Participant[]
-  totalCount: number
-}
-
-interface Registration {
-  _id?: string
-  attendingSocialEvent?: boolean
-  attendanceType?: AttendanceType
-  [key: string]: unknown
-}
+import type {
+  EventRegistrationResponse,
+  RegistrationStats,
+  Registration,
+} from '@/types/api/registration'
+import type { EventParticipantInfo } from '@/lib/events/types'
 
 interface EventRegistrationContextValue {
   isRegistered: boolean
   registration: Registration | null
-  registrationCounts: RegistrationCounts | null
-  participantData: ParticipantData | null
+  stats: RegistrationStats | null
+  participantInfo: EventParticipantInfo | null
   isLoading: boolean
   isCheckingStatus: boolean
   refetch: () => Promise<void>
@@ -62,8 +43,8 @@ export function EventRegistrationProvider({
   const [state, setState] = useState({
     isRegistered: false,
     registration: null as Registration | null,
-    registrationCounts: null as RegistrationCounts | null,
-    participantData: null as ParticipantData | null,
+    stats: null as RegistrationStats | null,
+    participantInfo: null as EventParticipantInfo | null,
     isLoading: false,
     isCheckingStatus: true,
   })
@@ -77,8 +58,13 @@ export function EventRegistrationProvider({
           const data = await response.json()
           setState(prev => ({
             ...prev,
-            registrationCounts: data.registrationCounts,
-            participantData: null,
+            stats: {
+              total: 0,
+              persons: data.registrationCounts.persons,
+              organizations: data.registrationCounts.organizations,
+              uniqueOrganizations: data.registrationCounts.uniqueOrganizations,
+              participants: [],
+            },
             isCheckingStatus: false,
           }))
         } else {
@@ -103,30 +89,14 @@ export function EventRegistrationProvider({
       const regResponse = await fetch(`/api/events/${eventSlug}/registration`)
 
       if (regResponse.ok) {
-        const data = await regResponse.json()
-
-        // Fetch participants if registered
-        let participants = null
-        if (data.isRegistered) {
-          try {
-            const participantsResponse = await fetch(
-              `/api/events/${eventSlug}/participants`
-            )
-            if (participantsResponse.ok) {
-              participants = await participantsResponse.json()
-            }
-          } catch (error) {
-            console.error('Error fetching participants:', error)
-          }
-        }
+        const data: EventRegistrationResponse = await regResponse.json()
 
         setState(prev => ({
           ...prev,
           isRegistered: data.isRegistered,
-          registration: data.registration || null,
-          registrationCounts:
-            data.registrationCounts || prev.registrationCounts,
-          participantData: participants,
+          registration: data.registration,
+          stats: data.stats,
+          participantInfo: data.participantInfo,
           isCheckingStatus: false,
         }))
       } else {
@@ -146,8 +116,8 @@ export function EventRegistrationProvider({
   const value: EventRegistrationContextValue = {
     isRegistered: state.isRegistered,
     registration: state.registration,
-    registrationCounts: state.registrationCounts,
-    participantData: state.participantData,
+    stats: state.stats,
+    participantInfo: state.participantInfo,
     isLoading: state.isLoading,
     isCheckingStatus: state.isCheckingStatus,
     refetch: fetchData,

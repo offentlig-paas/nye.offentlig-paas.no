@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { getEvent } from '@/lib/events/helpers'
 import { eventRegistrationService } from '@/domains/event-registration'
+import type {
+  EventRegistrationResponse,
+  Registration,
+} from '@/types/api/registration'
 
 export async function POST(
   request: NextRequest,
@@ -125,6 +129,11 @@ export async function GET(
   }
 
   const { slug } = await params
+  const event = getEvent(slug)
+
+  if (!event) {
+    return NextResponse.json({ error: 'Fagdag ikke funnet' }, { status: 404 })
+  }
 
   try {
     const registrations =
@@ -135,28 +144,54 @@ export async function GET(
 
     const isRegistered = !!userRegistration
 
-    const registrationCount =
-      await eventRegistrationService.getRegistrationCount(slug)
-
     const registrationCounts =
       await eventRegistrationService.getRegistrationCountsByCategory(slug)
 
-    return NextResponse.json(
-      {
-        isRegistered,
-        registration: userRegistration,
-        registrationCount,
-        registrationCounts,
-      },
-      {
-        headers: {
-          'Cache-Control':
-            'no-store, no-cache, must-revalidate, proxy-revalidate',
-          Pragma: 'no-cache',
-          Expires: '0',
-        },
-      }
+    // Get active registrations for stats
+    const activeRegistrations = registrations.filter(
+      r => r.status === 'confirmed' || r.status === 'attended'
     )
+
+    // Build consolidated stats object
+    const stats = {
+      total: activeRegistrations.length,
+      persons: registrationCounts.persons,
+      organizations: registrationCounts.organizations,
+      uniqueOrganizations: registrationCounts.uniqueOrganizations,
+      participants: isRegistered
+        ? activeRegistrations.slice(0, 12).map(registration => ({
+            name: registration.name,
+            slackUserId: registration.slackUserId,
+          }))
+        : [],
+    }
+
+    // Get participant info if registered
+    let participantInfo = null
+    if (isRegistered) {
+      const { getEventParticipantInfo } = await import(
+        '@/lib/sanity/event-participant-info'
+      )
+      participantInfo = await getEventParticipantInfo(slug)
+    }
+
+    const responseData: EventRegistrationResponse = {
+      isRegistered,
+      registration: userRegistration
+        ? (userRegistration as unknown as Registration)
+        : null,
+      stats,
+      participantInfo,
+    }
+
+    return NextResponse.json(responseData, {
+      headers: {
+        'Cache-Control':
+          'no-store, no-cache, must-revalidate, proxy-revalidate',
+        Pragma: 'no-cache',
+        Expires: '0',
+      },
+    })
   } catch (error) {
     console.error('Registration check error:', error)
     return NextResponse.json(
