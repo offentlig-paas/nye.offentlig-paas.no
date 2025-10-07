@@ -1,15 +1,15 @@
 'use client'
 
 import { VideoCameraIcon } from '@heroicons/react/20/solid'
-import { useEventParticipantInfo } from '@/hooks/useEventParticipantInfo'
+import { useEventParticipantInfoContext } from '@/contexts/EventParticipantInfoContext'
 
 interface EventParticipantInfoProps {
-  eventSlug: string
+  eventSlug?: string
 }
 
-export function EventParticipantInfo({ eventSlug }: EventParticipantInfoProps) {
+export function EventParticipantInfo(_props: EventParticipantInfoProps) {
   const { participantInfo, isLoading, streamingUrl } =
-    useEventParticipantInfo(eventSlug)
+    useEventParticipantInfoContext()
 
   if (isLoading) {
     return null
