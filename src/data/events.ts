@@ -13,7 +13,7 @@ export const events: Event[] = [
     ingress:
       'Vi inviterer til fagdag om selvbetjening og autonome team hos Telenor på Fornebu.',
     description:
-      'En dag fylt med spennende foredrag og erfaringsdeling om hvordan selvbetjening kan gi autonome team økt fart og flyt. Vi jobber med å lage agenda og vil oppdatere denne siden fortløpende. Arrangementet er gratis og åpent for alle med tilknytning til offentlig sektor.',
+      'En dag fokusert på selvbetjening og autonome team i offentlig sektor. Vi utforsker hvordan selvbetjeningsløsninger kan gi utviklerteam økt fart og flyt, med praktiske erfaringer fra Telenor, Vy og Nav. Programmet dekker alt fra filosofien bak selvbetjening til konkrete implementasjoner av utviklerportaler og API-er. Arrangementet er gratis og åpent for alle med tilknytning til offentlig sektor.',
     start: new Date('2025-10-15T11:00+02:00'),
     end: new Date('2025-10-15T15:00+02:00'),
     audience: Audience.OpenForAll,
