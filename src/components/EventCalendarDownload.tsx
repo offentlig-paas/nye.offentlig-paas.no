@@ -1,21 +1,19 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useEventRegistration } from '@/contexts/EventRegistrationContext'
 import { CalendarIcon } from '@heroicons/react/20/solid'
 import type { Event } from '@/lib/events/types'
-import { getIcsFileContent } from '@/lib/calendar-utils'
+import { getIcsFileContent, getGoogleCalendarUrl } from '@/lib/calendar-utils'
 
 interface EventCalendarDownloadProps {
   event: Event
   url: string
-  googleCalendarUrl: string
 }
 
 export function EventCalendarDownload({
   event,
   url,
-  googleCalendarUrl,
 }: EventCalendarDownloadProps) {
   const { isRegistered } = useEventRegistration()
   const [streamingUrl, setStreamingUrl] = useState<string | undefined>()
@@ -33,13 +31,26 @@ export function EventCalendarDownload({
     }
   }, [isRegistered, event.slug])
 
+  const description = useMemo(() => {
+    let desc = event.description || ''
+    if (streamingUrl) {
+      desc += `\n\nStreaming: ${streamingUrl}`
+    }
+    return desc
+  }, [event.description, streamingUrl])
+
+  const dynamicGoogleCalendarUrl = useMemo(
+    () => getGoogleCalendarUrl(event, description),
+    [event, description]
+  )
+
   const icsFileContent = getIcsFileContent(event, url, streamingUrl)
   const icsFileUrl = `data:text/calendar;charset=utf8,${encodeURIComponent(icsFileContent)}`
 
   return (
     <>
       <a
-        href={googleCalendarUrl}
+        href={dynamicGoogleCalendarUrl}
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"

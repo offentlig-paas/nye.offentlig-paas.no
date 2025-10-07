@@ -21,7 +21,6 @@ import {
 import { formatDateTime } from '@/lib/formatDate'
 import { auth } from '@/auth'
 import type { Attachment } from '@/lib/events/types'
-import { getGoogleCalendarUrl } from '@/lib/calendar-utils'
 import {
   AttachmentType,
   ItemType,
@@ -256,8 +255,6 @@ export default async function Fagdag({ params }: { params: Params }) {
 
   const url = `${protocol}://${host}/fagdag/${slug}`
 
-  const googleCalendarUrl = getGoogleCalendarUrl(event)
-
   return (
     <EventRegistrationProvider eventSlug={slug}>
       <Container className="mt-16 lg:mt-32">
@@ -421,11 +418,7 @@ export default async function Fagdag({ params }: { params: Params }) {
                         </Button>
                       )}
                       <div className="mt-4 flex flex-col gap-2">
-                        <EventCalendarDownload
-                          event={event}
-                          url={url}
-                          googleCalendarUrl={googleCalendarUrl}
-                        />
+                        <EventCalendarDownload event={event} url={url} />
                       </div>
                     </>
                   ) : event.recordingUrl ? (
