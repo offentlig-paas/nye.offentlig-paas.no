@@ -25,10 +25,12 @@ import {
   BanknotesIcon,
   ChartBarIcon,
   XCircleIcon,
+  BellIcon,
 } from '@heroicons/react/24/outline'
 import { StatusBadge } from '@/components/StatusBadge'
 import { ActionsMenu } from '@/components/ActionsMenu'
 import { Avatar } from '@/components/Avatar'
+import { SendReminderModal } from '@/components/SendReminderModal'
 import type { RegistrationStatus } from '@/domains/event-registration/types'
 import { AttendanceTypeDisplay } from '@/lib/events/types'
 
@@ -124,6 +126,7 @@ export default function AdminEventDetailsPage() {
   const [isEditingParticipantInfo, setIsEditingParticipantInfo] =
     useState(false)
   const [isSavingParticipantInfo, setIsSavingParticipantInfo] = useState(false)
+  const [isReminderModalOpen, setIsReminderModalOpen] = useState(false)
   const { showSuccess, showError } = useToast()
 
   const fetchParticipantInfo = useCallback(async () => {
@@ -1218,9 +1221,9 @@ export default function AdminEventDetailsPage() {
 
       {/* Actions */}
       <div className="mb-6 space-y-4">
-        <div className="flex flex-col justify-between gap-4 sm:flex-row">
-          <div className="flex flex-col gap-4 sm:flex-row">
-            <div className="relative max-w-md">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:flex-1">
+            <div className="relative sm:min-w-[240px] lg:max-w-xs">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                 <MagnifyingGlassIcon
                   className="h-5 w-5 text-gray-400 dark:text-gray-500"
@@ -1257,7 +1260,7 @@ export default function AdminEventDetailsPage() {
               className="rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
             >
               <option value="all">Alle deltakelser</option>
-              <option value="physical">Fysisk oppmøte</option>
+              <option value="physical">Fysisk</option>
               <option value="digital">Digitalt</option>
             </select>
 
@@ -1266,19 +1269,31 @@ export default function AdminEventDetailsPage() {
               onChange={e => setSocialEventFilter(e.target.value)}
               className="rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
             >
-              <option value="all">Sosialt arrangement</option>
-              <option value="yes">Deltar sosialt</option>
-              <option value="no">Ikke sosialt</option>
+              <option value="all">Sosialt</option>
+              <option value="yes">Ja</option>
+              <option value="no">Nei</option>
             </select>
           </div>
 
-          <button
-            onClick={handleExportCSV}
-            className="inline-flex items-center rounded-lg border border-transparent bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition-colors duration-150 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none dark:focus:ring-offset-gray-800"
-          >
-            <DocumentArrowDownIcon className="mr-2 h-4 w-4" />
-            Eksporter CSV
-          </button>
+          <div className="flex flex-wrap gap-2 lg:flex-nowrap">
+            <button
+              onClick={() => setIsReminderModalOpen(true)}
+              disabled={
+                !eventDetails || eventDetails.stats.activeRegistrations === 0
+              }
+              className="inline-flex items-center rounded-lg border border-transparent bg-green-600 px-4 py-2.5 text-sm font-medium whitespace-nowrap text-white transition-colors duration-150 hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:focus:ring-offset-gray-800"
+            >
+              <BellIcon className="mr-2 h-4 w-4" />
+              Send påminnelse
+            </button>
+            <button
+              onClick={handleExportCSV}
+              className="inline-flex items-center rounded-lg border border-transparent bg-blue-600 px-4 py-2.5 text-sm font-medium whitespace-nowrap text-white transition-colors duration-150 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none dark:focus:ring-offset-gray-800"
+            >
+              <DocumentArrowDownIcon className="mr-2 h-4 w-4" />
+              Eksporter CSV
+            </button>
+          </div>
         </div>
 
         {/* Bulk Actions */}
@@ -1509,6 +1524,22 @@ export default function AdminEventDetailsPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {eventDetails && (
+        <SendReminderModal
+          isOpen={isReminderModalOpen}
+          onClose={() => setIsReminderModalOpen(false)}
+          eventSlug={slug}
+          eventTitle={eventDetails.title}
+          eventDate={eventDetails.date}
+          onSuccess={message => {
+            showSuccess('Sendt', message)
+          }}
+          onError={message => {
+            showError('Feil', message)
+          }}
+        />
       )}
     </SimpleLayout>
   )

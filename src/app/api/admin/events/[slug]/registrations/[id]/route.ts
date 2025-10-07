@@ -21,7 +21,6 @@ export async function DELETE(
   }
 
   try {
-    // Delete the registration
     await eventRegistrationService.deleteRegistration(id)
 
     return NextResponse.json(

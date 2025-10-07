@@ -1,45 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { eventRegistrationService } from '@/domains/event-registration'
 import { getAllEvents, canUserAccessEvent } from '@/lib/events/helpers'
-import { AuthMiddleware } from '@/lib/api/auth-middleware'
+import { authorizeAdmin } from '@/lib/api/auth-middleware'
 
 export async function GET(request: NextRequest) {
-  const authResult = await AuthMiddleware.requireAuthentication(request, {
-    endpoint: '/api/admin/events',
-    method: 'GET',
-  })
+  const authResult = await authorizeAdmin(request, '/api/admin/events', 'GET')
 
   if (!authResult.success) {
     return authResult.response
   }
 
   const { auth } = authResult
-  // Non-admins need to be checked for organizer access per event
-  const isAdmin = auth.user.isAdmin || false
+  const isAdmin = true
 
   try {
-    // Get all events from events.ts
     const allEvents = getAllEvents()
 
-    // Get all registrations grouped by event to add registration data
     const registrationsByEvent =
       await eventRegistrationService.getRegistrationsByEvent()
 
-    // Transform into events list with comprehensive stats
     const eventsWithStats = allEvents.map(event => {
-      // Get registrations for this event (try different slug formats)
       const eventRegistrations = registrationsByEvent[event.slug] || []
       const registrations = Array.isArray(eventRegistrations)
         ? eventRegistrations
         : []
 
-      // Calculate registration metrics
       const totalRegistrations = registrations.length
       const uniqueOrganisations = new Set(
         registrations.map(r => r.organisation)
       ).size
 
-      // Extract key metrics from event data
       const organizerCount = event.organizers?.length || 0
       const scheduleItemCount = event.schedule?.length || 0
       const hasRecording = !!event.recordingUrl
@@ -66,25 +56,21 @@ export async function GET(request: NextRequest) {
         feedbackRating,
         feedbackRespondents,
         price: event.price,
-        // Include stats from events.ts if available
         statsRegistrations: event.stats?.registrations,
         statsParticipants: event.stats?.participants,
         statsOrganisations: event.stats?.organisations,
       }
     })
 
-    // Filter events based on user access rights
     const accessibleEvents = eventsWithStats.filter(eventData => {
       if (isAdmin) {
-        return true // Admins can see all events
+        return true
       }
 
-      // Check if user is organizer of this event
       const event = allEvents.find(e => e.slug === eventData.slug)
       return event && canUserAccessEvent(event, auth.user)
     })
 
-    // Calculate total stats based on accessible events
     const totalRegistrations = accessibleEvents.reduce(
       (sum, e) => sum + e.totalRegistrations,
       0
@@ -95,7 +81,6 @@ export async function GET(request: NextRequest) {
       )
     ).size
 
-    // Sort events by date (newest first)
     const events = accessibleEvents.sort((a, b) => {
       const aEvent = allEvents.find(e => e.slug === a.slug)
       const bEvent = allEvents.find(e => e.slug === b.slug)

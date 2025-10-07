@@ -3,7 +3,7 @@ export async function getUserCount(): Promise<number> {
     if (typeof window !== 'undefined') {
       return `${window.location.protocol}://${window.location.hostname}`
     }
-    return process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'
+    return process.env.NEXT_PUBLIC_URL || 'https://localhost:3000'
   }
 
   const fetchUserCount = async (host: string): Promise<number> => {

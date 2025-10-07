@@ -34,7 +34,7 @@ Følgende miljøvariabler må konfigureres for full funksjonalitet:
 #### NextAuth.js v5
 
 - `AUTH_SECRET` - Hemmelig nøkkel for JWT-kryptering (generer med `openssl rand -base64 32`)
-- `AUTH_URL` - Base URL for applikasjonen (f.eks. `http://localhost:3000`) - **kun nødvendig i produksjon**
+- `AUTH_URL` - Base URL for applikasjonen (f.eks. `https://localhost:3000`) - **kun nødvendig i produksjon**
 
 #### Slack OAuth
 
@@ -55,7 +55,7 @@ Følgende miljøvariabler må konfigureres for full funksjonalitet:
 
 Se `.env.example` for eksempel på konfigurering.
 
-**Merk:** I utvikling vil NextAuth automatisk sette `AUTH_URL` til `http://localhost:3000`, så denne kan utelates lokalt.
+**Merk:** I utvikling vil NextAuth automatisk sette `AUTH_URL` til `https://localhost:3000`, så denne kan utelates lokalt.
 
 ### Slack OAuth Setup
 

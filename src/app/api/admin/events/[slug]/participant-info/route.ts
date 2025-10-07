@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/auth'
-import { getEvent } from '@/lib/events/helpers'
+import { authorizeEventAccess } from '@/lib/api/auth-middleware'
 import {
   getEventParticipantInfo,
   upsertEventParticipantInfo,
@@ -13,17 +12,17 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  const session = await auth()
-
-  if (!session?.user?.isAdmin) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
-  }
-
   const { slug } = await params
-  const event = getEvent(slug)
 
-  if (!event) {
-    return NextResponse.json({ error: 'Event not found' }, { status: 404 })
+  const authResult = await authorizeEventAccess(
+    request,
+    `/api/admin/events/${slug}/participant-info`,
+    'GET',
+    slug
+  )
+
+  if (!authResult.success) {
+    return authResult.response
   }
 
   try {
@@ -49,17 +48,17 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  const session = await auth()
-
-  if (!session?.user?.isAdmin) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
-  }
-
   const { slug } = await params
-  const event = getEvent(slug)
 
-  if (!event) {
-    return NextResponse.json({ error: 'Event not found' }, { status: 404 })
+  const authResult = await authorizeEventAccess(
+    request,
+    `/api/admin/events/${slug}/participant-info`,
+    'PUT',
+    slug
+  )
+
+  if (!authResult.success) {
+    return authResult.response
   }
 
   try {

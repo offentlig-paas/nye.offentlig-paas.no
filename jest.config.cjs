@@ -13,14 +13,7 @@ const config = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
-  collectCoverageFrom: [
-    'src/lib/organization-utils.ts',
-    // Add more files here as you write tests for them
-    // 'src/lib/formatDate.ts',
-    // 'src/lib/articles.ts',
-    // 'src/components/**/*.{ts,tsx}',
-    // 'src/domains/**/*.{ts,tsx}',
-  ],
+  collectCoverageFrom: ['src/lib/organization-utils.ts'],
   coverageReporters: ['text', 'lcov', 'json-summary', 'html'],
   coverageDirectory: 'coverage',
   coverageThreshold: {
@@ -32,6 +25,7 @@ const config = {
     },
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.cjs'],
+  transformIgnorePatterns: ['node_modules/(?!(next-auth|@auth)/)'],
 }
 
 module.exports = config
