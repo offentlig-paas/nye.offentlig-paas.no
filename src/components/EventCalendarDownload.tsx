@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useState, useMemo } from 'react'
-import { useEventRegistration } from '@/contexts/EventRegistrationContext'
+import { useMemo } from 'react'
 import { CalendarIcon } from '@heroicons/react/20/solid'
 import type { Event } from '@/lib/events/types'
 import { getIcsFileContent, getGoogleCalendarUrl } from '@/lib/calendar-utils'
+import { useEventParticipantInfo } from '@/hooks/useEventParticipantInfo'
 
 interface EventCalendarDownloadProps {
   event: Event
@@ -15,21 +15,7 @@ export function EventCalendarDownload({
   event,
   url,
 }: EventCalendarDownloadProps) {
-  const { isRegistered } = useEventRegistration()
-  const [streamingUrl, setStreamingUrl] = useState<string | undefined>()
-
-  useEffect(() => {
-    if (isRegistered) {
-      fetch(`/api/events/${event.slug}/participant-info`)
-        .then(res => (res.ok ? res.json() : null))
-        .then(data => {
-          if (data?.streamingUrl) {
-            setStreamingUrl(data.streamingUrl)
-          }
-        })
-        .catch(err => console.error('Error fetching participant info:', err))
-    }
-  }, [isRegistered, event.slug])
+  const { streamingUrl } = useEventParticipantInfo(event.slug)
 
   const description = useMemo(() => {
     let desc = event.description || ''

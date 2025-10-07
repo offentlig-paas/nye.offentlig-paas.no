@@ -1,64 +1,21 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { VideoCameraIcon } from '@heroicons/react/20/solid'
-import { useEventRegistration } from '@/contexts/EventRegistrationContext'
-import type { EventParticipantInfo as EventParticipantInfoType } from '@/lib/events/types'
+import { useEventParticipantInfo } from '@/hooks/useEventParticipantInfo'
 
 interface EventParticipantInfoProps {
   eventSlug: string
 }
 
 export function EventParticipantInfo({ eventSlug }: EventParticipantInfoProps) {
-  const { isRegistered, isCheckingStatus } = useEventRegistration()
-  const [participantInfo, setParticipantInfo] =
-    useState<EventParticipantInfoType | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const { participantInfo, isLoading, streamingUrl } =
+    useEventParticipantInfo(eventSlug)
 
-  useEffect(() => {
-    if (!isRegistered || isCheckingStatus) {
-      return
-    }
-
-    const fetchParticipantInfo = async () => {
-      setIsLoading(true)
-
-      try {
-        const response = await fetch(
-          `/api/events/${eventSlug}/participant-info`
-        )
-
-        if (response.status === 404) {
-          setParticipantInfo(null)
-          return
-        }
-
-        if (!response.ok) {
-          setParticipantInfo(null)
-          return
-        }
-
-        const data = await response.json()
-        setParticipantInfo(data)
-      } catch {
-        setParticipantInfo(null)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchParticipantInfo()
-  }, [eventSlug, isRegistered, isCheckingStatus])
-
-  if (isCheckingStatus || isLoading) {
+  if (isLoading) {
     return null
   }
 
-  if (!isRegistered) {
-    return null
-  }
-
-  if (!participantInfo || !participantInfo.streamingUrl) {
+  if (!participantInfo || !streamingUrl) {
     return null
   }
 
@@ -73,7 +30,7 @@ export function EventParticipantInfo({ eventSlug }: EventParticipantInfoProps) {
         </div>
         <div className="ml-3 flex-1">
           <h3 className="text-sm font-medium text-blue-800 dark:text-blue-300">
-            Strømming for påmeldte deltakere
+            Strømming for deltakere
           </h3>
           <div className="mt-2 text-sm text-blue-700 dark:text-blue-400">
             <p className="mb-2">
@@ -81,7 +38,7 @@ export function EventParticipantInfo({ eventSlug }: EventParticipantInfoProps) {
               fagdagen.
             </p>
             <a
-              href={participantInfo.streamingUrl}
+              href={streamingUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 dark:bg-blue-700 dark:hover:bg-blue-600"
