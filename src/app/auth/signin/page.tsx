@@ -3,6 +3,7 @@ import { Container } from '@/components/Container'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { Button } from '@/components/Button'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 
 export default async function SignInPage() {
   const session = await auth()
@@ -52,8 +53,21 @@ export default async function SignInPage() {
               </form>
 
               <p className="mt-6 text-xs text-gray-500 dark:text-gray-400">
-                Ved å logge inn godtar du at vi lagrer grunnleggende
-                profilinformasjon fra Slack for å administrere påmeldinger.
+                Ved å logge inn godtar du vår{' '}
+                <Link
+                  href="/personvern"
+                  className="underline hover:text-gray-700 dark:hover:text-gray-300"
+                >
+                  personvernerklæring
+                </Link>{' '}
+                og{' '}
+                <Link
+                  href="/vilkar"
+                  className="underline hover:text-gray-700 dark:hover:text-gray-300"
+                >
+                  vilkår for bruk
+                </Link>
+                .
               </p>
             </div>
           </div>

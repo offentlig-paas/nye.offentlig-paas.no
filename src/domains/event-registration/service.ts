@@ -221,6 +221,33 @@ export class EventRegistrationService {
     return await this.repository.findMany({ slackUserId })
   }
 
+  /**
+   * Anonymize all registrations for a user (GDPR right to be forgotten)
+   * Keeps registrations for capacity/statistics but removes personal data
+   */
+  async anonymizeUserData(slackUserId: string): Promise<number> {
+    const registrations = await this.repository.findMany({ slackUserId })
+
+    await Promise.all(
+      registrations.map(registration =>
+        this.repository.update(registration._id!, {
+          name: 'Anonymisert bruker',
+          email: 'anonymized@offentlig-paas.no',
+          slackUserId: `anonymized_${Date.now()}_${Math.random().toString(36).substring(7)}`,
+          dietary: undefined,
+          comments: undefined,
+          metadata: {
+            ...registration.metadata,
+            anonymized: true,
+            anonymizedAt: new Date().toISOString(),
+          },
+        })
+      )
+    )
+
+    return registrations.length
+  }
+
   private validateRegistrationInput(input: CreateEventRegistrationInput): void {
     if (!input.name.trim()) {
       throw new Error('Name is required')
@@ -241,7 +268,6 @@ export class EventRegistrationService {
       throw new Error('Attendance type is required')
     }
 
-    // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(input.email)) {
       throw new Error('Invalid email format')

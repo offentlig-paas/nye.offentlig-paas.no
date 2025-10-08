@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { events } from '@/data/events'
 import { eventRegistrationService } from '@/domains/event-registration'
 import { ProfileEventRegistrations } from '@/components/ProfileEventRegistrations'
+import { DeleteAccountButton } from '@/components/DeleteAccountButton'
 import { Status } from '@/lib/events/types'
 import { getStatus } from '@/lib/events/helpers'
 import type { EventRegistration } from '@/domains/event-registration/types'
@@ -218,6 +219,10 @@ export default async function ProfilePage() {
               <div className="mt-8 border-t border-zinc-100 pt-6 dark:border-zinc-700/40">
                 <SignOutButton />
               </div>
+            </div>
+
+            <div className="mt-8">
+              <DeleteAccountButton />
             </div>
           </div>
         </div>

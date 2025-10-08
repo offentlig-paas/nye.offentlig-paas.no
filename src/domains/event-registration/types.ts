@@ -18,16 +18,16 @@ export interface EventRegistration {
 }
 
 export type RegistrationStatus =
-  | 'confirmed' // Default confirmed registration
-  | 'waitlist' // On waiting list
-  | 'cancelled' // User cancelled their registration
-  | 'attended' // Marked as attended
-  | 'no-show' // Marked as no-show
+  | 'confirmed'
+  | 'waitlist'
+  | 'cancelled'
+  | 'attended'
+  | 'no-show'
 
 export interface RegistrationMetadata {
   source?: string
   experience?: 'beginner' | 'intermediate' | 'advanced'
-  [key: string]: unknown // Allow for future extensions
+  [key: string]: unknown
 }
 
 // Input type for creating new registrations
@@ -39,13 +39,17 @@ export interface CreateEventRegistrationInput {
   organisation: string
   dietary?: string
   comments?: string
-  attendanceType: AttendanceType // Required - must be set based on event configuration
+  attendanceType: AttendanceType
   attendingSocialEvent?: boolean
   metadata?: RegistrationMetadata
 }
 
 // Update type for modifying registrations
 export interface UpdateEventRegistrationInput {
+  name?: string
+  email?: string
+  slackUserId?: string
+  organisation?: string
   status?: RegistrationStatus
   dietary?: string
   comments?: string

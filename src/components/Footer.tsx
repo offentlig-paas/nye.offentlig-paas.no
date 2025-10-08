@@ -34,9 +34,11 @@ export function Footer() {
                 <NavLink href="/fagdag">Fagdager</NavLink>
                 <NavLink href="/medlemmer">Medlemmer</NavLink>
               </div>
-              <p className="text-sm text-zinc-400 dark:text-zinc-500">
-                CC BY 4.0
-              </p>
+              <div className="flex gap-x-6 text-sm text-zinc-400 dark:text-zinc-500">
+                <NavLink href="/personvern">Personvern</NavLink>
+                <NavLink href="/vilkar">Vilkår</NavLink>
+                <span>CC BY 4.0</span>
+              </div>
             </div>
           </ContainerInner>
         </div>

@@ -63,9 +63,8 @@ export class EventRegistrationRepository {
   ): Promise<EventRegistration[]> {
     let query = groq`*[_type == "eventRegistration"`
     const params: Record<string, unknown> = {}
-
-    // Build query conditions
     const conditions = []
+
     if (queryParams.eventSlug) {
       conditions.push('eventSlug == $eventSlug')
       params.eventSlug = queryParams.eventSlug
@@ -81,7 +80,6 @@ export class EventRegistrationRepository {
 
     query += `] | order(registeredAt desc)`
 
-    // Add pagination
     if (queryParams.limit) {
       const offset = queryParams.offset || 0
       query += `[${offset}...${offset + queryParams.limit}]`

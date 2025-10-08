@@ -1,0 +1,170 @@
+import { SimpleLayout } from '@/components/SimpleLayout'
+
+export const metadata = {
+  title: 'Personvernerklæring',
+  description: 'Personvernerklæring for Offentlig PaaS og våre fagdager',
+}
+
+export default props => <SimpleLayout {...props} />
+
+# Personvernerklæring
+
+_Sist oppdatert: 8. oktober 2025_
+
+Offentlig PaaS er et nettverk for fagpersoner i offentlig sektor som jobber med plattformutvikling og DevOps. Denne personvernerklæringen beskriver hvordan vi samler inn, bruker og beskytter personopplysninger når du bruker vår nettside og melder deg på våre fagdager.
+
+## 1. Behandlingsansvarlig
+
+**Offentlig PaaS**
+Kontakt: [slack.com/offentligpaas](https://slack.com/offentligpaas)
+
+## 2. Hvilke personopplysninger samler vi inn?
+
+### 2.1 Innlogging via Slack
+
+Når du logger inn på vår nettside via Slack OAuth, samler vi inn:
+
+- **Navn** (fra din Slack-profil)
+- **E-postadresse** (fra din Slack-profil)
+- **Slack bruker-ID**
+- **Profilbilde**
+- **Slack workspace-ID** (for å verifisere at du er medlem av Offentlig PaaS workspace)
+- **Jobbtittel, avdeling og statusmelding** (hvis tilgjengelig i din Slack-profil)
+- **Administratorrettigheter** (om du er workspace-admin eller medlem av admin-grupper)
+
+### 2.2 Påmelding til fagdager
+
+Når du melder deg på en fagdag, lagrer vi:
+
+- **Navn**
+- **E-postadresse**
+- **Slack bruker-ID**
+- **Organisasjon** (din arbeidsgiver)
+- **Matpreferanser/allergier** (valgfritt)
+- **Kommentarer** (valgfritt)
+- **Oppmøtetype** (fysisk eller digitalt)
+- **Deltakelse på sosial del** (om relevant)
+- **Påmeldingsdato og -tidspunkt**
+- **Påmeldingsstatus** (bekreftet, venteliste, avmeldt, møtt opp, ikke møtt opp)
+
+### 2.3 Bruk av nettsiden
+
+Vi bruker analyseverktøy som kan samle inn:
+
+- **Teknisk informasjon** (nettlesertype, enhet, IP-adresse)
+- **Brukerstatistikk** (sidevisninger, klikk, besøkstid)
+- **Ytelsesdata** (lastetider, feil)
+
+## 3. Formål og rettslig grunnlag
+
+Vi behandler personopplysninger for følgende formål:
+
+### 3.1 Innlogging og tilgangskontroll
+
+- **Formål**: Autentisere brukere og gi tilgang til påmelding
+- **Rettslig grunnlag**: Samtykke ved innlogging
+- **Lagringstid**: Så lenge du er innlogget (sesjon)
+
+### 3.2 Arrangere fagdager
+
+- **Formål**: Administrere påmeldinger, sende påminnelser, tilrettelegge mat, og føre oversikt over deltakere
+- **Rettslig grunnlag**: Avtale (din påmelding) og berettiget interesse (arrangementadministrasjon)
+- **Lagringstid**: Inntil 2 år etter arrangementet
+
+### 3.3 Kommunikasjon
+
+- **Formål**: Sende informasjon om fagdagen, påminnelser og oppfølging
+- **Rettslig grunnlag**: Avtale og samtykke
+- **Lagringstid**: Inntil 2 år etter arrangementet
+
+### 3.4 Statistikk og forbedring
+
+- **Formål**: Analysere bruk av nettsiden, forbedre brukeropplevelsen og planlegge fremtidige arrangementer
+- **Rettslig grunnlag**: Berettiget interesse
+- **Lagringstid**: Anonymiserte data oppbevares på ubestemt tid
+
+## 4. Hvor lagres dataene?
+
+Personopplysninger lagres hos følgende tjenester:
+
+- **Sanity.io**: Database for påmeldinger (EU/USA-servere med GDPR-avtale)
+- **Vercel**: Hosting av nettsiden (globalt nettverk, GDPR-kompatibelt)
+- **Slack**: Autentisering og profilinformasjon (USA, GDPR-kompatibelt)
+- **Vercel Analytics**: Anonymisert brukstatistikk (GDPR-vennlig)
+
+Alle tjenesteleverandører er GDPR-kompatible og har inngått databehandleravtaler der det er påkrevd.
+
+## 5. Deling av personopplysninger
+
+Vi deler ikke dine personopplysninger med tredjeparter, med følgende unntak:
+
+- **Arrangementslokaler**: Navn og matpreferanser kan deles med arrangementslokaler for tilrettelegging
+- **Lovpålagt utlevering**: Hvis vi er rettslig forpliktet til det
+
+Vi selger aldri personopplysninger til tredjeparter.
+
+## 6. Dine rettigheter
+
+Du har følgende rettigheter etter personvernlovgivningen:
+
+- **Innsyn**: Be om kopi av dine personopplysninger
+- **Retting**: Be om retting av uriktige opplysninger
+- **Sletting**: Be om sletting av dine opplysninger (se nedenfor)
+- **Begrensning**: Be om begrenset behandling
+- **Dataportabilitet**: Motta dine data i strukturert format
+- **Motsette seg**: Motsette deg behandling basert på berettiget interesse
+- **Tilbaketrekke samtykke**: Når behandling er basert på samtykke
+
+### Rett til sletting (Retten til å bli glemt)
+
+Du kan når som helst slette din konto via din [profilside](/profil). Når du sletter kontoen din:
+
+- All personlig informasjon (navn, e-post, Slack-ID) blir anonymisert
+- Påmeldinger til arrangementer beholdes for statistikk og kapasitetsstyring, men kan ikke lenger knyttes til deg
+- Matpreferanser og kommentarer slettes
+- Du blir automatisk logget ut
+
+Dette sikrer at vi oppfyller GDPR-krav samtidig som vi kan opprettholde historisk statistikk og kapasitetsstyring for arrangementer.
+
+For å utøve andre rettigheter, kontakt oss via Slack workspace eller på din profilside.
+
+## 7. Informasjonskapsler (cookies)
+
+Vi bruker følgende informasjonskapsler:
+
+- **Nødvendige cookies**: For innlogging og sesjonshåndtering (NextAuth.js)
+- **Analysecookies**: Vercel Analytics for anonymisert statistikk
+- **Preferansecookies**: Tema-valg (lys/mørk modus)
+
+Du kan blokkere cookies i nettleseren din, men dette kan påvirke funksjonaliteten på nettsiden.
+
+## 8. Sikkerhet
+
+Vi tar datasikkerhet på alvor og har implementert følgende tiltak:
+
+- **Kryptert kommunikasjon**: HTTPS/TLS for all dataoverføring
+- **Sikker autentisering**: OAuth 2.0 via Slack
+- **Tilgangskontroll**: Begrenset tilgang til personopplysninger
+- **Regelmessige oppdateringer**: Sikkerhetsoppdateringer av systemer og avhengigheter
+
+## 9. Barn
+
+Nettsiden og fagdagene våre er rettet mot voksne fagpersoner i arbeidslivet. Vi samler ikke bevisst inn personopplysninger fra personer under 18 år.
+
+## 10. Endringer i personvernerklæringen
+
+Vi kan oppdatere denne personvernerklæringen fra tid til annen. Vesentlige endringer vil bli kommunisert via Slack workspace eller e-post til påmeldte deltakere.
+
+## 11. Kontakt
+
+Har du spørsmål om personvern eller ønsker å utøve dine rettigheter?
+
+- **Slack workspace**: [slack.com/offentligpaas](https://slack.com/offentligpaas)
+- **Nettside**: Din profilside etter innlogging
+
+Du har også rett til å klage til Datatilsynet hvis du mener vi behandler personopplysningene dine i strid med gjeldende regelverk.
+
+**Datatilsynet**
+Postboks 458 Sentrum
+0105 Oslo
+[datatilsynet.no](https://www.datatilsynet.no)

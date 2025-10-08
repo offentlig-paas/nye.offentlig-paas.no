@@ -271,6 +271,28 @@ const RegistrationForm = memo(function RegistrationForm({
         </div>
       )}
 
+      <p className="text-xs text-zinc-500 dark:text-zinc-400">
+        Ved å melde deg på godtar du vår{' '}
+        <a
+          href="/personvern"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-zinc-700 dark:hover:text-zinc-300"
+        >
+          personvernerklæring
+        </a>{' '}
+        og{' '}
+        <a
+          href="/vilkar"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-zinc-700 dark:hover:text-zinc-300"
+        >
+          vilkår for bruk
+        </a>
+        .
+      </p>
+
       <div className="flex gap-3 pt-2">
         <Button
           variant="primary"
@@ -307,8 +329,6 @@ export const EventRegistration = memo(function EventRegistration({
 }: EventRegistrationProps) {
   const { data: session } = useSession()
   const { showSuccess, showError } = useToast()
-
-  // Use shared context for registration data
   const { isRegistered, registration, stats, isCheckingStatus, refetch } =
     useEventRegistration()
 
@@ -553,7 +573,7 @@ export const EventRegistration = memo(function EventRegistration({
             setState(prev => ({ ...prev, showUnregisterModal: true }))
           }
           disabled={state.isLoading}
-          className="w-full border border-green-200/50 bg-white/60 text-sm font-medium text-green-800 transition-all duration-200 hover:bg-white/80 hover:text-green-900 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-white"
+          className="w-full border border-green-200/50 bg-white/60 text-sm font-medium text-green-800 hover:bg-white/80 hover:text-green-900 active:bg-white/90 active:text-green-900/70 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-white dark:active:bg-gray-800 dark:active:text-white/70"
         >
           Meld av
         </Button>

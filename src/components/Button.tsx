@@ -22,7 +22,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   className = clsx(
-    'inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm outline-offset-2 transition active:transition-none',
+    'inline-flex cursor-pointer items-center justify-center gap-2 rounded-md px-3 py-2 text-sm outline-offset-2 transition active:transition-none disabled:cursor-not-allowed',
     variantStyles[variant],
     className
   )
