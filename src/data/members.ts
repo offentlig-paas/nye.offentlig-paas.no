@@ -351,7 +351,7 @@ export const members: Member[] = [
   new Member({
     name: 'Enova',
     type: MemberType.STATE_ENTERPRISE,
-    logo: 'enova'
+    logo: 'enova',
     homepage: 'https://www.enova.no',
     linkedinUrl: 'https://www.linkedin.com/company/enova-sf/',
   }),
