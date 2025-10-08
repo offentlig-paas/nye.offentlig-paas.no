@@ -1,4 +1,5 @@
 import { SimpleLayout } from '@/components/SimpleLayout'
+import { Prose } from '@/components/Prose'
 
 export const metadata = {
   title: 'Vilkår for bruk',
@@ -6,11 +7,18 @@ export const metadata = {
     'Vilkår for bruk av Offentlig PaaS nettside og deltakelse på fagdager',
 }
 
-export default props => <SimpleLayout {...props} />
+export default props => (
+  <SimpleLayout
+    title="Vilkår for bruk"
+    intro="Vilkår som gjelder for bruk av nettsiden og deltakelse på våre fagdager."
+  >
+    <Prose className="max-w-none" {...props} />
+  </SimpleLayout>
+)
 
-# Vilkår for bruk
-
-_Sist oppdatert: 8. oktober 2025_
+<div className="rounded-lg border border-zinc-200 bg-zinc-50 px-6 py-4 text-sm text-zinc-600 dark:border-zinc-700/40 dark:bg-zinc-800/50 dark:text-zinc-400">
+  <strong>Sist oppdatert:</strong> 8. oktober 2025
+</div>
 
 Disse vilkårene regulerer din bruk av Offentlig PaaS sin nettside og deltakelse på våre fagdager.
 
@@ -181,7 +189,7 @@ Disse vilkårene er underlagt norsk lov. Eventuelle tvister skal søkes løst i 
 
 Spørsmål om vilkårene kan rettes til:
 
-- **Slack workspace**: [slack.com/offentligpaas](https://slack.com/offentligpaas)
+- **Slack workspace**: [offentlig-paas-no.slack.com](https://offentlig-paas-no.slack.com)
 - **Via nettside**: Din profilside etter innlogging
 
 ## 13. Separate bestemmelser

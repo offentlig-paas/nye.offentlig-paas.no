@@ -1,22 +1,30 @@
 import { SimpleLayout } from '@/components/SimpleLayout'
+import { Prose } from '@/components/Prose'
 
 export const metadata = {
   title: 'Personvernerklæring',
   description: 'Personvernerklæring for Offentlig PaaS og våre fagdager',
 }
 
-export default props => <SimpleLayout {...props} />
+export default props => (
+  <SimpleLayout
+    title="Personvernerklæring"
+    intro="Slik samler vi inn, bruker og beskytter dine personopplysninger i samsvar med GDPR."
+  >
+    <Prose className="max-w-none" {...props} />
+  </SimpleLayout>
+)
 
-# Personvernerklæring
-
-_Sist oppdatert: 8. oktober 2025_
+<div className="rounded-lg border border-zinc-200 bg-zinc-50 px-6 py-4 text-sm text-zinc-600 dark:border-zinc-700/40 dark:bg-zinc-800/50 dark:text-zinc-400">
+  <strong>Sist oppdatert:</strong> 8. oktober 2025
+</div>
 
 Offentlig PaaS er et nettverk for fagpersoner i offentlig sektor som jobber med plattformutvikling og DevOps. Denne personvernerklæringen beskriver hvordan vi samler inn, bruker og beskytter personopplysninger når du bruker vår nettside og melder deg på våre fagdager.
 
 ## 1. Behandlingsansvarlig
 
 **Offentlig PaaS**
-Kontakt: [slack.com/offentligpaas](https://slack.com/offentligpaas)
+Kontakt: [offentlig-paas-no.slack.com](https://offentlig-paas-no.slack.com)
 
 ## 2. Hvilke personopplysninger samler vi inn?
 
@@ -159,7 +167,7 @@ Vi kan oppdatere denne personvernerklæringen fra tid til annen. Vesentlige endr
 
 Har du spørsmål om personvern eller ønsker å utøve dine rettigheter?
 
-- **Slack workspace**: [slack.com/offentligpaas](https://slack.com/offentligpaas)
+- **Slack workspace**: [offentlig-paas-no.slack.com](https://offentlig-paas-no.slack.com)
 - **Nettside**: Din profilside etter innlogging
 
 Du har også rett til å klage til Datatilsynet hvis du mener vi behandler personopplysningene dine i strid med gjeldende regelverk.
