@@ -228,10 +228,12 @@ export async function PATCH(
     }
 
     const body = await request.json()
-    const { attendingSocialEvent } = body
+    const { attendingSocialEvent, attendanceType, comments } = body
 
     await eventRegistrationService.updateRegistration(userRegistration._id!, {
       attendingSocialEvent,
+      attendanceType,
+      comments,
     })
 
     return NextResponse.json({

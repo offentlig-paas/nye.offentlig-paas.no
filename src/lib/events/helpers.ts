@@ -14,12 +14,10 @@ export function getStatus(event: Event) {
 }
 
 export function isAcceptingRegistrations(event: Event) {
-  // Check if event is upcoming
   if (getStatus(event) !== Status.Upcoming) {
     return false
   }
 
-  // Check if registration is not disabled (default is enabled)
   return event.registration ? !event.registration.disabled : true
 }
 
@@ -30,12 +28,10 @@ export function isCallForPapersOpen(event: Event) {
 
   const now = new Date()
 
-  // If there's a specific CFP closed date, use that
   if (event.callForPapersClosedDate) {
     return now < event.callForPapersClosedDate
   }
 
-  // Default behavior: CFP is open as long as the event is accepting registrations
   return isAcceptingRegistrations(event)
 }
 
@@ -55,10 +51,6 @@ export function getUpcomingEvents() {
   return events.filter(event => getStatus(event) !== Status.Past)
 }
 
-/**
- * Helper function to get event info from slug
- * Uses exact slug matching from events.ts
- */
 export function getEventInfoFromSlug(slug: string): {
   title: string
   date: string
@@ -78,7 +70,6 @@ export function getEventInfoFromSlug(slug: string): {
     }
   }
 
-  // Fallback for unknown events
   return {
     title: slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
     date: new Date().toLocaleDateString('nb-NO'),
@@ -86,10 +77,6 @@ export function getEventInfoFromSlug(slug: string): {
   }
 }
 
-/**
- * Helper function to get detailed event info including time for individual event pages
- * Uses exact slug matching from events.ts
- */
 export function getDetailedEventInfoFromSlug(slug: string): {
   title: string
   date: string
@@ -112,7 +99,6 @@ export function getDetailedEventInfoFromSlug(slug: string): {
     }
   }
 
-  // Fallback for unknown events
   return {
     title: slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
     date: new Date().toLocaleDateString('nb-NO'),
@@ -120,12 +106,8 @@ export function getDetailedEventInfoFromSlug(slug: string): {
   }
 }
 
-/**
- * Get all events that have registrations or might have registrations
- */
 export function getAllEventsWithPotentialRegistrations(): Event[] {
   return events.filter(event => {
-    // Include events that are recent or upcoming
     const eventDate = new Date(event.start)
     const oneYearAgo = new Date()
     oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
@@ -134,9 +116,6 @@ export function getAllEventsWithPotentialRegistrations(): Event[] {
   })
 }
 
-/**
- * Check if a user is an organizer of a specific event
- */
 export function isUserEventOrganizer(
   event: Event,
   userSlackId: string
@@ -150,8 +129,6 @@ export function isUserEventOrganizer(
       return false
     }
 
-    // Extract Slack user ID from organizer URL
-    // URLs are in format: https://offentlig-paas-no.slack.com/team/U0836NTGBQW
     const slackIdMatch = organizer.url.match(/\/team\/([A-Z0-9]+)$/)
     if (!slackIdMatch) {
       return false
@@ -162,19 +139,14 @@ export function isUserEventOrganizer(
   })
 }
 
-/**
- * Check if a user can access event data (admin or organizer)
- */
 export function canUserAccessEvent(
   event: Event,
   user: { isAdmin?: boolean; slackId?: string }
 ): boolean {
-  // Admins can access any event
   if (user.isAdmin) {
     return true
   }
 
-  // Check if user is an organizer of this event
   if (user.slackId) {
     if (isUserEventOrganizer(event, user.slackId)) {
       return true
@@ -184,10 +156,6 @@ export function canUserAccessEvent(
   return false
 }
 
-/**
- * Get event by slug and check if it exists
- * Uses exact slug matching from events.ts
- */
 export function getEventBySlug(slug: string): Event | null {
   return events.find(e => e.slug === slug) || null
 }

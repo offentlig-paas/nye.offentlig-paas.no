@@ -215,6 +215,12 @@ export class EventRegistrationService {
       .sort((a, b) => b.count - a.count)
   }
 
+  async getUserRegistrations(
+    slackUserId: string
+  ): Promise<EventRegistration[]> {
+    return await this.repository.findMany({ slackUserId })
+  }
+
   private validateRegistrationInput(input: CreateEventRegistrationInput): void {
     if (!input.name.trim()) {
       throw new Error('Name is required')

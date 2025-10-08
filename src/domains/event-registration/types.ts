@@ -57,6 +57,7 @@ export interface UpdateEventRegistrationInput {
 // Query parameters for filtering registrations
 export interface EventRegistrationQuery {
   eventSlug?: string
+  slackUserId?: string
   status?: RegistrationStatus
   limit?: number
   offset?: number
