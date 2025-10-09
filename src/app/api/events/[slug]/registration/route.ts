@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { auth } from '@/auth'
 import { getEvent } from '@/lib/events/helpers'
 import { eventRegistrationService } from '@/domains/event-registration'
@@ -60,10 +61,20 @@ export async function POST(
       attendingSocialEvent,
     })
 
-    return NextResponse.json({
-      message: 'Påmelding registrert!',
-      registration,
-    })
+    revalidatePath(`/fagdag/${slug}`)
+    revalidatePath('/profil')
+
+    return NextResponse.json(
+      {
+        message: 'Påmelding registrert!',
+        registration,
+      },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
+        },
+      }
+    )
   } catch (error) {
     console.error('Registration error:', error)
 
