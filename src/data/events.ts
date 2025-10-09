@@ -665,7 +665,7 @@ export const events: Event[] = [
             url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
           },
         ],
-        type: ItemType.Talk,
+        type: ItemType.Info,
       },
     ],
     stats: {

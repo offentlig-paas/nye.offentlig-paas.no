@@ -1,7 +1,15 @@
 import { events } from '@/data/events'
 import type { Event } from '@/lib/events/types'
-import { Status } from '@/lib/events/types'
+import { Status, AttachmentType } from '@/lib/events/types'
 import { formatDateShort, formatDateTime } from '@/lib/formatDate'
+import {
+  DocumentTextIcon,
+  VideoCameraIcon,
+  CodeBracketIcon,
+  LinkIcon,
+  PaperClipIcon,
+  PresentationChartLineIcon,
+} from '@heroicons/react/20/solid'
 
 export function getStatus(event: Event) {
   const now = new Date()
@@ -148,4 +156,22 @@ export function canUserAccessEvent(
 
 export function getEventBySlug(slug: string): Event | null {
   return events.find(e => e.slug === slug) || null
+}
+
+export function getAttachmentIcon(type: AttachmentType) {
+  switch (type) {
+    case AttachmentType.Slides:
+      return PresentationChartLineIcon
+    case AttachmentType.PDF:
+      return DocumentTextIcon
+    case AttachmentType.Recording:
+    case AttachmentType.Video:
+      return VideoCameraIcon
+    case AttachmentType.Code:
+      return CodeBracketIcon
+    case AttachmentType.Link:
+      return LinkIcon
+    default:
+      return PaperClipIcon
+  }
 }

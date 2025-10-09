@@ -17,6 +17,7 @@ import {
   isAcceptingRegistrations,
   isCallForPapersOpen,
   canUserAccessEvent,
+  getAttachmentIcon,
 } from '@/lib/events/helpers'
 import {
   formatDateTime,
@@ -45,7 +46,6 @@ import {
   Battery50Icon,
   ChatBubbleBottomCenterIcon,
   VideoCameraIcon,
-  PaperClipIcon,
   CogIcon,
   CheckBadgeIcon,
   ChartBarIcon,
@@ -106,27 +106,6 @@ function EventStatus({ status }: { status: Status }) {
       {statusText(status)}
     </dd>
   )
-}
-
-function AttachmentIcon({
-  type,
-  className,
-}: {
-  type: AttachmentType
-  className?: string
-}) {
-  switch (type) {
-    case AttachmentType.Recording:
-      return <VideoCameraIcon className={className} aria-hidden="true" />
-    case AttachmentType.Slides:
-      return (
-        <PresentationChartLineIcon className={className} aria-hidden="true" />
-      )
-    case AttachmentType.Link:
-      return <PaperClipIcon className={className} aria-hidden="true" />
-    default:
-      return <PaperClipIcon className={className} aria-hidden="true" />
-  }
 }
 
 function AttachmentLink({
@@ -714,10 +693,13 @@ export default async function Fagdag({ params }: { params: Params }) {
                                 className="flex items-start space-x-3"
                               >
                                 <dt className="mt-0.5">
-                                  {AttachmentIcon({
-                                    type: attachment.type,
-                                    className: 'h-5 w-5 text-gray-400',
-                                  })}
+                                  {React.createElement(
+                                    getAttachmentIcon(attachment.type),
+                                    {
+                                      className: 'h-5 w-5 text-gray-400',
+                                      'aria-hidden': 'true',
+                                    }
+                                  )}
                                 </dt>
                                 <dd>
                                   {AttachmentLink({
