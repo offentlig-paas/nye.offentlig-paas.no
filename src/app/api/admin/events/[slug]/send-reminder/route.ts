@@ -6,6 +6,7 @@ import {
   type MessagePayload,
 } from '@/lib/slack/messaging'
 import type { KnownBlock } from '@slack/web-api'
+import { formatDateLong, formatTimeRange } from '@/lib/formatDate'
 
 export async function POST(
   request: NextRequest,
@@ -60,11 +61,11 @@ export async function POST(
         },
         {
           type: 'mrkdwn',
-          text: `📅 ${new Date(event.start).toLocaleDateString('nb-NO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`,
+          text: `📅 ${formatDateLong(event.start)}`,
         },
         {
           type: 'mrkdwn',
-          text: `🕒 ${new Date(event.start).toLocaleTimeString('nb-NO', { hour: '2-digit', minute: '2-digit' })} - ${new Date(event.end).toLocaleTimeString('nb-NO', { hour: '2-digit', minute: '2-digit' })}`,
+          text: `🕒 ${formatTimeRange(event.start, event.end)}`,
         },
         {
           type: 'mrkdwn',

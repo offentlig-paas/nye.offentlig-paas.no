@@ -1,6 +1,7 @@
 import { events } from '@/data/events'
 import type { Event } from '@/lib/events/types'
 import { Status } from '@/lib/events/types'
+import { formatDateShort, formatDateTime } from '@/lib/formatDate'
 
 export function getStatus(event: Event) {
   const now = new Date()
@@ -61,18 +62,14 @@ export function getEventInfoFromSlug(slug: string): {
   if (event) {
     return {
       title: event.title,
-      date: event.start.toLocaleDateString('nb-NO', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      }),
+      date: formatDateShort(event.start),
       location: event.location,
     }
   }
 
   return {
     title: slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-    date: new Date().toLocaleDateString('nb-NO'),
+    date: formatDateTime(new Date()),
     location: 'Ikke spesifisert',
   }
 }
@@ -87,21 +84,14 @@ export function getDetailedEventInfoFromSlug(slug: string): {
   if (event) {
     return {
       title: event.title,
-      date: `${event.start.toLocaleDateString('nb-NO', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      })} kl. ${event.start.toLocaleTimeString('nb-NO', {
-        hour: '2-digit',
-        minute: '2-digit',
-      })}`,
+      date: formatDateTime(event.start),
       location: event.location,
     }
   }
 
   return {
     title: slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-    date: new Date().toLocaleDateString('nb-NO'),
+    date: formatDateShort(new Date()),
     location: 'Ikke spesifisert',
   }
 }
