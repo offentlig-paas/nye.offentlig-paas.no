@@ -1467,4 +1467,874 @@ export const events: Event[] = [
       registrations: 110,
     },
   },
+  {
+    slug: '2020-12-08-fagdag',
+    title: 'Offentlig PaaS Digital Fagdag',
+    ingress:
+      'Vi inviterer til digital fagdag med fokus på sikkerhet i skyen og statusoppdateringer fra offentlige organisasjoner.',
+    description:
+      'En heldigital fagdag under pandemien med foredrag fra NSM om skytjenester og sikkerhet, Nav om Device Un-management, samt statusoppdateringer fra 8 forskjellige etater. Gjennomført som Microsoft Teams Live Event med over 100 deltakere.',
+    start: new Date('2020-12-08T12:00+01:00'),
+    end: new Date('2020-12-08T15:00+01:00'),
+    audience: Audience.PublicSector,
+    location: 'Microsoft Teams Live Event',
+    registration: {
+      disabled: true,
+      attendanceTypes: [AttendanceType.Digital],
+    },
+    organizers: [
+      {
+        name: 'Are Egner-Kaupang',
+        org: 'SSB',
+        url: 'https://offentlig-paas-no.slack.com/team/U4TE7DAQX',
+      },
+    ],
+    schedule: [
+      {
+        time: '12:00 - 12:45',
+        title: 'Innlegg fra SSB',
+        description:
+          'Velkommen og presentasjon av SSB sine plattforminitiativ og dataplattform.',
+        speakers: [
+          { name: 'Christian Thindberg', org: 'SSB' },
+          { name: 'Trygve Falch', org: 'SSB' },
+          { name: 'Team Stratus', org: 'SSB' },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '13:00 - 14:00',
+        title: 'Skytjenester og sikkerhet',
+        description:
+          'Nasjonal sikkerhetsmyndighet presenterer sikkerhetsperspektiver ved bruk av skytjenester i offentlig sektor.',
+        speakers: [{ name: 'John Bothner', org: 'NSM' }],
+        type: ItemType.Talk,
+      },
+      {
+        time: '14:10 - 14:30',
+        title: 'Device Un-management',
+        description:
+          'Nav presenterer tilnærmingen til enhetshåndtering og hvordan de jobber med moderne workplace-løsninger.',
+        speakers: [{ name: 'Torbjørn Hallenberg', org: 'Nav' }],
+        type: ItemType.Talk,
+      },
+      {
+        time: '14:30 - 15:00',
+        title: 'Statusinnlegg fra organisasjonene',
+        description:
+          'Rask status og utfordringer fra 8 etater: Posten Norge (Digipost), Norsk Helsenett SF, Oslo Kommune Origo, Husbanken, Nav, Skatteetaten, Politiets IKT-tjenester og Fiskeridirektoratet.',
+        speakers: [
+          { name: 'Posten Norge (Digipost)' },
+          { name: 'Norsk Helsenett SF' },
+          { name: 'Oslo Kommune Origo' },
+          { name: 'Husbanken' },
+          { name: 'Nav' },
+          { name: 'Skatteetaten' },
+          { name: 'Politiets IKT-tjenester' },
+          { name: 'Fiskeridirektoratet' },
+        ],
+        type: ItemType.Panel,
+        attachments: [
+          {
+            url: 'https://docs.google.com/presentation/d/10u62Ozc9SnLG7gA0YrL9ipqWpQ1gaR3I_o-AFVWho80/edit?usp=sharing',
+            type: AttachmentType.Slides,
+          },
+        ],
+      },
+    ],
+    stats: {
+      registrations: 110,
+      participants: 110,
+      organisations: 18,
+    },
+  },
+  {
+    slug: '2020-02-11-fagdag',
+    title: 'Offentlig PaaS Fagdag',
+    ingress:
+      'Vi inviterer til fagdag om erfaringer med sky hos Oslo kommune på Rådhusplassen med besøk fra Google, Amazon og Microsoft.',
+    description:
+      'En dag fokusert på erfaringer med å ta steget ut i skyen. Vi får besøk av de tre store skyleverandørene Google, Amazon og Microsoft som deler erfaringer fra nordiske kunder. I tillegg blir det lyntaler om markedsplass for skytjenester, GCP-verktøy og SRE-prinsipper.',
+    start: new Date('2020-02-11T08:30+01:00'),
+    end: new Date('2020-02-11T16:00+01:00'),
+    audience: Audience.PublicSector,
+    location: 'Oslo kommune, Rådhusplassen 1, Auditoriet',
+    registration: {
+      disabled: true,
+      attendanceTypes: [AttendanceType.Physical],
+    },
+    organizers: [
+      {
+        name: 'Fredrik Vraalsen',
+        org: 'Oslo kommune',
+      },
+      {
+        name: 'Per Kjetil Grotnes',
+        org: 'Oslo kommune',
+        url: 'https://offentlig-paas-no.slack.com/team/U6UF56Z0R',
+      },
+    ],
+    stats: {
+      organisations: 30,
+      participants: 100,
+      registrations: 114,
+    },
+    schedule: [
+      {
+        time: '08:30 - 09:00',
+        title: 'Registrering',
+        description: 'Kaffe/te og frukt',
+        type: ItemType.Registration,
+      },
+      {
+        time: '09:00 - 09:15',
+        title: 'Velkommen',
+        speakers: [
+          { name: 'Per Kjetil Grotnes', org: 'Oslo kommune' },
+          { name: 'Fredrik Vraalsen', org: 'Oslo kommune' },
+        ],
+        type: ItemType.Info,
+      },
+      {
+        time: '09:15 - 09:45',
+        title: 'Oppdatering',
+        description: 'Status fra alle deltagende organisasjoner',
+        speakers: [{ name: 'Alle' }],
+        type: ItemType.Panel,
+      },
+      {
+        time: '09:45 - 10:00',
+        title: 'Pause',
+        description: 'Kaffe/te og frukt',
+        type: ItemType.Break,
+      },
+      {
+        time: '10:00 - 11:00',
+        title:
+          'Migrating customers to Google Public Cloud, learning from the field',
+        description:
+          'Experiences and learning from migrating Nordic companies to Google Cloud. Focus on important use cases covering different industries with various requirements, different cultures and structures. Deep dive into where Cloud works well and where it breaks.',
+        speakers: [{ name: 'Abdel Sghiouar', org: 'Google' }],
+        type: ItemType.Talk,
+      },
+      {
+        time: '11:00 - 11:15',
+        title: 'Pause',
+        description: 'Kaffe/te og frukt',
+        type: ItemType.Break,
+      },
+      {
+        time: '11:15 - 12:15',
+        title: 'Sky arkitektur med AWS',
+        description:
+          'Beste praksis for utvikling i skyen med AWS. Prinsipper og eksempler på referanse arkitekturer for skybasert utvikling.',
+        speakers: [{ name: 'Ragnar Harper', org: 'Amazon' }],
+        type: ItemType.Talk,
+      },
+      {
+        time: '12:15 - 13:00',
+        title: 'Lunsj',
+        description: 'Baguetter',
+        type: ItemType.Break,
+      },
+      {
+        time: '13:00 - 14:00',
+        title: 'Running government level secure solutions on Microsoft Azure',
+        description:
+          'How running applications on Azure Kubernetes Services can help you stay compliant and secure. Latest features in Azure and customer cases running open source based solutions in Azure.',
+        speakers: [{ name: 'Mikkel Hegnhøj', org: 'Microsoft' }],
+        type: ItemType.Talk,
+      },
+      {
+        time: '14:00 - 14:15',
+        title: 'Pause',
+        description: 'Kaffe/te og frukt',
+        type: ItemType.Break,
+      },
+      {
+        time: '14:15 - 14:50',
+        title: 'Lyntaler',
+        description: 'Tre korte presentasjoner om aktuelle tema',
+        speakers: [
+          { name: 'Håvard Reknes', org: 'Digitaliseringsdirektoratet' },
+          { name: 'Frode Sundby', org: 'Nav' },
+          { name: 'Johnny Horvi', org: 'Nav' },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '14:50 - 15:10',
+        title: 'Pause',
+        description: 'Kanelboller og kaffe/te',
+        type: ItemType.Break,
+      },
+      {
+        time: '15:10 - 15:50',
+        title: 'Lyntaler',
+        description: 'Tre korte presentasjoner om hybrid sky og serverless',
+        speakers: [
+          { name: 'Harald Alexander Kulø', org: 'Oslo kommune' },
+          { name: 'Fredrik Vraalsen', org: 'Oslo kommune' },
+          {
+            name: 'Hans Kristian Flaatten',
+            org: 'Fiskeridirektoratet',
+            url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+          },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '15:50 - 16:00',
+        title: 'Avslutning',
+        type: ItemType.Info,
+      },
+    ],
+  },
+  {
+    slug: '2019-09-10-fagdag',
+    title: 'Offentlig PaaS Fagdag',
+    ingress:
+      'Vi inviterer til fagdag hos EVRY Academy på Fornebu fylt med spennende foredrag og erfaringsdeling om plattform i offentlig sektor.',
+    description:
+      'En dag med OpenShift, DevOps plattformer, container images, Open Spaces diskusjoner og Knative demo. Vi får besøk av RedHat, KMD, FINN og får høre om Telenors skysatsing. Over 100 deltakere fra mer enn 20 forskjellige etater og selskaper.',
+    start: new Date('2019-09-10T08:30+02:00'),
+    end: new Date('2019-09-10T17:00+02:00'),
+    audience: Audience.PublicSector,
+    location: 'EVRY Academy, Snarøyveien 30, 1360 Fornebu',
+    registration: {
+      disabled: true,
+      attendanceTypes: [AttendanceType.Physical],
+    },
+    organizers: [
+      {
+        name: 'Hans Kristian Flaatten',
+        org: 'EVRY / Fiskeridirektoratet',
+        url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+      },
+      {
+        name: 'Frode Bjerkenes',
+        org: 'Telenor',
+        url: 'https://offentlig-paas-no.slack.com/team/U7CK184RJ',
+      },
+    ],
+    stats: {
+      organisations: 22,
+      participants: 90,
+      registrations: 94,
+      feedback: {
+        url: 'https://docs.google.com/forms/d/e/1FAIpQLSf_C8mmHLGkJKqIqrU3aLjsYbTpZQluTog-MggRIHhlOrdu5Q/viewform',
+        respondents: 18,
+        averageRating: 4.6,
+        comments: [
+          'Veldig bra med kort status fra etatene. Det gjør at man kan følge progresjonen.',
+          'Varierte talks. Fint at statssekretæren tok seg en tur.',
+          'Veldig bra for nettverk og informasjonsutveksling',
+        ],
+      },
+    },
+    schedule: [
+      {
+        time: '08:30 - 09:00',
+        title: 'Registrering',
+        speakers: [
+          {
+            name: 'Hans Kristian Flaatten',
+            org: 'EVRY / Fiskeridirektoratet',
+            url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+          },
+          { name: 'Erik Eggen' },
+          { name: 'Terje Husby' },
+        ],
+        type: ItemType.Registration,
+      },
+      {
+        time: '09:00 - 09:15',
+        title: 'Velkommen',
+        speakers: [
+          { name: 'Frode Bjerkenes', org: 'Telenor' },
+          {
+            name: 'Hans Kristian Flaatten',
+            org: 'EVRY / Fiskeridirektoratet',
+            url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+          },
+        ],
+        type: ItemType.Info,
+      },
+      {
+        time: '09:15 - 09:45',
+        title: 'RedHat OpenShift – The Kubernetes Platform for Big Ideas',
+        speakers: [{ name: 'Vikram Singh', org: 'RedHat' }],
+        type: ItemType.Talk,
+      },
+      {
+        time: '09:45 - 10:15',
+        title: 'Oppdatering',
+        description: 'Status fra alle deltagende organisasjoner',
+        speakers: [{ name: 'Alle' }],
+        type: ItemType.Panel,
+      },
+      {
+        time: '10:15 - 10:30',
+        title: 'Pause',
+        type: ItemType.Break,
+      },
+      {
+        time: '10:30 - 10:50',
+        title: 'Telenor DevOps Platform; dchub/bsshub',
+        speakers: [{ name: 'Ronny Pettersen', org: 'Telenor' }],
+        type: ItemType.Talk,
+      },
+      {
+        time: '10:50 - 11:10',
+        title: 'Bygging av container images: Jib vs Kaniko',
+        speakers: [{ name: 'Øyvind Ødegård' }],
+        type: ItemType.Talk,
+      },
+      {
+        time: '11:10 - 11:30',
+        title: 'Telenors skysatsing',
+        speakers: [
+          { name: 'Arnstein Schei', org: 'Telenor' },
+          { name: 'Bosse', org: 'Telenor' },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '11:30 - 12:30',
+        title: 'Lunsj',
+        type: ItemType.Break,
+      },
+      {
+        time: '12:30 - 13:00',
+        title: 'Foredrag',
+        speakers: [
+          {
+            name: 'Paul Chaffey',
+            org: 'Kommunal og Moderniseringsdepartementet',
+          },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '13:00 - 13:30',
+        title: 'En plattform for fart',
+        speakers: [
+          { name: 'Henning Spjelkavik', org: 'FINN' },
+          { name: 'Ivar Conradi Østhus', org: 'FINN' },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '13:30 - 15:30',
+        title: 'Open Spaces',
+        description:
+          'Fire parallelle spor: Monitoring/Observability, Erfaringer med Sky og Cloud Native arkitektur, Metodologi (Lean/Agile/DevOps), og Leder-spor',
+        type: ItemType.Panel,
+      },
+      {
+        time: '15:30 - 16:30',
+        title: 'Knative – Serverless Demo',
+        speakers: [
+          {
+            name: 'Hans Kristian Flaatten',
+            org: 'EVRY / Fiskeridirektoratet',
+            url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+          },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '16:30 - 16:40',
+        title: 'Avslutning',
+        speakers: [
+          { name: 'Frode Bjerkenes', org: 'Telenor' },
+          {
+            name: 'Hans Kristian Flaatten',
+            org: 'EVRY / Fiskeridirektoratet',
+            url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+          },
+        ],
+        type: ItemType.Info,
+      },
+    ],
+  },
+  {
+    slug: '2019-06-20-testing-minifagdag',
+    title: 'Mini fagdag: Testing av plattform',
+    ingress:
+      'Pizza-lunsj hos SSB i Oslo for å prate om testing av plattform. Vi får besøk av konsulent med praktisk erfaring som holder kort introduksjon.',
+    description:
+      'BIP-teamet inviterer til en uformell fagdag om testing av plattform. Vi snakker om testing av infrastruktur som kode og testing av kjørende skyplattform. En konsulent med praktisk erfaring holder en kort introduksjon for å sette i gang diskusjonen. Lunsjen har plass til 30 personer og følger "førstemann til mølla"-prinsippet.',
+    start: new Date('2019-06-20T11:00+02:00'),
+    end: new Date('2019-06-20T13:00+02:00'),
+    audience: Audience.PublicSector,
+    location: 'SSB, Oslo',
+    registration: {
+      disabled: true,
+      attendanceTypes: [AttendanceType.Physical],
+    },
+    organizers: [
+      {
+        name: 'Lise Wold Eriksen',
+        org: 'SSB',
+        url: 'https://offentlig-paas-no.slack.com/team/U77K15333',
+      },
+    ],
+    schedule: [
+      {
+        time: '11:00 - 11:15',
+        title: 'Velkommen og pizza',
+        type: ItemType.Registration,
+      },
+      {
+        time: '11:15 - 11:45',
+        title: 'Introduksjon til testing av plattform',
+        description:
+          'Kort introduksjon til testing av infrastruktur som kode og testing av kjørende skyplattform.',
+        speakers: [{ name: 'Ekstern konsulent' }],
+        type: ItemType.Talk,
+      },
+      {
+        time: '11:45 - 13:00',
+        title: 'Diskusjon og erfaringsdeling',
+        description:
+          'Åpen diskusjon om utfordringer og erfaringer med testing av plattform.',
+        type: ItemType.Panel,
+      },
+    ],
+  },
+  {
+    slug: '2018-10-31-fagdag',
+    title: 'Offentlig PaaS Fagdag',
+    ingress:
+      'Vi inviterer til fagdag hos SSB i Oslo med fokus på sikkerhet i sky, ID-porten og Maskinporten, og prosessen med Nav i offentlig sky.',
+    description:
+      'En dag med foredrag om sikkerhetsperspektiver i skyen, erfaringer med ID-porten og Maskinporten fra Skatteetaten, Nav sin prosess med offentlig sky, Open Space diskusjoner og presentasjon av SSB sin BIP (Byråets IT-Platform).',
+    start: new Date('2018-10-31T08:45+02:00'),
+    end: new Date('2018-10-31T17:00+02:00'),
+    audience: Audience.PublicSector,
+    location: 'SSB, Oslo',
+    registration: {
+      disabled: true,
+      attendanceTypes: [AttendanceType.Physical],
+    },
+    organizers: [
+      {
+        name: 'Lars-Roger Billingsø',
+        org: 'SSB',
+        url: 'https://offentlig-paas-no.slack.com/team/U4SPU630R',
+      },
+      {
+        name: 'Lise Wold Eriksen',
+        org: 'SSB',
+        url: 'https://offentlig-paas-no.slack.com/team/U77K15333',
+      },
+      {
+        name: 'Erik Øvrum',
+        org: 'SSB',
+        url: 'https://offentlig-paas-no.slack.com/team/U4TE8E3AN',
+      },
+    ],
+    schedule: [
+      {
+        time: '08:45 - 09:00',
+        title: 'Kaffehenting og plassfinning',
+        type: ItemType.Registration,
+      },
+      {
+        time: '09:00 - 09:15',
+        title: 'Velkommen, agenda og fasiliteter',
+        speakers: [{ name: 'Lars-Roger Billingsø', org: 'SSB' }],
+        type: ItemType.Info,
+      },
+      {
+        time: '09:15 - 10:00',
+        title: 'ID-porten/Maskinporten og SKDs bruk av denne',
+        speakers: [
+          {
+            name: 'Are Vattekar',
+            org: 'Skatteetaten',
+            url: 'https://offentlig-paas-no.slack.com/team/U4SM25LUQ',
+          },
+          { name: 'Jørgen Binningsbø', org: 'Difi' },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '10:00 - 10:15',
+        title: 'Pause',
+        type: ItemType.Break,
+      },
+      {
+        time: '10:15 - 12:00',
+        title:
+          'A Perspective of a Motivated Hacker: Can Cloud Manage Security Better?',
+        speakers: [{ name: 'Mike Jankowski-Lorek' }],
+        type: ItemType.Talk,
+      },
+      {
+        time: '12:00 - 13:00',
+        title: 'Lunsj',
+        type: ItemType.Break,
+      },
+      {
+        time: '13:00 - 13:45',
+        title: 'Prosessen med Nav i public sky',
+        speakers: [
+          {
+            name: 'Audun Fauchald Strand',
+            org: 'Nav',
+            url: 'https://offentlig-paas-no.slack.com/team/U4U0AJ4HM',
+          },
+          { name: 'Jørgen Solberg', org: 'Nav' },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '14:00 - 16:00',
+        title: 'Open Space med eget lederspor',
+        type: ItemType.Panel,
+      },
+      {
+        time: '16:00 - 16:30',
+        title: 'Presentasjon av BIP (Byrâets IT-Platform) og sikring av denne',
+        speakers: [
+          { name: 'Lars-Roger Billingsø', org: 'SSB' },
+          { name: 'Bjørn Vestli', org: 'SSB' },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '16:30 - 17:00',
+        title: 'Avslutning, kommentarer fra salen, sted og tid for neste møte',
+        speakers: [{ name: 'Lars-Roger Billingsø', org: 'SSB' }],
+        type: ItemType.Info,
+      },
+    ],
+  },
+  {
+    slug: '2018-02-15-fagdag',
+    title: 'Offentlig PaaS Fagdag',
+    ingress:
+      'Vi inviterer til fagdag hos Politiets IKT-tjenester i Oslo med fokus på DevOps, Kubernetes og Open Space diskusjoner.',
+    description:
+      'En dag med lynstatus fra alle etater, foredrag om hvordan få med ledelsen på DevOps og kontinuerlige leveranser, demo av Organa plattformen, og Open Space diskusjoner. Avslutter med Google og Kubernetes presentasjon.',
+    start: new Date('2018-02-15T08:45+01:00'),
+    end: new Date('2018-02-15T17:00+01:00'),
+    audience: Audience.PublicSector,
+    location: 'Politiets IKT-tjenester, Oslo',
+    registration: {
+      disabled: true,
+      attendanceTypes: [AttendanceType.Physical],
+    },
+    organizers: [
+      {
+        name: 'Roger Karlsson',
+        org: 'Politiets IKT-tjenester',
+        url: 'https://offentlig-paas-no.slack.com/team/U51A07M0V',
+      },
+    ],
+    socialEvent: {
+      description:
+        'Felles middag et sted i sentrum for de som ønsker å fortsette diskusjonene.',
+      start: new Date('2018-02-15T17:00+01:00'),
+      location: 'Oslo sentrum',
+    },
+    schedule: [
+      {
+        time: '08:45 - 09:00',
+        title: 'Alle finner sin plass',
+        type: ItemType.Registration,
+      },
+      {
+        time: '09:00 - 09:15',
+        title: 'Velkommen og gjennomgang av agenda',
+        speakers: [
+          {
+            name: 'Roger Karlsson',
+            org: 'Politiets IKT-tjenester',
+            url: 'https://offentlig-paas-no.slack.com/team/U51A07M0V',
+          },
+        ],
+        type: ItemType.Info,
+      },
+      {
+        time: '09:15 - 10:15',
+        title: 'Lynstatus fra etatene',
+        description:
+          'Maks 3 minutter per etat: Siden forrige fagdag har vi fått til... Planen vår videre er... Vi kan evt hjelpe andre her med... Vi trenger evt hjelp med...',
+        type: ItemType.Panel,
+      },
+      {
+        time: '10:15 - 10:45',
+        title: 'Pause',
+        description: 'Kaffe og snacks',
+        type: ItemType.Break,
+      },
+      {
+        time: '10:45 - 11:30',
+        title: 'Hvordan få med ledelsen på DevOps og kontinuerlige leveranser',
+        speakers: [
+          { name: 'Karl-Henning Rorstad', org: 'Politiets IKT-tjenester' },
+          { name: 'Stian Kaasa', org: 'Politiets IKT-tjenester' },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '11:30 - 12:00',
+        title: 'Demo Organa',
+        description: 'Presentasjon av PIT Organa plattformen',
+        speakers: [{ name: 'PIT Organa plattformteam' }],
+        type: ItemType.Talk,
+      },
+      {
+        time: '12:00 - 13:00',
+        title: 'Lunsj',
+        type: ItemType.Break,
+      },
+      {
+        time: '13:00 - 14:00',
+        title: 'Open Space',
+        speakers: [{ name: 'Jan Helge Salvesen' }],
+        type: ItemType.Panel,
+      },
+      {
+        time: '14:00 - 14:15',
+        title: 'Pause',
+        description: 'Kaffe og snacks',
+        type: ItemType.Break,
+      },
+      {
+        time: '14:15 - 15:15',
+        title: 'Open Space (fortsettelse)',
+        type: ItemType.Panel,
+      },
+      {
+        time: '15:15 - 16:50',
+        title: 'Google og Kubernetes',
+        speakers: [
+          { name: 'Craig Box', org: 'Google' },
+          { name: 'Daniel Aasen Andersen', org: 'Google' },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '16:50 - 17:00',
+        title: 'Oppsummering',
+        speakers: [
+          {
+            name: 'Roger Karlsson',
+            org: 'Politiets IKT-tjenester',
+            url: 'https://offentlig-paas-no.slack.com/team/U51A07M0V',
+          },
+        ],
+        type: ItemType.Info,
+      },
+    ],
+    stats: {
+      registrations: 60,
+      participants: 60,
+      organisations: 25,
+    },
+  },
+  {
+    slug: '2017-10-16-fagdag',
+    title: 'Offentlig PaaS Fagdag',
+    ingress:
+      'Vi inviterer til fagdag hos Nav i Oslo med fokus på GDPR og statusrunde fra alle organisasjoner.',
+    description:
+      'En dag med statusrunde fra alle deltagende organisasjoner, Open Space diskusjoner, foredrag om GDPR og Nav sitt NAIS. Over 50 deltakere fra 20 forskjellige etater og organisasjoner.',
+    start: new Date('2017-10-16T09:00+02:00'),
+    end: new Date('2017-10-16T16:00+02:00'),
+    audience: Audience.PublicSector,
+    location: 'Nav, Sannergata 2, Oslo',
+    registration: {
+      disabled: true,
+      attendanceTypes: [AttendanceType.Physical],
+    },
+    organizers: [
+      {
+        name: 'Are Vattekar',
+        org: 'Skatteetaten',
+        url: 'https://offentlig-paas-no.slack.com/team/U4SM25LUQ',
+      },
+      {
+        name: 'Audun Fauchald Strand',
+        org: 'Nav',
+        url: 'https://offentlig-paas-no.slack.com/team/U4U0AJ4HM',
+      },
+    ],
+    socialEvent: {
+      description:
+        'Bli med på middag og nettverksbygging på Villa Paradiso Grünerløkka. En uformell anledning til å møte andre deltakere, dele erfaringer og bygge nettverk over autentisk napolitansk pizza. Bord er booket for klokka 17:00.',
+      start: new Date('2017-10-16T17:00+02:00'),
+      location: 'Villa Paradiso Grünerløkka, Olaf Ryes plass 8, 0552 Oslo',
+    },
+    stats: {
+      registrations: 65,
+      participants: 65,
+      organisations: 20,
+    },
+    schedule: [
+      {
+        time: '09:00 - 09:10',
+        title: 'Velkommen',
+        speakers: [
+          {
+            name: 'Are Vattekar',
+            org: 'Skatteetaten',
+            url: 'https://offentlig-paas-no.slack.com/team/U4SM25LUQ',
+          },
+          {
+            name: 'Audun Fauchald Strand',
+            org: 'Nav',
+            url: 'https://offentlig-paas-no.slack.com/team/U4U0AJ4HM',
+          },
+        ],
+        type: ItemType.Info,
+      },
+      {
+        time: '09:10 - 10:00',
+        title: 'Statusrunde del 1',
+        description:
+          'Minst en fra hver organisasjon presenterer status for PaaS-arbeid.',
+        type: ItemType.Panel,
+      },
+      {
+        time: '10:00 - 10:30',
+        title: 'Pause',
+        description: 'Oppskåret frukt, nøtter, kaffe/te og vann',
+        type: ItemType.Break,
+      },
+      {
+        time: '10:30 - 11:30',
+        title: 'Statusrunde del 2',
+        description:
+          'Fortsettelse av statusrunde og eventuell planlegging av Open Space.',
+        type: ItemType.Panel,
+      },
+      {
+        time: '11:30 - 12:30',
+        title: 'Lunsj',
+        description: 'Baguetter',
+        type: ItemType.Break,
+      },
+      {
+        time: '12:30 - 13:45',
+        title: 'Open Space',
+        description:
+          'Åpne diskusjoner om erfaringsrapporter, datasikkerhet og sky, open sourcing, testmiljøer/testdata og andre aktuelle tema.',
+        type: ItemType.Panel,
+      },
+      {
+        time: '13:45 - 14:00',
+        title: 'Pause',
+        description: 'Kaffe/te, kake eller grønnsaker med dip',
+        type: ItemType.Break,
+      },
+      {
+        time: '14:00 - 15:00',
+        title: 'GDPR',
+        description:
+          'Foredrag om GDPR fra et teknologisk perspektiv og hva det vil si for utviklere og plattformer.',
+        speakers: [{ name: 'Johannes Brodwall', org: 'Steria' }],
+        type: ItemType.Talk,
+      },
+      {
+        time: '15:00 - 15:10',
+        title: 'Pause',
+        type: ItemType.Break,
+      },
+      {
+        time: '15:10 - 16:00',
+        title: 'NAIS',
+        description: 'Presentasjon av Nav sin applikasjonsinfrastruktur NAIS.',
+        speakers: [
+          {
+            name: 'Johnny Horvi',
+            org: 'Nav',
+            url: 'https://offentlig-paas-no.slack.com/team/U4SR1TZC0',
+          },
+        ],
+        type: ItemType.Talk,
+      },
+    ],
+  },
+  {
+    slug: '2017-06-01-fagdag',
+    title: 'Offentlig PaaS Fagdag',
+    ingress:
+      'Vi inviterer til fagdag hos Skatteetaten på Helsfyr i Oslo med fokus på PaaS-status og Open Space diskusjoner.',
+    description:
+      'En dag dedikert til å høre hvor ulike etater står i forhold til PaaS og veien videre. Etter lunsj blir det Open Space med mulighet for diskusjoner om applikasjonsarkitektur, infrastrukturarkitektur og sikkerhetsutfordringer ved bruk av PaaS.',
+    start: new Date('2017-06-01T09:00+02:00'),
+    end: new Date('2017-06-01T18:00+02:00'),
+    audience: Audience.PublicSector,
+    location: 'Skatteetaten, Helsfyr, Oslo',
+    registration: {
+      disabled: true,
+      attendanceTypes: [AttendanceType.Physical],
+    },
+    organizers: [
+      {
+        name: 'Are Vattekar',
+        org: 'Skatteetaten',
+        url: 'https://offentlig-paas-no.slack.com/team/U4SM25LUQ',
+      },
+    ],
+    socialEvent: {
+      description:
+        'Mulighet for å gå ut og spise middag sammen etter den faglige delen.',
+      start: new Date('2017-06-01T18:00+02:00'),
+      location: 'TBA',
+    },
+    //stats: {
+    //  registrations: 70,
+    //  participants: 60,
+    //  organisations: 10,
+    //},
+    schedule: [
+      {
+        time: '08:30 - 09:00',
+        title: 'Registrering og kaffe',
+        type: ItemType.Registration,
+      },
+      {
+        time: '09:00 - 12:00',
+        title: 'Status fra etatene',
+        description:
+          'Alle etater presenterer hvor de står i forhold til PaaS og hva som er veien videre.',
+        type: ItemType.Panel,
+        attachments: [
+          {
+            url: 'https://docs.google.com/presentation/d/1Cjny0F72wugtS-w_ULz_gSLz5VtdL__bqzyIvlwK_p0/edit?slide=id.p#slide=id.p',
+            type: AttachmentType.Slides,
+          },
+          {
+            url: 'https://docs.google.com/presentation/d/1DjnF20_txiP9mtSqBkgyY-L1KijpVaY5JyOykm3SAyc/edit?slide=id.p3#slide=id.p3',
+            type: AttachmentType.Slides,
+          },
+        ],
+      },
+      {
+        time: '12:00 - 13:00',
+        title: 'Lunsj',
+        type: ItemType.Break,
+      },
+      {
+        time: '13:00 - 16:00',
+        title: 'Open Space',
+        description:
+          'Åpen diskusjon om applikasjonsarkitektur, infrastrukturarkitektur og sikkerhetsutfordringer ved bruk av PaaS.',
+        type: ItemType.Talk,
+      },
+      {
+        time: '16:00 - 18:00',
+        title: 'Foredrag med ekstern foredragsholder',
+        description: 'Mulig foredrag med ekstern deltaker.',
+        speakers: [{ name: 'TBA' }],
+        type: ItemType.Talk,
+      },
+    ],
+  },
 ]
