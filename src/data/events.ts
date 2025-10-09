@@ -157,6 +157,7 @@ export const events: Event[] = [
     audience: Audience.PublicSector,
     location: 'Digs - Mesh community, Krambugata 2, 7011 Trondheim',
     registration: {
+      disabled: true,
       attendanceTypes: [AttendanceType.Physical, AttendanceType.Digital],
     },
     stats: {
@@ -272,6 +273,7 @@ export const events: Event[] = [
     audience: Audience.PublicSector,
     location: 'Zoom',
     registration: {
+      disabled: true,
       attendanceTypes: [AttendanceType.Digital],
     },
     organizers: [
@@ -2059,7 +2061,12 @@ export const events: Event[] = [
       {
         time: '10:50 - 11:10',
         title: 'Bygging av container images: Jib vs Kaniko',
-        speakers: [{ name: 'Øyvind Ødegård', url: 'https://offentlig-paas-no.slack.com/team/UCSGKNSUE' }],
+        speakers: [
+          {
+            name: 'Øyvind Ødegård',
+            url: 'https://offentlig-paas-no.slack.com/team/UCSGKNSUE',
+          },
+        ],
         type: ItemType.Talk,
       },
       {
@@ -2228,7 +2235,13 @@ export const events: Event[] = [
       {
         time: '09:00 - 09:15',
         title: 'Velkommen, agenda og fasiliteter',
-        speakers: [{ name: 'Lars-Roger Billingsø', org: 'SSB', url: 'https://offentlig-paas-no.slack.com/team/U060EL496LS' }],
+        speakers: [
+          {
+            name: 'Lars-Roger Billingsø',
+            org: 'SSB',
+            url: 'https://offentlig-paas-no.slack.com/team/U060EL496LS',
+          },
+        ],
         type: ItemType.Info,
       },
       {
@@ -2274,7 +2287,11 @@ export const events: Event[] = [
             org: 'Nav',
             url: 'https://offentlig-paas-no.slack.com/team/U4U0AJ4HM',
           },
-          { name: 'Jørgen Solberg', org: 'Nav', url: 'https://offentlig-paas-no.slack.com/team/U5DHLQ29G' },
+          {
+            name: 'Jørgen Solberg',
+            org: 'Nav',
+            url: 'https://offentlig-paas-no.slack.com/team/U5DHLQ29G',
+          },
         ],
         type: ItemType.Talk,
       },
@@ -2287,15 +2304,29 @@ export const events: Event[] = [
         time: '16:00 - 16:30',
         title: 'Presentasjon av BIP (Byrâets IT-Platform) og sikring av denne',
         speakers: [
-          { name: 'Lars-Roger Billingsø', org: 'SSB', url: 'https://offentlig-paas-no.slack.com/team/U060EL496LS' },
-          { name: 'Bjørn Vestli', org: 'SSB', url: 'https://offentlig-paas-no.slack.com/team/U4SPKRPK2' },
+          {
+            name: 'Lars-Roger Billingsø',
+            org: 'SSB',
+            url: 'https://offentlig-paas-no.slack.com/team/U060EL496LS',
+          },
+          {
+            name: 'Bjørn Vestli',
+            org: 'SSB',
+            url: 'https://offentlig-paas-no.slack.com/team/U4SPKRPK2',
+          },
         ],
         type: ItemType.Talk,
       },
       {
         time: '16:30 - 17:00',
         title: 'Avslutning, kommentarer fra salen, sted og tid for neste møte',
-        speakers: [{ name: 'Lars-Roger Billingsø', org: 'SSB', url: 'https://offentlig-paas-no.slack.com/team/U060EL496LS' }],
+        speakers: [
+          {
+            name: 'Lars-Roger Billingsø',
+            org: 'SSB',
+            url: 'https://offentlig-paas-no.slack.com/team/U060EL496LS',
+          },
+        ],
         type: ItemType.Info,
       },
     ],
@@ -2383,7 +2414,12 @@ export const events: Event[] = [
       {
         time: '13:00 - 14:00',
         title: 'Open Space',
-        speakers: [{ name: 'Jan Helge Salvesen', url: 'https://offentlig-paas-no.slack.com/team/U7GN07EMQ' }],
+        speakers: [
+          {
+            name: 'Jan Helge Salvesen',
+            url: 'https://offentlig-paas-no.slack.com/team/U7GN07EMQ',
+          },
+        ],
         type: ItemType.Panel,
       },
       {

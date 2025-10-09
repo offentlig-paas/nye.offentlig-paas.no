@@ -552,8 +552,83 @@ export default function AdminEventDetailsPage() {
           const eventDate = new Date(eventDetails.startTime)
           const now = new Date()
           const isFutureEvent = eventDate > now
+          const useLegacyStats = eventDetails.registration.disabled === true
 
-          if (isFutureEvent) {
+          if (useLegacyStats && eventDetails.eventStats) {
+            // Legacy stats for events with disabled registration
+            return (
+              <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+                <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                  <div className="p-4">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <UserIcon
+                          className="h-5 w-5 text-green-500"
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <div className="ml-4 w-0 flex-1">
+                        <dl>
+                          <dt className="truncate text-xs font-medium text-gray-500 dark:text-gray-400">
+                            Deltakere
+                          </dt>
+                          <dd className="text-lg font-semibold text-gray-900 dark:text-white">
+                            {eventDetails.eventStats.participants}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                  <div className="p-4">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <BuildingOfficeIcon
+                          className="h-5 w-5 text-gray-400 dark:text-gray-500"
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <div className="ml-4 w-0 flex-1">
+                        <dl>
+                          <dt className="truncate text-xs font-medium text-gray-500 dark:text-gray-400">
+                            Organisasjoner
+                          </dt>
+                          <dd className="text-lg font-semibold text-gray-900 dark:text-white">
+                            {eventDetails.eventStats.organisations}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                  <div className="p-4">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <CheckCircleIcon
+                          className="h-5 w-5 text-blue-500"
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <div className="ml-4 w-0 flex-1">
+                        <dl>
+                          <dt className="truncate text-xs font-medium text-gray-500 dark:text-gray-400">
+                            Påmeldinger
+                          </dt>
+                          <dd className="text-lg font-semibold text-gray-900 dark:text-white">
+                            {eventDetails.eventStats.registrations}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          } else if (isFutureEvent) {
             // Future event stats - focus on registrations
             const physicalCount = eventDetails.registrations.filter(
               r =>
