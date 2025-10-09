@@ -263,17 +263,17 @@ export const events: Event[] = [
     organizers: [
       {
         name: 'Hans Kristian Flaatten',
-        org: 'Styreleder',
+        org: 'Offentlig PAAS',
         url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
       },
       {
         name: 'Audun Fauchald Strand',
-        org: 'Nestleder',
+        org: 'Offentlig PAAS',
         url: 'https://offentlig-paas-no.slack.com/team/U4U0AJ4HM',
       },
       {
         name: 'Are Vattekar',
-        org: 'Styremedlem',
+        org: 'Offentlig PAAS',
         url: 'https://offentlig-paas-no.slack.com/team/U4SM25LUQ',
       },
     ],
@@ -469,7 +469,13 @@ export const events: Event[] = [
         title: 'Hvordan få 100+ team til å jobbe selvstendig',
         description:
           'Hvordan vi har laget en selvbetjent plattform i Nav som gjør at teamene selv kan administrere sitt team og sine applikasjoner uten å vente på tickets eller tilganger!',
-        speakers: [{ name: 'Hans Kristian Flaatten', org: 'Nav' }],
+        speakers: [
+          {
+            name: 'Hans Kristian Flaatten',
+            org: 'Nav',
+            url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+          },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -652,7 +658,13 @@ export const events: Event[] = [
         title: 'Avsluttning og god jul',
         description:
           'Tusen takk til alle som har vært med å gjøre Offentlig PaaS til nettverket for alle som er interessert i plattform i offentlig sektor i Norge.',
-        speakers: [{ name: 'Hans Kristian Flaatten', org: 'Nav' }],
+        speakers: [
+          {
+            name: 'Hans Kristian Flaatten',
+            org: 'Nav',
+            url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+          },
+        ],
         type: ItemType.Talk,
       },
     ],
@@ -762,7 +774,13 @@ export const events: Event[] = [
         title: 'Observability 2.0 i Nav',
         description:
           'I år startet Nav med å rulle ut støtte for OpenTelemetry for applikasjoner i NAIS med OpenTelemetry Operator, Grafana Tempo og Grafana Loki. I dette foredraget vil vi dele erfaringer og resultater fra dette arbeidet så langt, og kaste litt lys over hva som er planen videre.',
-        speakers: [{ name: 'Hans Kristian Flaatten', org: 'Nav' }],
+        speakers: [
+          {
+            name: 'Hans Kristian Flaatten',
+            org: 'Nav',
+            url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+          },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -1089,12 +1107,14 @@ export const events: Event[] = [
     },
     organizers: [
       {
-        name: 'Mats André Bækkelund',
+        name: 'Mats Bækkelund',
         org: 'Telenor',
+        url: 'https://offentlig-paas-no.slack.com/team/U04QQLQ7KK8',
       },
       {
         name: 'Hans Kristian Flaatten',
         org: 'Nav',
+        url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
       },
     ],
     schedule: [
@@ -1137,7 +1157,13 @@ export const events: Event[] = [
         title: 'Infrastructure as Software',
         description:
           'Nav sin reise fra konfigurasjonsstyring av servere, til infrastruktur som kode (terraform) og videre til det vi i dag kaller infrastruktur som software som tar hele livssyklusen til infrastruktur – ikke bare det å sette den opp.',
-        speakers: [{ name: 'Hans Kristian Flaatten', org: 'Nav' }],
+        speakers: [
+          {
+            name: 'Hans Kristian Flaatten',
+            org: 'Nav',
+            url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+          },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -1366,7 +1392,7 @@ export const events: Event[] = [
       },
       {
         name: 'Hans Kristian Flaatten',
-        org: 'NAV',
+        org: 'Nav',
         url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
       },
     ],
