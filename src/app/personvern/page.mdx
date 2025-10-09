@@ -6,24 +6,17 @@ export const metadata = {
   description: 'Personvernerklæring for Offentlig PaaS og våre fagdager',
 }
 
-export default props => (
-  <SimpleLayout
-    title="Personvernerklæring"
-    intro="Slik samler vi inn, bruker og beskytter dine personopplysninger i samsvar med GDPR. Sist oppdatert 9. oktober 2025."
-  >
-    <Prose className="max-w-none" {...props} />
-  </SimpleLayout>
-)
-
-<p className="mt-4 max-w-2xl text-base text-zinc-600 dark:text-zinc-400">
-  Vi i Offentlig PaaS bygger et åpent fagmiljø der vi deler kunnskap og
-  erfaringer på tvers av offentlig sektor. Samtidig tar vi personvernet ditt på
-  alvor. Denne erklæringen forklarer hvordan vi samler inn og bruker
-  personopplysninger når du logger inn, melder deg på fagdager eller deltar i
-  våre arrangementer. Vi er transparente om hva som skjer med dataene dine, og
-  du har full kontroll – inkludert mulighet til å slette kontoen din når som
-  helst.
-</p>
+export default function MDXContent(props) {
+  return (
+    <SimpleLayout
+      title="Personvernerklæring"
+      intro="Vi i Offentlig PaaS bygger et åpent fagmiljø der vi deler kunnskap og erfaringer på tvers av offentlig sektor. Samtidig tar vi personvernet ditt på alvor. Denne erklæringen forklarer hvordan vi samler inn og bruker personopplysninger når du logger inn, melder deg på fagdager eller deltar i våre arrangementer. Vi er transparente om hva som skjer med dataene dine, og du har full kontroll – inkludert mulighet til å slette kontoen din når som helst."
+      lastUpdated="2025-10-09"
+    >
+      <Prose className="max-w-none">{props.children}</Prose>
+    </SimpleLayout>
+  )
+}
 
 ## 1. Behandlingsansvarlig
 

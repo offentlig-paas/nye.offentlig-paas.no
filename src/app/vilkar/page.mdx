@@ -7,23 +7,17 @@ export const metadata = {
     'Vilkår for bruk av Offentlig PaaS nettside og deltakelse på fagdager',
 }
 
-export default props => (
-  <SimpleLayout
-    title="Vilkår for bruk"
-    intro="Vilkår som gjelder for bruk av nettsiden og deltakelse på våre fagdager. Sist oppdatert 9. oktober 2025."
-  >
-    <Prose className="max-w-none" {...props} />
-  </SimpleLayout>
-)
-
-<p className="mt-4 max-w-2xl text-base text-zinc-600 dark:text-zinc-400">
-  Offentlig PaaS er et åpent fagnettverk der vi deler kunnskap og lærer av
-  hverandre. Vi publiserer presentasjoner på YouTube for å nå bredt ut, mens
-  diskusjoner og samtaler er underlagt Chatham House Rule slik at alle kan
-  snakke fritt. Disse vilkårene beskriver hvordan vi jobber sammen, hva du kan
-  forvente når du deltar på fagdager, og hvordan vi balanserer åpenhet med
-  trygghet for deltakere og foredragsholdere.
-</p>
+export default function MDXContent(props) {
+  return (
+    <SimpleLayout
+      title="Vilkår for bruk"
+      intro="Offentlig PaaS er et åpent fagnettverk der vi deler kunnskap og lærer av hverandre. Vi publiserer presentasjoner på YouTube for å nå bredt ut, mens diskusjoner og samtaler er underlagt Chatham House Rule slik at alle kan snakke fritt. Disse vilkårene beskriver hvordan vi jobber sammen, hva du kan forvente når du deltar på fagdager, og hvordan vi balanserer åpenhet med trygghet for deltakere og foredragsholdere."
+      lastUpdated="2025-10-09"
+    >
+      <Prose className="max-w-none">{props.children}</Prose>
+    </SimpleLayout>
+  )
+}
 
 ## 1. Aksept av vilkår
 
