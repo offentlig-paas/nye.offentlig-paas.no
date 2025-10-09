@@ -16,7 +16,7 @@ export const events: Event[] = [
       'En dag fokusert på selvbetjening og autonome team i offentlig sektor. Vi utforsker hvordan selvbetjeningsløsninger kan gi utviklerteam økt fart og flyt, med praktiske erfaringer fra Telenor, Vy og Nav. Programmet dekker alt fra filosofien bak selvbetjening til konkrete implementasjoner av utviklerportaler og API-er. Arrangementet er gratis og åpent for alle med tilknytning til offentlig sektor.',
     start: new Date('2025-10-15T11:00+02:00'),
     end: new Date('2025-10-15T15:00+02:00'),
-    audience: Audience.OpenForAll,
+    audience: Audience.PublicSector,
     location: 'Telenor Fornebu, Snarøyveien 30, 1360 Fornebu',
     registration: {
       attendanceTypes: [AttendanceType.Physical, AttendanceType.Digital],
@@ -24,7 +24,7 @@ export const events: Event[] = [
     organizers: [
       {
         name: 'Mats Bækkelund',
-        org: 'Telenor Norge',
+        org: 'Telenor',
         url: 'https://offentlig-paas-no.slack.com/team/U04QQLQ7KK8',
       },
       {
@@ -187,7 +187,13 @@ export const events: Event[] = [
         title: 'Reengineering the stack',
         description:
           'NHN jobber med en helt ny containerplattform og vi vil presentere hvordan vi har tenkt.',
-        speakers: [{ name: 'Håvard Elnan', org: 'NHN' }],
+        speakers: [
+          {
+            name: 'Håvard Elnan',
+            org: 'NHN',
+            url: 'https://offentlig-paas-no.slack.com/team/UU4T4283X',
+          },
+        ],
         type: ItemType.Talk,
       },
       {
@@ -199,10 +205,12 @@ export const events: Event[] = [
           {
             name: 'Tor Ivar Asbølmo',
             org: 'Skatteetaten',
+            url: 'https://offentlig-paas-no.slack.com/team/U08TXESMU1L',
           },
           {
             name: 'Geir Tore Johansen',
             org: 'Skatteetaten',
+            url: 'https://offentlig-paas-no.slack.com/team/U05UZ92SB6G',
           },
         ],
         type: ItemType.Talk,
@@ -217,7 +225,13 @@ export const events: Event[] = [
         title: 'NHNs Observability Plattform — Design & Erfaringer',
         description:
           'NHN har mange forskjellige team og ulike produkter vi lager som understøtter helsesektoren. I denne sesjonen ser vi på observability stack-en vi tilbyr til leveranseteamene våre. Vi kikker først på hva det er vi har satt opp, og hvordan det funker i praksis. Så litt på designet og tankene bak, før vi til slutt deler et innblikk i erfaringer med hvordan observability plattformen har oppført seg.',
-        speakers: [{ name: 'Simon Randby', org: 'Norsk helsenett' }],
+        speakers: [
+          {
+            name: 'Simon Randby',
+            org: 'Norsk helsenett',
+            url: 'https://offentlig-paas-no.slack.com/team/U07HHSZ419N',
+          },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -372,6 +386,7 @@ export const events: Event[] = [
           {
             name: 'Børge Nese',
             org: 'KS Digital',
+            url: 'https://offentlig-paas-no.slack.com/team/UDS102YDU',
           },
           {
             name: 'Hans Kristian Flaatten',
@@ -388,8 +403,16 @@ export const events: Event[] = [
         description:
           'KS Digital fornyer Fiks-plattformen til en moderne tjenesteplattform for kommunal sektor. En sentral del av denne fornyelsen er applikasjonsplattformen, som skal gjøre det enklere å utvikle, dele og gjenbruke digitale tjenester.\n\nPresentasjonen vil vise reisen fra dagens Fiks-plattform til fremtidens tjenesteplattform, med særlig fokus på den nye applikasjonsplattformen og hvordan den tilrettelegger for økt utviklingstakt og bedre samarbeid på tvers av sektoren.',
         speakers: [
-          { name: 'Børge Nese', org: 'KS Digital' },
-          { name: 'Bård Singstad', org: 'KS Digital' },
+          {
+            name: 'Børge Nese',
+            org: 'KS Digital',
+            url: 'https://offentlig-paas-no.slack.com/team/UDS102YDU',
+          },
+          {
+            name: 'Bård Singstad',
+            org: 'KS Digital',
+            url: 'https://offentlig-paas-no.slack.com/team/U07KJVCEATD',
+          },
         ],
         type: ItemType.Talk,
         attachments: [
@@ -409,8 +432,16 @@ export const events: Event[] = [
         description:
           'Alle medlemsland i EU er pålagda å ila 2026 kunne tilby innbyggere ei digital identitslommebok.  Lommeboka skal vere gratis å motta og gratis å bruke,  og offentleg sektor pliktar å ta den i bruk til pålogging og datadeling.\n\nI dette føredraget vil me fortelje litt om det nye regelverket og kva det innebærer, me vil demonstrere lommeboka slik den føreligg no, og gje ein overfladisk gjennomgang av sentrale protokollar og dataformat som vert nytta(OpenID4VCI, OpenID4VP og SD- jwt)',
         speakers: [
-          { name: 'Jørgen Binningsbø', org: 'Digdir' },
-          { name: 'Aamund Bremer', org: 'Digdir' },
+          {
+            name: 'Jørgen Binningsbø',
+            org: 'Digdir',
+            url: 'https://offentlig-paas-no.slack.com/team/U013XSE9RJB',
+          },
+          {
+            name: 'Aamund Bremer',
+            org: 'Digdir',
+            url: 'https://offentlig-paas-no.slack.com/team/U954ML3PW',
+          },
         ],
         type: ItemType.Talk,
         attachments: [
@@ -434,7 +465,13 @@ export const events: Event[] = [
         title: 'Framtidens PaaS',
         description:
           'En no-bullshit approach til framtiden av plattformene våre i Telenor og hvordan disse vil utvikle seg drastisk de kommende årene.',
-        speakers: [{ name: 'Martin Bergo', org: 'Telenor' }],
+        speakers: [
+          {
+            name: 'Martin Bergo',
+            org: 'Telenor',
+            url: 'https://offentlig-paas-no.slack.com/team/U088MG9KPEE',
+          },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -540,6 +577,7 @@ export const events: Event[] = [
           {
             name: 'John Kasper Svergja',
             org: 'SSB',
+            url: 'https://offentlig-paas-no.slack.com/team/UJJURGQQ1',
           },
           {
             name: 'Hans Kristian Flaatten',
@@ -578,7 +616,13 @@ export const events: Event[] = [
         title: 'Plattformtjenester på UiO',
         description:
           'UiO har bygget en plattform for utviklere og ansatte på IT-avdelingen til å tilby tjenester til forskere og studenter. I dette foredraget vil vi høre mer om hvordan plattformen er bygget og hvilke tjenester som tilbys.',
-        speakers: [{ name: 'Halvor Utby', org: 'UiO' }],
+        speakers: [
+          {
+            name: 'Halvor Utby',
+            org: 'UiO',
+            url: 'https://offentlig-paas-no.slack.com/team/U727G2JLX',
+          },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -616,7 +660,11 @@ export const events: Event[] = [
         description:
           'Vy har et team av over 100 utviklere, men bare to personer i plattformteamet. Hvordan får vi dette til å fungere? I dette foredraget deler vi våre erfaringer med å drive et lite plattformteam i en større utviklingsorganisasjon. Vi ser på hvordan skytjenester lar oss opprettholde høy hastighet og effektivitet, hvilke områder vi velger å bygge egne løsninger på, og hvordan vi skaper verdi ved å møte utviklerne der de er – gjennom en produktfokusert tilnærming. Bli med og få innblikk i våre suksesser, fallgruver og annen læring vi har fått fra reisen så langt.',
         speakers: [
-          { name: 'Nicolas Harlem Eide', org: 'Vy / Capra Consulting' },
+          {
+            name: 'Nicolas Harlem Eide',
+            org: 'Vy / Capra Consulting',
+            url: 'https://offentlig-paas-no.slack.com/team/U04EKPV8VM2',
+          },
         ],
         type: ItemType.Talk,
         attachments: [
@@ -640,7 +688,13 @@ export const events: Event[] = [
         title: 'OpenTelemetry hos Norsk Tipping på vei til sky',
         description:
           'Tittel må sies å være en arbeidstittel... Norsk Tipping deler litt erfaringer de har sett med innføring av OpenTelemetry for å få innsikt ende-til-ende på tvers av sky (aws) og on-prem (wlp,k8s). Utfordringer, fordeler og veien videre. (Med håp om å finne noen som har vært i samme situasjon eller er på vei)',
-        speakers: [{ name: 'Tom Andre Ska', org: 'Norsk Tipping' }],
+        speakers: [
+          {
+            name: 'Tom Andre Ska',
+            org: 'Norsk Tipping',
+            url: 'https://offentlig-paas-no.slack.com/team/U06J9JG4X5W',
+          },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -725,7 +779,18 @@ export const events: Event[] = [
         time: '09:30 - 09:35',
         title: 'Velkommen',
         description: 'Vi ønsker velkommen til Offentlig Observability Dag!',
-        speakers: [{ name: 'Nav og Skatt' }],
+        speakers: [
+          {
+            name: 'Robert Myhren',
+            org: 'Skatteetaten',
+            url: 'https://offentlig-paas-no.slack.com/team/U04BEMRE8R2',
+          },
+          {
+            name: 'Hans Kristian Flaatten',
+            org: 'Nav',
+            url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+          },
+        ],
         type: ItemType.Info,
       },
       {
@@ -733,7 +798,10 @@ export const events: Event[] = [
         title: 'Introduction to OpenTelemetry & Tracing (in English)',
         description:
           'OpenTelemetry is a set of APIs, libraries, agents, and instrumentation to provide observability in your applications. In this this talk, we will introduce OpenTelemetry and how it can be used to instrument your applications to collect traces, metrics, and logs. We will also show how to use OpenTelemetry with Grafana to visualize the collected data.',
-        speakers: [{ name: 'Grafana Labs' }, { name: 'Sopra Steria' }],
+        speakers: [
+          { name: 'Abdiqani Hassan', org: 'Grafana Labs' },
+          { name: 'Roberth Strand', org: 'Sopra Steria' },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -751,7 +819,13 @@ export const events: Event[] = [
         title: 'Observability i Skatteetaten',
         description:
           'Skatteetaten presenterer hvordan de jobber med robusthet og innsikt i sine systemer og applikasjoner.',
-        speakers: [{ name: 'Skatteetaten' }],
+        speakers: [
+          {
+            name: 'Robert Myhren',
+            org: 'Skatteetaten',
+            url: 'https://offentlig-paas-no.slack.com/team/U04BEMRE8R2',
+          },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -798,7 +872,13 @@ export const events: Event[] = [
         title: 'Med kart og kompass på leting etter oversikt',
         description:
           'Kartverket presenterer sin erfaring med observability.Kartverkets reise mot helhetlig observability og de erfaringer som er gjort på veien.',
-        speakers: [{ name: 'Thomas Berg', org: 'Kartverket' }],
+        speakers: [
+          {
+            name: 'Thomas Berg',
+            org: 'Kartverket',
+            url: 'https://offentlig-paas-no.slack.com/team/UMZGJUW5R',
+          },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -816,7 +896,13 @@ export const events: Event[] = [
         title: 'Praktisk SLO med Pyrra - "first steps to SRE"',
         description:
           'Hvordan kan vi bruke Pyrra til å overvåke tjenester og applikasjoner? Pyrra er et verktøy for å overvåke tjenester og applikasjoner, og gir deg mulighet til å sette opp Service Level Objectives (SLO).',
-        speakers: [{ name: 'Magnus Johansen', org: 'PIT' }],
+        speakers: [
+          {
+            name: 'Magnus Johansen',
+            org: 'PIT',
+            url: 'https://offentlig-paas-no.slack.com/team/U0475103CTS',
+          },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -839,7 +925,13 @@ export const events: Event[] = [
         title: 'Utfordringer ved monitorering av dynamiske systemer',
         description:
           'Hvordan kan vi monitorere et system som er dynamisk og stadig endrer seg? Bygg dashbord som gir relevant tilbakemelding, ved å bruke OFFSET i PromQL for å sammenligne metrikker med tidligere data.',
-        speakers: [{ name: 'Juan Piola Sanchez', org: 'NHN' }],
+        speakers: [
+          {
+            name: 'Juan Piola Sanchez',
+            org: 'NHN',
+            url: 'https://offentlig-paas-no.slack.com/team/U073L9NGN2Y',
+          },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -853,7 +945,13 @@ export const events: Event[] = [
         title: 'Argus - Digital signage',
         description:
           'Argus er en egenutviklet løsning for å vise frem observabilitydata i landskapet til Skatteetaten. Vi vil vise hvordan vi har bygget Argus, og hvordan vi bruker det i hverdagen.',
-        speakers: [{ name: 'Robert Myhren', org: 'Skatteetaten' }],
+        speakers: [
+          {
+            name: 'Robert Myhren',
+            org: 'Skatteetaten',
+            url: 'https://offentlig-paas-no.slack.com/team/U04BEMRE8R2',
+          },
+        ],
         type: ItemType.Info,
         attachments: [
           {
@@ -931,7 +1029,11 @@ export const events: Event[] = [
         description:
           'Hvordan UKE skrur sammen teknologi og styresett for fellesdata i kommunen basert på Microsoft Fabric. Vi deler våre erfaringer og tanker for implementering av felles dataplattform for Oslo kommune.',
         speakers: [
-          { name: 'Erik Tuv', org: 'UKE' },
+          {
+            name: 'Erik Tuv',
+            org: 'UKE',
+            url: 'https://offentlig-paas-no.slack.com/team/U06466106KY',
+          },
           { name: 'Andre Gulbrandsen', org: 'UKE' },
         ],
         type: ItemType.Talk,
@@ -948,8 +1050,16 @@ export const events: Event[] = [
         description:
           'Politiets IT Enhet organiserer seg rundt autonome produktteam for å skape mest mulig verdi for politiet og samfunnet. Med shift-left tankesett må autonome produktteam ta eit langt større ansvar for sine produkter enn før. Korleis kan dette skalere uten å lage enormt store team? Bli med og hør korleis PIT bygger dataplattformer for å skape fart og flyt!',
         speakers: [
-          { name: 'Audun Vindenes Egge', org: 'PIT' },
-          { name: 'Erlend Wiig', org: 'PIT' },
+          {
+            name: 'Audun Vindenes Egge',
+            org: 'PIT',
+            url: 'https://offentlig-paas-no.slack.com/team/U04P9STKFKK',
+          },
+          {
+            name: 'Erlend Wiig',
+            org: 'PIT',
+            url: 'https://offentlig-paas-no.slack.com/team/U0326RQ5PHB',
+          },
         ],
         type: ItemType.Talk,
         attachments: [
@@ -969,7 +1079,13 @@ export const events: Event[] = [
         title: 'Datadeling med nasjonale felleskomponenter fra DigDir',
         description:
           'Samferdselsdata (Tverrsektorielt datasamarbeid for samferdsel) forteller om vårt samarbeid med DigDir og samferdselsvirksomhetene om å benytte DigDir sine nasjonale fellestjenester som data.norge.no, maskinporten, altinn og ansattporten for å muliggjøre datadeling på nasjonalt plan.',
-        speakers: [{ name: 'Tine Kleivane', org: 'Samferdselsdata' }],
+        speakers: [
+          {
+            name: 'Tine Kleivane',
+            org: 'Samferdselsdata',
+            url: 'https://offentlig-paas-no.slack.com/team/U04HS5XGGGP',
+          },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -983,7 +1099,13 @@ export const events: Event[] = [
         title: 'Et hav av data – Kystverket',
         description:
           'Kystverket startet i 2023 arbeidet med en skybasert dataplattform. Vi har mye forskjellig data - store datasett som skipstrafikk og mindre datasett som hvor fisk kan landes. Uten særlig teknisk gjeld i skyen stilte vi relativt fritt. Underveis har vi tatt veivalg, angret veivalg, testet teknologier og fått våre forventninger utfordret. Alt vi gjør skal bidra til å utføre vårt samfunnsoppdrag om å gjøre kysten til verdens sikreste og reneste.',
-        speakers: [{ name: 'Stefan Ekehaug', org: 'Kystverket' }],
+        speakers: [
+          {
+            name: 'Stefan Ekehaug',
+            org: 'Kystverket',
+            url: 'https://offentlig-paas-no.slack.com/team/U05B6CGQ0DU',
+          },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -1002,7 +1124,13 @@ export const events: Event[] = [
         title: 'En Open Source datastack basert på Onyxia',
         description:
           'SSB presenterer arbeidet sitt med å implementere tjenesteplattform Onyxia i sin skybaserte dataplattform, Dapla. Onyxia er utviklet av det franske statistikkbyrået (INSEE) og bygger på åpne standarder som kubernetes, helm og oidc. Den gjør det lett å tilby open source verktøy pakket som containere, slik som Jupyter, RStudio, VS Code, MLFlow osv. på en enkel og brukervennlig måte.',
-        speakers: [{ name: 'Øyvind Bruer-Skarsbø', org: 'SSB' }],
+        speakers: [
+          {
+            name: 'Øyvind Bruer-Skarsbø',
+            org: 'SSB',
+            url: 'https://offentlig-paas-no.slack.com/team/U04GNLAUPHN',
+          },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -1024,8 +1152,16 @@ export const events: Event[] = [
         description:
           'Siden fjorårets «skattesesong» har Skatteetaten vært i produksjon med sin data- og analyseplattform basert på Databricks i Azure. (Ja, vi vet, en «navnekonkurranse» er long overdue.) Vi mistenker at det vi lager og gjør, hver eneste dag, er noe mange andre foreløpig har som visjon. Så vi deler gjerne av våre erfaringer. I løpet av noen heseblesende minutter vil vi på Offentlig PaaS’ fagdag prøve å formidle: - Hvorfor vi bygger en plattform - Hvordan den er utviklet og videreutvikles - i smått og i stort - Hvordan vi organiserer arbeidet - i smått og i stort - Hva den brukes til akkurat nå',
         speakers: [
-          { name: 'Tron Magnus Svagård', org: 'Skatt' },
-          { name: 'Johanna Anker Kulmus', org: 'Skatt' },
+          {
+            name: 'Tron Magnus Svagård',
+            org: 'Skatt',
+            url: 'https://offentlig-paas-no.slack.com/team/U062T2LSX1R',
+          },
+          {
+            name: 'Johanna Anker Kulmus',
+            org: 'Skatteetaten',
+            url: 'https://offentlig-paas-no.slack.com/team/U058549DJEM',
+          },
         ],
         type: ItemType.Talk,
       },
@@ -1035,7 +1171,13 @@ export const events: Event[] = [
           'Foredrag: Data as Code – hvorfor snakker alle om dbt og hva er det?',
         description:
           'Data build tool er et meget populært verktøy i datalandskapet, og det har sett en utrolig vekst de siste årene. Det har nesten blitt standard å bruke dbt på plattformer som BigQuery, Snowflake og Databricks. Hva er det egentlig som gjør dette så fett? Hvordan passer dbt inn i en dataplattform og hvordan lar det deg jobbe?',
-        speakers: [{ name: 'Anders Elton', org: 'Telenor' }],
+        speakers: [
+          {
+            name: 'Anders Elton',
+            org: 'Telenor',
+            url: 'https://offentlig-paas-no.slack.com/team/U09JC8B7FUK',
+          },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -1054,7 +1196,13 @@ export const events: Event[] = [
         title: 'Datakontrakter',
         description:
           'Entur implementerer Data kontrakter på GCP. Her forteller de om implikasjonene dette har for reaktiv-arkitektur, der kontrakten blir et kontrollplangrensesnitt for dataplattform-arkitekturen.',
-        speakers: [{ name: 'Anders Dahlen', org: 'Entur' }],
+        speakers: [
+          {
+            name: 'Anders Dahlen',
+            org: 'Entur',
+            url: 'https://offentlig-paas-no.slack.com/team/U05PKEZ781J',
+          },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -1069,8 +1217,16 @@ export const events: Event[] = [
         description:
           'Posten Bring har i flere år utviklet maskinlæringsløsninger for produksjon og merket at forvaltning av disse løsningene begynte å stjele all kapasiteten til vår data science avdeling. Vi har derfor i over ett år nå jobbet med å bygge en MLOps plattform for å effektivisere utviklingen og forvaltningen av maskinlærings- og dataprodukter. I dette foredraget skal vi gi et innblikk i våre motivasjoner og erfaringer så langt, samt ta et dypdykk ned i vår tekniske arkitektur.',
         speakers: [
-          { name: 'Ella Johnsen', org: 'Posten Bring AS' },
-          { name: 'Simen Larsen', org: 'Posten Bring AS' },
+          {
+            name: 'Ella Johnsen',
+            org: 'Posten Bring AS',
+            url: 'https://offentlig-paas-no.slack.com/team/U05PM0VJWQ0',
+          },
+          {
+            name: 'Simen Larsen',
+            org: 'Posten Bring AS',
+            url: 'https://offentlig-paas-no.slack.com/team/U05P9U5SVLH',
+          },
         ],
         type: ItemType.Talk,
         attachments: [
@@ -1141,8 +1297,16 @@ export const events: Event[] = [
         description:
           'What Telenor have done in the last couple of years going from being driven by toll gates and bureaucracy to autonomy and cloud native.',
         speakers: [
-          { name: 'Frode Bjerkenes', org: 'Telenor' },
-          { name: 'Vaibhav Bansal', org: 'Telenor' },
+          {
+            name: 'Frode Bjerkenes',
+            org: 'Telenor',
+            url: 'https://offentlig-paas-no.slack.com/team/U7CK184RJ',
+          },
+          {
+            name: 'Vaibhav Bansal',
+            org: 'Telenor',
+            url: 'https://offentlig-paas-no.slack.com/team/U042LUK1QA0',
+          },
         ],
         type: ItemType.Talk,
         attachments: [
@@ -1190,7 +1354,13 @@ export const events: Event[] = [
         title: 'Entur sin reise til GCP',
         description:
           'I Entur har vi redesignet hele arkitekturen vår på GCP, og det siste året har vi satt det i drift. Alt ble rullet ut på nytt, og alle ressurser på GCP og Kubernetes er nå segmentert og tilgangsstyrt etter applikasjon og miljø, og alt er satt opp fra kode. I skrivende stund har vi 800 prosjekter, og flere skal det bli. Hva er det vi driver med?',
-        speakers: [{ name: 'Sindre Lindstad', org: 'Entur' }],
+        speakers: [
+          {
+            name: 'Sindre Lindstad',
+            org: 'Entur',
+            url: 'https://offentlig-paas-no.slack.com/team/UUHH03WPK',
+          },
+        ],
         type: ItemType.Talk,
       },
       {
@@ -1198,7 +1368,13 @@ export const events: Event[] = [
         title: '140+ cluster med ROR',
         description:
           'Se og hør hvordan NHN drifter 140+ cluster vårt egenutviklede verktøy ROR. ROR (Release - Operate - Report) er et verktøy som lar utviklere og driftsteam selv deploye, drifte og observere standardiserte cluster med organisasjonens tooling.',
-        speakers: [{ name: 'Håvard Elnan', org: 'NHN' }],
+        speakers: [
+          {
+            name: 'Håvard Elnan',
+            org: 'NHN',
+            url: 'https://offentlig-paas-no.slack.com/team/UU4T4283X',
+          },
+        ],
         type: ItemType.Talk,
       },
       {
@@ -1211,7 +1387,13 @@ export const events: Event[] = [
         title: 'Trøbbel med Skatteetatens nettsider',
         description:
           'Flere brukere rapporterte om problemer med innlevering av Skattemeldingen sin. Hva var bakgrunnen og hvilken lærdom tok vi?',
-        speakers: [{ name: 'Are Vattekar', org: 'Skatteetaten' }],
+        speakers: [
+          {
+            name: 'Are Vattekar',
+            org: 'Skatteetaten',
+            url: 'https://offentlig-paas-no.slack.com/team/U4SM25LUQ',
+          },
+        ],
         type: ItemType.Talk,
       },
       {
@@ -1220,7 +1402,11 @@ export const events: Event[] = [
         description:
           'Vi lanserer i disse dager en pilot sammen med Digdir; en løsning for å forenkle onboarding til Maskinporten, og Skyporten for å dele store datamengder. Dette kan være aktuelt for virksomheter som enten tilbyr eller konsumerer Maskinporten-apier eller skal dele data ut i offentlig sektor.',
         speakers: [
-          { name: 'Tine Kleivane', org: 'Tverrsektorielt datasamarbeid' },
+          {
+            name: 'Tine Kleivane',
+            org: 'Samferdselsdata',
+            url: 'https://offentlig-paas-no.slack.com/team/U04HS5XGGGP',
+          },
         ],
         type: ItemType.Talk,
       },
@@ -1310,7 +1496,13 @@ export const events: Event[] = [
         title: 'Innebygget brukervennlighet i SKIP',
         description:
           'Det er et kjent dilemma at sikkerhet og lettvinthet ligger på en akse, og at høyere sikkerhet fører til lavere lettvinthet. Men må det være sånn? Plattform-teamet SKIP fra Statens Kartverk forteller om sine erfaringer med å bygge en plattform for en organisasjon som i varierende grad er kjent med sky og verktøyene vi bygget underveis for å sørge for innebygget sikkerhet',
-        speakers: [{ name: 'Espen Henriksen', org: 'Kartverket' }],
+        speakers: [
+          {
+            name: 'Espen Henriksen',
+            org: 'Kartverket',
+            url: 'https://offentlig-paas-no.slack.com/team/U02SG8873PC',
+          },
+        ],
         type: ItemType.Talk,
       },
       {
@@ -1323,10 +1515,12 @@ export const events: Event[] = [
           {
             name: 'Tine Kleivane',
             org: 'Samferdselsdata',
+            url: 'https://offentlig-paas-no.slack.com/team/U04HS5XGGGP',
           },
           {
             name: 'Pål de Vibe',
             org: 'Samferdselsdata',
+            url: 'https://offentlig-paas-no.slack.com/team/U03GY5ENCSF',
           },
         ],
         type: ItemType.Talk,
@@ -1341,7 +1535,13 @@ export const events: Event[] = [
         title: 'Vy sin AWS Native Utvikler plattform',
         description:
           'Vy kjører hele produksjonen sin med AWS, og dermed også utviklerplattformen. Her går jeg inn i hvordan utviklerne arbeider med miljøene, og hvordan vi har snekret sammen plattformen med hjelp av AWS tjenester!',
-        speakers: [{ name: 'Nicolas Harlem Eide', org: 'Vy' }],
+        speakers: [
+          {
+            name: 'Nicolas Harlem Eide',
+            org: 'Vy / Capra Consulting',
+            url: 'https://offentlig-paas-no.slack.com/team/U04EKPV8VM2',
+          },
+        ],
         type: ItemType.Talk,
       },
       {
@@ -1349,7 +1549,13 @@ export const events: Event[] = [
         title: 'Mitt skip er lastet med …',
         description:
           'Kubernetes etcd panic mode: konsekvens, feilretting og hvorfor Kyverno + fluxcd var en uheldig kombinasjon.',
-        speakers: [{ name: 'Endre Lervik', org: 'Meteorologisk institutt' }],
+        speakers: [
+          {
+            name: 'Endre Lervik',
+            org: 'Meteorologisk institutt',
+            url: 'https://offentlig-paas-no.slack.com/team/U02HRG6DMDH',
+          },
+        ],
         type: ItemType.Talk,
       },
       {
@@ -1433,7 +1639,13 @@ export const events: Event[] = [
       {
         time: '15:00',
         title: 'Brolagt sti i Oslo Origo - fra Kubernetes til AWS-native',
-        speakers: [{ name: 'Endre Midtgård Meckelborg', org: 'Oslo Origo' }],
+        speakers: [
+          {
+            name: 'Endre Midtgård Meckelborg',
+            org: 'Oslo Origo',
+            url: 'https://offentlig-paas-no.slack.com/team/U07G8USDNNM',
+          },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -1445,7 +1657,13 @@ export const events: Event[] = [
       {
         time: '15:30',
         title: 'Som utvikler forventer jeg dette fra en god plattform',
-        speakers: [{ name: 'Johannes Brodwall', org: 'PIT' }],
+        speakers: [
+          {
+            name: 'Johannes Brodwall',
+            org: 'Steria',
+            url: 'https://offentlig-paas-no.slack.com/team/U04E4LGUXDZ',
+          },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -1496,8 +1714,16 @@ export const events: Event[] = [
         description:
           'Velkommen og presentasjon av SSB sine plattforminitiativ og dataplattform.',
         speakers: [
-          { name: 'Christian Thindberg', org: 'SSB' },
-          { name: 'Trygve Falch', org: 'SSB' },
+          {
+            name: 'Christian Thindberg',
+            org: 'SSB',
+            url: 'https://offentlig-paas-no.slack.com/team/UE8RCCZHU',
+          },
+          {
+            name: 'Trygve Falch',
+            org: 'SSB',
+            url: 'https://offentlig-paas-no.slack.com/team/U52KRMN86',
+          },
           { name: 'Team Stratus', org: 'SSB' },
         ],
         type: ItemType.Talk,
@@ -1507,7 +1733,13 @@ export const events: Event[] = [
         title: 'Skytjenester og sikkerhet',
         description:
           'Nasjonal sikkerhetsmyndighet presenterer sikkerhetsperspektiver ved bruk av skytjenester i offentlig sektor.',
-        speakers: [{ name: 'John Bothner', org: 'NSM' }],
+        speakers: [
+          {
+            name: 'John Bothner',
+            org: 'NSM',
+            url: 'https://offentlig-paas-no.slack.com/team/U01HMJK9TDE',
+          },
+        ],
         type: ItemType.Talk,
       },
       {
@@ -1515,14 +1747,19 @@ export const events: Event[] = [
         title: 'Device Un-management',
         description:
           'Nav presenterer tilnærmingen til enhetshåndtering og hvordan de jobber med moderne workplace-løsninger.',
-        speakers: [{ name: 'Torbjørn Hallenberg', org: 'Nav' }],
+        speakers: [
+          {
+            name: 'Torbjørn Hallenberg',
+            org: 'Nav',
+            url: 'https://offentlig-paas-no.slack.com/team/U094VJ6NSGL',
+          },
+        ],
         type: ItemType.Talk,
       },
       {
         time: '14:30 - 15:00',
         title: 'Statusinnlegg fra organisasjonene',
-        description:
-          'Rask status og utfordringer fra 8 etater: Posten Norge (Digipost), Norsk Helsenett SF, Oslo Kommune Origo, Husbanken, Nav, Skatteetaten, Politiets IKT-tjenester og Fiskeridirektoratet.',
+        description: 'Rask status og utfordringer fra påmeldte organisasjoner.',
         speakers: [
           { name: 'Posten Norge (Digipost)' },
           { name: 'Norsk Helsenett SF' },
@@ -1567,6 +1804,7 @@ export const events: Event[] = [
       {
         name: 'Fredrik Vraalsen',
         org: 'Oslo kommune',
+        url: 'https://offentlig-paas-no.slack.com/team/UCB71NJE8',
       },
       {
         name: 'Per Kjetil Grotnes',
@@ -1590,8 +1828,16 @@ export const events: Event[] = [
         time: '09:00 - 09:15',
         title: 'Velkommen',
         speakers: [
-          { name: 'Per Kjetil Grotnes', org: 'Oslo kommune' },
-          { name: 'Fredrik Vraalsen', org: 'Oslo kommune' },
+          {
+            name: 'Per Kjetil Grotnes',
+            org: 'Oslo kommune',
+            url: 'https://offentlig-paas-no.slack.com/team/U6UF56Z0R',
+          },
+          {
+            name: 'Fredrik Vraalsen',
+            org: 'Oslo kommune',
+            url: 'https://offentlig-paas-no.slack.com/team/UCB71NJE8',
+          },
         ],
         type: ItemType.Info,
       },
@@ -1657,8 +1903,16 @@ export const events: Event[] = [
         description: 'Tre korte presentasjoner om aktuelle tema',
         speakers: [
           { name: 'Håvard Reknes', org: 'Digitaliseringsdirektoratet' },
-          { name: 'Frode Sundby', org: 'Nav' },
-          { name: 'Johnny Horvi', org: 'Nav' },
+          {
+            name: 'Frode Sundby',
+            org: 'Nav',
+            url: 'https://offentlig-paas-no.slack.com/team/U4SNTLV3K',
+          },
+          {
+            name: 'Johnny Horvi',
+            org: 'Nav',
+            url: 'https://offentlig-paas-no.slack.com/team/U4SR1TZC0',
+          },
         ],
         type: ItemType.Talk,
       },
@@ -1673,8 +1927,16 @@ export const events: Event[] = [
         title: 'Lyntaler',
         description: 'Tre korte presentasjoner om hybrid sky og serverless',
         speakers: [
-          { name: 'Harald Alexander Kulø', org: 'Oslo kommune' },
-          { name: 'Fredrik Vraalsen', org: 'Oslo kommune' },
+          {
+            name: 'Harald Alexander Kulø',
+            org: 'Oslo kommune',
+            url: 'https://offentlig-paas-no.slack.com/team/UTFJZ7GR1',
+          },
+          {
+            name: 'Fredrik Vraalsen',
+            org: 'Oslo kommune',
+            url: 'https://offentlig-paas-no.slack.com/team/UCB71NJE8',
+          },
           {
             name: 'Hans Kristian Flaatten',
             org: 'Fiskeridirektoratet',
@@ -1751,7 +2013,11 @@ export const events: Event[] = [
         time: '09:00 - 09:15',
         title: 'Velkommen',
         speakers: [
-          { name: 'Frode Bjerkenes', org: 'Telenor' },
+          {
+            name: 'Frode Bjerkenes',
+            org: 'Telenor',
+            url: 'https://offentlig-paas-no.slack.com/team/U7CK184RJ',
+          },
           {
             name: 'Hans Kristian Flaatten',
             org: 'EVRY / Fiskeridirektoratet',
@@ -1781,21 +2047,35 @@ export const events: Event[] = [
       {
         time: '10:30 - 10:50',
         title: 'Telenor DevOps Platform; dchub/bsshub',
-        speakers: [{ name: 'Ronny Pettersen', org: 'Telenor' }],
+        speakers: [
+          {
+            name: 'Ronny Pettersen',
+            org: 'Telenor',
+            url: 'https://offentlig-paas-no.slack.com/team/UMPEMQ4KW',
+          },
+        ],
         type: ItemType.Talk,
       },
       {
         time: '10:50 - 11:10',
         title: 'Bygging av container images: Jib vs Kaniko',
-        speakers: [{ name: 'Øyvind Ødegård' }],
+        speakers: [{ name: 'Øyvind Ødegård', url: 'https://offentlig-paas-no.slack.com/team/UCSGKNSUE' }],
         type: ItemType.Talk,
       },
       {
         time: '11:10 - 11:30',
         title: 'Telenors skysatsing',
         speakers: [
-          { name: 'Arnstein Schei', org: 'Telenor' },
-          { name: 'Bosse', org: 'Telenor' },
+          {
+            name: 'Arnstein Schei',
+            org: 'Telenor',
+            url: 'https://offentlig-paas-no.slack.com/team/UMPEMQ4KW',
+          },
+          {
+            name: 'Bosse Klykken',
+            org: 'Telenor',
+            url: 'https://offentlig-paas-no.slack.com/team/UMPEMQ4KW',
+          },
         ],
         type: ItemType.Talk,
       },
@@ -1847,7 +2127,11 @@ export const events: Event[] = [
         time: '16:30 - 16:40',
         title: 'Avslutning',
         speakers: [
-          { name: 'Frode Bjerkenes', org: 'Telenor' },
+          {
+            name: 'Frode Bjerkenes',
+            org: 'Telenor',
+            url: 'https://offentlig-paas-no.slack.com/team/U7CK184RJ',
+          },
           {
             name: 'Hans Kristian Flaatten',
             org: 'EVRY / Fiskeridirektoratet',
@@ -1944,7 +2228,7 @@ export const events: Event[] = [
       {
         time: '09:00 - 09:15',
         title: 'Velkommen, agenda og fasiliteter',
-        speakers: [{ name: 'Lars-Roger Billingsø', org: 'SSB' }],
+        speakers: [{ name: 'Lars-Roger Billingsø', org: 'SSB', url: 'https://offentlig-paas-no.slack.com/team/U060EL496LS' }],
         type: ItemType.Info,
       },
       {
@@ -1956,7 +2240,11 @@ export const events: Event[] = [
             org: 'Skatteetaten',
             url: 'https://offentlig-paas-no.slack.com/team/U4SM25LUQ',
           },
-          { name: 'Jørgen Binningsbø', org: 'Difi' },
+          {
+            name: 'Jørgen Binningsbø',
+            org: 'Digdir',
+            url: 'https://offentlig-paas-no.slack.com/team/U013XSE9RJB',
+          },
         ],
         type: ItemType.Talk,
       },
@@ -1986,7 +2274,7 @@ export const events: Event[] = [
             org: 'Nav',
             url: 'https://offentlig-paas-no.slack.com/team/U4U0AJ4HM',
           },
-          { name: 'Jørgen Solberg', org: 'Nav' },
+          { name: 'Jørgen Solberg', org: 'Nav', url: 'https://offentlig-paas-no.slack.com/team/U5DHLQ29G' },
         ],
         type: ItemType.Talk,
       },
@@ -1999,15 +2287,15 @@ export const events: Event[] = [
         time: '16:00 - 16:30',
         title: 'Presentasjon av BIP (Byrâets IT-Platform) og sikring av denne',
         speakers: [
-          { name: 'Lars-Roger Billingsø', org: 'SSB' },
-          { name: 'Bjørn Vestli', org: 'SSB' },
+          { name: 'Lars-Roger Billingsø', org: 'SSB', url: 'https://offentlig-paas-no.slack.com/team/U060EL496LS' },
+          { name: 'Bjørn Vestli', org: 'SSB', url: 'https://offentlig-paas-no.slack.com/team/U4SPKRPK2' },
         ],
         type: ItemType.Talk,
       },
       {
         time: '16:30 - 17:00',
         title: 'Avslutning, kommentarer fra salen, sted og tid for neste møte',
-        speakers: [{ name: 'Lars-Roger Billingsø', org: 'SSB' }],
+        speakers: [{ name: 'Lars-Roger Billingsø', org: 'SSB', url: 'https://offentlig-paas-no.slack.com/team/U060EL496LS' }],
         type: ItemType.Info,
       },
     ],
@@ -2095,7 +2383,7 @@ export const events: Event[] = [
       {
         time: '13:00 - 14:00',
         title: 'Open Space',
-        speakers: [{ name: 'Jan Helge Salvesen' }],
+        speakers: [{ name: 'Jan Helge Salvesen', url: 'https://offentlig-paas-no.slack.com/team/U7GN07EMQ' }],
         type: ItemType.Panel,
       },
       {
@@ -2237,7 +2525,13 @@ export const events: Event[] = [
         title: 'GDPR',
         description:
           'Foredrag om GDPR fra et teknologisk perspektiv og hva det vil si for utviklere og plattformer.',
-        speakers: [{ name: 'Johannes Brodwall', org: 'Steria' }],
+        speakers: [
+          {
+            name: 'Johannes Brodwall',
+            org: 'Steria',
+            url: 'https://offentlig-paas-no.slack.com/team/U04E4LGUXDZ',
+          },
+        ],
         type: ItemType.Talk,
       },
       {

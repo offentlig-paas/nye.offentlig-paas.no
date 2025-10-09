@@ -21,6 +21,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'avatars.slack-edge.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'secure.gravatar.com',
+      },
     ],
   },
   outputFileTracingIncludes: {

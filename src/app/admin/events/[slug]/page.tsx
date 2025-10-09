@@ -32,6 +32,7 @@ import { StatusBadge } from '@/components/StatusBadge'
 import { ActionsMenu } from '@/components/ActionsMenu'
 import { Avatar } from '@/components/Avatar'
 import { SendReminderModal } from '@/components/SendReminderModal'
+import { SpeakerMatcher } from '@/components/SpeakerMatcher'
 import type { RegistrationStatus } from '@/domains/event-registration/types'
 import { AttendanceTypeDisplay } from '@/lib/events/types'
 import type { SlackUser, Item as ScheduleItem } from '@/lib/events/types'
@@ -1234,6 +1235,28 @@ export default function AdminEventDetailsPage() {
           )}
         </div>
       </div>
+
+      {/* Speaker Matcher */}
+      {(() => {
+        const allSpeakers = eventDetails.schedule
+          .filter(item => item.speakers && item.speakers.length > 0)
+          .flatMap(item => item.speakers!)
+          .filter(
+            (speaker, index, self) =>
+              index === self.findIndex(s => s.name === speaker.name)
+          )
+
+        const speakersWithoutUrls = allSpeakers.filter(speaker => !speaker.url)
+
+        if (speakersWithoutUrls.length > 0) {
+          return (
+            <div className="mb-8">
+              <SpeakerMatcher eventSlug={slug} speakers={speakersWithoutUrls} />
+            </div>
+          )
+        }
+        return null
+      })()}
 
       {/* Actions */}
       <div className="mb-6 space-y-4">
