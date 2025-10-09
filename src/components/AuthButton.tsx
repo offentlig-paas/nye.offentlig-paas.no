@@ -104,11 +104,6 @@ export function AuthButton({
                   {session.user.title}
                 </p>
               )}
-              {session.user.isAdmin && (
-                <span className="mt-2 inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
-                  Admin
-                </span>
-              )}
             </div>
             <div className="p-1">
               <Link
