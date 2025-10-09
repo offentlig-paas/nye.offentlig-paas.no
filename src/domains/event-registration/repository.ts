@@ -34,7 +34,11 @@ export class EventRegistrationRepository {
    */
   async findById(id: string): Promise<EventRegistration | null> {
     const query = groq`*[_type == "eventRegistration" && _id == $id][0]`
-    const result = await sanityClient.fetch(query, { id })
+    const result = await sanityClient.fetch(
+      query,
+      { id },
+      { cache: 'no-store', next: { revalidate: 0 } }
+    )
 
     return result ? this.mapSanityToEventRegistration(result) : null
   }
@@ -47,10 +51,14 @@ export class EventRegistrationRepository {
     slackUserId: string
   ): Promise<EventRegistration | null> {
     const query = groq`*[_type == "eventRegistration" && eventSlug == $eventSlug && slackUserId == $slackUserId][0]`
-    const result = await sanityClient.fetch(query, {
-      eventSlug,
-      slackUserId,
-    })
+    const result = await sanityClient.fetch(
+      query,
+      {
+        eventSlug,
+        slackUserId,
+      },
+      { cache: 'no-store', next: { revalidate: 0 } }
+    )
 
     return result ? this.mapSanityToEventRegistration(result) : null
   }
@@ -69,6 +77,10 @@ export class EventRegistrationRepository {
       conditions.push('eventSlug == $eventSlug')
       params.eventSlug = queryParams.eventSlug
     }
+    if (queryParams.slackUserId) {
+      conditions.push('slackUserId == $slackUserId')
+      params.slackUserId = queryParams.slackUserId
+    }
     if (queryParams.status) {
       conditions.push('status == $status')
       params.status = queryParams.status
@@ -85,7 +97,10 @@ export class EventRegistrationRepository {
       query += `[${offset}...${offset + queryParams.limit}]`
     }
 
-    const results = await sanityClient.fetch(query, params)
+    const results = await sanityClient.fetch(query, params, {
+      cache: 'no-store',
+      next: { revalidate: 0 },
+    })
     return results.map((result: Record<string, unknown>) =>
       this.mapSanityToEventRegistration(result)
     )
@@ -127,7 +142,10 @@ export class EventRegistrationRepository {
 
     query += `])`
 
-    return await sanityClient.fetch(query, params)
+    return await sanityClient.fetch(query, params, {
+      cache: 'no-store',
+      next: { revalidate: 0 },
+    })
   }
 
   /**

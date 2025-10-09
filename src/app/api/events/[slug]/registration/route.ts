@@ -120,9 +120,19 @@ export async function DELETE(
 
     await eventRegistrationService.cancelRegistration(userRegistration._id!)
 
-    return NextResponse.json({
-      message: 'Påmelding avmeldt!',
-    })
+    revalidatePath(`/fagdag/${slug}`)
+    revalidatePath('/profil')
+
+    return NextResponse.json(
+      {
+        message: 'Påmelding avmeldt!',
+      },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
+        },
+      }
+    )
   } catch (error) {
     console.error('Cancellation error:', error)
     return NextResponse.json({ error: 'Feil ved avmelding' }, { status: 500 })
@@ -153,7 +163,7 @@ export async function GET(
       r => r.slackUserId === session.user.slackId
     )
 
-    const isRegistered = !!userRegistration
+    const registrationStatus = userRegistration?.status || null
 
     const registrationCounts =
       await eventRegistrationService.getRegistrationCountsByCategory(slug)
@@ -169,17 +179,21 @@ export async function GET(
       persons: registrationCounts.persons,
       organizations: registrationCounts.organizations,
       uniqueOrganizations: registrationCounts.uniqueOrganizations,
-      participants: isRegistered
-        ? activeRegistrations.slice(0, 12).map(registration => ({
-            name: registration.name,
-            slackUserId: registration.slackUserId,
-          }))
-        : [],
+      participants:
+        registrationStatus === 'confirmed' || registrationStatus === 'attended'
+          ? activeRegistrations.slice(0, 12).map(registration => ({
+              name: registration.name,
+              slackUserId: registration.slackUserId,
+            }))
+          : [],
     }
 
-    // Get participant info if registered
+    // Get participant info if actively registered
     let participantInfo = null
-    if (isRegistered) {
+    if (
+      registrationStatus === 'confirmed' ||
+      registrationStatus === 'attended'
+    ) {
       const { getEventParticipantInfo } = await import(
         '@/lib/sanity/event-participant-info'
       )
@@ -187,7 +201,7 @@ export async function GET(
     }
 
     const responseData: EventRegistrationResponse = {
-      isRegistered,
+      registrationStatus,
       registration: userRegistration
         ? (userRegistration as unknown as Registration)
         : null,
@@ -247,9 +261,19 @@ export async function PATCH(
       comments,
     })
 
-    return NextResponse.json({
-      message: 'Påmelding oppdatert!',
-    })
+    revalidatePath(`/fagdag/${slug}`)
+    revalidatePath('/profil')
+
+    return NextResponse.json(
+      {
+        message: 'Påmelding oppdatert!',
+      },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
+        },
+      }
+    )
   } catch (error) {
     console.error('Update error:', error)
     return NextResponse.json(

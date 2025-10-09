@@ -22,11 +22,23 @@ export class EventRegistrationService {
       input.slackUserId
     )
 
-    if (existingRegistration) {
+    if (existingRegistration && existingRegistration.status !== 'cancelled') {
       throw new Error('User is already registered for this event')
     }
 
     this.validateRegistrationInput(input)
+
+    if (existingRegistration && existingRegistration.status === 'cancelled') {
+      return await this.repository.update(existingRegistration._id!, {
+        ...input,
+        status: 'confirmed',
+        metadata: {
+          ...existingRegistration.metadata,
+          reregisteredAt: new Date().toISOString(),
+        },
+      })
+    }
+
     return await this.repository.create(input)
   }
 

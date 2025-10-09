@@ -15,9 +15,10 @@ import type {
   Registration,
 } from '@/types/api/registration'
 import type { EventParticipantInfo } from '@/lib/events/types'
+import type { RegistrationStatus } from '@/domains/event-registration/types'
 
 interface EventRegistrationContextValue {
-  isRegistered: boolean
+  registrationStatus: RegistrationStatus | null
   registration: Registration | null
   stats: RegistrationStats | null
   participantInfo: EventParticipantInfo | null
@@ -41,7 +42,7 @@ export function EventRegistrationProvider({
   const { data: session, status } = useSession()
 
   const [state, setState] = useState({
-    isRegistered: false,
+    registrationStatus: null as RegistrationStatus | null,
     registration: null as Registration | null,
     stats: null as RegistrationStats | null,
     participantInfo: null as EventParticipantInfo | null,
@@ -53,7 +54,9 @@ export function EventRegistrationProvider({
     // If not authenticated and not loading, fetch public stats only
     if (!session?.user?.slackId && status !== 'loading') {
       try {
-        const response = await fetch(`/api/events/${eventSlug}/stats`)
+        const response = await fetch(`/api/events/${eventSlug}/stats`, {
+          cache: 'no-store',
+        })
         if (response.ok) {
           const data = await response.json()
           setState(prev => ({
@@ -86,14 +89,16 @@ export function EventRegistrationProvider({
     // Fetch authenticated user data
     setState(prev => ({ ...prev, isCheckingStatus: true }))
     try {
-      const regResponse = await fetch(`/api/events/${eventSlug}/registration`)
+      const regResponse = await fetch(`/api/events/${eventSlug}/registration`, {
+        cache: 'no-store',
+      })
 
       if (regResponse.ok) {
         const data: EventRegistrationResponse = await regResponse.json()
 
         setState(prev => ({
           ...prev,
-          isRegistered: data.isRegistered,
+          registrationStatus: data.registrationStatus,
           registration: data.registration,
           stats: data.stats,
           participantInfo: data.participantInfo,
@@ -114,7 +119,7 @@ export function EventRegistrationProvider({
   }, [fetchData])
 
   const value: EventRegistrationContextValue = {
-    isRegistered: state.isRegistered,
+    registrationStatus: state.registrationStatus,
     registration: state.registration,
     stats: state.stats,
     participantInfo: state.participantInfo,
