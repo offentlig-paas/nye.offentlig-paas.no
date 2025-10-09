@@ -24,7 +24,7 @@ export interface Event {
   callForPapersUrl?: string
   callForPapersClosedDate?: Date
   recordingUrl?: string
-  organizers: Organizer[]
+  organizers: SlackUser[]
   schedule: Item[]
   stats?: Stats
   socialEvent?: SocialEvent
@@ -72,17 +72,17 @@ export enum Status {
   Current = 'current',
 }
 
-export interface Organizer {
+export interface SlackUser {
   name: string
   org?: string
   url?: string
 }
 
 export interface Item {
-  title: string
-  speaker?: string
-  description?: string
   time: string
+  title: string
+  description?: string
+  speakers?: SlackUser[]
   type: ItemType
   attachments?: Attachment[]
 }

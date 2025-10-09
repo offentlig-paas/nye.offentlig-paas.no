@@ -48,7 +48,13 @@ export const events: Event[] = [
       {
         time: '11:30 - 12:00',
         title: 'Self-Service: A Schizophrenic historical review',
-        speaker: 'Olivier Cloux (Telenor)',
+        speakers: [
+          {
+            name: 'Olivier Cloux',
+            org: 'Telenor',
+            url: 'https://offentlig-paas-no.slack.com/team/U05S4LR1S5P',
+          },
+        ],
         type: ItemType.Talk,
       },
       {
@@ -56,20 +62,38 @@ export const events: Event[] = [
         title: 'After success comes failure',
         description:
           'Running fast and winning - then breaking a leg. A tale of self-service',
-        speaker: 'Anders Elton (Telenor)',
+        speakers: [
+          {
+            name: 'Anders Elton',
+            org: 'Telenor',
+            url: 'https://offentlig-paas-no.slack.com/team/U09JC8B7FUK',
+          },
+        ],
         type: ItemType.Talk,
       },
       {
         time: '12:10 - 12:20',
         title: 'Towards better UX - Straight as the Kro flies',
-        speaker: 'Eline Henriksen (Telenor)',
+        speakers: [
+          {
+            name: 'Eline Henriksen',
+            org: 'Telenor',
+            url: 'https://offentlig-paas-no.slack.com/team/U02SG8873PC',
+          },
+        ],
         type: ItemType.Talk,
       },
       {
         time: '12:20 - 12:30',
         title:
           'Pick, Pay, Push - The rise of self-service, from Retail isles to Developer platform',
-        speaker: 'Sindre Lindstad (Telenor)',
+        speakers: [
+          {
+            name: 'Sindre Lindstad',
+            org: 'Telenor',
+            url: 'https://offentlig-paas-no.slack.com/team/UUHH03WPK',
+          },
+        ],
         type: ItemType.Talk,
       },
       {
@@ -83,7 +107,13 @@ export const events: Event[] = [
           'Selvbetjening er ikke bare en utviklerportal, men det er en del av kaka',
         description:
           'Hos Vy har vi lenge fokusert på hvordan vi kan bruke de få ressursene vi har til rådighet i utviklerplattformteamet best mulig. En stor del av dette er selvbetjening og hjelp til selvhjelp hos utviklerne i de forskjellige teamene. Hvilke metoder og strategier bruker vi for å få til dette, og hvordan kan man implementere en selvbetjeningsstrategi som faktisk er selvbetjent?',
-        speaker: 'Nicolas Harlem Eid (Vy)',
+        speakers: [
+          {
+            name: 'Nicolas Harlem Eid',
+            org: 'Vy',
+            url: 'https://offentlig-paas-no.slack.com/team/U04EKPV8VM2',
+          },
+        ],
         type: ItemType.Talk,
       },
       {
@@ -91,7 +121,18 @@ export const events: Event[] = [
         title: 'Nais API og Console - veien til selvbetjening',
         description:
           'Hvordan Nais har jobbet med å lage en selvbetjeningsportal for utviklere i offentlig sektor. Vi vil gå gjennom arkitektur, utfordringer og løsninger vi har funnet på veien.',
-        speaker: 'Jonny Horvi (Nav) og Frode Sundby (Nav)',
+        speakers: [
+          {
+            name: 'Jonny Horvi',
+            org: 'Nav',
+            url: 'https://offentlig-paas-no.slack.com/team/U4SR1TZC0',
+          },
+          {
+            name: 'Frode Sundby',
+            org: 'Nav',
+            url: 'https://offentlig-paas-no.slack.com/team/U4SNTLV3K',
+          },
+        ],
         type: ItemType.Talk,
       },
       {
@@ -146,7 +187,7 @@ export const events: Event[] = [
         title: 'Reengineering the stack',
         description:
           'NHN jobber med en helt ny containerplattform og vi vil presentere hvordan vi har tenkt.',
-        speaker: 'Håvard Elnan (Norsk helsenett)',
+        speakers: [{ name: 'Håvard Elnan', org: 'NHN' }],
         type: ItemType.Talk,
       },
       {
@@ -154,7 +195,16 @@ export const events: Event[] = [
         title: 'Kunstig intelligens i Skatteetaten',
         description:
           'Fra sparsom bruk av KI til innovasjon og faktisk tidsbesparelse / effektivisering. Skatteetaten presenterer reisen med vurderinger gjort underveis. Vi prater om blant annet sikkerhet, skalering, juridiske utfordringer, og gulroten i enden av tunnelen 🥕',
-        speaker: 'Tor Ivar Asbølmo og Geir Tore Johansen (Skatteetaten)',
+        speakers: [
+          {
+            name: 'Tor Ivar Asbølmo',
+            org: 'Skatteetaten',
+          },
+          {
+            name: 'Geir Tore Johansen',
+            org: 'Skatteetaten',
+          },
+        ],
         type: ItemType.Talk,
       },
       {
@@ -167,7 +217,7 @@ export const events: Event[] = [
         title: 'NHNs Observability Plattform — Design & Erfaringer',
         description:
           'NHN har mange forskjellige team og ulike produkter vi lager som understøtter helsesektoren. I denne sesjonen ser vi på observability stack-en vi tilbyr til leveranseteamene våre. Vi kikker først på hva det er vi har satt opp, og hvordan det funker i praksis. Så litt på designet og tankene bak, før vi til slutt deler et innblikk i erfaringer med hvordan observability plattformen har oppført seg.',
-        speaker: 'Simon Randby (Norsk helsenett)',
+        speakers: [{ name: 'Simon Randby', org: 'Norsk helsenett' }],
         type: ItemType.Talk,
         attachments: [
           {
@@ -181,7 +231,7 @@ export const events: Event[] = [
         title: 'TBA / Openspace',
         description:
           'Meld deg gjerne til å bidra med temaer eller spørsmål du ønsker å ta opp.',
-        speaker: 'TBA',
+        speakers: [{ name: 'TBA' }],
         type: ItemType.Talk,
       },
       {
@@ -189,7 +239,7 @@ export const events: Event[] = [
         title: 'TBA / Openspace',
         description:
           'Meld deg gjerne til å bidra med temaer eller spørsmål du ønsker å ta opp.',
-        speaker: 'TBA',
+        speakers: [{ name: 'TBA' }],
         type: ItemType.Talk,
       },
     ],
@@ -231,7 +281,13 @@ export const events: Event[] = [
       {
         time: '12:00 - 12:10',
         title: 'Velkommen',
-        speaker: 'Hans Kristian Flaatten (Styreleder)',
+        speakers: [
+          {
+            name: 'Hans Kristian Flaatten',
+            org: 'Offentlig PAAS',
+            url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+          },
+        ],
         type: ItemType.Info,
       },
       {
@@ -312,7 +368,17 @@ export const events: Event[] = [
       {
         time: '09:30 - 09:45',
         title: 'Velkommen',
-        speaker: 'Børge Nese (KS Digital) og Hans Kristian Flaatten (Nav)',
+        speakers: [
+          {
+            name: 'Børge Nese',
+            org: 'KS Digital',
+          },
+          {
+            name: 'Hans Kristian Flaatten',
+            org: 'Nav',
+            url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+          },
+        ],
         type: ItemType.Info,
       },
       {
@@ -321,7 +387,10 @@ export const events: Event[] = [
           'Fra Fiks-plattform til moderne tjenesteplattform: Økt fart på kommunal tjenesteutvikling',
         description:
           'KS Digital fornyer Fiks-plattformen til en moderne tjenesteplattform for kommunal sektor. En sentral del av denne fornyelsen er applikasjonsplattformen, som skal gjøre det enklere å utvikle, dele og gjenbruke digitale tjenester.\n\nPresentasjonen vil vise reisen fra dagens Fiks-plattform til fremtidens tjenesteplattform, med særlig fokus på den nye applikasjonsplattformen og hvordan den tilrettelegger for økt utviklingstakt og bedre samarbeid på tvers av sektoren.',
-        speaker: 'Børge Nese og Bård Singstad (KS Digital)',
+        speakers: [
+          { name: 'Børge Nese', org: 'KS Digital' },
+          { name: 'Bård Singstad', org: 'KS Digital' },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -339,7 +408,10 @@ export const events: Event[] = [
         title: 'Korleis virkar EUs digitale identitetslommebok?',
         description:
           'Alle medlemsland i EU er pålagda å ila 2026 kunne tilby innbyggere ei digital identitslommebok.  Lommeboka skal vere gratis å motta og gratis å bruke,  og offentleg sektor pliktar å ta den i bruk til pålogging og datadeling.\n\nI dette føredraget vil me fortelje litt om det nye regelverket og kva det innebærer, me vil demonstrere lommeboka slik den føreligg no, og gje ein overfladisk gjennomgang av sentrale protokollar og dataformat som vert nytta(OpenID4VCI, OpenID4VP og SD- jwt)',
-        speaker: 'Jørgen Binningsbø og Aamund Bremer (Digdir)',
+        speakers: [
+          { name: 'Jørgen Binningsbø', org: 'Digdir' },
+          { name: 'Aamund Bremer', org: 'Digdir' },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -362,7 +434,7 @@ export const events: Event[] = [
         title: 'Framtidens PaaS',
         description:
           'En no-bullshit approach til framtiden av plattformene våre i Telenor og hvordan disse vil utvikle seg drastisk de kommende årene.',
-        speaker: 'Martin Bergo (Telenor)',
+        speakers: [{ name: 'Martin Bergo', org: 'Telenor' }],
         type: ItemType.Talk,
         attachments: [
           {
@@ -380,7 +452,10 @@ export const events: Event[] = [
         title: 'Managed Kubernetes service and clusters',
         description:
           "It's about AKS automatic, and Azure K8s Fleet Manager how that can simplify even more how we work with PaaS K8s. This will come with demo and detailed architecture.",
-        speaker: 'Majid Hajian and Nicholas Mork (Microsoft)',
+        speakers: [
+          { name: 'Majid Hajian', org: 'Microsoft' },
+          { name: 'Nicholas Mork', org: 'Microsoft' },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -394,7 +469,7 @@ export const events: Event[] = [
         title: 'Hvordan få 100+ team til å jobbe selvstendig',
         description:
           'Hvordan vi har laget en selvbetjent plattform i Nav som gjør at teamene selv kan administrere sitt team og sine applikasjoner uten å vente på tickets eller tilganger!',
-        speaker: 'Hans Kristian Flaatten (Nav)',
+        speakers: [{ name: 'Hans Kristian Flaatten', org: 'Nav' }],
         type: ItemType.Talk,
         attachments: [
           {
@@ -455,7 +530,17 @@ export const events: Event[] = [
         title: 'Det er Nais å være utvikler i SSB',
         description:
           'SSB har tatt i bruk Nais for å tilby en felles plattform for utviklere. I dette foredraget vil vi dele erfaringer fra prosessen og hvordan vi i Nav har jobbet med å gjøre Nais tilgjengelig for alle i offentlig sektor under Nais as a Service (NaaS).',
-        speaker: 'John Kasper Svergja (SSB) og Hans Kristian Flaatten (Nav)',
+        speakers: [
+          {
+            name: 'John Kasper Svergja',
+            org: 'SSB',
+          },
+          {
+            name: 'Hans Kristian Flaatten',
+            org: 'Nav',
+            url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+          },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -473,7 +558,7 @@ export const events: Event[] = [
         title: 'Paneldebatt: Plattformstrategi i offentlig sektor',
         description:
           'Hvordan jobber offentlig sektor med plattformstrategi? Hva er de største utfordringene og mulighetene? Vi har invitert en rekke eksperter til en paneldebatt om temaet.',
-        speaker: 'PIT, Skatteetaten, Nav, MET, og Oslo Origo',
+        speakers: [{ name: 'PIT, Skatteetaten, Nav, MET, og Oslo Origo' }],
         type: ItemType.Panel,
         attachments: [
           {
@@ -487,7 +572,7 @@ export const events: Event[] = [
         title: 'Plattformtjenester på UiO',
         description:
           'UiO har bygget en plattform for utviklere og ansatte på IT-avdelingen til å tilby tjenester til forskere og studenter. I dette foredraget vil vi høre mer om hvordan plattformen er bygget og hvilke tjenester som tilbys.',
-        speaker: 'Halvor Utby (UiO)',
+        speakers: [{ name: 'Halvor Utby', org: 'UiO' }],
         type: ItemType.Talk,
         attachments: [
           {
@@ -510,7 +595,7 @@ export const events: Event[] = [
         title: 'CloudNativePG - PostgreSQL on Kubernetes',
         description:
           'CloudNativePG is a PostgreSQL Operator for Kubernetes. It is designed to be a simple, reliable, and easy-to-use way to run highly available PostgreSQL clusters on Kubernetes. We will hear from the creator of CloudNativePG, Gabriele Bartolini, about the project and technical details.',
-        speaker: 'Gabriele Bartolini (EnterpriseDB)',
+        speakers: [{ name: 'Gabriele Bartolini', org: 'EnterpriseDB' }],
         type: ItemType.Talk,
         attachments: [
           {
@@ -524,7 +609,9 @@ export const events: Event[] = [
         title: 'Erfaringer fra å støtte 100 utviklere med et platformteam på 2',
         description:
           'Vy har et team av over 100 utviklere, men bare to personer i plattformteamet. Hvordan får vi dette til å fungere? I dette foredraget deler vi våre erfaringer med å drive et lite plattformteam i en større utviklingsorganisasjon. Vi ser på hvordan skytjenester lar oss opprettholde høy hastighet og effektivitet, hvilke områder vi velger å bygge egne løsninger på, og hvordan vi skaper verdi ved å møte utviklerne der de er – gjennom en produktfokusert tilnærming. Bli med og få innblikk i våre suksesser, fallgruver og annen læring vi har fått fra reisen så langt.',
-        speaker: 'Nicolas Harlem Eide (Vy / Capra Consulting)',
+        speakers: [
+          { name: 'Nicolas Harlem Eide', org: 'Vy / Capra Consulting' },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -547,7 +634,7 @@ export const events: Event[] = [
         title: 'OpenTelemetry hos Norsk Tipping på vei til sky',
         description:
           'Tittel må sies å være en arbeidstittel... Norsk Tipping deler litt erfaringer de har sett med innføring av OpenTelemetry for å få innsikt ende-til-ende på tvers av sky (aws) og on-prem (wlp,k8s). Utfordringer, fordeler og veien videre. (Med håp om å finne noen som har vært i samme situasjon eller er på vei)',
-        speaker: 'Tom Andre Ska (Norsk Tipping)',
+        speakers: [{ name: 'Tom Andre Ska', org: 'Norsk Tipping' }],
         type: ItemType.Talk,
         attachments: [
           {
@@ -565,7 +652,7 @@ export const events: Event[] = [
         title: 'Avsluttning og god jul',
         description:
           'Tusen takk til alle som har vært med å gjøre Offentlig PaaS til nettverket for alle som er interessert i plattform i offentlig sektor i Norge.',
-        speaker: 'Hans Kristian Flaatten (Nav)',
+        speakers: [{ name: 'Hans Kristian Flaatten', org: 'Nav' }],
         type: ItemType.Talk,
       },
     ],
@@ -626,7 +713,7 @@ export const events: Event[] = [
         time: '09:30 - 09:35',
         title: 'Velkommen',
         description: 'Vi ønsker velkommen til Offentlig Observability Dag!',
-        speaker: 'Nav og Skatt',
+        speakers: [{ name: 'Nav og Skatt' }],
         type: ItemType.Info,
       },
       {
@@ -634,7 +721,7 @@ export const events: Event[] = [
         title: 'Introduction to OpenTelemetry & Tracing (in English)',
         description:
           'OpenTelemetry is a set of APIs, libraries, agents, and instrumentation to provide observability in your applications. In this this talk, we will introduce OpenTelemetry and how it can be used to instrument your applications to collect traces, metrics, and logs. We will also show how to use OpenTelemetry with Grafana to visualize the collected data.',
-        speaker: 'Grafana Labs & Sopra Steria',
+        speakers: [{ name: 'Grafana Labs' }, { name: 'Sopra Steria' }],
         type: ItemType.Talk,
         attachments: [
           {
@@ -652,7 +739,7 @@ export const events: Event[] = [
         title: 'Observability i Skatteetaten',
         description:
           'Skatteetaten presenterer hvordan de jobber med robusthet og innsikt i sine systemer og applikasjoner.',
-        speaker: 'Skatteetaten',
+        speakers: [{ name: 'Skatteetaten' }],
         type: ItemType.Talk,
         attachments: [
           {
@@ -675,7 +762,7 @@ export const events: Event[] = [
         title: 'Observability 2.0 i Nav',
         description:
           'I år startet Nav med å rulle ut støtte for OpenTelemetry for applikasjoner i NAIS med OpenTelemetry Operator, Grafana Tempo og Grafana Loki. I dette foredraget vil vi dele erfaringer og resultater fra dette arbeidet så langt, og kaste litt lys over hva som er planen videre.',
-        speaker: 'Hans Kristian Flaatten (Nav)',
+        speakers: [{ name: 'Hans Kristian Flaatten', org: 'Nav' }],
         type: ItemType.Talk,
         attachments: [
           {
@@ -693,7 +780,7 @@ export const events: Event[] = [
         title: 'Med kart og kompass på leting etter oversikt',
         description:
           'Kartverket presenterer sin erfaring med observability.Kartverkets reise mot helhetlig observability og de erfaringer som er gjort på veien.',
-        speaker: 'Thomas Berg (Kartverket)',
+        speakers: [{ name: 'Thomas Berg', org: 'Kartverket' }],
         type: ItemType.Talk,
         attachments: [
           {
@@ -711,7 +798,7 @@ export const events: Event[] = [
         title: 'Praktisk SLO med Pyrra - "first steps to SRE"',
         description:
           'Hvordan kan vi bruke Pyrra til å overvåke tjenester og applikasjoner? Pyrra er et verktøy for å overvåke tjenester og applikasjoner, og gir deg mulighet til å sette opp Service Level Objectives (SLO).',
-        speaker: 'Magnus Johansen (PIT)',
+        speakers: [{ name: 'Magnus Johansen', org: 'PIT' }],
         type: ItemType.Talk,
         attachments: [
           {
@@ -734,7 +821,7 @@ export const events: Event[] = [
         title: 'Utfordringer ved monitorering av dynamiske systemer',
         description:
           'Hvordan kan vi monitorere et system som er dynamisk og stadig endrer seg? Bygg dashbord som gir relevant tilbakemelding, ved å bruke OFFSET i PromQL for å sammenligne metrikker med tidligere data.',
-        speaker: 'Juan Piola Sanchez (NHN)',
+        speakers: [{ name: 'Juan Piola Sanchez', org: 'NHN' }],
         type: ItemType.Talk,
         attachments: [
           {
@@ -748,7 +835,7 @@ export const events: Event[] = [
         title: 'Argus - Digital signage',
         description:
           'Argus er en egenutviklet løsning for å vise frem observabilitydata i landskapet til Skatteetaten. Vi vil vise hvordan vi har bygget Argus, og hvordan vi bruker det i hverdagen.',
-        speaker: 'Robert Myhren (Skatteetaten)',
+        speakers: [{ name: 'Robert Myhren', org: 'Skatteetaten' }],
         type: ItemType.Info,
         attachments: [
           {
@@ -825,7 +912,10 @@ export const events: Event[] = [
         title: 'Veien mot en datadrevet kommune',
         description:
           'Hvordan UKE skrur sammen teknologi og styresett for fellesdata i kommunen basert på Microsoft Fabric. Vi deler våre erfaringer og tanker for implementering av felles dataplattform for Oslo kommune.',
-        speaker: 'Erik Tuv & Andre Gulbrandsen (UKE)',
+        speakers: [
+          { name: 'Erik Tuv', org: 'UKE' },
+          { name: 'Andre Gulbrandsen', org: 'UKE' },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -839,7 +929,10 @@ export const events: Event[] = [
         title: 'Dataplattformer for fart og flyt i politiet',
         description:
           'Politiets IT Enhet organiserer seg rundt autonome produktteam for å skape mest mulig verdi for politiet og samfunnet. Med shift-left tankesett må autonome produktteam ta eit langt større ansvar for sine produkter enn før. Korleis kan dette skalere uten å lage enormt store team? Bli med og hør korleis PIT bygger dataplattformer for å skape fart og flyt!',
-        speaker: 'Audun Vindenes Egge & Erlend Wiig (PIT)',
+        speakers: [
+          { name: 'Audun Vindenes Egge', org: 'PIT' },
+          { name: 'Erlend Wiig', org: 'PIT' },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -858,7 +951,7 @@ export const events: Event[] = [
         title: 'Datadeling med nasjonale felleskomponenter fra DigDir',
         description:
           'Samferdselsdata (Tverrsektorielt datasamarbeid for samferdsel) forteller om vårt samarbeid med DigDir og samferdselsvirksomhetene om å benytte DigDir sine nasjonale fellestjenester som data.norge.no, maskinporten, altinn og ansattporten for å muliggjøre datadeling på nasjonalt plan.',
-        speaker: 'Tine Kleivane (Samferdselsdata)',
+        speakers: [{ name: 'Tine Kleivane', org: 'Samferdselsdata' }],
         type: ItemType.Talk,
         attachments: [
           {
@@ -872,7 +965,7 @@ export const events: Event[] = [
         title: 'Et hav av data – Kystverket',
         description:
           'Kystverket startet i 2023 arbeidet med en skybasert dataplattform. Vi har mye forskjellig data - store datasett som skipstrafikk og mindre datasett som hvor fisk kan landes. Uten særlig teknisk gjeld i skyen stilte vi relativt fritt. Underveis har vi tatt veivalg, angret veivalg, testet teknologier og fått våre forventninger utfordret. Alt vi gjør skal bidra til å utføre vårt samfunnsoppdrag om å gjøre kysten til verdens sikreste og reneste.',
-        speaker: 'Stefan Ekehaug (Kystverket)',
+        speakers: [{ name: 'Stefan Ekehaug', org: 'Kystverket' }],
         type: ItemType.Talk,
         attachments: [
           {
@@ -891,7 +984,7 @@ export const events: Event[] = [
         title: 'En Open Source datastack basert på Onyxia',
         description:
           'SSB presenterer arbeidet sitt med å implementere tjenesteplattform Onyxia i sin skybaserte dataplattform, Dapla. Onyxia er utviklet av det franske statistikkbyrået (INSEE) og bygger på åpne standarder som kubernetes, helm og oidc. Den gjør det lett å tilby open source verktøy pakket som containere, slik som Jupyter, RStudio, VS Code, MLFlow osv. på en enkel og brukervennlig måte.',
-        speaker: 'Øyvind Bruer-Skarsbø (SSB)',
+        speakers: [{ name: 'Øyvind Bruer-Skarsbø', org: 'SSB' }],
         type: ItemType.Talk,
         attachments: [
           {
@@ -912,7 +1005,10 @@ export const events: Event[] = [
           'Skatteetatens Data- og Analyseplattform - 1 år inn i produksjon',
         description:
           'Siden fjorårets «skattesesong» har Skatteetaten vært i produksjon med sin data- og analyseplattform basert på Databricks i Azure. (Ja, vi vet, en «navnekonkurranse» er long overdue.) Vi mistenker at det vi lager og gjør, hver eneste dag, er noe mange andre foreløpig har som visjon. Så vi deler gjerne av våre erfaringer. I løpet av noen heseblesende minutter vil vi på Offentlig PaaS’ fagdag prøve å formidle: - Hvorfor vi bygger en plattform - Hvordan den er utviklet og videreutvikles - i smått og i stort - Hvordan vi organiserer arbeidet - i smått og i stort - Hva den brukes til akkurat nå',
-        speaker: 'Tron Magnus Svagård & Johanna Anker Kulmus (Skatt)',
+        speakers: [
+          { name: 'Tron Magnus Svagård', org: 'Skatt' },
+          { name: 'Johanna Anker Kulmus', org: 'Skatt' },
+        ],
         type: ItemType.Talk,
       },
       {
@@ -921,7 +1017,7 @@ export const events: Event[] = [
           'Foredrag: Data as Code – hvorfor snakker alle om dbt og hva er det?',
         description:
           'Data build tool er et meget populært verktøy i datalandskapet, og det har sett en utrolig vekst de siste årene. Det har nesten blitt standard å bruke dbt på plattformer som BigQuery, Snowflake og Databricks. Hva er det egentlig som gjør dette så fett? Hvordan passer dbt inn i en dataplattform og hvordan lar det deg jobbe?',
-        speaker: 'Anders Elton (Telenor)',
+        speakers: [{ name: 'Anders Elton', org: 'Telenor' }],
         type: ItemType.Talk,
         attachments: [
           {
@@ -940,7 +1036,7 @@ export const events: Event[] = [
         title: 'Datakontrakter',
         description:
           'Entur implementerer Data kontrakter på GCP. Her forteller de om implikasjonene dette har for reaktiv-arkitektur, der kontrakten blir et kontrollplangrensesnitt for dataplattform-arkitekturen.',
-        speaker: 'Anders Dahlen (Entur)',
+        speakers: [{ name: 'Anders Dahlen', org: 'Entur' }],
         type: ItemType.Talk,
         attachments: [
           {
@@ -954,7 +1050,10 @@ export const events: Event[] = [
         title: 'MLOps hos Posten',
         description:
           'Posten Bring har i flere år utviklet maskinlæringsløsninger for produksjon og merket at forvaltning av disse løsningene begynte å stjele all kapasiteten til vår data science avdeling. Vi har derfor i over ett år nå jobbet med å bygge en MLOps plattform for å effektivisere utviklingen og forvaltningen av maskinlærings- og dataprodukter. I dette foredraget skal vi gi et innblikk i våre motivasjoner og erfaringer så langt, samt ta et dypdykk ned i vår tekniske arkitektur.',
-        speaker: 'Ella Johnsen & Simen Larsen (Posten Bring AS)',
+        speakers: [
+          { name: 'Ella Johnsen', org: 'Posten Bring AS' },
+          { name: 'Simen Larsen', org: 'Posten Bring AS' },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -1021,7 +1120,10 @@ export const events: Event[] = [
           'Creating a software company out of a 168 year old Telco company',
         description:
           'What Telenor have done in the last couple of years going from being driven by toll gates and bureaucracy to autonomy and cloud native.',
-        speaker: 'Frode Bjerkenes & Vaibhav Bansal, Telenor',
+        speakers: [
+          { name: 'Frode Bjerkenes', org: 'Telenor' },
+          { name: 'Vaibhav Bansal', org: 'Telenor' },
+        ],
         type: ItemType.Talk,
         attachments: [
           {
@@ -1035,7 +1137,7 @@ export const events: Event[] = [
         title: 'Infrastructure as Software',
         description:
           'Nav sin reise fra konfigurasjonsstyring av servere, til infrastruktur som kode (terraform) og videre til det vi i dag kaller infrastruktur som software som tar hele livssyklusen til infrastruktur – ikke bare det å sette den opp.',
-        speaker: 'Hans Kristian Flaatten (Nav)',
+        speakers: [{ name: 'Hans Kristian Flaatten', org: 'Nav' }],
         type: ItemType.Talk,
         attachments: [
           {
@@ -1054,7 +1156,7 @@ export const events: Event[] = [
         title: 'Containers are awesome',
         description:
           'Technology finds more and more adaptation in our daily IT lifes. They are fast, agile and shareable. All those positives bring a downside to it - visibility. Can I trust every container content? Is my container behaving like it should? How do I detect anomalies in containers that are ephemeral by nature? We want to tackle those questions in our session and show you what Open-Source Falco and Sysdig can do for you to win back container visibility without compromising on the benefit of containers.',
-        speaker: 'Stefan Trimborn (Sysdig)',
+        speakers: [{ name: 'Stefan Trimborn', org: 'Sysdig' }],
         type: ItemType.Talk,
       },
       {
@@ -1062,7 +1164,7 @@ export const events: Event[] = [
         title: 'Entur sin reise til GCP',
         description:
           'I Entur har vi redesignet hele arkitekturen vår på GCP, og det siste året har vi satt det i drift. Alt ble rullet ut på nytt, og alle ressurser på GCP og Kubernetes er nå segmentert og tilgangsstyrt etter applikasjon og miljø, og alt er satt opp fra kode. I skrivende stund har vi 800 prosjekter, og flere skal det bli. Hva er det vi driver med?',
-        speaker: 'Sindre Lindstad (Entur)',
+        speakers: [{ name: 'Sindre Lindstad', org: 'Entur' }],
         type: ItemType.Talk,
       },
       {
@@ -1070,7 +1172,7 @@ export const events: Event[] = [
         title: '140+ cluster med ROR',
         description:
           'Se og hør hvordan NHN drifter 140+ cluster vårt egenutviklede verktøy ROR. ROR (Release - Operate - Report) er et verktøy som lar utviklere og driftsteam selv deploye, drifte og observere standardiserte cluster med organisasjonens tooling.',
-        speaker: 'Håvard Elnan (NHN)',
+        speakers: [{ name: 'Håvard Elnan', org: 'NHN' }],
         type: ItemType.Talk,
       },
       {
@@ -1083,7 +1185,7 @@ export const events: Event[] = [
         title: 'Trøbbel med Skatteetatens nettsider',
         description:
           'Flere brukere rapporterte om problemer med innlevering av Skattemeldingen sin. Hva var bakgrunnen og hvilken lærdom tok vi?',
-        speaker: 'Are Vattekar (Skatteetaten)',
+        speakers: [{ name: 'Are Vattekar', org: 'Skatteetaten' }],
         type: ItemType.Talk,
       },
       {
@@ -1091,7 +1193,9 @@ export const events: Event[] = [
         title: 'Enklere onboarding til Maskinporten og Skyporten',
         description:
           'Vi lanserer i disse dager en pilot sammen med Digdir; en løsning for å forenkle onboarding til Maskinporten, og Skyporten for å dele store datamengder. Dette kan være aktuelt for virksomheter som enten tilbyr eller konsumerer Maskinporten-apier eller skal dele data ut i offentlig sektor.',
-        speaker: 'Tine Kleivane (Tverrsektorielt datasamarbeid)',
+        speakers: [
+          { name: 'Tine Kleivane', org: 'Tverrsektorielt datasamarbeid' },
+        ],
         type: ItemType.Talk,
       },
       {
@@ -1153,7 +1257,7 @@ export const events: Event[] = [
       {
         time: '12:10 - 13:00',
         title: 'Introduksjon til ny applikasjonsplattform på Azure',
-        speaker: 'Skatteetaten',
+        speakers: [{ name: 'Skatteetaten' }],
         type: ItemType.Talk,
       },
       {
@@ -1161,7 +1265,7 @@ export const events: Event[] = [
         title: 'Adopting Network Policies in Highly Secure Environments',
         description:
           'In the world of distributed computing, everything goes over the network, but only some things should be public - especially in highly secured environments like financial services or telecommunications. Unfortunately, Kubernetes networking is open by default, and it is up to you to adopt network policies to secure it.',
-        speaker: 'Stephane Karagulmez (Isovalent)',
+        speakers: [{ name: 'Stephane Karagulmez', org: 'Isovalent' }],
         type: ItemType.Talk,
       },
       {
@@ -1172,7 +1276,7 @@ export const events: Event[] = [
       {
         time: '14:30 - 15:00',
         title: 'Introduksjon til ny data og analyseplattform på Azure',
-        speaker: 'Skatteetaten',
+        speakers: [{ name: 'Skatteetaten' }],
         type: ItemType.Talk,
       },
       {
@@ -1180,7 +1284,7 @@ export const events: Event[] = [
         title: 'Innebygget brukervennlighet i SKIP',
         description:
           'Det er et kjent dilemma at sikkerhet og lettvinthet ligger på en akse, og at høyere sikkerhet fører til lavere lettvinthet. Men må det være sånn? Plattform-teamet SKIP fra Statens Kartverk forteller om sine erfaringer med å bygge en plattform for en organisasjon som i varierende grad er kjent med sky og verktøyene vi bygget underveis for å sørge for innebygget sikkerhet',
-        speaker: 'Espen Henriksen (Kartverket)',
+        speakers: [{ name: 'Espen Henriksen', org: 'Kartverket' }],
         type: ItemType.Talk,
       },
       {
@@ -1189,8 +1293,16 @@ export const events: Event[] = [
           'Datasamarbeid i samferdselssektoren: erfaringer og fellesløsninger',
         description:
           'Tverrsektorielt datasamarbeid jobber for å støtte datadeling mellom virksomheter i samferdselssektoren. Hvilke utfordringer går igjen på tvers av virksomhetene her? Og hvilke utfordringer er egentlig nasjonale? Vi forsøker å adressere to av disse; tilgangsstyring og distribusjon; i en pilot sammen med Digdir.',
-        speaker:
-          'Tine Kleivane og Pål de Vibe - på oppdrag fra Samferdselsdepartementet',
+        speakers: [
+          {
+            name: 'Tine Kleivane',
+            org: 'Samferdselsdata',
+          },
+          {
+            name: 'Pål de Vibe',
+            org: 'Samferdselsdata',
+          },
+        ],
         type: ItemType.Talk,
       },
       {
@@ -1203,7 +1315,7 @@ export const events: Event[] = [
         title: 'Vy sin AWS Native Utvikler plattform',
         description:
           'Vy kjører hele produksjonen sin med AWS, og dermed også utviklerplattformen. Her går jeg inn i hvordan utviklerne arbeider med miljøene, og hvordan vi har snekret sammen plattformen med hjelp av AWS tjenester!',
-        speaker: 'Nicolas Harlem Eide (Vy)',
+        speakers: [{ name: 'Nicolas Harlem Eide', org: 'Vy' }],
         type: ItemType.Talk,
       },
       {
@@ -1211,7 +1323,7 @@ export const events: Event[] = [
         title: 'Mitt skip er lastet med …',
         description:
           'Kubernetes etcd panic mode: konsekvens, feilretting og hvorfor Kyverno + fluxcd var en uheldig kombinasjon.',
-        speaker: 'Endre Lervik (Meteorologisk institut)t',
+        speakers: [{ name: 'Endre Lervik', org: 'Meteorologisk institutt' }],
         type: ItemType.Talk,
       },
       {
@@ -1272,13 +1384,13 @@ export const events: Event[] = [
       {
         time: '12:15',
         title: 'Foredrag',
-        speaker: 'PIT',
+        speakers: [{ name: 'PIT' }],
         type: ItemType.Talk,
       },
       {
         time: '12:50',
         title: 'Consul / Boundary',
-        speaker: 'Hashicorp',
+        speakers: [{ name: 'Hashicorp' }],
         type: ItemType.Talk,
       },
       {
@@ -1289,13 +1401,13 @@ export const events: Event[] = [
       {
         time: '14:15',
         title: 'Deling av plattform i almen sky',
-        speaker: 'Nav, PIT, Skatt, Digdir, Mattilsynet, NSM',
+        speakers: [{ name: 'Nav, PIT, Skatt, Digdir, Mattilsynet, NSM' }],
         type: ItemType.Panel,
       },
       {
         time: '15:00',
         title: 'Brolagt sti i Oslo Origo - fra Kubernetes til AWS-native',
-        speaker: 'Endre Midtgård Meckelborg (Oslo Origo)',
+        speakers: [{ name: 'Endre Midtgård Meckelborg', org: 'Oslo Origo' }],
         type: ItemType.Talk,
         attachments: [
           {
@@ -1307,7 +1419,7 @@ export const events: Event[] = [
       {
         time: '15:30',
         title: 'Som utvikler forventer jeg dette fra en god plattform',
-        speaker: 'Johannes Brodwall (PIT)',
+        speakers: [{ name: 'Johannes Brodwall', org: 'PIT' }],
         type: ItemType.Talk,
         attachments: [
           {

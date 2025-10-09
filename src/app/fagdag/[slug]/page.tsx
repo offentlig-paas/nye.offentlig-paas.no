@@ -180,8 +180,8 @@ export async function generateMetadata({
   const speakers = Array.from(
     new Set(
       event.schedule
-        .filter(item => item.speaker && item.type === ItemType.Talk)
-        .map(item => item.speaker)
+        .filter(item => item.speakers && item.type === ItemType.Talk)
+        .flatMap(item => item.speakers!.map(s => s.name))
     )
   )
 
@@ -189,7 +189,10 @@ export async function generateMetadata({
   const talks = event.schedule
     .filter(item => item.type === ItemType.Talk && item.title)
     .slice(0, 5)
-    .map(item => `• ${item.title}${item.speaker ? ` (${item.speaker})` : ''}`)
+    .map(
+      item =>
+        `• ${item.title}${item.speakers && item.speakers.length > 0 ? ` (${item.speakers.map(s => s.name).join(', ')})` : ''}`
+    )
     .join('\n')
 
   // Create enhanced description with date, location, agenda and speakers
@@ -665,16 +668,41 @@ export default async function Fagdag({ params }: { params: Params }) {
                               <time dateTime={item.time}>{item.time}</time>
                             </dd>
                           </div>
-                          {item.speaker && (
+                          {item.speakers && item.speakers.length > 0 && (
                             <div className="xl:border-opacity-50 mt-2 flex items-start space-x-3 xl:mt-0 xl:ml-3.5 xl:border-l xl:border-gray-400 xl:pl-3.5">
-                              <dt className="mt-0.5">
-                                <span className="sr-only">Type</span>
-                                <UsersIcon
-                                  className="h-5 w-5 text-gray-400"
-                                  aria-hidden="true"
-                                />
+                              <dt className="mt-0.5 flex -space-x-1">
+                                {item.speakers.map((speaker, idx) => (
+                                  <ServerAvatar
+                                    key={idx}
+                                    name={speaker.name}
+                                    slackUrl={speaker.url}
+                                    size="sm"
+                                    className="bg-gray-100 ring-2 ring-white dark:bg-gray-700 dark:ring-gray-900"
+                                  />
+                                ))}
                               </dt>
-                              <dd>{item.speaker}</dd>
+                              <dd>
+                                {item.speakers.map((speaker, idx) => (
+                                  <React.Fragment key={idx}>
+                                    {idx > 0 && ', '}
+                                    {speaker.url ? (
+                                      <a
+                                        href={speaker.url}
+                                        className="transition hover:text-blue-600 dark:hover:text-blue-400"
+                                      >
+                                        {speaker.name}
+                                      </a>
+                                    ) : (
+                                      speaker.name
+                                    )}
+                                    {speaker.org && (
+                                      <span className="ml-1 text-gray-600 dark:text-gray-400">
+                                        ({speaker.org})
+                                      </span>
+                                    )}
+                                  </React.Fragment>
+                                ))}
+                              </dd>
                             </div>
                           )}
                         </dl>

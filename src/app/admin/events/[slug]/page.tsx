@@ -34,6 +34,7 @@ import { Avatar } from '@/components/Avatar'
 import { SendReminderModal } from '@/components/SendReminderModal'
 import type { RegistrationStatus } from '@/domains/event-registration/types'
 import { AttendanceTypeDisplay } from '@/lib/events/types'
+import type { SlackUser, Item as ScheduleItem } from '@/lib/events/types'
 
 interface EventRegistration {
   _id: string
@@ -47,21 +48,6 @@ interface EventRegistration {
   attendingSocialEvent?: boolean
   registeredAt: string
   status: RegistrationStatus
-}
-
-interface Organizer {
-  name: string
-  org?: string
-  url?: string
-}
-
-interface ScheduleItem {
-  title: string
-  speaker?: string
-  description?: string
-  time: string
-  type: string
-  attachments?: unknown[]
 }
 
 interface EventDetails {
@@ -81,7 +67,7 @@ interface EventDetails {
     disabled?: boolean
     attendanceTypes: string[]
   }
-  organizers: Organizer[]
+  organizers: SlackUser[]
   schedule: ScheduleItem[]
   eventStats?: {
     registrations: number
@@ -1016,6 +1002,59 @@ export default function AdminEventDetailsPage() {
               </div>
             </div>
           )}
+
+          {/* Speakers - Extracted from schedule */}
+          {(() => {
+            const speakers = eventDetails.schedule
+              .filter(item => item.speakers && item.speakers.length > 0)
+              .flatMap(item => item.speakers!)
+              .reduce((unique: SlackUser[], speaker) => {
+                if (!unique.find(s => s.name === speaker.name)) {
+                  unique.push(speaker)
+                }
+                return unique
+              }, [])
+
+            return speakers.length > 0 ? (
+              <div className="mt-4 border-t border-gray-200 pt-3 dark:border-gray-700">
+                <dt className="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">
+                  Foredragsholdere
+                </dt>
+                <div className="flex flex-wrap gap-3">
+                  {speakers.map((speaker, index) => (
+                    <div key={index} className="flex items-center space-x-2">
+                      <Avatar
+                        name={speaker.name}
+                        slackUrl={speaker.url}
+                        size="xs"
+                      />
+                      <div className="text-sm">
+                        {speaker.url ? (
+                          <a
+                            href={speaker.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                          >
+                            {speaker.name}
+                          </a>
+                        ) : (
+                          <span className="font-medium text-gray-900 dark:text-white">
+                            {speaker.name}
+                          </span>
+                        )}
+                        {speaker.org && (
+                          <span className="ml-1 text-xs text-gray-500 dark:text-gray-400">
+                            ({speaker.org})
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null
+          })()}
 
           {/* Schedule Summary - Very compact */}
           {eventDetails.schedule.length > 0 && (
