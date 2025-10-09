@@ -604,14 +604,16 @@ export default async function Fagdag({ params }: { params: Params }) {
                       </span>
                     </div>
                   </div>
-                  <EventRegistration
-                    eventSlug={slug}
-                    eventTitle={event.title}
-                    isAcceptingRegistrations={isAcceptingRegistrations(event)}
-                    attendanceTypes={event.registration.attendanceTypes}
-                    socialEvent={event.socialEvent}
-                    showOnlySocialEvent={true}
-                  />
+                  {isAcceptingRegistrations(event) && (
+                    <EventRegistration
+                      eventSlug={slug}
+                      eventTitle={event.title}
+                      isAcceptingRegistrations={true}
+                      attendanceTypes={event.registration.attendanceTypes}
+                      socialEvent={event.socialEvent}
+                      showOnlySocialEvent={true}
+                    />
+                  )}
                 </div>
               )}
               <h2 className="mt-8 text-base leading-6 font-semibold">Agenda</h2>
