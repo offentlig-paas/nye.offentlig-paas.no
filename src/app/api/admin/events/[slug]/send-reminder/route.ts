@@ -85,6 +85,8 @@ export async function POST(
     })
   }
 
+  const profileUrl = `${protocol}://${host}/profil`
+
   blocks.push({
     type: 'actions',
     elements: [
@@ -97,6 +99,16 @@ export async function POST(
         },
         url: eventUrl,
         action_id: 'view_event',
+      },
+      {
+        type: 'button',
+        text: {
+          type: 'plain_text',
+          text: '📋 Mine påmeldinger',
+          emoji: true,
+        },
+        url: profileUrl,
+        action_id: 'view_profile',
       },
     ],
   })
