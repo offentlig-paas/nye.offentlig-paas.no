@@ -16,7 +16,7 @@ const statusOptions: { value: RegistrationStatus; label: string }[] = [
   { value: 'waitlist', label: 'Venteliste' },
   { value: 'attended', label: 'Deltok' },
   { value: 'no-show', label: 'Ikke møtt' },
-  { value: 'cancelled', label: 'Avbrutt' },
+  { value: 'cancelled', label: 'Avmeldt' },
 ]
 
 export function StatusDropdown({

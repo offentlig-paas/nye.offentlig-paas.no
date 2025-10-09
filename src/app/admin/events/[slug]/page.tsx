@@ -1228,7 +1228,7 @@ export default function AdminEventDetailsPage() {
               <option value="waitlist">Venteliste</option>
               <option value="attended">Deltok</option>
               <option value="no-show">Ikke møtt</option>
-              <option value="cancelled">Avbrutt</option>
+              <option value="cancelled">Avmeldt</option>
             </select>
 
             <select

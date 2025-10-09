@@ -114,7 +114,7 @@ const statusOptions: {
   },
   {
     value: 'cancelled',
-    label: 'Avbrutt',
+    label: 'Avmeldt',
     icon: XCircleIcon,
     color: 'text-red-600 dark:text-red-400',
   },
