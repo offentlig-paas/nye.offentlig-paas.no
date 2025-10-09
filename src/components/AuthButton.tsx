@@ -164,11 +164,12 @@ export function AuthButton({
     <Button
       variant="primary"
       onClick={() => {
+        const callbackUrl = window.location.pathname + window.location.search
         const teamId = process.env.NEXT_PUBLIC_SLACK_TEAM_ID
         if (teamId) {
-          signIn('slack', undefined, { team: teamId })
+          signIn('slack', { callbackUrl }, { team: teamId })
         } else {
-          signIn('slack')
+          signIn('slack', { callbackUrl })
         }
       }}
       className={`flex items-center gap-2 ${className || ''}`}

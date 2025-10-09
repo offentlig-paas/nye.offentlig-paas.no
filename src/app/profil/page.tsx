@@ -31,7 +31,7 @@ export default async function ProfilePage() {
   const session = await auth()
 
   if (!session || !session.user) {
-    redirect('/auth/signin')
+    redirect('/auth/signin?callbackUrl=/profil')
   }
 
   const user = session.user

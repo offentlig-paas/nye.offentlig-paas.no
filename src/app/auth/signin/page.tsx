@@ -5,11 +5,16 @@ import { Button } from '@/components/Button'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 
-export default async function SignInPage() {
+export default async function SignInPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ callbackUrl?: string }>
+}) {
   const session = await auth()
+  const { callbackUrl } = await searchParams
 
   if (session) {
-    redirect('/')
+    redirect(callbackUrl || '/')
   }
 
   return (
@@ -30,11 +35,21 @@ export default async function SignInPage() {
               </p>
 
               <form
-                action={async () => {
+                action={async (formData: FormData) => {
                   'use server'
-                  await signIn('slack')
+                  const redirectTo = formData.get('callbackUrl') as
+                    | string
+                    | null
+                  await signIn('slack', {
+                    redirectTo: redirectTo || undefined,
+                  })
                 }}
               >
+                <input
+                  type="hidden"
+                  name="callbackUrl"
+                  value={callbackUrl || '/'}
+                />
                 <Button
                   type="submit"
                   variant="primary"
