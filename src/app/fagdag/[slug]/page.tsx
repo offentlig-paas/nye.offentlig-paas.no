@@ -18,7 +18,12 @@ import {
   isCallForPapersOpen,
   canUserAccessEvent,
 } from '@/lib/events/helpers'
-import { formatDateTime } from '@/lib/formatDate'
+import {
+  formatDateTime,
+  formatDateLong,
+  formatTimeRange,
+  formatTime,
+} from '@/lib/formatDate'
 import { auth } from '@/auth'
 import type { Attachment } from '@/lib/events/types'
 import {
@@ -168,22 +173,8 @@ export async function generateMetadata({
   }
 
   // Format date and location
-  const eventDate = event.start.toLocaleDateString('nb-NO', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    timeZone: 'Europe/Oslo',
-  })
-  const eventTime = `${event.start.toLocaleTimeString('nb-NO', {
-    hour: '2-digit',
-    minute: '2-digit',
-    timeZone: 'Europe/Oslo',
-  })} - ${event.end.toLocaleTimeString('nb-NO', {
-    hour: '2-digit',
-    minute: '2-digit',
-    timeZone: 'Europe/Oslo',
-  })}`
+  const eventDate = formatDateLong(event.start)
+  const eventTime = formatTimeRange(event.start, event.end)
 
   // Get speakers from schedule (unique list)
   const speakers = Array.from(
@@ -599,17 +590,7 @@ export default async function Fagdag({ params }: { params: Params }) {
                       </p>
                       {event.callForPapersClosedDate && (
                         <p className="mt-2 text-sm font-medium text-blue-800 dark:text-blue-300">
-                          Frist:{' '}
-                          {event.callForPapersClosedDate.toLocaleDateString(
-                            'nb-NO',
-                            {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            }
-                          )}
+                          Frist: {formatDateTime(event.callForPapersClosedDate)}
                         </p>
                       )}
                     </div>
@@ -636,17 +617,8 @@ export default async function Fagdag({ params }: { params: Params }) {
                     <div className="flex items-center gap-2">
                       <CalendarDaysIcon className="h-4 w-4 flex-shrink-0" />
                       <span>
-                        {event.socialEvent.start.toLocaleDateString('nb-NO', {
-                          weekday: 'long',
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })}{' '}
-                        kl.{' '}
-                        {event.socialEvent.start.toLocaleTimeString('nb-NO', {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
+                        {formatDateLong(event.socialEvent.start)} kl.{' '}
+                        {formatTime(event.socialEvent.start)}
                       </span>
                     </div>
                   </div>

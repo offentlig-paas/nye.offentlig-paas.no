@@ -51,7 +51,7 @@ export function AuthButton({
       <div className="group relative" ref={dropdownRef}>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="flex items-center gap-2 rounded-full bg-white/90 px-3 py-2 shadow-lg ring-1 shadow-zinc-800/5 ring-zinc-900/5 backdrop-blur transition hover:bg-white/95 hover:ring-zinc-900/10 dark:bg-zinc-800/90 dark:ring-white/10 dark:hover:bg-zinc-800/95 dark:hover:ring-white/20"
+          className="flex h-10 items-center gap-2 rounded-full bg-white/90 px-3 py-2 shadow-lg ring-1 shadow-zinc-800/5 ring-zinc-900/5 backdrop-blur transition hover:bg-white/95 hover:ring-zinc-900/10 dark:bg-zinc-800/90 dark:ring-white/10 dark:hover:bg-zinc-800/95 dark:hover:ring-white/20"
         >
           {session.user.image ? (
             <div className="relative h-6 w-6 overflow-hidden rounded-full ring-1 ring-white/20">
@@ -103,11 +103,6 @@ export function AuthButton({
                 <p className="text-xs text-zinc-500 dark:text-zinc-500">
                   {session.user.title}
                 </p>
-              )}
-              {session.user.isAdmin && (
-                <span className="mt-2 inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
-                  Admin
-                </span>
               )}
             </div>
             <div className="p-1">
@@ -164,17 +159,18 @@ export function AuthButton({
     <Button
       variant="primary"
       onClick={() => {
+        const callbackUrl = window.location.pathname + window.location.search
         const teamId = process.env.NEXT_PUBLIC_SLACK_TEAM_ID
         if (teamId) {
-          signIn('slack', undefined, { team: teamId })
+          signIn('slack', { callbackUrl }, { team: teamId })
         } else {
-          signIn('slack')
+          signIn('slack', { callbackUrl })
         }
       }}
-      className={`flex items-center gap-2 ${className || ''}`}
+      className={`flex h-10 items-center gap-2 ${className || ''}`}
     >
       <svg
-        className="h-4 w-4"
+        className="h-6 w-6"
         viewBox="0 0 24 24"
         fill="currentColor"
         aria-hidden="true"

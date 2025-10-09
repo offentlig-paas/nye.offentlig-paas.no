@@ -36,7 +36,7 @@ export function getIcsFileContent(
     'VERSION:2.0',
     'BEGIN:VEVENT',
     `UID:${event.slug}`,
-    `DTSTAMP:${calendarDateTime(new Date())}`,
+    `DTSTAMP:${calendarDateTime(event.start)}`,
     `DTSTART:${calendarDateTime(event.start)}`,
     `DTEND:${calendarDateTime(event.end)}`,
     `SUMMARY:${event.title}`,

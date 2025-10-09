@@ -18,6 +18,7 @@ import {
   CheckIcon,
   XMarkIcon,
 } from '@heroicons/react/20/solid'
+import { formatDateLong } from '@/lib/formatDate'
 
 interface EventRegistrationItem {
   event: Event
@@ -115,14 +116,7 @@ function EventDetails({ event }: EventDetailsProps) {
     <>
       <div className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400">
         <CalendarIcon className="h-4 w-4 flex-shrink-0" />
-        <span>
-          {event.start.toLocaleDateString('nb-NO', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
-        </span>
+        <span>{formatDateLong(event.start)}</span>
       </div>
       <div className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400">
         <MapPinIcon className="h-4 w-4 flex-shrink-0" />

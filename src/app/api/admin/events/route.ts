@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { eventRegistrationService } from '@/domains/event-registration'
 import { getAllEvents, canUserAccessEvent } from '@/lib/events/helpers'
 import { authorizeAdmin } from '@/lib/api/auth-middleware'
+import { formatDateShort } from '@/lib/formatDate'
 
 export async function GET(request: NextRequest) {
   const authResult = await authorizeAdmin(request, '/api/admin/events', 'GET')
@@ -40,11 +41,7 @@ export async function GET(request: NextRequest) {
       return {
         slug: event.slug,
         title: event.title,
-        date: event.start.toLocaleDateString('nb-NO', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        }),
+        date: formatDateShort(event.start),
         location: event.location,
         audience: event.audience,
         totalRegistrations,

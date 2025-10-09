@@ -18,6 +18,7 @@ import {
   MapPinIcon,
   CalendarDaysIcon,
 } from '@heroicons/react/20/solid'
+import { formatTime } from '@/lib/formatDate'
 
 interface EventRegistrationProps {
   eventSlug: string
@@ -244,12 +245,7 @@ const RegistrationForm = memo(function RegistrationForm({
             </div>
             <div className="flex items-center gap-2">
               <CalendarDaysIcon className="h-4 w-4 flex-shrink-0" />
-              <span>
-                {socialEvent.start.toLocaleString('nb-NO', {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })}
-              </span>
+              <span>{formatTime(socialEvent.start)}</span>
             </div>
           </div>
           <label className="flex items-center gap-2 text-sm text-teal-900 dark:text-teal-100">
@@ -329,8 +325,11 @@ export const EventRegistration = memo(function EventRegistration({
 }: EventRegistrationProps) {
   const { data: session } = useSession()
   const { showSuccess, showError } = useToast()
-  const { isRegistered, registration, stats, isCheckingStatus, refetch } =
+  const { registrationStatus, registration, stats, isCheckingStatus, refetch } =
     useEventRegistration()
+
+  const isActivelyRegistered =
+    registrationStatus === 'confirmed' || registrationStatus === 'attended'
 
   const [state, setState] = useState({
     isLoading: false,
@@ -486,7 +485,7 @@ export const EventRegistration = memo(function EventRegistration({
       return null
     }
 
-    if (!isRegistered) {
+    if (!isActivelyRegistered) {
       return null
     }
 
@@ -538,7 +537,7 @@ export const EventRegistration = memo(function EventRegistration({
     )
   }
 
-  if (isRegistered) {
+  if (isActivelyRegistered) {
     return (
       <div className="rounded-lg bg-green-50 p-6 dark:bg-green-900/20">
         <h3 className="mb-2 flex items-center gap-2 text-base font-semibold text-green-900 dark:text-green-100">

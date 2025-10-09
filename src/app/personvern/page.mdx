@@ -1,53 +1,75 @@
 import { SimpleLayout } from '@/components/SimpleLayout'
+import { Prose } from '@/components/Prose'
 
 export const metadata = {
   title: 'Personvernerklæring',
   description: 'Personvernerklæring for Offentlig PaaS og våre fagdager',
 }
 
-export default props => <SimpleLayout {...props} />
-
-# Personvernerklæring
-
-_Sist oppdatert: 8. oktober 2025_
-
-Offentlig PaaS er et nettverk for fagpersoner i offentlig sektor som jobber med plattformutvikling og DevOps. Denne personvernerklæringen beskriver hvordan vi samler inn, bruker og beskytter personopplysninger når du bruker vår nettside og melder deg på våre fagdager.
+export default function MDXContent(props) {
+  return (
+    <SimpleLayout
+      title="Personvernerklæring"
+      intro="Vi i Offentlig PaaS bygger et åpent fagmiljø der vi deler kunnskap og erfaringer på tvers av offentlig sektor. Samtidig tar vi personvernet ditt på alvor. Denne erklæringen forklarer hvordan vi samler inn og bruker personopplysninger når du logger inn, melder deg på fagdager eller deltar i våre arrangementer. Vi er transparente om hva som skjer med dataene dine, og du har full kontroll – inkludert mulighet til å slette kontoen din når som helst."
+      lastUpdated="2025-10-09"
+    >
+      <Prose className="max-w-none">{props.children}</Prose>
+    </SimpleLayout>
+  )
+}
 
 ## 1. Behandlingsansvarlig
 
 **Offentlig PaaS**
-Kontakt: [slack.com/offentligpaas](https://slack.com/offentligpaas)
+E-post: [kontakt@offentlig-paas.no](mailto:kontakt@offentlig-paas.no)
+Slack: [offentlig-paas-no.slack.com](https://offentlig-paas-no.slack.com)
 
 ## 2. Hvilke personopplysninger samler vi inn?
 
 ### 2.1 Innlogging via Slack
 
-Når du logger inn på vår nettside via Slack OAuth, samler vi inn:
+Når du logger inn på vår nettside via Slack OAuth, samler vi inn grunnleggende profilinformasjon fra din Slack-konto:
 
-- **Navn** (fra din Slack-profil)
-- **E-postadresse** (fra din Slack-profil)
-- **Slack bruker-ID**
-- **Profilbilde**
-- **Slack workspace-ID** (for å verifisere at du er medlem av Offentlig PaaS workspace)
-- **Jobbtittel, avdeling og statusmelding** (hvis tilgjengelig i din Slack-profil)
-- **Administratorrettigheter** (om du er workspace-admin eller medlem av admin-grupper)
+- Navn, e-postadresse og profilbilde
+- Slack bruker-ID og workspace-tilhørighet
+- Jobbrelatert informasjon som er tilgjengelig i din Slack-profil
+- Administratorrettigheter hvis relevant
 
 ### 2.2 Påmelding til fagdager
 
-Når du melder deg på en fagdag, lagrer vi:
+Når du melder deg på en fagdag, lagrer vi nødvendig informasjon for å administrere arrangementet:
 
-- **Navn**
-- **E-postadresse**
-- **Slack bruker-ID**
-- **Organisasjon** (din arbeidsgiver)
-- **Matpreferanser/allergier** (valgfritt)
-- **Kommentarer** (valgfritt)
-- **Oppmøtetype** (fysisk eller digitalt)
-- **Deltakelse på sosial del** (om relevant)
-- **Påmeldingsdato og -tidspunkt**
-- **Påmeldingsstatus** (bekreftet, venteliste, avmeldt, møtt opp, ikke møtt opp)
+- Kontaktinformasjon (navn, e-post, Slack-ID)
+- Organisasjonstilhørighet
+- Oppmøtepreferanser (fysisk/digitalt) og deltakelse på sosiale arrangementer
+- Matpreferanser og andre praktiske behov (valgfritt)
+- Påmeldingsstatus og tidspunkt
 
-### 2.3 Bruk av nettsiden
+### 2.3 Bilder, video og opptak
+
+Vi tar bilder og gjør opptak under våre arrangementer for dokumentasjons- og markedsføringsformål:
+
+- Foto og video under fagdager og andre arrangementer
+- Opptak av presentasjoner og diskusjoner
+- Skjermbilder og demoer
+
+Bilder og opptak publiseres på følgende plattformer:
+
+- Foto publiseres på vår nettside (offentlig-paas.no)
+- Videoopptak publiseres på vår YouTube-kanal
+- Bilder kan også deles i nyhetsbrev og artikler
+- Utvalgte bilder kan publiseres på sosiale medier
+
+**Reservasjonsrett for deltakere:**
+Du har rett til å reservere deg mot fotografering og filming ved å gi beskjed til arrangøren før eller under arrangementet.
+
+**Forventninger til foredragsholdere:**
+Foredragsholdere forventes å akseptere at presentasjonen blir filmet og publisert på YouTube. Dersom du som foredragsholder ønsker å reservere deg mot opptak, må dette avtales i god tid før arrangementet. Merk at vi i slike tilfeller ikke kan garantere at foredraget kan gjennomføres.
+
+**Chatham House Rule:**
+Formelle presentasjoner publiseres med full attribusjon, mens diskusjoner, spørsmål/svar og uformelle samtaler er underlagt [Chatham House Rule](https://www.chathamhouse.org/about-us/chatham-house-rule). Dette betyr at identitet og organisasjonstilhørighet for deltakere i diskusjoner ikke publiseres eller deles videre.
+
+### 2.4 Bruk av nettsiden
 
 Vi bruker analyseverktøy som kan samle inn:
 
@@ -55,44 +77,15 @@ Vi bruker analyseverktøy som kan samle inn:
 - **Brukerstatistikk** (sidevisninger, klikk, besøkstid)
 - **Ytelsesdata** (lastetider, feil)
 
-## 3. Formål og rettslig grunnlag
+## 3. Lagring av personopplysninger
 
-Vi behandler personopplysninger for følgende formål:
+### 3.1 Lagringsperiode for påmeldingsdata
 
-### 3.1 Innlogging og tilgangskontroll
+Personopplysninger knyttet til arrangementspåmeldinger lagres i 2 år etter arrangementets gjennomføring. Etter dette blir dataene automatisk slettet eller anonymisert.
 
-- **Formål**: Autentisere brukere og gi tilgang til påmelding
-- **Rettslig grunnlag**: Samtykke ved innlogging
-- **Lagringstid**: Så lenge du er innlogget (sesjon)
+### 3.2 Lagringsperiode for bilder og videoopptak
 
-### 3.2 Arrangere fagdager
-
-- **Formål**: Administrere påmeldinger, sende påminnelser, tilrettelegge mat, og føre oversikt over deltakere
-- **Rettslig grunnlag**: Avtale (din påmelding) og berettiget interesse (arrangementadministrasjon)
-- **Lagringstid**: Inntil 2 år etter arrangementet
-
-### 3.3 Kommunikasjon
-
-- **Formål**: Sende informasjon om fagdagen, påminnelser og oppfølging
-- **Rettslig grunnlag**: Avtale og samtykke
-- **Lagringstid**: Inntil 2 år etter arrangementet
-
-### 3.4 Statistikk og forbedring
-
-- **Formål**: Analysere bruk av nettsiden, forbedre brukeropplevelsen og planlegge fremtidige arrangementer
-- **Rettslig grunnlag**: Berettiget interesse
-- **Lagringstid**: Anonymiserte data oppbevares på ubestemt tid
-
-## 4. Hvor lagres dataene?
-
-Personopplysninger lagres hos følgende tjenester:
-
-- **Sanity.io**: Database for påmeldinger (EU/USA-servere med GDPR-avtale)
-- **Vercel**: Hosting av nettsiden (globalt nettverk, GDPR-kompatibelt)
-- **Slack**: Autentisering og profilinformasjon (USA, GDPR-kompatibelt)
-- **Vercel Analytics**: Anonymisert brukstatistikk (GDPR-vennlig)
-
-Alle tjenesteleverandører er GDPR-kompatible og har inngått databehandleravtaler der det er påkrevd.
+Bilder som publiseres på nettsiden og videoopptak som publiseres på YouTube kan lagres uten tidsbegrensning, da disse er av allmenn interesse og dokumenterer fagmiljøets aktiviteter. For bilder og opptak som ikke publiseres offentlig, gjelder en lagringsperiode på 2 år. Du har rett til å be om sletting av bilder/opptak hvor du er identifiserbar, men dette kan bli avslått dersom bildet/opptaket er av vesentlig allmenn interesse.
 
 ## 5. Deling av personopplysninger
 
@@ -126,7 +119,7 @@ Du kan når som helst slette din konto via din [profilside](/profil). Når du sl
 
 Dette sikrer at vi oppfyller GDPR-krav samtidig som vi kan opprettholde historisk statistikk og kapasitetsstyring for arrangementer.
 
-For å utøve andre rettigheter, kontakt oss via Slack workspace eller på din profilside.
+For å utøve andre rettigheter, kontakt oss på [kontakt@offentlig-paas.no](mailto:kontakt@offentlig-paas.no), via Slack workspace eller på din profilside.
 
 ## 7. Informasjonskapsler (cookies)
 
@@ -159,7 +152,8 @@ Vi kan oppdatere denne personvernerklæringen fra tid til annen. Vesentlige endr
 
 Har du spørsmål om personvern eller ønsker å utøve dine rettigheter?
 
-- **Slack workspace**: [slack.com/offentligpaas](https://slack.com/offentligpaas)
+- **E-post**: [kontakt@offentlig-paas.no](mailto:kontakt@offentlig-paas.no)
+- **Slack workspace**: [offentlig-paas-no.slack.com](https://offentlig-paas-no.slack.com)
 - **Nettside**: Din profilside etter innlogging
 
 Du har også rett til å klage til Datatilsynet hvis du mener vi behandler personopplysningene dine i strid med gjeldende regelverk.

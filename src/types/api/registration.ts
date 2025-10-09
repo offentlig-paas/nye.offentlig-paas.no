@@ -1,4 +1,5 @@
 import type { AttendanceType, EventParticipantInfo } from '@/lib/events/types'
+import type { RegistrationStatus } from '@/domains/event-registration/types'
 
 export interface Participant {
   name: string
@@ -9,6 +10,7 @@ export interface Registration {
   _id?: string
   attendingSocialEvent?: boolean
   attendanceType?: AttendanceType
+  status?: RegistrationStatus
   [key: string]: unknown
 }
 
@@ -21,7 +23,7 @@ export interface RegistrationStats {
 }
 
 export interface EventRegistrationResponse {
-  isRegistered: boolean
+  registrationStatus: RegistrationStatus | null
   registration: Registration | null
   stats: RegistrationStats
   participantInfo: EventParticipantInfo | null

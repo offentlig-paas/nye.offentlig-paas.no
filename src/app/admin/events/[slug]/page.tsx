@@ -7,6 +7,7 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { useToast } from '@/components/ToastProvider'
+import { formatDateTime } from '@/lib/formatDate'
 import {
   ArrowLeftIcon,
   UsersIcon,
@@ -341,7 +342,7 @@ export default function AdminEventDetailsPage() {
           `"${reg.organisation}"`,
           `"${reg.attendanceType || ''}"`,
           `"${reg.comments || ''}"`,
-          `"${new Date(reg.registeredAt).toLocaleString('nb-NO')}"`,
+          `"${formatDateTime(reg.registeredAt)}"`,
           `"${reg.status}"`,
         ].join(',')
       ),
@@ -832,31 +833,7 @@ export default function AdminEventDetailsPage() {
                     Tid
                   </dt>
                   <dd className="text-sm text-gray-900 dark:text-white">
-                    {new Date(eventDetails.startTime).toLocaleDateString(
-                      'nb-NO',
-                      {
-                        weekday: 'short',
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric',
-                      }
-                    )}
-                    <br />
-                    {new Date(eventDetails.startTime).toLocaleTimeString(
-                      'nb-NO',
-                      {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      }
-                    )}{' '}
-                    -{' '}
-                    {new Date(eventDetails.endTime).toLocaleTimeString(
-                      'nb-NO',
-                      {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      }
-                    )}
+                    {formatDateTime(eventDetails.startTime)}
                   </dd>
                 </div>
               </div>
@@ -1251,7 +1228,7 @@ export default function AdminEventDetailsPage() {
               <option value="waitlist">Venteliste</option>
               <option value="attended">Deltok</option>
               <option value="no-show">Ikke møtt</option>
-              <option value="cancelled">Avbrutt</option>
+              <option value="cancelled">Avmeldt</option>
             </select>
 
             <select

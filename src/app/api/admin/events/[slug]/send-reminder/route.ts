@@ -6,6 +6,8 @@ import {
   type MessagePayload,
 } from '@/lib/slack/messaging'
 import type { KnownBlock } from '@slack/web-api'
+import { formatDateLong, formatTimeRange } from '@/lib/formatDate'
+import { getEventParticipantInfo } from '@/lib/sanity/event-participant-info'
 
 export async function POST(
   request: NextRequest,
@@ -32,7 +34,11 @@ export async function POST(
     return NextResponse.json({ error: 'Message is required' }, { status: 400 })
   }
 
-  const { event } = auth
+  const participantInfo = await getEventParticipantInfo(slug)
+  const event = {
+    ...auth.event,
+    participantInfo: participantInfo || undefined,
+  }
   const protocol = request.headers.get('x-forwarded-proto') || 'https'
   const host =
     process.env.NEXT_PUBLIC_SITE_URL?.replace(/^https?:\/\//, '') ||
@@ -60,11 +66,11 @@ export async function POST(
         },
         {
           type: 'mrkdwn',
-          text: `📅 ${new Date(event.start).toLocaleDateString('nb-NO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`,
+          text: `📅 ${formatDateLong(event.start)}`,
         },
         {
           type: 'mrkdwn',
-          text: `🕒 ${new Date(event.start).toLocaleTimeString('nb-NO', { hour: '2-digit', minute: '2-digit' })} - ${new Date(event.end).toLocaleTimeString('nb-NO', { hour: '2-digit', minute: '2-digit' })}`,
+          text: `🕒 ${formatTimeRange(event.start, event.end)}`,
         },
         {
           type: 'mrkdwn',
@@ -74,30 +80,53 @@ export async function POST(
     },
   ]
 
-  if (event.participantInfo?.streamingUrl) {
-    blocks.push({
-      type: 'section',
+  const profileUrl = `${protocol}://${host}/profil`
+
+  const actionButtons: Array<{
+    type: 'button'
+    text: { type: 'plain_text'; text: string; emoji: boolean }
+    url: string
+    action_id: string
+  }> = [
+    {
+      type: 'button',
       text: {
-        type: 'mrkdwn',
-        text: `🎥 *Direktestrøm:* <${event.participantInfo.streamingUrl}|Bli med digitalt>`,
+        type: 'plain_text',
+        text: '📝 Se program',
+        emoji: true,
       },
+      url: eventUrl,
+      action_id: 'view_event',
+    },
+  ]
+
+  if (event.participantInfo?.streamingUrl) {
+    actionButtons.push({
+      type: 'button',
+      text: {
+        type: 'plain_text',
+        text: '🎥 Direktestrøm',
+        emoji: true,
+      },
+      url: event.participantInfo.streamingUrl,
+      action_id: 'join_stream',
     })
   }
 
+  actionButtons.push({
+    type: 'button',
+    text: {
+      type: 'plain_text',
+      text: '📋 Mine påmeldinger',
+      emoji: true,
+    },
+    url: profileUrl,
+    action_id: 'view_profile',
+  })
+
   blocks.push({
     type: 'actions',
-    elements: [
-      {
-        type: 'button',
-        text: {
-          type: 'plain_text',
-          text: '📝 Se program',
-          emoji: true,
-        },
-        url: eventUrl,
-        action_id: 'view_event',
-      },
-    ],
+    elements: actionButtons,
   })
 
   const payload: MessagePayload = {
