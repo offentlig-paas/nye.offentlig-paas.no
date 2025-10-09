@@ -51,7 +51,7 @@ export function AuthButton({
       <div className="group relative" ref={dropdownRef}>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="flex items-center gap-2 rounded-full bg-white/90 px-3 py-2 shadow-lg ring-1 shadow-zinc-800/5 ring-zinc-900/5 backdrop-blur transition hover:bg-white/95 hover:ring-zinc-900/10 dark:bg-zinc-800/90 dark:ring-white/10 dark:hover:bg-zinc-800/95 dark:hover:ring-white/20"
+          className="flex h-10 items-center gap-2 rounded-full bg-white/90 px-3 py-2 shadow-lg ring-1 shadow-zinc-800/5 ring-zinc-900/5 backdrop-blur transition hover:bg-white/95 hover:ring-zinc-900/10 dark:bg-zinc-800/90 dark:ring-white/10 dark:hover:bg-zinc-800/95 dark:hover:ring-white/20"
         >
           {session.user.image ? (
             <div className="relative h-6 w-6 overflow-hidden rounded-full ring-1 ring-white/20">
@@ -167,10 +167,10 @@ export function AuthButton({
           signIn('slack', { callbackUrl })
         }
       }}
-      className={`flex items-center gap-2 ${className || ''}`}
+      className={`flex h-10 items-center gap-2 ${className || ''}`}
     >
       <svg
-        className="h-4 w-4"
+        className="h-6 w-6"
         viewBox="0 0 24 24"
         fill="currentColor"
         aria-hidden="true"
