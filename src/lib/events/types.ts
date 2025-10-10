@@ -9,6 +9,11 @@ export interface EventParticipantInfo {
   notes?: string
 }
 
+export interface SlackChannel {
+  id: string
+  name: string
+}
+
 export interface Event {
   slug: string
   title: string
@@ -29,6 +34,7 @@ export interface Event {
   stats?: Stats
   socialEvent?: SocialEvent
   participantInfo?: EventParticipantInfo
+  slackChannel?: SlackChannel
 }
 
 export interface RegistrationSettings {

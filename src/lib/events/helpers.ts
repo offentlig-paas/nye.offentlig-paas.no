@@ -48,6 +48,33 @@ export function formatDescription(description: string) {
   return description.replace(/\n/g, '<br>')
 }
 
+/**
+ * Extracts unique speakers from event schedule
+ * @param schedule Event schedule items with optional speakers
+ * @returns Array of unique speakers
+ */
+export function getUniqueSpeakers(
+  schedule: Array<{
+    speakers?: Array<{ name: string; url?: string; org?: string }>
+  }>
+) {
+  return schedule
+    .filter(item => item.speakers && item.speakers.length > 0)
+    .flatMap(item => item.speakers!)
+    .reduce(
+      (
+        unique: Array<{ name: string; url?: string; org?: string }>,
+        speaker
+      ) => {
+        if (!unique.find(s => s.name === speaker.name)) {
+          unique.push(speaker)
+        }
+        return unique
+      },
+      []
+    )
+}
+
 export function getAllEvents() {
   return events
 }

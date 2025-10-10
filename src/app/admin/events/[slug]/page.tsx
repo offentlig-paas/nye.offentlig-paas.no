@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { useToast } from '@/components/ToastProvider'
 import { formatDateTime } from '@/lib/formatDate'
+import { getUniqueSpeakers } from '@/lib/events/helpers'
 import { AdminRegistrationList } from '@/components/AdminRegistrationList'
 import { ArrowLeftIcon, VideoCameraIcon } from '@heroicons/react/24/outline'
 import { SendReminderModal } from '@/components/SendReminderModal'
@@ -16,6 +17,7 @@ import { AdminEventStats } from '@/components/AdminEventStats'
 import { AdminEventActionBar } from '@/components/AdminEventActionBar'
 import { AdminRegistrationFilters } from '@/components/AdminRegistrationFilters'
 import { AdminEventDetailsSidebar } from '@/components/AdminEventDetailsSidebar'
+import { AdminSlackChannelManager } from '@/components/AdminSlackChannelManager'
 import type { RegistrationStatus } from '@/domains/event-registration/types'
 import type { SlackUser, Item } from '@/lib/events/types'
 
@@ -52,16 +54,18 @@ interface EventDetails {
   }
   organizers: SlackUser[]
   schedule: Item[]
-  eventStats?: {
-    registrations: number
-    participants: number
-    organisations: number
-    feedback?: {
-      url: string
-      averageRating: number
-      respondents: number
-      comments: string[]
-    }
+  socialEvent?: {
+    description: string
+    start: string
+    location: string
+  }
+  participantInfo?: {
+    streamingUrl?: string
+    notes?: string
+  }
+  slackChannel?: {
+    id: string
+    name: string
   }
   registrations: EventRegistration[]
   stats: {
@@ -643,7 +647,14 @@ export default function AdminEventDetailsPage() {
         </div>
 
         <div className="space-y-6 xl:col-span-1">
-          <AdminEventDetailsSidebar eventDetails={eventDetails} />
+          <AdminEventDetailsSidebar
+            eventDetails={eventDetails}
+            eventSlug={slug}
+            slackChannelName={eventDetails.slackChannel?.name}
+            onUpdate={fetchEventDetails}
+            showError={showError}
+            showSuccess={showSuccess}
+          />
           <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
             <div className="flex items-center justify-between border-b border-gray-200 px-6 py-3 dark:border-gray-700">
               <h3 className="text-base font-semibold text-gray-900 dark:text-white">
@@ -760,6 +771,18 @@ export default function AdminEventDetailsPage() {
               )}
             </div>
           </div>
+
+          <AdminSlackChannelManager
+            eventSlug={slug}
+            channelId={eventDetails.slackChannel?.id}
+            channelName={eventDetails.slackChannel?.name}
+            organizersCount={eventDetails.organizers.length}
+            speakersCount={getUniqueSpeakers(eventDetails.schedule).length}
+            attendeesCount={eventDetails.stats.activeRegistrations}
+            onUpdate={fetchEventDetails}
+            showError={showError}
+            showSuccess={showSuccess}
+          />
 
           {speakersWithoutUrls.length > 0 && (
             <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">

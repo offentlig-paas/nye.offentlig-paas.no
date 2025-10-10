@@ -10,6 +10,9 @@ import {
   StarIcon,
 } from '@heroicons/react/24/outline'
 import { Avatar } from './Avatar'
+import { AddToSlackChannelButton } from './AddToSlackChannelButton'
+import { formatDateTime } from '@/lib/formatDate'
+import { getUniqueSpeakers } from '@/lib/events/helpers'
 
 interface AdminEventDetailsSidebarProps {
   eventDetails: {
@@ -47,6 +50,11 @@ interface AdminEventDetailsSidebarProps {
       }>
     }>
   }
+  eventSlug?: string
+  slackChannelName?: string
+  onUpdate?: () => void
+  showError?: (title: string, message: string) => void
+  showSuccess?: (title: string, message: string) => void
 }
 
 const AttendanceTypeDisplay: Record<string, string> = {
@@ -54,44 +62,17 @@ const AttendanceTypeDisplay: Record<string, string> = {
   digital: 'Digitalt',
 }
 
-function formatDateTime(dateString: string): string {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('nb-NO', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
-}
-
-function getUniqueSpeakers(
-  schedule: Array<{
-    speakers?: Array<{ name: string; url?: string; org?: string }>
-  }>
-) {
-  return schedule
-    .filter(item => item.speakers && item.speakers.length > 0)
-    .flatMap(item => item.speakers!)
-    .reduce(
-      (
-        unique: Array<{ name: string; url?: string; org?: string }>,
-        speaker
-      ) => {
-        if (!unique.find(s => s.name === speaker.name)) {
-          unique.push(speaker)
-        }
-        return unique
-      },
-      []
-    )
-}
-
 export function AdminEventDetailsSidebar({
   eventDetails,
+  eventSlug,
+  slackChannelName,
+  onUpdate,
+  showError,
+  showSuccess,
 }: AdminEventDetailsSidebarProps) {
   const speakers = getUniqueSpeakers(eventDetails.schedule)
+  const hasSlackIntegration =
+    eventSlug && slackChannelName && onUpdate && showError && showSuccess
 
   return (
     <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
@@ -249,9 +230,22 @@ export function AdminEventDetailsSidebar({
 
         {eventDetails.organizers.length > 0 && (
           <div className="mt-4 border-t border-gray-200 pt-3 dark:border-gray-700">
-            <dt className="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">
-              Arrangører
-            </dt>
+            <div className="mb-2 flex items-center justify-between">
+              <dt className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                Arrangører
+              </dt>
+              {hasSlackIntegration && (
+                <AddToSlackChannelButton
+                  eventSlug={eventSlug!}
+                  userGroup="organizers"
+                  count={eventDetails.organizers.length}
+                  channelName={slackChannelName!}
+                  onUpdate={onUpdate!}
+                  showError={showError!}
+                  showSuccess={showSuccess!}
+                />
+              )}
+            </div>
             <div className="flex flex-wrap gap-3">
               {eventDetails.organizers.map((organizer, index) => (
                 <div key={index} className="flex items-center space-x-2">
@@ -289,9 +283,22 @@ export function AdminEventDetailsSidebar({
 
         {speakers.length > 0 && (
           <div className="mt-4 border-t border-gray-200 pt-3 dark:border-gray-700">
-            <dt className="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">
-              Foredragsholdere
-            </dt>
+            <div className="mb-2 flex items-center justify-between">
+              <dt className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                Foredragsholdere
+              </dt>
+              {hasSlackIntegration && (
+                <AddToSlackChannelButton
+                  eventSlug={eventSlug!}
+                  userGroup="speakers"
+                  count={speakers.length}
+                  channelName={slackChannelName!}
+                  onUpdate={onUpdate!}
+                  showError={showError!}
+                  showSuccess={showSuccess!}
+                />
+              )}
+            </div>
             <div className="flex flex-wrap gap-3">
               {speakers.map((speaker, index) => (
                 <div key={index} className="flex items-center space-x-2">
