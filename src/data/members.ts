@@ -8,6 +8,7 @@ import logoBanenor from '@/images/logos/banenor.svg'
 import logoSykehusapotekene from '@/images/logos/sykehusapotekene.svg'
 import logoUdi from '@/images/logos/udi.svg'
 import logoHKDir from '@/images/logos/hkdir.svg'
+import logoEnova from '@/images/logos/enova.svg'
 
 const logoSkagerakEnergi = logoStatkraft
 
@@ -351,7 +352,7 @@ export const members: Member[] = [
   new Member({
     name: 'Enova',
     type: MemberType.STATE_ENTERPRISE,
-    github: 'enova',
+    logo: logoEnova,
     homepage: 'https://www.enova.no',
     linkedinUrl: 'https://www.linkedin.com/company/enova-sf/',
   }),
