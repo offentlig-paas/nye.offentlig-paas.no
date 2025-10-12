@@ -1,6 +1,6 @@
 import { events } from '@/data/events'
 import type { Event } from '@/lib/events/types'
-import { Status, AttachmentType } from '@/lib/events/types'
+import { Status, AttachmentType, ItemType } from '@/lib/events/types'
 import { formatDateShort, formatDateTime } from '@/lib/formatDate'
 import {
   DocumentTextIcon,
@@ -10,6 +10,18 @@ import {
   PaperClipIcon,
   PresentationChartLineIcon,
 } from '@heroicons/react/20/solid'
+
+export const TALK_TYPES = [
+  ItemType.Talk,
+  ItemType.Panel,
+  ItemType.Workshop,
+] as const
+
+export function isTalkType(
+  type: ItemType
+): type is (typeof TALK_TYPES)[number] {
+  return TALK_TYPES.includes(type as (typeof TALK_TYPES)[number])
+}
 
 export function getStatus(event: Event) {
   const now = new Date()
@@ -162,6 +174,48 @@ export function isUserEventOrganizer(
     const organizerSlackId = slackIdMatch[1]
     return organizerSlackId === userSlackId
   })
+}
+
+export function isUserEventSpeaker(event: Event, userSlackId: string): boolean {
+  if (!userSlackId || !event.schedule || event.schedule.length === 0) {
+    return false
+  }
+
+  return event.schedule.some(
+    item =>
+      isTalkType(item.type) &&
+      item.speakers?.some(
+        speaker => speaker.url && speaker.url.includes(`/team/${userSlackId}`)
+      )
+  )
+}
+
+export function getUserTalksFromEvents(
+  userSlackId: string
+): Array<{ event: Event; talk: Event['schedule'][number] }> {
+  if (!userSlackId) {
+    return []
+  }
+
+  return events
+    .map(event => {
+      const speakerTalks = event.schedule
+        .filter(
+          item =>
+            isTalkType(item.type) &&
+            item.speakers?.some(
+              speaker =>
+                speaker.url && speaker.url.includes(`/team/${userSlackId}`)
+            )
+        )
+        .map(item => ({
+          event,
+          talk: item,
+        }))
+      return speakerTalks
+    })
+    .flat()
+    .sort((a, b) => b.event.start.getTime() - a.event.start.getTime())
 }
 
 export function canUserAccessEvent(
