@@ -43,6 +43,18 @@ export const events: Event[] = [
       {
         time: '11:00 - 11:30',
         title: 'Registrering og velkommen',
+        speakers: [
+          {
+            name: 'Mats Bækkelund',
+            org: 'Telenor',
+            url: 'https://offentlig-paas-no.slack.com/team/U04QQLQ7KK8',
+          },
+          {
+            name: 'Hans Kristian Flaatten',
+            org: 'Nav',
+            url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+          },
+        ],
         type: ItemType.Registration,
       },
       {
@@ -58,51 +70,7 @@ export const events: Event[] = [
         type: ItemType.Talk,
       },
       {
-        time: '12:00 - 12:10',
-        title: 'After success comes failure',
-        description:
-          'Running fast and winning - then breaking a leg. A tale of self-service',
-        speakers: [
-          {
-            name: 'Anders Elton',
-            org: 'Telenor',
-            url: 'https://offentlig-paas-no.slack.com/team/U09JC8B7FUK',
-          },
-        ],
-        type: ItemType.Talk,
-      },
-      {
-        time: '12:10 - 12:20',
-        title: 'Towards better UX - Straight as the Kro flies',
-        speakers: [
-          {
-            name: 'Eline Henriksen',
-            org: 'Telenor',
-            url: 'https://offentlig-paas-no.slack.com/team/U02SG8873PC',
-          },
-        ],
-        type: ItemType.Talk,
-      },
-      {
-        time: '12:20 - 12:30',
-        title:
-          'Pick, Pay, Push - The rise of self-service, from Retail isles to Developer platform',
-        speakers: [
-          {
-            name: 'Sindre Lindstad',
-            org: 'Telenor',
-            url: 'https://offentlig-paas-no.slack.com/team/UUHH03WPK',
-          },
-        ],
-        type: ItemType.Talk,
-      },
-      {
-        time: '12:30 - 13:30',
-        title: 'Lunsj',
-        type: ItemType.Break,
-      },
-      {
-        time: '13:30 - 14:10',
+        time: '12:00 - 12:45',
         title:
           'Selvbetjening er ikke bare en utviklerportal, men det er en del av kaka',
         description:
@@ -117,7 +85,51 @@ export const events: Event[] = [
         type: ItemType.Talk,
       },
       {
-        time: '14:10 - 14:50',
+        time: '12:45 - 13:45',
+        title: 'Lunsj',
+        type: ItemType.Break,
+      },
+      {
+        time: '13:45 - 13:55',
+        title: 'After success comes failure',
+        description:
+          'Running fast and winning - then breaking a leg. A tale of self-service',
+        speakers: [
+          {
+            name: 'Anders Elton',
+            org: 'Telenor',
+            url: 'https://offentlig-paas-no.slack.com/team/U09JC8B7FUK',
+          },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '14:00 - 14:10',
+        title: 'Towards better UX - Straight as the Kro flies',
+        speakers: [
+          {
+            name: 'Eline Henriksen',
+            org: 'Telenor',
+            url: 'https://offentlig-paas-no.slack.com/team/U02SG8873PC',
+          },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '14:15 - 14:25',
+        title:
+          'Pick, Pay, Push - The rise of self-service, from Retail isles to Developer platform',
+        speakers: [
+          {
+            name: 'Sindre Lindstad',
+            org: 'Telenor',
+            url: 'https://offentlig-paas-no.slack.com/team/UUHH03WPK',
+          },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '14:30 - 15:10',
         title: 'Nais API og Console - veien til selvbetjening',
         description:
           'Hvordan Nais har jobbet med å lage en selvbetjeningsportal for utviklere i offentlig sektor. Vi vil gå gjennom arkitektur, utfordringer og løsninger vi har funnet på veien.',
@@ -136,8 +148,15 @@ export const events: Event[] = [
         type: ItemType.Talk,
       },
       {
-        time: '14:50 - 16:00',
-        title: 'Nettverksbygging og avslutning',
+        time: '15:15 - 16:00',
+        title: 'Cluster Policies for Selvbetjente Geo-Datapipelines',
+        speakers: [
+          {
+            name: 'Joachim Haakonsen',
+            org: 'Kartverket',
+            url: 'https://offentlig-paas-no.slack.com/team/U05Q0GCJPTL',
+          },
+        ],
         type: ItemType.Info,
       },
     ],
