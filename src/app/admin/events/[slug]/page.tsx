@@ -18,6 +18,7 @@ import { AdminEventActionBar } from '@/components/AdminEventActionBar'
 import { AdminRegistrationFilters } from '@/components/AdminRegistrationFilters'
 import { AdminEventDetailsSidebar } from '@/components/AdminEventDetailsSidebar'
 import { AdminSlackChannelManager } from '@/components/AdminSlackChannelManager'
+import { AdminTalkAttachments } from '@/components/AdminTalkAttachments'
 import type { RegistrationStatus } from '@/domains/event-registration/types'
 import type { SlackUser, Item } from '@/lib/events/types'
 
@@ -783,6 +784,22 @@ export default function AdminEventDetailsPage() {
             showError={showError}
             showSuccess={showSuccess}
           />
+
+          <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+            <div className="border-b border-gray-200 px-6 py-3 dark:border-gray-700">
+              <h3 className="text-base font-semibold text-gray-900 dark:text-white">
+                Presentasjoner og vedlegg
+              </h3>
+            </div>
+            <div className="p-6">
+              <AdminTalkAttachments
+                eventSlug={slug}
+                schedule={eventDetails.schedule}
+                onError={message => showError('Feil', message)}
+                onSuccess={message => showSuccess('Suksess', message)}
+              />
+            </div>
+          </div>
 
           {speakersWithoutUrls.length > 0 && (
             <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">

@@ -19,6 +19,7 @@ import {
   canUserAccessEvent,
   getAttachmentIcon,
 } from '@/lib/events/helpers'
+import { getAllEventAttachments } from '@/lib/events/attachment-helpers'
 import {
   formatDateTime,
   formatDateLong,
@@ -619,104 +620,119 @@ export default async function Fagdag({ params }: { params: Params }) {
               <h2 className="mt-8 text-base leading-6 font-semibold">Agenda</h2>
               {event.schedule.length > 0 ? (
                 <ol className="mt-4 divide-y divide-gray-100 text-sm leading-6 lg:col-span-7 xl:col-span-8 dark:divide-gray-800">
-                  {event.schedule.map(item => (
-                    <li
-                      key={item.time}
-                      className="relative flex space-x-6 py-6 xl:static"
-                    >
-                      <EventIcon
-                        type={item.type}
-                        className="h-8 w-8 flex-none text-gray-400"
-                      />
+                  {await (async () => {
+                    const uploadedAttachments =
+                      await getAllEventAttachments(slug)
 
-                      <div className="flex-auto">
-                        <h3 className="pr-10 font-semibold xl:pr-0">
-                          {item.title}
-                        </h3>
-                        <p className="mt-2 text-gray-500 dark:text-gray-400">
-                          {item.description}
-                        </p>
-                        <dl className="mt-2 flex flex-col xl:flex-row">
-                          <div className="flex items-start space-x-3">
-                            <dt className="mt-0.5">
-                              <span className="sr-only">Tidspunkt</span>
-                              <CalendarIcon
-                                className="h-5 w-5 text-gray-400"
-                                aria-hidden="true"
-                              />
-                            </dt>
-                            <dd>
-                              <time dateTime={item.time}>{item.time}</time>
-                            </dd>
-                          </div>
-                          {item.speakers && item.speakers.length > 0 && (
-                            <div className="xl:border-opacity-50 mt-2 flex items-start space-x-3 xl:mt-0 xl:ml-3.5 xl:border-l xl:border-gray-400 xl:pl-3.5">
-                              <dt className="mt-0.5 flex -space-x-1">
-                                {item.speakers.map((speaker, idx) => (
-                                  <ServerAvatar
-                                    key={idx}
-                                    name={speaker.name}
-                                    slackUrl={speaker.url}
-                                    size="sm"
-                                    className="bg-gray-100 ring-2 ring-white dark:bg-gray-700 dark:ring-gray-900"
-                                  />
-                                ))}
-                              </dt>
-                              <dd>
-                                {item.speakers.map((speaker, idx) => (
-                                  <React.Fragment key={idx}>
-                                    {idx > 0 && ', '}
-                                    {speaker.url ? (
-                                      <a
-                                        href={speaker.url}
-                                        className="transition hover:text-blue-600 dark:hover:text-blue-400"
-                                      >
-                                        {speaker.name}
-                                      </a>
-                                    ) : (
-                                      speaker.name
-                                    )}
-                                    {speaker.org && (
-                                      <span className="ml-1 text-gray-600 dark:text-gray-400">
-                                        ({speaker.org})
-                                      </span>
-                                    )}
-                                  </React.Fragment>
-                                ))}
-                              </dd>
-                            </div>
-                          )}
-                        </dl>
-                        {item.attachments && item.attachments.length > 0 && (
-                          <dl className="mt-4 flex flex-col space-y-2">
-                            {item.attachments.map((attachment, index) => (
-                              <div
-                                key={index}
-                                className="flex items-start space-x-3"
-                              >
+                    return event.schedule.map(item => {
+                      const staticAttachments = item.attachments || []
+                      const uploadedForTalk =
+                        uploadedAttachments.get(item.title) || []
+                      const allAttachments: Attachment[] = [
+                        ...staticAttachments,
+                        ...uploadedForTalk,
+                      ]
+
+                      return (
+                        <li
+                          key={item.time}
+                          className="relative flex space-x-6 py-6 xl:static"
+                        >
+                          <EventIcon
+                            type={item.type}
+                            className="h-8 w-8 flex-none text-gray-400"
+                          />
+
+                          <div className="flex-auto">
+                            <h3 className="pr-10 font-semibold xl:pr-0">
+                              {item.title}
+                            </h3>
+                            <p className="mt-2 text-gray-500 dark:text-gray-400">
+                              {item.description}
+                            </p>
+                            <dl className="mt-2 flex flex-col xl:flex-row">
+                              <div className="flex items-start space-x-3">
                                 <dt className="mt-0.5">
-                                  {React.createElement(
-                                    getAttachmentIcon(attachment.type),
-                                    {
-                                      className: 'h-5 w-5 text-gray-400',
-                                      'aria-hidden': 'true',
-                                    }
-                                  )}
+                                  <span className="sr-only">Tidspunkt</span>
+                                  <CalendarIcon
+                                    className="h-5 w-5 text-gray-400"
+                                    aria-hidden="true"
+                                  />
                                 </dt>
                                 <dd>
-                                  {AttachmentLink({
-                                    attachment,
-                                    className:
-                                      'text-teal-600 hover:text-teal-500 dark:text-teal-400 dark:hover:text-teal-300',
-                                  })}
+                                  <time dateTime={item.time}>{item.time}</time>
                                 </dd>
                               </div>
-                            ))}
-                          </dl>
-                        )}
-                      </div>
-                    </li>
-                  ))}
+                              {item.speakers && item.speakers.length > 0 && (
+                                <div className="xl:border-opacity-50 mt-2 flex items-start space-x-3 xl:mt-0 xl:ml-3.5 xl:border-l xl:border-gray-400 xl:pl-3.5">
+                                  <dt className="mt-0.5 flex -space-x-1">
+                                    {item.speakers.map((speaker, idx) => (
+                                      <ServerAvatar
+                                        key={idx}
+                                        name={speaker.name}
+                                        slackUrl={speaker.url}
+                                        size="sm"
+                                        className="bg-gray-100 ring-2 ring-white dark:bg-gray-700 dark:ring-gray-900"
+                                      />
+                                    ))}
+                                  </dt>
+                                  <dd>
+                                    {item.speakers.map((speaker, idx) => (
+                                      <React.Fragment key={idx}>
+                                        {idx > 0 && ', '}
+                                        {speaker.url ? (
+                                          <a
+                                            href={speaker.url}
+                                            className="transition hover:text-blue-600 dark:hover:text-blue-400"
+                                          >
+                                            {speaker.name}
+                                          </a>
+                                        ) : (
+                                          speaker.name
+                                        )}
+                                        {speaker.org && (
+                                          <span className="ml-1 text-gray-600 dark:text-gray-400">
+                                            ({speaker.org})
+                                          </span>
+                                        )}
+                                      </React.Fragment>
+                                    ))}
+                                  </dd>
+                                </div>
+                              )}
+                            </dl>
+                            {allAttachments && allAttachments.length > 0 && (
+                              <dl className="mt-4 flex flex-col space-y-2">
+                                {allAttachments.map((attachment, index) => (
+                                  <div
+                                    key={index}
+                                    className="flex items-start space-x-3"
+                                  >
+                                    <dt className="mt-0.5">
+                                      {React.createElement(
+                                        getAttachmentIcon(attachment.type),
+                                        {
+                                          className: 'h-5 w-5 text-gray-400',
+                                          'aria-hidden': 'true',
+                                        }
+                                      )}
+                                    </dt>
+                                    <dd>
+                                      {AttachmentLink({
+                                        attachment,
+                                        className:
+                                          'text-teal-600 hover:text-teal-500 dark:text-teal-400 dark:hover:text-teal-300',
+                                      })}
+                                    </dd>
+                                  </div>
+                                ))}
+                              </dl>
+                            )}
+                          </div>
+                        </li>
+                      )
+                    })
+                  })()}
                 </ol>
               ) : (
                 <div className="mt-4 rounded-lg border border-gray-200 bg-gray-50 p-6 text-center dark:border-gray-700 dark:bg-gray-800/50">

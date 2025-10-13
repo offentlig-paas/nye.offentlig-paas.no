@@ -1,7 +1,11 @@
+'use client'
+
+import { useState } from 'react'
 import Link from 'next/link'
 import { PresentationChartLineIcon } from '@heroicons/react/20/solid'
 import { formatDateLong } from '@/lib/formatDate'
 import { getAttachmentIcon } from '@/lib/events/helpers'
+import { TalkAttachmentManager } from '@/components/TalkAttachmentManager'
 import type { Event } from '@/lib/events/types'
 
 interface UserTalk {
@@ -11,14 +15,38 @@ interface UserTalk {
 
 interface UserTalksSectionProps {
   talks: UserTalk[]
+  userSlackId: string
 }
 
-export function UserTalksSection({ talks }: UserTalksSectionProps) {
+export function UserTalksSection({
+  talks,
+  userSlackId,
+}: UserTalksSectionProps) {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
+
   return (
     <section>
       <h2 className="text-xl font-semibold text-zinc-800 dark:text-zinc-100">
         Mine foredrag
       </h2>
+
+      {errorMessage && (
+        <div className="mt-4 rounded-md bg-red-50 p-4 dark:bg-red-900/20">
+          <p className="text-sm text-red-800 dark:text-red-200">
+            {errorMessage}
+          </p>
+        </div>
+      )}
+
+      {successMessage && (
+        <div className="mt-4 rounded-md bg-green-50 p-4 dark:bg-green-900/20">
+          <p className="text-sm text-green-800 dark:text-green-200">
+            {successMessage}
+          </p>
+        </div>
+      )}
+
       {talks.length > 0 ? (
         <div className="mt-6 space-y-3">
           {talks.map((item, idx) => (
@@ -66,6 +94,23 @@ export function UserTalksSection({ talks }: UserTalksSectionProps) {
                         })}
                       </div>
                     )}
+
+                  <div className="mt-4 border-t border-zinc-200 pt-4 dark:border-zinc-700">
+                    <TalkAttachmentManager
+                      eventSlug={item.event.slug}
+                      talkTitle={item.talk.title}
+                      speakerSlackId={userSlackId}
+                      canManage={true}
+                      onError={error => {
+                        setErrorMessage(error)
+                        setTimeout(() => setErrorMessage(null), 5000)
+                      }}
+                      onSuccess={message => {
+                        setSuccessMessage(message)
+                        setTimeout(() => setSuccessMessage(null), 5000)
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

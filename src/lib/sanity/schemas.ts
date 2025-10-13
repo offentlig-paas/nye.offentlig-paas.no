@@ -187,4 +187,104 @@ export const eventParticipantInfoSchema = defineType({
   },
 })
 
-export const schemas = [eventRegistrationSchema, eventParticipantInfoSchema]
+export const talkAttachmentSchema = defineType({
+  name: 'talkAttachment',
+  title: 'Talk Attachment',
+  type: 'document',
+  fields: [
+    {
+      name: 'eventSlug',
+      title: 'Event Slug',
+      type: 'string',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'talkTitle',
+      title: 'Talk Title',
+      type: 'string',
+      description: 'Title of the talk this attachment belongs to',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'speakerSlackId',
+      title: 'Speaker Slack ID',
+      type: 'string',
+      description: 'Primary speaker for authorization',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'title',
+      title: 'Attachment Title',
+      type: 'string',
+      description: 'Optional custom title for the attachment',
+    },
+    {
+      name: 'url',
+      title: 'External URL',
+      type: 'url',
+      description: 'Link to external resource (Google Slides, YouTube, etc.)',
+    },
+    {
+      name: 'file',
+      title: 'Upload File',
+      type: 'file',
+      description: 'Upload a file directly to Sanity',
+      options: {
+        accept: '.pdf,.pptx,.ppt,.key,.odp,.zip',
+      },
+    },
+    {
+      name: 'type',
+      title: 'Attachment Type',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Slides', value: 'Slides' },
+          { title: 'PDF', value: 'PDF' },
+          { title: 'Video', value: 'Video' },
+          { title: 'Recording', value: 'Recording' },
+          { title: 'Code', value: 'Code' },
+          { title: 'Link', value: 'Link' },
+          { title: 'Other', value: 'Other' },
+        ],
+        layout: 'dropdown',
+      },
+      validation: Rule => Rule.required(),
+      initialValue: 'Slides',
+    },
+    {
+      name: 'uploadedAt',
+      title: 'Uploaded At',
+      type: 'datetime',
+      readOnly: true,
+    },
+    {
+      name: 'uploadedBy',
+      title: 'Uploaded By Slack ID',
+      type: 'string',
+      description: 'Slack ID of uploader',
+      readOnly: true,
+    },
+  ],
+  preview: {
+    select: {
+      title: 'title',
+      talkTitle: 'talkTitle',
+      eventSlug: 'eventSlug',
+      type: 'type',
+    },
+    prepare(selection) {
+      const { title, talkTitle, eventSlug, type } = selection
+      return {
+        title: title || `${type} - ${talkTitle}`,
+        subtitle: eventSlug,
+      }
+    },
+  },
+})
+
+export const schemas = [
+  eventRegistrationSchema,
+  eventParticipantInfoSchema,
+  talkAttachmentSchema,
+]

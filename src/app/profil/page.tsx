@@ -109,9 +109,12 @@ export default async function ProfilePage() {
 
         <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
           <div className="space-y-12 lg:col-span-2">
-            <UpcomingEventsSection events={nextUpcomingEvents} />
+            <UpcomingEventsSection
+              events={nextUpcomingEvents}
+              userSlackId={user.slackId}
+            />
             <OrganizedEventsSection events={organizedEvents} />
-            <UserTalksSection talks={userTalks} />
+            <UserTalksSection talks={userTalks} userSlackId={user.slackId!} />
             <PastRegistrationsSection events={pastEvents} />
           </div>
 

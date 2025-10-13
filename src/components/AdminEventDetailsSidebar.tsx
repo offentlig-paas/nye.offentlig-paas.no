@@ -8,6 +8,7 @@ import {
   PresentationChartLineIcon,
   VideoCameraIcon,
   StarIcon,
+  GlobeAltIcon,
 } from '@heroicons/react/24/outline'
 import { Avatar } from './Avatar'
 import { AddToSlackChannelButton } from './AddToSlackChannelButton'
@@ -170,7 +171,8 @@ export function AdminEventDetailsSidebar({
           </div>
         </div>
 
-        {(eventDetails.registrationUrl ||
+        {(eventSlug ||
+          eventDetails.registrationUrl ||
           eventDetails.callForPapersUrl ||
           eventDetails.recordingUrl ||
           eventDetails.eventStats?.feedback?.url) && (
@@ -179,6 +181,17 @@ export function AdminEventDetailsSidebar({
               Lenker
             </dt>
             <dd className="flex flex-wrap gap-3">
+              {eventSlug && (
+                <a
+                  href={`/fagdag/${eventSlug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center text-xs text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                >
+                  <GlobeAltIcon className="mr-1 h-3 w-3" />
+                  Offentlig side
+                </a>
+              )}
               {eventDetails.registrationUrl && (
                 <a
                   href={eventDetails.registrationUrl}
@@ -331,27 +344,6 @@ export function AdminEventDetailsSidebar({
                 </div>
               ))}
             </div>
-          </div>
-        )}
-
-        {eventDetails.schedule.length > 0 && (
-          <div className="mt-4 border-t border-gray-200 pt-3 dark:border-gray-700">
-            <dt className="mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">
-              Program
-            </dt>
-            <dd className="text-sm text-gray-900 dark:text-white">
-              {eventDetails.schedule.length} programpunkter
-              {(() => {
-                const firstItem = eventDetails.schedule[0]
-                const lastItem =
-                  eventDetails.schedule[eventDetails.schedule.length - 1]
-                return firstItem && lastItem ? (
-                  <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
-                    ({firstItem.time} - {lastItem.time})
-                  </span>
-                ) : null
-              })()}
-            </dd>
           </div>
         )}
 

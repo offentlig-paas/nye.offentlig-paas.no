@@ -2,13 +2,14 @@ import { events } from '@/data/events'
 import type { Event } from '@/lib/events/types'
 import { Status, AttachmentType, ItemType } from '@/lib/events/types'
 import { formatDateShort, formatDateTime } from '@/lib/formatDate'
+// Note: DocumentChartBarIcon is used for slides instead of PresentationChartLineIcon for visual consistency across the application.
 import {
   DocumentTextIcon,
   VideoCameraIcon,
   CodeBracketIcon,
   LinkIcon,
   PaperClipIcon,
-  PresentationChartLineIcon,
+  DocumentChartBarIcon,
 } from '@heroicons/react/20/solid'
 
 export const TALK_TYPES = [
@@ -190,6 +191,28 @@ export function isUserEventSpeaker(event: Event, userSlackId: string): boolean {
   )
 }
 
+export function isUserSpeakerForTalk(
+  event: Event,
+  talkTitle: string,
+  userSlackId: string
+): boolean {
+  if (!userSlackId || !talkTitle) {
+    return false
+  }
+
+  const talk = event.schedule.find(
+    item => isTalkType(item.type) && item.title === talkTitle
+  )
+
+  if (!talk || !talk.speakers) {
+    return false
+  }
+
+  return talk.speakers.some(
+    speaker => speaker.url && speaker.url.includes(`/team/${userSlackId}`)
+  )
+}
+
 export function getUserTalksFromEvents(
   userSlackId: string
 ): Array<{ event: Event; talk: Event['schedule'][number] }> {
@@ -242,7 +265,7 @@ export function getEventBySlug(slug: string): Event | null {
 export function getAttachmentIcon(type: AttachmentType) {
   switch (type) {
     case AttachmentType.Slides:
-      return PresentationChartLineIcon
+      return DocumentChartBarIcon
     case AttachmentType.PDF:
       return DocumentTextIcon
     case AttachmentType.Recording:
