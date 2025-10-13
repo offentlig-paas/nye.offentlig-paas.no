@@ -104,32 +104,7 @@ export const events: Event[] = [
         type: ItemType.Talk,
       },
       {
-        time: '14:00 - 14:10',
-        title: 'Towards better UX - Straight as the Kro flies',
-        speakers: [
-          {
-            name: 'Eline Henriksen',
-            org: 'Telenor',
-            url: 'https://offentlig-paas-no.slack.com/team/U02SG8873PC',
-          },
-        ],
-        type: ItemType.Talk,
-      },
-      {
-        time: '14:15 - 14:25',
-        title:
-          'Pick, Pay, Push - The rise of self-service, from Retail isles to Developer platform',
-        speakers: [
-          {
-            name: 'Sindre Lindstad',
-            org: 'Telenor',
-            url: 'https://offentlig-paas-no.slack.com/team/UUHH03WPK',
-          },
-        ],
-        type: ItemType.Talk,
-      },
-      {
-        time: '14:30 - 15:10',
+        time: '14:00 - 14:40',
         title: 'Nais API og Console - veien til selvbetjening',
         description:
           'Hvordan Nais har jobbet med å lage en selvbetjeningsportal for utviklere i offentlig sektor. Vi vil gå gjennom arkitektur, utfordringer og løsninger vi har funnet på veien.',
@@ -148,7 +123,19 @@ export const events: Event[] = [
         type: ItemType.Talk,
       },
       {
-        time: '15:15 - 16:00',
+        time: '14:45 - 14:55',
+        title: 'Towards better UX - Straight as the Kro flies',
+        speakers: [
+          {
+            name: 'Eline Henriksen',
+            org: 'Telenor',
+            url: 'https://offentlig-paas-no.slack.com/team/U02SG8873PC',
+          },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '15:00 - 15:40',
         title: 'Cluster Policies for Selvbetjente Geo-Datapipelines',
         speakers: [
           {
@@ -158,6 +145,19 @@ export const events: Event[] = [
           },
         ],
         type: ItemType.Info,
+      },
+      {
+        time: '15:45 - 15:55',
+        title:
+          'Pick, Pay, Push - The rise of self-service, from Retail isles to Developer platform',
+        speakers: [
+          {
+            name: 'Sindre Lindstad',
+            org: 'Telenor',
+            url: 'https://offentlig-paas-no.slack.com/team/UUHH03WPK',
+          },
+        ],
+        type: ItemType.Talk,
       },
     ],
   },

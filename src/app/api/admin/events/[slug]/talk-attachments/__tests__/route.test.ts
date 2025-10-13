@@ -148,6 +148,8 @@ describe('Admin Talk Attachments API', () => {
     })
 
     it('should handle errors gracefully', async () => {
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
+
       mockAuthorizeEventAccess.mockResolvedValue(mockAuthResult)
       mockGetEventAttachments.mockRejectedValue(new Error('Database error'))
 
@@ -161,6 +163,12 @@ describe('Admin Talk Attachments API', () => {
 
       expect(response.status).toBe(500)
       expect(data.error).toBe('Failed to fetch attachments')
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'Error fetching talk attachments:',
+        expect.any(Error)
+      )
+
+      consoleErrorSpy.mockRestore()
     })
   })
 
