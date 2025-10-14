@@ -1,7 +1,28 @@
 import { events } from '@/data/events'
 import type { Event } from '@/lib/events/types'
-import { Status } from '@/lib/events/types'
+import { Status, AttachmentType, ItemType } from '@/lib/events/types'
 import { formatDateShort, formatDateTime } from '@/lib/formatDate'
+// Note: DocumentChartBarIcon is used for slides instead of PresentationChartLineIcon for visual consistency across the application.
+import {
+  DocumentTextIcon,
+  VideoCameraIcon,
+  CodeBracketIcon,
+  LinkIcon,
+  PaperClipIcon,
+  DocumentChartBarIcon,
+} from '@heroicons/react/20/solid'
+
+export const TALK_TYPES = [
+  ItemType.Talk,
+  ItemType.Panel,
+  ItemType.Workshop,
+] as const
+
+export function isTalkType(
+  type: ItemType
+): type is (typeof TALK_TYPES)[number] {
+  return TALK_TYPES.includes(type as (typeof TALK_TYPES)[number])
+}
 
 export function getStatus(event: Event) {
   const now = new Date()
@@ -38,6 +59,33 @@ export function isCallForPapersOpen(event: Event) {
 
 export function formatDescription(description: string) {
   return description.replace(/\n/g, '<br>')
+}
+
+/**
+ * Extracts unique speakers from event schedule
+ * @param schedule Event schedule items with optional speakers
+ * @returns Array of unique speakers
+ */
+export function getUniqueSpeakers(
+  schedule: Array<{
+    speakers?: Array<{ name: string; url?: string; org?: string }>
+  }>
+) {
+  return schedule
+    .filter(item => item.speakers && item.speakers.length > 0)
+    .flatMap(item => item.speakers!)
+    .reduce(
+      (
+        unique: Array<{ name: string; url?: string; org?: string }>,
+        speaker
+      ) => {
+        if (!unique.find(s => s.name === speaker.name)) {
+          unique.push(speaker)
+        }
+        return unique
+      },
+      []
+    )
 }
 
 export function getAllEvents() {
@@ -129,6 +177,70 @@ export function isUserEventOrganizer(
   })
 }
 
+export function isUserEventSpeaker(event: Event, userSlackId: string): boolean {
+  if (!userSlackId || !event.schedule || event.schedule.length === 0) {
+    return false
+  }
+
+  return event.schedule.some(
+    item =>
+      isTalkType(item.type) &&
+      item.speakers?.some(
+        speaker => speaker.url && speaker.url.includes(`/team/${userSlackId}`)
+      )
+  )
+}
+
+export function isUserSpeakerForTalk(
+  event: Event,
+  talkTitle: string,
+  userSlackId: string
+): boolean {
+  if (!userSlackId || !talkTitle) {
+    return false
+  }
+
+  const talk = event.schedule.find(
+    item => isTalkType(item.type) && item.title === talkTitle
+  )
+
+  if (!talk || !talk.speakers) {
+    return false
+  }
+
+  return talk.speakers.some(
+    speaker => speaker.url && speaker.url.includes(`/team/${userSlackId}`)
+  )
+}
+
+export function getUserTalksFromEvents(
+  userSlackId: string
+): Array<{ event: Event; talk: Event['schedule'][number] }> {
+  if (!userSlackId) {
+    return []
+  }
+
+  return events
+    .map(event => {
+      const speakerTalks = event.schedule
+        .filter(
+          item =>
+            isTalkType(item.type) &&
+            item.speakers?.some(
+              speaker =>
+                speaker.url && speaker.url.includes(`/team/${userSlackId}`)
+            )
+        )
+        .map(item => ({
+          event,
+          talk: item,
+        }))
+      return speakerTalks
+    })
+    .flat()
+    .sort((a, b) => b.event.start.getTime() - a.event.start.getTime())
+}
+
 export function canUserAccessEvent(
   event: Event,
   user: { isAdmin?: boolean; slackId?: string }
@@ -148,4 +260,22 @@ export function canUserAccessEvent(
 
 export function getEventBySlug(slug: string): Event | null {
   return events.find(e => e.slug === slug) || null
+}
+
+export function getAttachmentIcon(type: AttachmentType) {
+  switch (type) {
+    case AttachmentType.Slides:
+      return DocumentChartBarIcon
+    case AttachmentType.PDF:
+      return DocumentTextIcon
+    case AttachmentType.Recording:
+    case AttachmentType.Video:
+      return VideoCameraIcon
+    case AttachmentType.Code:
+      return CodeBracketIcon
+    case AttachmentType.Link:
+      return LinkIcon
+    default:
+      return PaperClipIcon
+  }
 }

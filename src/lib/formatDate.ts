@@ -1,3 +1,18 @@
+export const NORWEGIAN_MONTHS: Record<number, string> = {
+  1: 'januar',
+  2: 'februar',
+  3: 'mars',
+  4: 'april',
+  5: 'mai',
+  6: 'juni',
+  7: 'juli',
+  8: 'august',
+  9: 'september',
+  10: 'oktober',
+  11: 'november',
+  12: 'desember',
+}
+
 export function formatDateTime(d: string | Date) {
   if (typeof d === 'string') d = new Date(d)
   return d.toLocaleString('nb-NO', {

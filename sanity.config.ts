@@ -41,6 +41,14 @@ export default defineConfig({
                   .title('Event Participant Info')
                   .filter('_type == "eventParticipantInfo"')
               ),
+            S.listItem()
+              .title('Talk Attachments')
+              .child(
+                S.documentTypeList('talkAttachment')
+                  .title('Talk Attachments')
+                  .filter('_type == "talkAttachment"')
+                  .defaultOrdering([{ field: 'uploadedAt', direction: 'desc' }])
+              ),
           ]),
     }),
     visionTool({

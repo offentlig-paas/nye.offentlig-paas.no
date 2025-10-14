@@ -21,7 +21,7 @@ export async function getEventParticipantInfo(
     const result = await sanityClient.fetch<SanityEventParticipantInfo | null>(
       query,
       { eventSlug },
-      { cache: 'no-store', next: { revalidate: 0 } }
+      { cache: 'no-store' }
     )
 
     if (!result) {

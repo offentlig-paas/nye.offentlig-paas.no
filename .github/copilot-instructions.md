@@ -2,212 +2,97 @@
 
 ## Architecture Overview
 
-This is a **Next.js 15** website built with **TypeScript**, **Tailwind CSS**, and **MDX** for content management. The site serves as the public face of Offentlig PaaS, a network for Norwegian public sector technology professionals.
+**Next.js 15** website with **TypeScript**, **Tailwind CSS**, and **MDX**. Public site for Norwegian public sector technology professionals.
 
-### Core Structure
+**Tech Stack:**
 
-- **App Router**: Uses Next.js App Router with file-based routing in `src/app/`
-- **Content Strategy**: MDX articles in `src/app/artikkel/[slug]/page.mdx` with metadata exports
-- **Data Management**: Static data in `src/data/` (members, platforms, events)
-- **Component Library**: Reusable UI components in `src/components/`
-- **Styling**: Tailwind CSS with custom typography configuration
-- **Authentication**: NextAuth.js v5 with Slack OAuth provider
+- Next.js App Router with file-based routing
+- MDX articles with metadata exports
+- Static data in `src/data/` (members, platforms, events)
+- NextAuth.js v5 with Slack OAuth
+- File-based JSON storage for registrations (no database)
+
+### Utility Functions - Always Check Before Creating
+
+**CRITICAL**: Before creating ANY utility function, search these locations first:
+
+**Date/Time utilities** - `src/lib/formatDate.ts`:
+
+- `formatDateTime()` - Full date and time with weekday
+- `formatDate()` - Date only
+- `formatDateLong()` - Date with weekday
+- `formatDateShort()` - Short date format
+- `formatTime()` - Time only
+- `formatTimeRange()` - Time range
+- `NORWEGIAN_MONTHS` - Month names constant
+
+**Event utilities** - `src/lib/events/helpers.ts`:
+
+- `getStatus()` - Event status (upcoming/current/past)
+- `isAcceptingRegistrations()` - Registration check
+- `isCallForPapersOpen()` - CFP status
+- `getAllEvents()` - Fetch all events
+- `getUniqueSpeakers()` - Extract unique speakers from schedule
+
+**Slack utilities** - `src/lib/slack/utils.ts`:
+
+- `extractSlackUserId()` - Extract user ID from Slack URL
+- `generateSlackTeamUrl()` - Generate Slack team URL
+- `isValidSlackUserId()` - Validate Slack user ID format
+- `extractSlackIds()` - Extract IDs from array of objects
+
+**Slack channel operations** - `src/lib/slack/channels.ts`:
+
+- `generateChannelName()` - Generate channel name from date
+- `createChannel()` - Create or get existing channel
+- `ensureBotInChannel()` - Ensure bot is channel member
+- `inviteUsersToChannel()` - Batch invite users
+- `findChannelByName()` - Find channel by name
+- `archiveChannel()` - Archive a channel
 
 ## Key Patterns & Conventions
 
-### Article System
+### Key Patterns
 
-Articles follow a strict MDX pattern in `src/app/artikkel/[slug]/page.mdx`:
+**Articles:** MDX files in `src/app/artikkel/[slug]/page.mdx` with article metadata export and `<ArticleLayout>` wrapper. Images co-located with page.mdx files.
 
-```mdx
-import { ArticleLayout } from '@/components/ArticleLayout'
+**Members:** Class instances in `src/data/members.ts` with name, type, logo, and optional GitHub/LinkedIn links.
 
-export const article = {
-  author: 'Author Name',
-  date: '2024-MM-DD',
-  title: 'Article Title',
-  description: 'Brief description',
-}
+**Events:** Static data in `src/data/events.ts` with file-based JSON storage for registrations in `data/registrations/`.
 
-export const metadata = {
-  title: article.title,
-  description: article.description,
-}
+### Authentication
 
-export default (props) => <ArticleLayout article={article} {...props} /
+**REQUIRED**: All admin API routes MUST use `authorizeEventAccess` middleware from `@/lib/api/auth-middleware`
 
->
-```
+- Check existing admin routes in `src/app/api/admin/` for authentication patterns
+- Never create unauthenticated admin endpoints
 
-- Images go in the same folder as `page.mdx`
-- Import images at top: `import image from './image.jpg'`
-- Use Next.js `<Image>` component: `<Image src={image} alt="" />`
-- `getAllArticles()` in `src/lib/articles.ts` dynamically discovers articles
-
-### Member Management
-
-Members are defined as class instances in `src/data/members.ts`:
+Example:
 
 ```typescript
-new Member({
-  name: 'Organization Name',
-  type: 'Stat|Kommune|Selskap|Andre|Forvaltningsorgan',
-  github: 'github-org',
-  logo: logoImage,
-  logoBackgroundColor: '#color',
-  linkedinUrl: 'https://linkedin.com/company/...',
-})
-```
+import { authorizeEventAccess } from '@/lib/api/auth-middleware'
 
-### Authentication System
-
-NextAuth.js v5 with Slack OAuth:
-
-```typescript
-// src/auth.ts
-import NextAuth from 'next-auth'
-import Slack from 'next-auth/providers/slack'
-
-export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [
-    Slack({
-      clientId: process.env.SLACK_CLIENT_ID!,
-      clientSecret: process.env.SLACK_CLIENT_SECRET!,
-    }),
-  ],
-})
-```
-
-```tsx
-// Authentication UI component
-import { useSession, signIn, signOut } from 'next-auth/react'
-
-export function AuthButton() {
-  const { data: session } = useSession()
-
-  if (session) {
-    return <button onClick={() => signOut()}>Logg ut</button>
-  }
-
-  return <button onClick={() => signIn('slack')}>Logg inn</button>
-}
-```
-
-### Event Registration System
-
-File-based JSON storage for event registrations:
-
-```typescript
-// src/lib/registrations.ts
-export async function addEventRegistration(
-  eventSlug: string,
-  registration: EventRegistration
+export async function POST(
+  request: NextRequest,
+  context: { params: Promise<{ slug: string }> }
 ) {
-  const filePath = path.join(
-    process.cwd(),
-    'data',
-    'registrations',
-    `${eventSlug}.json`
+  const { slug } = await context.params
+
+  const authResult = await authorizeEventAccess(
+    request,
+    `/api/admin/events/${slug}/endpoint`,
+    'POST',
+    slug
   )
-  const registrations = await getEventRegistrations(eventSlug)
-  registrations.push(registration)
-  await fs.writeFile(filePath, JSON.stringify(registrations, null, 2))
-}
-```
 
-```tsx
-// Event registration component
-export function EventRegistration({ eventSlug }: { eventSlug: string }) {
-  const { data: session } = useSession()
-
-  const handleRegister = async () => {
-    await fetch(`/api/events/${eventSlug}/registration`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ comments: '', dietary: '' }),
-    })
+  if (!authResult.success) {
+    return authResult.response
   }
 
-  if (!session) {
-    return <AuthButton />
-  }
-
-  return <button onClick={handleRegister}>Meld deg på</button>
+  const { auth } = authResult
+  // Use auth.event, auth.session, etc.
 }
 ```
-
-### Styling System
-
-- **Tailwind CSS v4** with custom configuration in `tailwind.config.ts`
-- Typography plugin with custom styles in `typography.ts`
-- Dark mode support via `'selector'` strategy
-- Component-based styling with consistent patterns
-- Prettier + `prettier-plugin-tailwindcss` for automatic class sorting
-
-## Development Workflow
-
-### Essential Commands
-
-```bash
-yarn dev             # Development server (localhost:3000)
-yarn build           # Production build
-yarn lint            # ESLint checking
-yarn format          # Prettier formatting
-yarn typecheck       # TypeScript checking
-```
-
-### Environment Variables
-
-```bash
-# NextAuth.js v5
-AUTH_SECRET="your-secret-key-here"
-
-# Slack OAuth
-SLACK_CLIENT_ID="your-slack-client-id"
-SLACK_CLIENT_SECRET="your-slack-client-secret"
-
-# Slack API (for member count)
-SLACK_BOT_TOKEN="xoxb-your-slack-bot-token"
-```
-
-### Build System
-
-- **MDX Processing**: Custom Next.js configuration with `@next/mdx`
-- **Syntax Highlighting**: Uses `@mapbox/rehype-prism` for code blocks
-- **Images**: Remote patterns configured for GitHub and Slack avatars
-- **Analytics**: Vercel Analytics and Speed Insights integrated
-
-### Deployment & CI/CD
-
-- **Platform**: Vercel handles automatic deployments from Git
-- **Preview Builds**: Every PR gets a preview deployment
-- **Production**: Main branch auto-deploys to production
-
-## File Organization
-
-### Component Architecture
-
-- `Layout.tsx` - Main site layout wrapper
-- `ArticleLayout.tsx` - Article-specific layout with navigation
-- `SimpleLayout.tsx` - Basic page layout for static content
-- `AuthButton.tsx` - Login/logout component
-- `EventRegistration.tsx` - Event signup component
-- Component composition pattern with compound components
-
-### Data Flow
-
-- Static data exports from `src/data/` files
-- Dynamic article discovery via `fast-glob` in `src/lib/articles.ts`
-- Server-side data fetching in page components
-- File-based JSON storage for event registrations
-- JWT sessions (no database required)
-
-### Image Handling
-
-- Logo images in `src/images/logos/` as imported SVGs
-- Article images co-located with MDX files
-- Platform logos in `src/images/platforms/`
-- Automatic GitHub avatar generation for members with `github` property
 
 ## Norwegian Content Context
 
@@ -232,3 +117,23 @@ When adding content, maintain the professional tone and focus on practical techn
 - Avoid overly verbose or repetitious language
 - Do not create lengthy summaries after coding sessions
 - Clean up comments and unused code before finalizing
+
+## Development Best Practices
+
+### Search Strategy: Always Check Existing Code First
+
+When asked to create functionality:
+
+1. **Search first**: Use `grep_search` or `semantic_search` to find existing implementations
+2. **Reuse**: Import and use existing functions from utility files (see Architecture section)
+3. **Extend**: If existing function is close, extend it rather than duplicate
+4. **Create**: Only create new utilities if truly unique
+
+### Common Patterns to Check
+
+- Authentication middleware for admin routes (see Authentication section)
+- Date/time formatting (always check `formatDate.ts`)
+- Event-related logic (check `events/helpers.ts`)
+- Slack integration (check `slack/` directory)
+- Form validation patterns
+- Error handling patterns

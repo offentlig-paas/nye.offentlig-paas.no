@@ -3,6 +3,7 @@ import { eventRegistrationService } from '@/domains/event-registration'
 import { authorizeEventAccess } from '@/lib/api/auth-middleware'
 import { getDetailedEventInfoFromSlug } from '@/lib/events/helpers'
 import { getUniqueCleanedOrganizations } from '@/lib/organization-utils'
+import { findChannelByName, generateChannelName } from '@/lib/slack/channels'
 
 export async function GET(
   request: NextRequest,
@@ -33,6 +34,11 @@ export async function GET(
         ? await eventRegistrationService.getEventRegistrationStats(slug)
         : { confirmed: 0, attended: 0, cancelled: 0, pending: 0 }
 
+    const channelName = generateChannelName(
+      new Date(authResult.auth.event.start)
+    )
+    const slackChannel = await findChannelByName(channelName)
+
     return NextResponse.json(
       {
         title: eventInfo.title,
@@ -51,6 +57,7 @@ export async function GET(
         schedule: authResult.auth.event.schedule,
         eventStats: authResult.auth.event.stats,
         registration: authResult.auth.event.registration,
+        slackChannel,
         registrations: eventRegistrations.map(reg => ({
           _id: reg._id,
           name: reg.name,
