@@ -1,6 +1,16 @@
 # Offentlig PaaS
 
-Dette er den nye nettsiden til Offentlig PaaS. Den er bygget med [Tailwind CSS](https://tailwindcss.com) og [Next.js](https://nextjs.org).
+Nettside for Offentlig PaaS - et samarbeid mellom offentlige virksomheter om deling av kunnskap og erfaring med plattformutvikling og DevOps-praksis.
+
+## Hovedfunksjoner
+
+- 📝 **Artikler** - MDX-baserte blogginnlegg om teknologi og plattformutvikling
+- 📅 **Fagdager** - Arrangement med påmelding, program og foredragsholdere
+- 👥 **Medlemsoversikt** - Oversikt over medlemsorganisasjoner
+- 🔐 **Slack OAuth** - Autentisering via Slack workspace
+- 📊 **Admin-portal** - Administrere påmeldinger, sende påminnelser, og behandle foredrag
+- 📎 **Presentasjonsopplasting** - Foredragsholdere kan laste opp slides
+- 💬 **Slack-integrasjon** - Slack-kanaler og notifikasjoner for arrangement
 
 ## Lokal utvikling
 
@@ -36,24 +46,28 @@ Følgende miljøvariabler må konfigureres for full funksjonalitet:
 - `AUTH_SECRET` - Hemmelig nøkkel for JWT-kryptering (generer med `openssl rand -base64 32`)
 - `AUTH_URL` - Base URL for applikasjonen (f.eks. `https://localhost:3000`) - **kun nødvendig i produksjon**
 
-#### Slack OAuth
+#### Slack OAuth & API
 
 - `SLACK_CLIENT_ID` - Slack OAuth app client ID
 - `SLACK_CLIENT_SECRET` - Slack OAuth app client secret
+- `SLACK_BOT_TOKEN` - Slack bot token for admin-sjekking og meldingsutsending
 
-#### Slack API (for admin checking)
+#### Sanity CMS
 
-- `SLACK_BOT_TOKEN` - Slack bot token for admin status checking
+- `NEXT_PUBLIC_SANITY_PROJECT_ID` - Sanity project ID (for client-side)
+- `NEXT_PUBLIC_SANITY_DATASET` - Sanity dataset (vanligvis 'production')
+- `SANITY_API_TOKEN` - Sanity API token med skrivetilgang (for server-side)
+- `SANITY_STUDIO_PROJECT_ID` - Sanity project ID (for Studio)
+- `SANITY_STUDIO_DATASET` - Sanity dataset (for Studio)
 
-#### Sanity CMS (for event registrations)
+#### URL-konfigurasjon (produksjon)
 
-- `NEXT_PUBLIC_SANITY_PROJECT_ID` - Sanity project ID (for client-side API calls)
-- `NEXT_PUBLIC_SANITY_DATASET` - Sanity dataset (usually 'production', for client-side API calls)
-- `SANITY_API_TOKEN` - Sanity API token with write permissions (for server-side operations)
-- `SANITY_STUDIO_PROJECT_ID` - Sanity project ID (for Studio configuration)
-- `SANITY_STUDIO_DATASET` - Sanity dataset (for Studio configuration)
+- `NEXT_PUBLIC_URL` - Base URL for applikasjonen (brukes i meldinger til foredragsholdere)
+- `NEXT_PUBLIC_SITE_URL` - Alternativ base URL (brukes i meldinger til deltakere)
 
-Se `.env.example` for eksempel på konfigurering.
+**Viktig:** I development mode blokkeres Slack-meldinger hvis disse ikke er satt til produksjons-URL for å unngå å sende localhost-lenker.
+
+Se `.env.example` for eksempler.
 
 **Merk:** I utvikling vil NextAuth automatisk sette `AUTH_URL` til `https://localhost:3000`, så denne kan utelates lokalt.
 
@@ -73,19 +87,26 @@ For å sette opp Slack OAuth:
    - `https://yourdomain.com/api/auth/callback/slack` (for produksjon)
 4. Kopier Client ID og Client Secret til miljøvariabler
 
-### User Authentication
+## Arkitektur
 
-Applikasjonen bruker NextAuth.js v5 med Slack OAuth for autentisering. Brukere logger inn med Slack og får automatisk tilgang til å melde seg på fagdager.
+### Autentisering
 
-**Admin-tilgang:** Brukere som er workspace admin i Slack eller medlem av "styret" usergroup får automatisk admin-rettigheter. Admin-siden viser alle påmeldinger til fagdager.
+Bruker NextAuth.js v5 med Slack OAuth. Brukere logger inn med Slack workspace-kontoen sin.
 
-**Profil:** Brukerdata fra Slack (navn, e-post, profilbilde, stilling, status) lagres i sesjonen og vises på `/profil`.
+**Admin-tilgang:** Workspace-admins i Slack eller medlemmer av "styret" usergroup får automatisk admin-rettigheter.
 
-### Data Storage
+### Datalagring
 
-Event registrations are stored in JSON files in the `data/registrations/` directory. This approach eliminates the need for a database setup and makes the application easier to deploy and maintain.
+- **Påmeldinger:** JSON-filer i `data/registrations/` (gitignored for personvern)
+- **Presentasjoner:** Sanity CMS for filopplasting
+- **Arrangement:** Statisk definert i `src/data/events.ts`
 
-**Note:** The registration files contain personal data and are automatically ignored by git for privacy.
+### Slack-integrasjon
+
+- **Autentisering:** OAuth for innlogging
+- **Admin-sjekk:** Bot token verifiserer admin-status via Slack API
+- **Notifikasjoner:** Sender påminnelser til deltakere og foredragsholdere
+- **Kanaler:** Oppretter og administrerer arrangement-kanaler
 
 ### Utviklingskommandoer
 
@@ -148,6 +169,24 @@ Medlemmer er definert i `data/members.ts`. For å legge til et nytt medlem, legg
 ### Oppdatere prosjekter
 
 Prosjekter er definert i `data/platforms.ts`. For å legge til en ny platform, legg til en ny oppføring i `platform`-arrayet.
+
+### Legge til arrangement
+
+Arrangement er definert i `src/data/events.ts`. Legg til en ny oppføring med program, foredragsholdere, og metadata.
+
+## Admin-funksjoner
+
+Administratorer har tilgang til `/admin` hvor de kan:
+
+- 📋 Se alle påmeldinger til arrangement
+- ✅ Endre påmeldingsstatus (bekreftet, venteliste, deltok)
+- 📊 Behandle deltakerinfo (allergier, preferanser)
+- 💬 Sende påminnelser til deltakere via Slack
+- 🎤 Sende påminnelser til foredragsholdere
+- 📎 Administrere presentasjonsopplastinger
+- 🔗 Opprette og administrere Slack-kanaler for arrangement
+
+**Sikkerhet:** Slack-notifikasjoner blokkeres automatisk i development mode for å hindre at localhost-URLer sendes til brukere.
 
 ## Lisens
 

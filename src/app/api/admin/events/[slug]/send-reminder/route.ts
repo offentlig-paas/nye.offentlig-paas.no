@@ -34,6 +34,26 @@ export async function POST(
     return NextResponse.json({ error: 'Message is required' }, { status: 400 })
   }
 
+  // Prevent accidental sends in development
+  if (process.env.NODE_ENV === 'development' && !testMode) {
+    const host =
+      process.env.NEXT_PUBLIC_SITE_URL?.replace(/^https?:\/\//, '') ||
+      request.headers.get('host') ||
+      'offentlig-paas.no'
+    const isDevelopmentUrl =
+      host.includes('localhost') || host.includes('127.0.0.1')
+
+    if (isDevelopmentUrl) {
+      return NextResponse.json(
+        {
+          error: 'Cannot send reminders in development environment',
+          hint: 'Messages would contain localhost URLs. Set NEXT_PUBLIC_SITE_URL to production URL or use production environment.',
+        },
+        { status: 403 }
+      )
+    }
+  }
+
   const participantInfo = await getEventParticipantInfo(slug)
   const event = {
     ...auth.event,

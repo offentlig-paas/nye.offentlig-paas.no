@@ -27,6 +27,12 @@ export function BulkNudgeSpeakers({
   const [isSending, setIsSending] = useState(false)
   const [onlyWithoutAttachments, setOnlyWithoutAttachments] = useState(false)
 
+  const isDevelopment = process.env.NODE_ENV === 'development'
+  const baseUrl = process.env.NEXT_PUBLIC_URL
+  const hasLocalUrl =
+    !baseUrl || baseUrl.includes('localhost') || baseUrl.includes('127.0.0.1')
+  const showWarning = isDevelopment && hasLocalUrl
+
   const talksWithSpeakers: TalkWithSpeakers[] = schedule
     .filter(
       item =>
@@ -104,6 +110,35 @@ export function BulkNudgeSpeakers({
 
   return (
     <div className="space-y-3 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
+      {showWarning && (
+        <div className="rounded-md bg-yellow-50 p-3 dark:bg-yellow-900/20">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg
+                className="h-5 w-5 text-yellow-400"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+                Development Environment
+              </h3>
+              <div className="mt-1 text-xs text-yellow-700 dark:text-yellow-300">
+                Messages will contain localhost URLs. This will be blocked by
+                the API. Set NEXT_PUBLIC_URL to production URL to enable.
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
           <h4 className="text-sm font-medium text-zinc-900 dark:text-zinc-100">

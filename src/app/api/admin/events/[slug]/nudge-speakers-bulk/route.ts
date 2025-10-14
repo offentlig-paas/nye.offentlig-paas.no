@@ -34,6 +34,24 @@ export async function POST(
 
   const { auth } = authResult
 
+  // Prevent accidental sends in development
+  if (process.env.NODE_ENV === 'development') {
+    const isDevelopmentUrl =
+      !process.env.NEXT_PUBLIC_URL ||
+      process.env.NEXT_PUBLIC_URL.includes('localhost') ||
+      process.env.NEXT_PUBLIC_URL.includes('127.0.0.1')
+
+    if (isDevelopmentUrl) {
+      return NextResponse.json(
+        {
+          error: 'Cannot send speaker nudges in development environment',
+          hint: 'Messages would contain localhost URLs. Set NEXT_PUBLIC_URL to production URL or use production environment.',
+        },
+        { status: 403 }
+      )
+    }
+  }
+
   try {
     const body = await request.json()
     const { onlyWithoutAttachments } = body

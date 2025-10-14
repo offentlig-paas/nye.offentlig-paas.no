@@ -27,6 +27,13 @@ describe('POST /api/admin/events/[slug]/nudge-speakers-bulk', () => {
   const mockGetAllEventAttachments =
     getAllEventAttachments as jest.MockedFunction<typeof getAllEventAttachments>
 
+  const originalPublicUrl = process.env.NEXT_PUBLIC_URL
+
+  afterEach(() => {
+    process.env.NEXT_PUBLIC_URL = originalPublicUrl
+    jest.clearAllMocks()
+  })
+
   const mockAuthResult: { success: true; auth: EventAuthContext } = {
     success: true as const,
     auth: {
@@ -361,4 +368,8 @@ describe('POST /api/admin/events/[slug]/nudge-speakers-bulk', () => {
 
     consoleErrorSpy.mockRestore()
   })
+
+  // Note: Development environment protection only runs when NODE_ENV=development
+  // In test environment (NODE_ENV=test), the protection is not active
+  // This is tested manually or in integration tests with NODE_ENV=development
 })

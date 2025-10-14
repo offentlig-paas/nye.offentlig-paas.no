@@ -35,6 +35,8 @@ export function SendReminderModal({
   const [isSending, setIsSending] = useState(false)
   const [isTestMode, setIsTestMode] = useState(false)
 
+  const isDevelopment = process.env.NODE_ENV === 'development'
+
   const defaultMessage = `Hei! 👋
 
 Dette er en påminnelse om ${eventTitle} som finner sted ${eventDate}.
@@ -134,7 +136,33 @@ Vi gleder oss til å se deg der! 🎉`
                   </button>
                 </div>
 
-                <div className="mt-4">
+                <div className="mt-4 space-y-4">
+                  {isDevelopment && (
+                    <div className="rounded-lg bg-yellow-50 p-4 dark:bg-yellow-900/20">
+                      <div className="flex">
+                        <div className="flex-shrink-0">
+                          <ExclamationTriangleIcon
+                            className="h-5 w-5 text-yellow-400"
+                            aria-hidden="true"
+                          />
+                        </div>
+                        <div className="ml-3">
+                          <h3 className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+                            Development Environment
+                          </h3>
+                          <div className="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
+                            <p>
+                              You&apos;re running in development mode. Messages
+                              containing localhost URLs will be blocked unless
+                              you enable test mode or set NEXT_PUBLIC_SITE_URL
+                              to production.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">
                     <div className="flex">
                       <div className="flex-shrink-0">
