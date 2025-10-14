@@ -263,9 +263,9 @@ export const members: Member[] = [
   }),
   new Member({
     name: 'Posten Bring',
-    type: MemberType.STATE_ENTERPRISE,
+    type: MemberType.STATE_COMPANY,
     github: 'bring',
-    homepage: 'https://www.bring.no',
+    homepage: 'https://www.postenbring.no',
     linkedinUrl: 'https://www.linkedin.com/company/postenbring/',
   }),
   new Member({
