@@ -71,10 +71,9 @@ export const events: Event[] = [
       },
       {
         time: '12:00 - 12:45',
-        title:
-          'Selvbetjening er ikke bare en utviklerportal, men det er en del av kaka',
+        title: 'Selvbetjening? Hva med å heller tenke produktutvikling',
         description:
-          'Hos Vy har vi lenge fokusert på hvordan vi kan bruke de få ressursene vi har til rådighet i utviklerplattformteamet best mulig. En stor del av dette er selvbetjening og hjelp til selvhjelp hos utviklerne i de forskjellige teamene. Hvilke metoder og strategier bruker vi for å få til dette, og hvordan kan man implementere en selvbetjeningsstrategi som faktisk er selvbetjent?',
+          'Hos Vy har vi lenge fokusert på hvordan vi kan bruke de få ressursene vi har til rådighet i utviklerplattformteamet best mulig. En stor del av dette er hvordan skal vi la brukerne bruke tjenestene våre og hvordan de kan kjøre hjelp til selvhjelp hos de forskjellige teamene. Hvilke metoder og strategier bruker vi for å få til dette, og hvordan kan man implementere en selvbetjeningsstrategi som faktisk er selvbetjent?',
         speakers: [
           {
             name: 'Nicolas Harlem Eid',
