@@ -58,7 +58,7 @@ export const events: Event[] = [
         type: ItemType.Registration,
       },
       {
-        time: '11:30 - 12:00',
+        time: '11:30 - 11:50',
         title: 'Self-Service: A Schizophrenic historical review',
         speakers: [
           {
@@ -70,7 +70,7 @@ export const events: Event[] = [
         type: ItemType.Talk,
       },
       {
-        time: '12:00 - 12:45',
+        time: '11:50 - 12:15',
         title: 'Selvbetjening? Hva med å heller tenke produktutvikling',
         description:
           'Hos Vy har vi lenge fokusert på hvordan vi kan bruke de få ressursene vi har til rådighet i utviklerplattformteamet best mulig. En stor del av dette er hvordan skal vi la brukerne bruke tjenestene våre og hvordan de kan kjøre hjelp til selvhjelp hos de forskjellige teamene. Hvilke metoder og strategier bruker vi for å få til dette, og hvordan kan man implementere en selvbetjeningsstrategi som faktisk er selvbetjent?',
@@ -84,12 +84,12 @@ export const events: Event[] = [
         type: ItemType.Talk,
       },
       {
-        time: '12:45 - 13:45',
+        time: '12:15 - 13:15',
         title: 'Lunsj',
         type: ItemType.Break,
       },
       {
-        time: '13:45 - 13:55',
+        time: '13:15 - 13:25',
         title: 'After success comes failure',
         description:
           'Running fast and winning - then breaking a leg. A tale of self-service',
@@ -103,7 +103,7 @@ export const events: Event[] = [
         type: ItemType.Talk,
       },
       {
-        time: '14:00 - 14:40',
+        time: '13:30 - 14:10',
         title: 'Nais API og Console - veien til selvbetjening',
         description:
           'Hvordan Nais har jobbet med å lage en selvbetjeningsportal for utviklere i offentlig sektor. Vi vil gå gjennom arkitektur, utfordringer og løsninger vi har funnet på veien.',
@@ -122,12 +122,12 @@ export const events: Event[] = [
         type: ItemType.Talk,
       },
       {
-        time: '14:40 - 15:05',
+        time: '14:10 - 14:40',
         title: 'Pause',
         type: ItemType.Break,
       },
       {
-        time: '15:05 - 15:15',
+        time: '14:40 - 14:50',
         title: 'Towards better UX - Straight as the Kro flies',
         speakers: [
           {
@@ -139,7 +139,7 @@ export const events: Event[] = [
         type: ItemType.Talk,
       },
       {
-        time: '15:20 - 15:40',
+        time: '14:55 - 15:15',
         title: 'Cluster Policies for Selvbetjente Geo-Datapipelines',
         speakers: [
           {
@@ -151,7 +151,7 @@ export const events: Event[] = [
         type: ItemType.Info,
       },
       {
-        time: '15:45 - 15:55',
+        time: '15:20 - 15:30',
         title:
           'Pick, Pay, Push - The rise of self-service, from Retail isles to Developer platform',
         speakers: [
