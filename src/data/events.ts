@@ -122,7 +122,12 @@ export const events: Event[] = [
         type: ItemType.Talk,
       },
       {
-        time: '14:45 - 14:55',
+        time: '14:40 - 15:05',
+        title: 'Pause',
+        type: ItemType.Break,
+      },
+      {
+        time: '15:05 - 15:15',
         title: 'Towards better UX - Straight as the Kro flies',
         speakers: [
           {
@@ -134,7 +139,7 @@ export const events: Event[] = [
         type: ItemType.Talk,
       },
       {
-        time: '15:00 - 15:40',
+        time: '15:20 - 15:40',
         title: 'Cluster Policies for Selvbetjente Geo-Datapipelines',
         speakers: [
           {
