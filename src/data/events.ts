@@ -127,7 +127,7 @@ export const events: Event[] = [
         type: ItemType.Break,
       },
       {
-        time: '14:40 - 14:50',
+        time: '14:45 - 15:00',
         title: 'Towards better UX - Straight as the Kro flies',
         speakers: [
           {
@@ -139,7 +139,7 @@ export const events: Event[] = [
         type: ItemType.Talk,
       },
       {
-        time: '14:55 - 15:15',
+        time: '15:05 - 15:25',
         title: 'Cluster Policies for Selvbetjente Geo-Datapipelines',
         speakers: [
           {
@@ -147,11 +147,16 @@ export const events: Event[] = [
             org: 'Kartverket',
             url: 'https://offentlig-paas-no.slack.com/team/U05Q0GCJPTL',
           },
+          {
+            name: 'Kay Frode Kristiansen',
+            org: 'Kartverket',
+            url: 'https://offentlig-paas-no.slack.com/team/U063M7824JG',
+          },
         ],
         type: ItemType.Info,
       },
       {
-        time: '15:20 - 15:30',
+        time: '15:30 - 15:40',
         title:
           'Pick, Pay, Push - The rise of self-service, from Retail isles to Developer platform',
         speakers: [
