@@ -14,7 +14,7 @@ function getSlackClient(): WebClient | null {
   return slackClient
 }
 
-export interface SendMessageResult {
+interface SendMessageResult {
   success: boolean
   userId: string
   error?: string

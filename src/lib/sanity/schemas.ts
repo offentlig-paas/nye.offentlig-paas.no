@@ -5,7 +5,7 @@ const attendanceTypeDisplay: Record<string, string> = {
   digital: 'Digitalt',
 }
 
-export const eventRegistrationSchema = defineType({
+const eventRegistrationSchema = defineType({
   name: 'eventRegistration',
   title: 'Event Registration',
   type: 'document',
@@ -150,7 +150,7 @@ export const eventRegistrationSchema = defineType({
   ],
 })
 
-export const eventParticipantInfoSchema = defineType({
+const eventParticipantInfoSchema = defineType({
   name: 'eventParticipantInfo',
   title: 'Event Participant Info',
   type: 'document',
@@ -187,7 +187,7 @@ export const eventParticipantInfoSchema = defineType({
   },
 })
 
-export const talkAttachmentSchema = defineType({
+const talkAttachmentSchema = defineType({
   name: 'talkAttachment',
   title: 'Talk Attachment',
   type: 'document',
@@ -283,8 +283,148 @@ export const talkAttachmentSchema = defineType({
   },
 })
 
+const eventFeedbackSchema = defineType({
+  name: 'eventFeedback',
+  title: 'Event Feedback',
+  type: 'document',
+  fields: [
+    {
+      name: 'eventSlug',
+      title: 'Event Slug',
+      type: 'string',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'slackUserId',
+      title: 'Slack User ID',
+      type: 'string',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'name',
+      title: 'Name',
+      type: 'string',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'email',
+      title: 'Email',
+      type: 'string',
+      validation: Rule => Rule.required().email(),
+    },
+    {
+      name: 'talkRatings',
+      title: 'Talk Ratings',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            {
+              name: 'talkTitle',
+              title: 'Talk Title',
+              type: 'string',
+              validation: Rule => Rule.required(),
+            },
+            {
+              name: 'rating',
+              title: 'Rating',
+              type: 'number',
+              validation: Rule => Rule.required().min(1).max(5).integer(),
+            },
+            {
+              name: 'comment',
+              title: 'Comment',
+              type: 'text',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'eventRating',
+      title: 'Event Rating',
+      type: 'number',
+      validation: Rule => Rule.required().min(1).max(5).integer(),
+    },
+    {
+      name: 'eventComment',
+      title: 'Event Comment',
+      type: 'text',
+    },
+    {
+      name: 'topicSuggestions',
+      title: 'Topic Suggestions',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            {
+              name: 'topic',
+              title: 'Topic',
+              type: 'string',
+              validation: Rule => Rule.required(),
+            },
+            {
+              name: 'willingToPresent',
+              title: 'Willing to Present',
+              type: 'boolean',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'submittedAt',
+      title: 'Submitted At',
+      type: 'datetime',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'metadata',
+      title: 'Metadata',
+      type: 'object',
+      fields: [
+        {
+          name: 'userAgent',
+          title: 'User Agent',
+          type: 'string',
+        },
+        {
+          name: 'submissionSource',
+          title: 'Submission Source',
+          type: 'string',
+        },
+      ],
+    },
+  ],
+  preview: {
+    select: {
+      name: 'name',
+      eventSlug: 'eventSlug',
+      eventRating: 'eventRating',
+    },
+    prepare(selection) {
+      const { name, eventSlug, eventRating } = selection
+      return {
+        title: name,
+        subtitle: `${eventSlug} - Rating: ${eventRating}/5`,
+      }
+    },
+  },
+  orderings: [
+    {
+      title: 'Submitted Date (Newest First)',
+      name: 'submittedAtDesc',
+      by: [{ field: 'submittedAt', direction: 'desc' }],
+    },
+  ],
+})
+
 export const schemas = [
   eventRegistrationSchema,
   eventParticipantInfoSchema,
   talkAttachmentSchema,
+  eventFeedbackSchema,
 ]

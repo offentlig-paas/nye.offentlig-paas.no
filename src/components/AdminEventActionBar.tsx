@@ -1,11 +1,19 @@
-import { BellIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline'
+import {
+  BellIcon,
+  DocumentArrowDownIcon,
+  ChatBubbleLeftRightIcon,
+} from '@heroicons/react/24/outline'
+import Link from 'next/link'
 import type { RegistrationStatus } from '@/domains/event-registration/types'
 
 interface AdminEventActionBarProps {
   mode: 'bulk' | 'pre-event' | 'post-event'
   selectedCount?: number
   activeRegistrations?: number
+  attendedCount?: number
+  feedbackPageUrl?: string
   onSendReminder?: () => void
+  onSendFeedbackRequest?: () => void
   onExport: () => void
   onBulkStatusUpdate?: (status: RegistrationStatus) => void
 }
@@ -14,7 +22,10 @@ export function AdminEventActionBar({
   mode,
   selectedCount = 0,
   activeRegistrations = 0,
+  attendedCount = 0,
+  feedbackPageUrl,
   onSendReminder,
+  onSendFeedbackRequest,
   onExport,
   onBulkStatusUpdate,
 }: AdminEventActionBarProps) {
@@ -80,16 +91,30 @@ export function AdminEventActionBar({
 
   return (
     <div className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-900/20">
-      <h3 className="mb-3 text-sm font-semibold text-green-900 dark:text-green-100">
-        Etter fagdagen
-      </h3>
       <div className="flex flex-wrap gap-2">
         <button
+          onClick={onSendFeedbackRequest}
+          disabled={attendedCount === 0}
+          className="inline-flex items-center rounded-lg border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:focus:ring-offset-gray-800"
+        >
+          <ChatBubbleLeftRightIcon className="mr-2 h-4 w-4" />
+          Be om tilbakemelding
+        </button>
+        {feedbackPageUrl && (
+          <Link
+            href={feedbackPageUrl}
+            className="inline-flex items-center rounded-lg border border-green-300 bg-white px-4 py-2 text-sm font-medium text-green-700 transition-colors duration-150 hover:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none dark:border-green-700 dark:bg-gray-800 dark:text-green-300 dark:hover:bg-gray-700 dark:focus:ring-offset-gray-800"
+          >
+            <ChatBubbleLeftRightIcon className="mr-2 h-4 w-4" />
+            Se tilbakemeldinger
+          </Link>
+        )}
+        <button
           onClick={onExport}
-          className="inline-flex items-center rounded-lg border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none dark:focus:ring-offset-gray-800"
+          className="inline-flex items-center rounded-lg border border-green-300 bg-white px-4 py-2 text-sm font-medium text-green-700 transition-colors duration-150 hover:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none dark:border-green-700 dark:bg-gray-800 dark:text-green-300 dark:hover:bg-gray-700 dark:focus:ring-offset-gray-800"
         >
           <DocumentArrowDownIcon className="mr-2 h-4 w-4" />
-          Eksporter rapport
+          Eksporter deltakere
         </button>
       </div>
     </div>

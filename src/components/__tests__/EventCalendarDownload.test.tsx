@@ -12,7 +12,7 @@ describe('Calendar download with participant info', () => {
     end: new Date('2025-10-15T16:00:00Z'),
     location: 'Oslo',
     price: '0',
-    audience: Audience.OpenForAll,
+    audience: Audience.PublicSector,
     registration: {
       attendanceTypes: [AttendanceType.Physical],
     },

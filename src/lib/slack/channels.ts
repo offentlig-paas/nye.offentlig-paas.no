@@ -40,7 +40,7 @@ export function generateChannelName(eventDate: Date): string {
   return `fagdag-${month}-${year}`
 }
 
-export interface ChannelInfo {
+interface ChannelInfo {
   id: string
   name: string
 }
@@ -51,7 +51,7 @@ export interface ChannelInfo {
  * @param slack Slack WebClient instance
  * @param channelId Channel ID to join
  */
-export async function ensureBotInChannel(
+async function ensureBotInChannel(
   slack: WebClient,
   channelId: string
 ): Promise<void> {
@@ -128,7 +128,7 @@ export async function createChannel(
   }
 }
 
-export interface InviteUsersResult {
+interface InviteUsersResult {
   success: boolean
   invited: number
   failed: number

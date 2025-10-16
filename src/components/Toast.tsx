@@ -57,7 +57,7 @@ const styles = {
   },
 }
 
-export function ToastComponent({ toast, onDismiss }: ToastProps) {
+function ToastComponent({ toast, onDismiss }: ToastProps) {
   const Icon = icons[toast.type]
   const style = styles[toast.type]
 

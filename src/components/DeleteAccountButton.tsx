@@ -5,38 +5,30 @@ import { Button } from '@/components/Button'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
 import { signOut } from 'next-auth/react'
 import { useToast } from '@/components/ToastProvider'
+import { trpc } from '@/lib/trpc/client'
 
 export function DeleteAccountButton() {
   const [showModal, setShowModal] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
   const { showSuccess, showError } = useToast()
+  const deleteAccountMutation = trpc.user.deleteAccount.useMutation()
 
   const handleDeleteAccount = async () => {
-    setIsDeleting(true)
     try {
-      const response = await fetch('/api/user/delete-account', {
-        method: 'DELETE',
-      })
+      const data = await deleteAccountMutation.mutateAsync()
+      showSuccess(
+        'Kontoen din er slettet',
+        `${data.anonymizedRegistrations} påmeldinger ble anonymisert.`
+      )
 
-      if (response.ok) {
-        const data = await response.json()
-        showSuccess(
-          'Kontoen din er slettet',
-          `${data.anonymizedRegistrations} påmeldinger ble anonymisert.`
-        )
-
-        setTimeout(() => {
-          signOut({ callbackUrl: '/' })
-        }, 2000)
-      } else {
-        const error = await response.json()
-        showError('Feil ved sletting', error.error || 'Noe gikk galt.')
-        setIsDeleting(false)
-      }
-    } catch (error) {
+      setTimeout(() => {
+        signOut({ callbackUrl: '/' })
+      }, 2000)
+    } catch (error: unknown) {
       console.error('Delete account error:', error)
-      showError('Feil ved sletting', 'Noe gikk galt.')
-      setIsDeleting(false)
+      showError(
+        'Feil ved sletting',
+        error instanceof Error ? error.message : 'Noe gikk galt.'
+      )
     } finally {
       setShowModal(false)
     }
@@ -60,7 +52,7 @@ export function DeleteAccountButton() {
         <Button
           variant="secondary"
           onClick={() => setShowModal(true)}
-          disabled={isDeleting}
+          disabled={deleteAccountMutation.isPending}
           className="border-red-300 bg-red-50 text-red-700 hover:bg-red-100 active:bg-red-100 active:text-red-700/70 dark:border-red-700 dark:bg-red-900/10 dark:text-red-300 dark:hover:bg-red-900/20 dark:active:bg-red-900/10 dark:active:text-red-300/70"
         >
           Slett min konto
@@ -75,7 +67,7 @@ export function DeleteAccountButton() {
         message="Er du sikker på at du vil slette din konto? Denne handlingen kan ikke angres. All din personlige informasjon vil bli anonymisert."
         confirmText="Ja, slett min konto"
         cancelText="Avbryt"
-        isLoading={isDeleting}
+        isLoading={deleteAccountMutation.isPending}
         variant="danger"
       />
     </>

@@ -1,6 +1,6 @@
 import type { Event } from '@/lib/events/types'
 
-export function calendarDateTime(date: Date) {
+function calendarDateTime(date: Date) {
   return date.toISOString().replace(/[-:]|\.\d{3}/g, '')
 }
 

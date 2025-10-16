@@ -28,7 +28,7 @@ export interface UrlAttachmentData {
   uploadedBy: string
 }
 
-export interface AttachmentResult {
+interface AttachmentResult {
   success: boolean
   attachment?: TalkAttachment
   error?: string

@@ -10,13 +10,6 @@ export const USER_GROUPS = {
 
 export type UserGroup = (typeof USER_GROUPS)[keyof typeof USER_GROUPS]
 
-export interface InvitationResult {
-  invited: number
-  failed: number
-  alreadyInChannel: number
-  message?: string
-}
-
 /**
  * Builds a user-friendly message for invitation results
  */

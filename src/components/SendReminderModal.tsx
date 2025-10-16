@@ -8,6 +8,7 @@ import {
   ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline'
 import type { RegistrationStatus } from '@/domains/event-registration/types'
+import { trpc } from '@/lib/trpc/client'
 
 interface SendReminderModalProps {
   isOpen: boolean
@@ -36,6 +37,7 @@ export function SendReminderModal({
   const [isTestMode, setIsTestMode] = useState(false)
 
   const isDevelopment = process.env.NODE_ENV === 'development'
+  const sendReminderMutation = trpc.admin.sendReminder.useMutation()
 
   const defaultMessage = `Hei! 👋
 
@@ -51,31 +53,17 @@ Vi gleder oss til å se deg der! 🎉`
 
     setIsSending(true)
     try {
-      const response = await fetch(
-        `/api/admin/events/${eventSlug}/send-reminder`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            message: message.trim(),
-            statusFilter,
-            testMode: isTestMode,
-          }),
-        }
-      )
+      const result = await sendReminderMutation.mutateAsync({
+        slug: eventSlug,
+        message: message.trim(),
+        statusFilter,
+        testMode: isTestMode,
+      })
 
-      const data = await response.json()
-
-      if (response.ok) {
-        onSuccess(data.message)
-        setMessage('')
-        setIsTestMode(false)
-        onClose()
-      } else {
-        onError(data.error || 'Kunne ikke sende påminnelse')
-      }
+      onSuccess(result.message)
+      setMessage('')
+      setIsTestMode(false)
+      onClose()
     } catch (error) {
       console.error('Error sending reminder:', error)
       onError('Noe gikk galt ved sending av påminnelse')
@@ -154,8 +142,8 @@ Vi gleder oss til å se deg der! 🎉`
                             <p>
                               You&apos;re running in development mode. Messages
                               containing localhost URLs will be blocked unless
-                              you enable test mode or set NEXT_PUBLIC_SITE_URL
-                              to production.
+                              you enable test mode or set NEXT_PUBLIC_URL to
+                              production.
                             </p>
                           </div>
                         </div>

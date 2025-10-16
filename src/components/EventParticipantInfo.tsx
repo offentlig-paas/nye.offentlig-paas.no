@@ -2,9 +2,23 @@
 
 import { VideoCameraIcon } from '@heroicons/react/20/solid'
 import { useEventRegistration } from '@/contexts/EventRegistrationContext'
+import type { Event } from '@/lib/events/types'
+import { Status } from '@/lib/events/types'
+import { getStatus } from '@/lib/events/helpers'
 
-export function EventParticipantInfo() {
+interface EventParticipantInfoProps {
+  event?: Event
+}
+
+export function EventParticipantInfo({
+  event,
+}: EventParticipantInfoProps = {}) {
   const { participantInfo, isCheckingStatus } = useEventRegistration()
+
+  // Don't show streaming info for past events
+  if (event && getStatus(event) === Status.Past) {
+    return null
+  }
 
   if (isCheckingStatus) {
     return null

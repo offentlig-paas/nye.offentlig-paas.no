@@ -1,3 +1,5 @@
+'use client'
+
 import { useState } from 'react'
 import {
   ChatBubbleLeftRightIcon,
@@ -6,6 +8,7 @@ import {
   CheckCircleIcon,
 } from '@heroicons/react/24/outline'
 import { USER_GROUPS, buildDetailedInvitationMessage } from '@/lib/slack/types'
+import { trpc } from '@/lib/trpc/client'
 
 interface AdminSlackChannelManagerProps {
   eventSlug: string
@@ -34,33 +37,25 @@ export function AdminSlackChannelManager({
   const [isAddingMembers, setIsAddingMembers] = useState(false)
   const [isArchiving, setIsArchiving] = useState(false)
 
+  const manageChannelMutation = trpc.admin.slackChannel.manage.useMutation()
+
   const handleCreateChannel = async () => {
     setIsCreating(true)
     try {
-      const response = await fetch(
-        `/api/admin/events/${eventSlug}/slack-channel`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'create' }),
-        }
-      )
+      const data = await manageChannelMutation.mutateAsync({
+        slug: eventSlug,
+        action: 'create',
+      })
 
-      if (response.ok) {
-        const data = await response.json()
-        showSuccess(
-          'Kanal opprettet',
-          `Slack-kanalen #${data.channelName} er opprettet`
-        )
-        onUpdate()
-      } else {
-        const error = await response.json()
-        const errorMsg =
-          error.details || error.error || 'Kunne ikke opprette kanal'
-        showError('Feil', errorMsg)
-      }
-    } catch {
-      showError('Feil', 'Noe gikk galt ved opprettelse av kanal')
+      showSuccess(
+        'Kanal opprettet',
+        `Slack-kanalen #${data.channelName} er opprettet`
+      )
+      onUpdate()
+    } catch (error) {
+      const errorMsg =
+        error instanceof Error ? error.message : 'Kunne ikke opprette kanal'
+      showError('Feil', errorMsg)
     } finally {
       setIsCreating(false)
     }
@@ -69,46 +64,35 @@ export function AdminSlackChannelManager({
   const handleAddMembers = async (groups: string[]) => {
     setIsAddingMembers(true)
     try {
-      const response = await fetch(
-        `/api/admin/events/${eventSlug}/slack-channel`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            action: channelId ? 'add-members' : 'create',
-            userGroups: groups,
-          }),
-        }
-      )
+      const result = await manageChannelMutation.mutateAsync({
+        slug: eventSlug,
+        action: channelId ? 'add-members' : 'create',
+        userGroups: groups,
+      })
 
-      if (response.ok) {
-        const data = await response.json()
+      const message =
+        result.message ||
+        buildDetailedInvitationMessage(
+          result.invited || 0,
+          result.alreadyInChannel || 0,
+          result.channelName || ''
+        )
 
-        const message =
-          data.message ||
-          buildDetailedInvitationMessage(
-            data.invited,
-            data.alreadyInChannel,
-            data.channelName
-          )
-
-        if (data.failed > 0) {
-          showError(
-            'Delvis fullført',
-            `${data.invited} medlemmer lagt til, men ${data.failed} feilet. Sjekk loggene for detaljer.`
-          )
-        } else {
-          showSuccess('Medlemmer lagt til', message)
-        }
-        onUpdate()
+      if ((result.failed || 0) > 0) {
+        showError(
+          'Delvis fullført',
+          `${result.invited} medlemmer lagt til, men ${result.failed} feilet. Sjekk loggene for detaljer.`
+        )
       } else {
-        const error = await response.json()
-        const errorMsg =
-          error.details || error.error || 'Kunne ikke legge til medlemmer'
-        showError('Feil', errorMsg)
+        showSuccess('Medlemmer lagt til', message)
       }
-    } catch {
-      showError('Feil', 'Noe gikk galt ved å legge til medlemmer')
+      onUpdate()
+    } catch (error) {
+      const errorMsg =
+        error instanceof Error
+          ? error.message
+          : 'Kunne ikke legge til medlemmer'
+      showError('Feil', errorMsg)
     } finally {
       setIsAddingMembers(false)
     }
@@ -125,29 +109,17 @@ export function AdminSlackChannelManager({
 
     setIsArchiving(true)
     try {
-      const response = await fetch(
-        `/api/admin/events/${eventSlug}/slack-channel`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'archive' }),
-        }
-      )
+      await manageChannelMutation.mutateAsync({
+        slug: eventSlug,
+        action: 'archive',
+      })
 
-      if (response.ok) {
-        showSuccess(
-          'Kanal arkivert',
-          `Slack-kanalen #${channelName} er arkivert`
-        )
-        onUpdate()
-      } else {
-        const error = await response.json()
-        const errorMsg =
-          error.details || error.error || 'Kunne ikke arkivere kanal'
-        showError('Feil', errorMsg)
-      }
-    } catch {
-      showError('Feil', 'Noe gikk galt ved arkivering av kanal')
+      showSuccess('Kanal arkivert', `Slack-kanalen #${channelName} er arkivert`)
+      onUpdate()
+    } catch (error) {
+      const errorMsg =
+        error instanceof Error ? error.message : 'Kunne ikke arkivere kanal'
+      showError('Feil', errorMsg)
     } finally {
       setIsArchiving(false)
     }

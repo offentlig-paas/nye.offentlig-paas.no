@@ -24,7 +24,7 @@ export enum MemberType {
   OTHER = 'Andre',
 }
 
-export interface iMember {
+interface iMember {
   name: string
   type: MemberType
   logo?: ImageProps['src']

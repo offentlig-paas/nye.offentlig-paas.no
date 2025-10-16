@@ -17,7 +17,7 @@ jobs:
       NEXT_PUBLIC_SANITY_DATASET: 'production'
     strategy:
       matrix:
-        check: [typecheck, lint, test]
+        check: [typecheck, lint, knip, format:check, test]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

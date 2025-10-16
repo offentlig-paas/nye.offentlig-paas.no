@@ -10,7 +10,7 @@
 - MDX articles with metadata exports
 - Static data in `src/data/` (members, platforms, events)
 - NextAuth.js v5 with Slack OAuth
-- File-based JSON storage for registrations (no database)
+- Sanity storage for dynamic and user data like event registrations and feedback
 
 ### Utility Functions - Always Check Before Creating
 
@@ -37,8 +37,6 @@
 **Slack utilities** - `src/lib/slack/utils.ts`:
 
 - `extractSlackUserId()` - Extract user ID from Slack URL
-- `generateSlackTeamUrl()` - Generate Slack team URL
-- `isValidSlackUserId()` - Validate Slack user ID format
 - `extractSlackIds()` - Extract IDs from array of objects
 
 **Slack channel operations** - `src/lib/slack/channels.ts`:
@@ -50,6 +48,14 @@
 - `findChannelByName()` - Find channel by name
 - `archiveChannel()` - Archive a channel
 
+**Sanity utilities** - `src/lib/sanity/utils.ts`:
+
+- `generateSanityKey()` - Generate unique key for Sanity array items
+- `addKeysToArrayItems()` - Add `_key` to array items
+- `prepareSanityDocument()` - Prepare document with arrays for Sanity (auto-adds `_key` to all array items)
+
+**IMPORTANT**: When creating Sanity documents with arrays, always use `prepareSanityDocument()` to ensure all array items have the required `_key` property. Sanity will reject documents with array items missing `_key`.
+
 ## Key Patterns & Conventions
 
 ### Key Patterns
@@ -60,39 +66,30 @@
 
 **Events:** Static data in `src/data/events.ts` with file-based JSON storage for registrations in `data/registrations/`.
 
-### Authentication
+### tRPC API
 
-**REQUIRED**: All admin API routes MUST use `authorizeEventAccess` middleware from `@/lib/api/auth-middleware`
+**Type-safe API layer** - Most endpoints use tRPC v11 for end-to-end type safety:
 
-- Check existing admin routes in `src/app/api/admin/` for authentication patterns
-- Never create unauthenticated admin endpoints
+- **Server**: `src/server/` - Context creation, routers, and procedures
+- **Client**: `src/lib/trpc/client.ts` - Typed client with React Query
+- **Provider**: `src/lib/trpc/TRPCProvider.tsx` - Wraps app with React Query
 
-Example:
+**Access control procedures**:
 
-```typescript
-import { authorizeEventAccess } from '@/lib/api/auth-middleware'
+- `publicProcedure` - No authentication required
+- `protectedProcedure` - Requires authenticated user
+- `adminProcedure` - Requires admin role
+- `adminEventProcedure` - Requires admin + event access
 
-export async function POST(
-  request: NextRequest,
-  context: { params: Promise<{ slug: string }> }
-) {
-  const { slug } = await context.params
+**REST endpoints preserved**:
 
-  const authResult = await authorizeEventAccess(
-    request,
-    `/api/admin/events/${slug}/endpoint`,
-    'POST',
-    slug
-  )
+- NextAuth (`/api/auth`) - OAuth authentication
+- File uploads (`/api/talk-attachments`, `/api/admin/events/[slug]/talk-attachments`) - Multipart form data
+- Some admin operations - Full CRUD on events, speaker updates (dev only)
+- Slack avatar proxy - Image caching
+- User deletion - Account management
 
-  if (!authResult.success) {
-    return authResult.response
-  }
-
-  const { auth } = authResult
-  // Use auth.event, auth.session, etc.
-}
-```
+Use tRPC for new features. Only use REST for multipart uploads or when tRPC is not suitable.
 
 ## Norwegian Content Context
 
@@ -114,9 +111,10 @@ When adding content, maintain the professional tone and focus on practical techn
 - Do not add comments to code unless asked
 - Do not create new documentation files unless asked
 - Keep documentation simple, accurate and to the point
-- Avoid overly verbose or repetitious language
+- Avoid overly verbose or repetitive language
 - Do not create lengthy summaries after coding sessions
 - Clean up comments and unused code before finalizing
+- Always run `yarn run check` after making changes
 
 ## Development Best Practices
 

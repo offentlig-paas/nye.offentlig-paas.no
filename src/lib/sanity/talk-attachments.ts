@@ -1,7 +1,7 @@
 import { sanityClient } from './config'
 import type { AttachmentType } from '@/lib/events/types'
 
-export interface SanityTalkAttachment {
+interface SanityTalkAttachment {
   _id: string
   _type: 'talkAttachment'
   eventSlug: string

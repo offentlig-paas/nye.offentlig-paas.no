@@ -57,7 +57,7 @@ describe('Admin Talk Attachments API', () => {
         start: new Date('2025-10-15'),
         end: new Date('2025-10-15'),
         location: 'Test Location',
-        audience: Audience.OpenForAll,
+        audience: Audience.PublicSector,
         organizers: [
           {
             name: 'Test Organizer',

@@ -16,6 +16,10 @@ interface AdminEventStatsProps {
       activeRegistrations: number
       uniqueOrganisations: number
       totalRegistrations: number
+      feedbackSummary?: {
+        averageEventRating: number
+        totalResponses: number
+      }
       statusBreakdown: {
         attended: number
         'no-show'?: number
@@ -88,7 +92,12 @@ export function AdminEventStats({ eventDetails }: AdminEventStatsProps) {
             100
         )
       : 0
-  const noShowCount = eventDetails.stats.statusBreakdown['no-show'] || 0
+
+  const feedbackSummary = eventDetails.stats.feedbackSummary
+  const feedbackDisplay =
+    feedbackSummary && feedbackSummary.totalResponses > 0
+      ? `${feedbackSummary.averageEventRating.toFixed(1)} (${feedbackSummary.totalResponses})`
+      : '0'
 
   return (
     <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -97,7 +106,7 @@ export function AdminEventStats({ eventDetails }: AdminEventStatsProps) {
         label="Deltok"
       />
       <StatCard value={`${attendanceRate}%`} label="Oppmøte %" />
-      <StatCard value={noShowCount} label="Ikke møtt" />
+      <StatCard value={feedbackDisplay} label="Tilbakemeldinger" />
       <StatCard
         value={eventDetails.stats.uniqueOrganisations}
         label="Organisasjoner"

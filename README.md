@@ -63,7 +63,6 @@ Følgende miljøvariabler må konfigureres for full funksjonalitet:
 #### URL-konfigurasjon (produksjon)
 
 - `NEXT_PUBLIC_URL` - Base URL for applikasjonen (brukes i meldinger til foredragsholdere)
-- `NEXT_PUBLIC_SITE_URL` - Alternativ base URL (brukes i meldinger til deltakere)
 
 **Viktig:** I development mode blokkeres Slack-meldinger hvis disse ikke er satt til produksjons-URL for å unngå å sende localhost-lenker.
 
@@ -88,6 +87,22 @@ For å sette opp Slack OAuth:
 4. Kopier Client ID og Client Secret til miljøvariabler
 
 ## Arkitektur
+
+### API og Type Safety
+
+Bruker **tRPC v11** for type-safe API-kall mellom klient og server:
+
+- **Routers:** `src/server/routers/` - Type-safe endepunkter med Zod-validering
+- **Client:** `src/lib/trpc/client.ts` - Type-safe client med React Query
+- **Access control:** `publicProcedure`, `protectedProcedure`, `adminProcedure`, `adminEventProcedure`
+
+**REST endepunkter bevart:**
+
+- NextAuth OAuth (`/api/auth`)
+- File uploads (`/api/talk-attachments`, `/api/admin/events/[slug]/talk-attachments`)
+- Full CRUD på events og speaker updates (kun dev)
+- Slack avatar proxy
+- User deletion
 
 ### Autentisering
 

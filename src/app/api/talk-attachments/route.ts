@@ -9,6 +9,10 @@ import {
   getTalkAttachmentById,
 } from '@/lib/sanity/talk-attachments'
 import { getEventBySlug, isUserSpeakerForTalk } from '@/lib/events/helpers'
+
+// Note: This endpoint remains as REST API due to multipart/form-data handling.
+// tRPC does not yet support file uploads natively.
+// Revisit this when https://github.com/trpc/trpc/issues/1937 lands.
 import { AttachmentType } from '@/lib/events/types'
 
 export async function GET(request: NextRequest) {
