@@ -12,6 +12,7 @@
     "check": "eslint . && tsc --noEmit && knip && prettier --write .",
     "lint": "eslint .",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
     "sanity": "sanity",
     "knip": "knip",
