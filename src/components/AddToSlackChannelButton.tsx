@@ -4,6 +4,7 @@ import {
   type UserGroup,
   buildDetailedInvitationMessage,
 } from '@/lib/slack/types'
+import { trpc } from '@/lib/trpc/client'
 
 interface AddToSlackChannelButtonProps {
   eventSlug: string
@@ -25,50 +26,40 @@ export function AddToSlackChannelButton({
   showSuccess,
 }: AddToSlackChannelButtonProps) {
   const [isAdding, setIsAdding] = useState(false)
+  const manageChannelMutation = trpc.admin.slackChannel.manage.useMutation()
 
   const handleAddToChannel = async () => {
     setIsAdding(true)
     try {
-      const response = await fetch(
-        `/api/admin/events/${eventSlug}/slack-channel`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            action: 'add-members',
-            userGroups: [userGroup],
-          }),
-        }
-      )
+      const result = await manageChannelMutation.mutateAsync({
+        slug: eventSlug,
+        action: 'add-members',
+        userGroups: [userGroup],
+      })
 
-      if (response.ok) {
-        const data = await response.json()
+      const message =
+        result.message ||
+        buildDetailedInvitationMessage(
+          result.invited || 0,
+          result.alreadyInChannel || 0,
+          result.channelName || ''
+        )
 
-        const message =
-          data.message ||
-          buildDetailedInvitationMessage(
-            data.invited,
-            data.alreadyInChannel,
-            channelName
-          )
-
-        if (data.failed > 0) {
-          showError(
-            'Delvis fullført',
-            `${data.invited} medlemmer lagt til, men ${data.failed} feilet.`
-          )
-        } else {
-          showSuccess('Lagt til i Slack', message)
-        }
-        onUpdate()
+      if ((result.failed || 0) > 0) {
+        showError(
+          'Delvis fullført',
+          `${result.invited} medlemmer lagt til, men ${result.failed} feilet.`
+        )
       } else {
-        const error = await response.json()
-        const errorMsg =
-          error.details || error.error || 'Kunne ikke legge til medlemmer'
-        showError('Feil', errorMsg)
+        showSuccess('Lagt til i Slack', message)
       }
-    } catch {
-      showError('Feil', 'Noe gikk galt ved å legge til medlemmer')
+      onUpdate()
+    } catch (error) {
+      const errorMsg =
+        error instanceof Error
+          ? error.message
+          : 'Kunne ikke legge til medlemmer'
+      showError('Feil', errorMsg)
     } finally {
       setIsAdding(false)
     }

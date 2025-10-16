@@ -19,6 +19,7 @@ import {
   CalendarDaysIcon,
 } from '@heroicons/react/20/solid'
 import { formatTime } from '@/lib/formatDate'
+import { trpc } from '@/lib/trpc/client'
 
 interface EventRegistrationProps {
   eventSlug: string
@@ -328,6 +329,10 @@ export const EventRegistration = memo(function EventRegistration({
   const { registrationStatus, registration, stats, isCheckingStatus, refetch } =
     useEventRegistration()
 
+  const registerMutation = trpc.eventRegistration.register.useMutation()
+  const cancelMutation = trpc.eventRegistration.cancel.useMutation()
+  const updateMutation = trpc.eventRegistration.update.useMutation()
+
   const isActivelyRegistered =
     registrationStatus === 'confirmed' || registrationStatus === 'attended'
 
@@ -363,37 +368,39 @@ export const EventRegistration = memo(function EventRegistration({
   const handleRegister = async () => {
     if (!session?.user?.slackId) return
 
+    if (!registrationData.attendanceType) {
+      showError('Feil ved påmelding', 'Deltakelsestype må velges')
+      return
+    }
+
     setState(prev => ({ ...prev, isLoading: true }))
     try {
-      const response = await fetch(`/api/events/${eventSlug}/registration`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(registrationData),
+      await registerMutation.mutateAsync({
+        slug: eventSlug,
+        ...registrationData,
+        attendanceType: registrationData.attendanceType,
       })
 
-      if (response.ok) {
-        setState(prev => ({
-          ...prev,
-          showRegistrationForm: false,
-        }))
-        setRegistrationData(prev => ({
-          ...prev,
-          comments: '',
-          dietary: '',
-          organisation: session?.user?.statusText || session?.user?.title || '',
-        }))
-        await refetch()
-        showSuccess('Påmelding bekreftet!', `Du er nå påmeldt ${eventTitle}.`)
-      } else {
-        const data = await response.json()
-        showError(
-          'Feil ved påmelding',
-          data.error || 'Noe gikk galt under påmeldingen.'
-        )
-      }
+      setState(prev => ({
+        ...prev,
+        showRegistrationForm: false,
+      }))
+      setRegistrationData(prev => ({
+        ...prev,
+        comments: '',
+        dietary: '',
+        organisation: session?.user?.statusText || session?.user?.title || '',
+      }))
+      await refetch()
+      showSuccess('Påmelding bekreftet!', `Du er nå påmeldt ${eventTitle}.`)
     } catch (error) {
       console.error('Registration error:', error)
-      showError('Feil ved påmelding', 'Noe gikk galt under påmeldingen.')
+      showError(
+        'Feil ved påmelding',
+        error instanceof Error
+          ? error.message
+          : 'Noe gikk galt under påmeldingen.'
+      )
     } finally {
       setState(prev => ({ ...prev, isLoading: false }))
     }
@@ -404,27 +411,22 @@ export const EventRegistration = memo(function EventRegistration({
 
     setState(prev => ({ ...prev, isLoading: true }))
     try {
-      const response = await fetch(`/api/events/${eventSlug}/registration`, {
-        method: 'DELETE',
-      })
+      await cancelMutation.mutateAsync({ slug: eventSlug })
 
-      if (response.ok) {
-        setState(prev => ({
-          ...prev,
-          showUnregisterModal: false,
-        }))
-        await refetch()
-        showSuccess('Avmelding bekreftet', `Du er nå avmeldt ${eventTitle}.`)
-      } else {
-        const data = await response.json()
-        showError(
-          'Feil ved avmelding',
-          data.error || 'Noe gikk galt under avmeldingen.'
-        )
-      }
+      setState(prev => ({
+        ...prev,
+        showUnregisterModal: false,
+      }))
+      await refetch()
+      showSuccess('Avmelding bekreftet', `Du er nå avmeldt ${eventTitle}.`)
     } catch (error) {
       console.error('Unregistration error:', error)
-      showError('Feil ved avmelding', 'Noe gikk galt under avmeldingen.')
+      showError(
+        'Feil ved avmelding',
+        error instanceof Error
+          ? error.message
+          : 'Noe gikk galt under avmeldingen.'
+      )
     } finally {
       setState(prev => ({ ...prev, isLoading: false }))
     }
@@ -451,30 +453,26 @@ export const EventRegistration = memo(function EventRegistration({
   const handleUpdateSocialEvent = async (attending: boolean) => {
     setState(prev => ({ ...prev, isLoading: true }))
     try {
-      const response = await fetch(`/api/events/${eventSlug}/registration`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ attendingSocialEvent: attending }),
+      await updateMutation.mutateAsync({
+        slug: eventSlug,
+        attendingSocialEvent: attending,
       })
 
-      if (response.ok) {
-        await refetch()
-        showSuccess(
-          'Oppdatert!',
-          attending
-            ? 'Du er nå påmeldt det sosiale arrangementet.'
-            : 'Du er nå avmeldt det sosiale arrangementet.'
-        )
-      } else {
-        const data = await response.json()
-        showError(
-          'Feil ved oppdatering',
-          data.error || 'Noe gikk galt under oppdateringen.'
-        )
-      }
+      await refetch()
+      showSuccess(
+        'Oppdatert!',
+        attending
+          ? 'Du er nå påmeldt det sosiale arrangementet.'
+          : 'Du er nå avmeldt det sosiale arrangementet.'
+      )
     } catch (error) {
       console.error('Update error:', error)
-      showError('Feil ved oppdatering', 'Noe gikk galt under oppdateringen.')
+      showError(
+        'Feil ved oppdatering',
+        error instanceof Error
+          ? error.message
+          : 'Noe gikk galt under oppdateringen.'
+      )
     } finally {
       setState(prev => ({ ...prev, isLoading: false }))
     }

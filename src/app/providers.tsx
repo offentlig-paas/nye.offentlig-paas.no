@@ -5,6 +5,7 @@ import { createContext, useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { ThemeProvider, useTheme } from 'next-themes'
 import { ToastProvider } from '@/components/ToastProvider'
+import { TRPCProvider } from '@/lib/trpc/TRPCProvider'
 
 function usePrevious<T>(value: T) {
   const ref = useRef<T | null>(null)
@@ -52,7 +53,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <AppContext.Provider value={{ previousPathname }}>
       <ThemeProvider attribute="class" disableTransitionOnChange>
         <ThemeWatcher />
-        <ToastProvider>{children}</ToastProvider>
+        <TRPCProvider>
+          <ToastProvider>{children}</ToastProvider>
+        </TRPCProvider>
       </ThemeProvider>
     </AppContext.Provider>
   )

@@ -9,6 +9,7 @@ import {
   ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline'
 import { CheckCircleIcon } from '@heroicons/react/24/solid'
+import { trpc } from '@/lib/trpc/client'
 
 interface SlackUser {
   id: string
@@ -75,27 +76,27 @@ export function SpeakerMatcher({ eventSlug, speakers }: SpeakerMatcherProps) {
     )
   }, [speakers, savedSpeakerNames])
 
-  const searchUsers = useCallback(async (query: string) => {
-    if (query.length < 2) {
-      setSearchResults([])
-      return
-    }
+  const utils = trpc.useUtils()
 
-    setIsSearching(true)
-    try {
-      const response = await fetch(
-        `/api/admin/slack/search-users?query=${encodeURIComponent(query)}`
-      )
-      if (response.ok) {
-        const data = await response.json()
-        setSearchResults(data.users || [])
+  const searchUsers = useCallback(
+    async (query: string) => {
+      if (query.length < 2) {
+        setSearchResults([])
+        return
       }
-    } catch (error) {
-      console.error('Error searching users:', error)
-    } finally {
-      setIsSearching(false)
-    }
-  }, [])
+
+      setIsSearching(true)
+      try {
+        const result = await utils.slack.searchUsers.fetch({ query })
+        setSearchResults(result.users || [])
+      } catch (error) {
+        console.error('Error searching users:', error)
+      } finally {
+        setIsSearching(false)
+      }
+    },
+    [utils]
+  )
 
   useEffect(() => {
     const debounce = setTimeout(() => {
@@ -238,79 +239,52 @@ export function SpeakerMatcher({ eventSlug, speakers }: SpeakerMatcherProps) {
 
       while (!success && retryCount < maxRetries) {
         try {
-          const response = await fetch(
-            `/api/admin/slack/search-users?query=${encodeURIComponent(match.speaker.name)}`
+          const data = await utils.slack.searchUsers.fetch({
+            query: match.speaker.name,
+          })
+          const users = data.users || []
+
+          const exactMatches = users.filter(
+            (user: SlackUser) =>
+              user.realName.toLowerCase() ===
+                match.speaker.name.toLowerCase() ||
+              user.displayName.toLowerCase() ===
+                match.speaker.name.toLowerCase()
           )
 
-          if (response.status === 429) {
-            const retryAfter = response.headers.get('Retry-After')
-            const waitTime = retryAfter
-              ? parseInt(retryAfter) * 1000
-              : currentDelay * 2
-
-            console.log(`Rate limited. Waiting ${waitTime}ms before retry...`)
-            currentDelay = Math.min(waitTime, maxDelay)
-            await new Promise(resolve => setTimeout(resolve, currentDelay))
-            retryCount++
-            continue
-          }
-
-          if (response.ok) {
-            const data = await response.json()
-            const users = data.users || []
-
-            const exactMatches = users.filter(
-              (user: SlackUser) =>
-                user.realName.toLowerCase() ===
-                  match.speaker.name.toLowerCase() ||
-                user.displayName.toLowerCase() ===
-                  match.speaker.name.toLowerCase()
+          if (exactMatches.length === 1) {
+            speakerStatusGlobal.set(match.speaker.name, 'found')
+            await saveSingleMatch(match.speaker, exactMatches[0]!)
+          } else if (exactMatches.length > 1) {
+            speakerStatusGlobal.set(match.speaker.name, 'duplicate')
+            duplicateMatchesGlobal.set(match.speaker.name, exactMatches)
+            setMatches(prev =>
+              prev.map(m =>
+                m.speaker === match.speaker
+                  ? {
+                      ...m,
+                      autoSearchStatus: 'duplicate' as AutoSearchStatus,
+                      duplicateMatches: exactMatches,
+                    }
+                  : m
+              )
             )
-
-            if (exactMatches.length === 1) {
-              speakerStatusGlobal.set(match.speaker.name, 'found')
-              await saveSingleMatch(match.speaker, exactMatches[0])
-            } else if (exactMatches.length > 1) {
-              speakerStatusGlobal.set(match.speaker.name, 'duplicate')
-              duplicateMatchesGlobal.set(match.speaker.name, exactMatches)
-              setMatches(prev =>
-                prev.map(m =>
-                  m.speaker === match.speaker
-                    ? {
-                        ...m,
-                        autoSearchStatus: 'duplicate' as AutoSearchStatus,
-                        duplicateMatches: exactMatches,
-                      }
-                    : m
-                )
-              )
-            } else {
-              speakerStatusGlobal.set(match.speaker.name, 'not-found')
-              setMatches(prev =>
-                prev.map(m =>
-                  m.speaker === match.speaker
-                    ? {
-                        ...m,
-                        autoSearchStatus: 'not-found' as AutoSearchStatus,
-                      }
-                    : m
-                )
-              )
-            }
-
-            currentDelay = Math.max(300, currentDelay * 0.5)
-            success = true
           } else {
             speakerStatusGlobal.set(match.speaker.name, 'not-found')
             setMatches(prev =>
               prev.map(m =>
                 m.speaker === match.speaker
-                  ? { ...m, autoSearchStatus: 'not-found' as AutoSearchStatus }
+                  ? {
+                      ...m,
+                      autoSearchStatus: 'not-found' as AutoSearchStatus,
+                    }
                   : m
               )
             )
-            success = true
           }
+
+          currentDelay = Math.max(300, currentDelay * 0.5)
+          success = true
         } catch (error) {
           console.error('Error auto-searching speaker:', error)
           if (retryCount < maxRetries - 1) {
@@ -355,7 +329,7 @@ export function SpeakerMatcher({ eventSlug, speakers }: SpeakerMatcherProps) {
       console.log(`${emoji} ${match.speaker.name}: ${message}`)
     })
     console.groupEnd()
-  }, [matches, saveSingleMatch])
+  }, [matches, saveSingleMatch, utils.slack.searchUsers])
 
   if (process.env.NODE_ENV !== 'development') {
     return null

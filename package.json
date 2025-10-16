@@ -27,6 +27,12 @@
     "@slack/web-api": "^7.11.0",
     "@tailwindcss/postcss": "^4.1.13",
     "@tailwindcss/typography": "^0.5.19",
+    "@tanstack/react-query": "^5.90.3",
+    "@tanstack/react-query-devtools": "^5.90.2",
+    "@trpc/client": "^11.0.0",
+    "@trpc/next": "^11.0.0",
+    "@trpc/react-query": "^11.0.0",
+    "@trpc/server": "^11.0.0",
     "@types/node": "^24.7.2",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.1",
@@ -45,8 +51,10 @@
     "react-dom": "^19.1.1",
     "remark-gfm": "^4.0.1",
     "styled-components": "^6.1.15",
+    "superjson": "^2.2.2",
     "tailwindcss": "^4.1.13",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@eslint/compat": "^1.4.0",

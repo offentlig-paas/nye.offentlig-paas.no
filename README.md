@@ -89,6 +89,22 @@ For å sette opp Slack OAuth:
 
 ## Arkitektur
 
+### API og Type Safety
+
+Bruker **tRPC v11** for type-safe API-kall mellom klient og server:
+
+- **Routers:** `src/server/routers/` - Type-safe endepunkter med Zod-validering
+- **Client:** `src/lib/trpc/client.ts` - Type-safe client med React Query
+- **Access control:** `publicProcedure`, `protectedProcedure`, `adminProcedure`, `adminEventProcedure`
+
+**REST endepunkter bevart:**
+
+- NextAuth OAuth (`/api/auth`)
+- File uploads (`/api/talk-attachments`, `/api/admin/events/[slug]/talk-attachments`)
+- Full CRUD på events og speaker updates (kun dev)
+- Slack avatar proxy
+- User deletion
+
 ### Autentisering
 
 Bruker NextAuth.js v5 med Slack OAuth. Brukere logger inn med Slack workspace-kontoen sin.

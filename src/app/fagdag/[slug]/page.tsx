@@ -5,6 +5,7 @@ import React from 'react'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { EventRegistration } from '@/components/EventRegistration'
 import { EventParticipantInfo } from '@/components/EventParticipantInfo'
+import { EventFeedbackPrompt } from '@/components/EventFeedbackPrompt'
 import { EventCalendarDownload } from '@/components/EventCalendarDownload'
 import { EventRegistrationProvider } from '@/contexts/EventRegistrationContext'
 import { Container } from '@/components/Container'
@@ -367,6 +368,10 @@ export default async function Fagdag({ params }: { params: Params }) {
                         socialEvent={event.socialEvent}
                       />
                       <EventParticipantInfo />
+                      <EventFeedbackPrompt
+                        event={event}
+                        eventStatus={getStatus(event)}
+                      />
                       {event.registrationUrl && (
                         <div className="mt-4">
                           <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">
@@ -411,7 +416,11 @@ export default async function Fagdag({ params }: { params: Params }) {
                         />
                         Se opptak
                       </Button>
-                      <EventParticipantInfo />
+                      <EventParticipantInfo event={event} />
+                      <EventFeedbackPrompt
+                        event={event}
+                        eventStatus={getStatus(event)}
+                      />
                     </>
                   ) : (
                     <>
@@ -422,7 +431,11 @@ export default async function Fagdag({ params }: { params: Params }) {
                         attendanceTypes={event.registration.attendanceTypes}
                         socialEvent={event.socialEvent}
                       />
-                      <EventParticipantInfo />
+                      <EventParticipantInfo event={event} />
+                      <EventFeedbackPrompt
+                        event={event}
+                        eventStatus={getStatus(event)}
+                      />
                     </>
                   )}
                 </div>

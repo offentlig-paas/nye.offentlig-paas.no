@@ -12,6 +12,10 @@ import {
   handleUrlAttachment,
 } from '@/lib/services/talk-attachment-service'
 
+// Note: This endpoint remains as REST API due to multipart/form-data handling.
+// tRPC does not yet support file uploads natively.
+// Revisit this when https://github.com/trpc/trpc/issues/1937 lands.
+
 export async function GET(
   request: NextRequest,
   context: { params: Promise<{ slug: string }> }

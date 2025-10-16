@@ -49,6 +49,16 @@ export default defineConfig({
                   .filter('_type == "talkAttachment"')
                   .defaultOrdering([{ field: 'uploadedAt', direction: 'desc' }])
               ),
+            S.listItem()
+              .title('Event Feedback')
+              .child(
+                S.documentTypeList('eventFeedback')
+                  .title('Event Feedback')
+                  .filter('_type == "eventFeedback"')
+                  .defaultOrdering([
+                    { field: 'submittedAt', direction: 'desc' },
+                  ])
+              ),
           ]),
     }),
     visionTool({

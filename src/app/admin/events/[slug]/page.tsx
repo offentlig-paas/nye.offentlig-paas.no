@@ -19,6 +19,7 @@ import { AdminRegistrationFilters } from '@/components/AdminRegistrationFilters'
 import { AdminEventDetailsSidebar } from '@/components/AdminEventDetailsSidebar'
 import { AdminSlackChannelManager } from '@/components/AdminSlackChannelManager'
 import { AdminTalkAttachments } from '@/components/AdminTalkAttachments'
+import { Button } from '@/components/Button'
 import type { RegistrationStatus } from '@/domains/event-registration/types'
 import type { SlackUser, Item } from '@/lib/events/types'
 
@@ -784,6 +785,26 @@ export default function AdminEventDetailsPage() {
             showError={showError}
             showSuccess={showSuccess}
           />
+
+          <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+            <div className="border-b border-gray-200 px-6 py-3 dark:border-gray-700">
+              <h3 className="text-base font-semibold text-gray-900 dark:text-white">
+                Tilbakemeldinger
+              </h3>
+            </div>
+            <div className="p-6">
+              <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
+                Se alle tilbakemeldinger fra deltakere på en dedikert side.
+              </p>
+              <Button
+                href={`/fagdag/${slug}/feedback`}
+                variant="primary"
+                className="w-full"
+              >
+                Se tilbakemeldinger
+              </Button>
+            </div>
+          </div>
 
           <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
             <div className="border-b border-gray-200 px-6 py-3 dark:border-gray-700">

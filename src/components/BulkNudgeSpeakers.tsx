@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Button } from '@/components/Button'
 import { BellAlertIcon } from '@heroicons/react/24/outline'
 import type { Item } from '@/lib/events/types'
+import { trpc } from '@/lib/trpc/client'
 
 interface BulkNudgeSpeakersProps {
   eventSlug: string
@@ -26,6 +27,8 @@ export function BulkNudgeSpeakers({
 }: BulkNudgeSpeakersProps) {
   const [isSending, setIsSending] = useState(false)
   const [onlyWithoutAttachments, setOnlyWithoutAttachments] = useState(false)
+
+  const nudgeSpeakersMutation = trpc.admin.nudgeSpeakersBulk.useMutation()
 
   const isDevelopment = process.env.NODE_ENV === 'development'
   const baseUrl = process.env.NEXT_PUBLIC_URL
@@ -67,25 +70,10 @@ export function BulkNudgeSpeakers({
     setIsSending(true)
 
     try {
-      const response = await fetch(
-        `/api/admin/events/${encodeURIComponent(eventSlug)}/nudge-speakers-bulk`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            onlyWithoutAttachments,
-          }),
-        }
-      )
-
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || 'Failed to send nudges')
-      }
-
-      const result = await response.json()
+      const result = await nudgeSpeakersMutation.mutateAsync({
+        slug: eventSlug,
+        onlyWithoutAttachments,
+      })
 
       if (result.sent > 0) {
         onSuccess?.(
@@ -96,9 +84,9 @@ export function BulkNudgeSpeakers({
       }
     } catch (error) {
       console.error('Error sending bulk nudge:', error)
-      onError?.(
+      const errorMsg =
         error instanceof Error ? error.message : 'Kunne ikke sende påminnelser'
-      )
+      onError?.(errorMsg)
     } finally {
       setIsSending(false)
     }
