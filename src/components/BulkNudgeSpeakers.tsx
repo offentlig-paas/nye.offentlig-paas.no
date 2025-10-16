@@ -98,6 +98,33 @@ export function BulkNudgeSpeakers({
 
   return (
     <div className="space-y-3 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1">
+          <h4 className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+            Send påminnelse
+          </h4>
+          <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
+            Sender melding til foredragsholdere om sitt foredrag på Slack
+          </p>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          id="onlyWithoutAttachments"
+          checked={onlyWithoutAttachments}
+          onChange={e => setOnlyWithoutAttachments(e.target.checked)}
+          className="h-4 w-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-700"
+        />
+        <label
+          htmlFor="onlyWithoutAttachments"
+          className="text-sm text-zinc-700 dark:text-zinc-300"
+        >
+          Bare til de som mangler slides
+        </label>
+      </div>
+
       {showWarning && (
         <div className="rounded-md bg-yellow-50 p-3 dark:bg-yellow-900/20">
           <div className="flex">
@@ -126,33 +153,6 @@ export function BulkNudgeSpeakers({
           </div>
         </div>
       )}
-
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex-1">
-          <h4 className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-            Send påminnelse
-          </h4>
-          <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
-            Sender melding til foredragsholdere om sitt foredrag på Slack
-          </p>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          id="onlyWithoutAttachments"
-          checked={onlyWithoutAttachments}
-          onChange={e => setOnlyWithoutAttachments(e.target.checked)}
-          className="h-4 w-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-700"
-        />
-        <label
-          htmlFor="onlyWithoutAttachments"
-          className="text-sm text-zinc-700 dark:text-zinc-300"
-        >
-          Bare til de som mangler slides
-        </label>
-      </div>
 
       <Button
         onClick={handleBulkNudge}

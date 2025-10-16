@@ -37,8 +37,6 @@
 **Slack utilities** - `src/lib/slack/utils.ts`:
 
 - `extractSlackUserId()` - Extract user ID from Slack URL
-- `generateSlackTeamUrl()` - Generate Slack team URL
-- `isValidSlackUserId()` - Validate Slack user ID format
 - `extractSlackIds()` - Extract IDs from array of objects
 
 **Slack channel operations** - `src/lib/slack/channels.ts`:

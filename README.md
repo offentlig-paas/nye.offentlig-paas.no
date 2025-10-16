@@ -63,7 +63,6 @@ Følgende miljøvariabler må konfigureres for full funksjonalitet:
 #### URL-konfigurasjon (produksjon)
 
 - `NEXT_PUBLIC_URL` - Base URL for applikasjonen (brukes i meldinger til foredragsholdere)
-- `NEXT_PUBLIC_SITE_URL` - Alternativ base URL (brukes i meldinger til deltakere)
 
 **Viktig:** I development mode blokkeres Slack-meldinger hvis disse ikke er satt til produksjons-URL for å unngå å sende localhost-lenker.
 

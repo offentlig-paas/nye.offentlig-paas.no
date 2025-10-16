@@ -6,7 +6,7 @@ import type {
 } from './types'
 import { EventFeedbackRepository } from './repository'
 
-export class EventFeedbackService {
+class EventFeedbackService {
   private repository: EventFeedbackRepository
 
   constructor() {

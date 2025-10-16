@@ -1,5 +1,5 @@
 import { events } from '@/data/events'
-import type { Event } from '@/lib/events/types'
+import type { Event, SlackUser } from '@/lib/events/types'
 import { Status, AttachmentType, ItemType } from '@/lib/events/types'
 import { formatDateShort, formatDateTime } from '@/lib/formatDate'
 // Note: DocumentChartBarIcon is used for slides instead of PresentationChartLineIcon for visual consistency across the application.
@@ -57,10 +57,6 @@ export function isCallForPapersOpen(event: Event) {
   return isAcceptingRegistrations(event)
 }
 
-export function formatDescription(description: string) {
-  return description.replace(/\n/g, '<br>')
-}
-
 /**
  * Extracts unique speakers from event schedule
  * @param schedule Event schedule items with optional speakers
@@ -100,28 +96,6 @@ export function getUpcomingEvents() {
   return events.filter(event => getStatus(event) !== Status.Past)
 }
 
-export function getEventInfoFromSlug(slug: string): {
-  title: string
-  date: string
-  location: string
-} {
-  const event = events.find(e => e.slug === slug)
-
-  if (event) {
-    return {
-      title: event.title,
-      date: formatDateShort(event.start),
-      location: event.location,
-    }
-  }
-
-  return {
-    title: slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-    date: formatDateTime(new Date()),
-    location: 'Ikke spesifisert',
-  }
-}
-
 export function getDetailedEventInfoFromSlug(slug: string): {
   title: string
   date: string
@@ -142,16 +116,6 @@ export function getDetailedEventInfoFromSlug(slug: string): {
     date: formatDateShort(new Date()),
     location: 'Ikke spesifisert',
   }
-}
-
-export function getAllEventsWithPotentialRegistrations(): Event[] {
-  return events.filter(event => {
-    const eventDate = new Date(event.start)
-    const oneYearAgo = new Date()
-    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
-
-    return eventDate >= oneYearAgo
-  })
 }
 
 export function isUserEventOrganizer(
@@ -260,6 +224,30 @@ export function canUserAccessEvent(
 
 export function getEventBySlug(slug: string): Event | null {
   return events.find(e => e.slug === slug) || null
+}
+
+/**
+ * Extract unique speakers without profile URLs from event schedule
+ */
+export function getUniqueSpeakersWithoutUrls(
+  schedule?: Event['schedule']
+): SlackUser[] {
+  if (!schedule || schedule.length === 0) {
+    return []
+  }
+
+  const allSpeakers = schedule
+    .filter(item => item.speakers && item.speakers.length > 0)
+    .flatMap(item => item.speakers!)
+
+  // Get unique speakers by name
+  const uniqueSpeakers = allSpeakers.filter(
+    (speaker, index, self) =>
+      index === self.findIndex(s => s.name === speaker.name)
+  )
+
+  // Filter to only speakers without URLs
+  return uniqueSpeakers.filter(speaker => !speaker.url)
 }
 
 export function getAttachmentIcon(type: AttachmentType) {

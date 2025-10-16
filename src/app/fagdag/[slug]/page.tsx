@@ -6,6 +6,7 @@ import { SimpleLayout } from '@/components/SimpleLayout'
 import { EventRegistration } from '@/components/EventRegistration'
 import { EventParticipantInfo } from '@/components/EventParticipantInfo'
 import { EventFeedbackPrompt } from '@/components/EventFeedbackPrompt'
+import { EventFeedbackSummaryWrapper } from '@/components/EventFeedbackSummaryWrapper'
 import { EventCalendarDownload } from '@/components/EventCalendarDownload'
 import { EventRegistrationProvider } from '@/contexts/EventRegistrationContext'
 import { Container } from '@/components/Container'
@@ -372,6 +373,10 @@ export default async function Fagdag({ params }: { params: Params }) {
                         event={event}
                         eventStatus={getStatus(event)}
                       />
+                      <EventFeedbackSummaryWrapper
+                        eventSlug={slug}
+                        variant="compact"
+                      />
                       {event.registrationUrl && (
                         <div className="mt-4">
                           <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">
@@ -421,6 +426,10 @@ export default async function Fagdag({ params }: { params: Params }) {
                         event={event}
                         eventStatus={getStatus(event)}
                       />
+                      <EventFeedbackSummaryWrapper
+                        eventSlug={slug}
+                        variant="compact"
+                      />
                     </>
                   ) : (
                     <>
@@ -435,6 +444,10 @@ export default async function Fagdag({ params }: { params: Params }) {
                       <EventFeedbackPrompt
                         event={event}
                         eventStatus={getStatus(event)}
+                      />
+                      <EventFeedbackSummaryWrapper
+                        eventSlug={slug}
+                        variant="compact"
                       />
                     </>
                   )}

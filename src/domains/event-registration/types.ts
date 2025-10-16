@@ -24,7 +24,7 @@ export type RegistrationStatus =
   | 'attended'
   | 'no-show'
 
-export interface RegistrationMetadata {
+interface RegistrationMetadata {
   source?: string
   experience?: 'beginner' | 'intermediate' | 'advanced'
   [key: string]: unknown

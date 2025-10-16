@@ -5,7 +5,7 @@ const attendanceTypeDisplay: Record<string, string> = {
   digital: 'Digitalt',
 }
 
-export const eventRegistrationSchema = defineType({
+const eventRegistrationSchema = defineType({
   name: 'eventRegistration',
   title: 'Event Registration',
   type: 'document',
@@ -150,7 +150,7 @@ export const eventRegistrationSchema = defineType({
   ],
 })
 
-export const eventParticipantInfoSchema = defineType({
+const eventParticipantInfoSchema = defineType({
   name: 'eventParticipantInfo',
   title: 'Event Participant Info',
   type: 'document',
@@ -187,7 +187,7 @@ export const eventParticipantInfoSchema = defineType({
   },
 })
 
-export const talkAttachmentSchema = defineType({
+const talkAttachmentSchema = defineType({
   name: 'talkAttachment',
   title: 'Talk Attachment',
   type: 'document',
@@ -283,7 +283,7 @@ export const talkAttachmentSchema = defineType({
   },
 })
 
-export const eventFeedbackSchema = defineType({
+const eventFeedbackSchema = defineType({
   name: 'eventFeedback',
   title: 'Event Feedback',
   type: 'document',

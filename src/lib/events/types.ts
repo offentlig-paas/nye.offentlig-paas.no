@@ -9,7 +9,7 @@ export interface EventParticipantInfo {
   notes?: string
 }
 
-export interface SlackChannel {
+interface SlackChannel {
   id: string
   name: string
 }
@@ -37,7 +37,7 @@ export interface Event {
   slackChannel?: SlackChannel
 }
 
-export interface RegistrationSettings {
+interface RegistrationSettings {
   disabled?: boolean
   attendanceTypes: AttendanceType[]
 }
@@ -52,14 +52,14 @@ export const AttendanceTypeDisplay: Record<AttendanceType, string> = {
   [AttendanceType.Digital]: 'Digitalt',
 }
 
-export interface Stats {
+interface Stats {
   registrations: number
   participants: number
   organisations: number
   feedback?: Feedback
 }
 
-export interface Feedback {
+interface Feedback {
   url: string
   averageRating: number
   respondents: number
@@ -67,9 +67,7 @@ export interface Feedback {
 }
 
 export enum Audience {
-  OpenForAll = 'Åpen for alle interesserte',
-  PublicSector = 'For ansatte i offentlig sektor',
-  InviteOnly = 'For inviterte deltakere',
+  PublicSector = 'Offentlig sektor',
 }
 
 export enum Status {

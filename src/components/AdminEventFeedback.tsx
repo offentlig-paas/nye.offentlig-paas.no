@@ -50,34 +50,36 @@ export function AdminEventFeedback({ eventSlug }: AdminEventFeedbackProps) {
 
   return (
     <div className="space-y-6">
-      {/* Overview */}
+      {/* Overview with rating */}
       <div className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-          Tilbakemeldinger
+        <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+          Samlet vurdering av arrangementet
         </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          {summary.totalResponses} svar
-        </p>
-      </div>
-
-      {/* Overall event rating */}
-      {summary.averageEventRating !== null && (
-        <div className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
-          <h4 className="mb-4 text-base font-semibold text-gray-900 dark:text-white">
-            Samlet vurdering av arrangementet
-          </h4>
+        <div className="flex items-center gap-6">
           <div className="flex items-center gap-4">
             <div className="text-4xl font-bold text-emerald-600 dark:text-emerald-400">
-              {summary.averageEventRating.toFixed(1)}
+              {summary.averageEventRating !== null
+                ? summary.averageEventRating.toFixed(1)
+                : 'N/A'}
             </div>
-            <StarRating
-              rating={Math.round(summary.averageEventRating)}
-              size="md"
-              readonly
-            />
+            {summary.averageEventRating !== null && (
+              <StarRating
+                rating={Math.round(summary.averageEventRating)}
+                size="md"
+                readonly
+              />
+            )}
+          </div>
+          <div className="border-l border-gray-300 pl-6 dark:border-gray-600">
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Antall svar
+            </div>
+            <div className="text-2xl font-semibold text-gray-900 dark:text-white">
+              {summary.totalResponses}
+            </div>
           </div>
         </div>
-      )}
+      </div>
 
       {/* Talk Ratings */}
       {summary.talkSummaries.length > 0 && (

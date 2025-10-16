@@ -8,7 +8,7 @@ if (!projectId) {
   throw new Error('Missing NEXT_PUBLIC_SANITY_PROJECT_ID environment variable')
 }
 
-export const sanityConfig = {
+const sanityConfig = {
   projectId,
   dataset,
   apiVersion: '2024-01-01',

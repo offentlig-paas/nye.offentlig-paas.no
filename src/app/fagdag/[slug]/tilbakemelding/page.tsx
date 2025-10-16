@@ -138,7 +138,7 @@ export default function FeedbackPage({ params }: FeedbackPageProps) {
                 talks={talks}
                 organizers={event.organizers}
                 onSubmit={() => {
-                  router.push(`/fagdag/${slug}/feedback`)
+                  router.push(`/fagdag/${slug}/tilbakemelding`)
                   router.refresh()
                 }}
               />

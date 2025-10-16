@@ -4,7 +4,7 @@ import { getEventBySlug, canUserAccessEvent } from '@/lib/events/helpers'
 import type { Event } from '@/lib/events/types'
 import type { Session } from 'next-auth'
 
-export interface AuthContext {
+interface AuthContext {
   user: NonNullable<Session['user']>
   session: Session
 }
@@ -14,13 +14,13 @@ export interface EventAuthContext extends AuthContext {
   slug: string
 }
 
-export interface RequestContext {
+interface RequestContext {
   endpoint: string
   method: string
   params?: Record<string, string>
 }
 
-export interface AuthOptions {
+interface AuthOptions {
   requireAuth?: boolean
   requireAdmin?: boolean
   requireEventAccess?: boolean
@@ -30,7 +30,7 @@ export interface AuthOptions {
 /**
  * Authentication and authorization middleware for API routes
  */
-export class AuthMiddleware {
+class AuthMiddleware {
   private static logUnauthorizedAccess(
     request: NextRequest,
     context: RequestContext,
@@ -294,36 +294,4 @@ export async function authorizeEventAccess(
     | { success: true; auth: EventAuthContext }
     | { success: false; response: NextResponse }
   >
-}
-
-/**
- * Convenience function for admin-only endpoints
- */
-export async function authorizeAdmin(
-  request: NextRequest,
-  endpoint: string,
-  method: string
-): Promise<
-  | { success: true; auth: AuthContext }
-  | { success: false; response: NextResponse }
-> {
-  return AuthMiddleware.authorize(
-    request,
-    { endpoint, method },
-    { requireAdmin: true }
-  ) as Promise<
-    | { success: true; auth: AuthContext }
-    | { success: false; response: NextResponse }
-  >
-}
-
-/**
- * Type guard for checking if auth result is successful
- */
-export function isAuthorized<T extends AuthContext>(result: {
-  success: boolean
-  auth?: T
-  response?: NextResponse
-}): result is { success: true; auth: T } {
-  return result.success === true
 }

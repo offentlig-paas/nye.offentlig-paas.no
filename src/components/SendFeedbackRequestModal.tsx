@@ -7,10 +7,9 @@ import {
   PaperAirplaneIcon,
   ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline'
-import type { RegistrationStatus } from '@/domains/event-registration/types'
 import { trpc } from '@/lib/trpc/client'
 
-interface SendReminderModalProps {
+interface SendFeedbackRequestModalProps {
   isOpen: boolean
   onClose: () => void
   eventSlug: string
@@ -20,30 +19,27 @@ interface SendReminderModalProps {
   onError: (message: string) => void
 }
 
-export function SendReminderModal({
+export function SendFeedbackRequestModal({
   isOpen,
   onClose,
   eventSlug,
   eventTitle,
-  eventDate,
   onSuccess,
   onError,
-}: SendReminderModalProps) {
+}: SendFeedbackRequestModalProps) {
   const [message, setMessage] = useState('')
-  const [statusFilter, setStatusFilter] = useState<RegistrationStatus | 'all'>(
-    'all'
-  )
   const [isSending, setIsSending] = useState(false)
   const [isTestMode, setIsTestMode] = useState(false)
 
   const isDevelopment = process.env.NODE_ENV === 'development'
-  const sendReminderMutation = trpc.admin.sendReminder.useMutation()
+  const sendFeedbackRequestMutation =
+    trpc.admin.sendFeedbackRequest.useMutation()
 
-  const defaultMessage = `Hei! 👋
+  const defaultMessage = `Takk for at du deltok på ${eventTitle}! 🎉
 
-Dette er en påminnelse om ${eventTitle} som finner sted ${eventDate}.
+Vi vil gjerne høre dine tanker om arrangementet. Din tilbakemelding hjelper oss å forbedre framtidige fagdager.
 
-Vi gleder oss til å se deg der! 🎉`
+Vennligst ta deg tid til å gi oss tilbakemelding. Det tar bare noen få minutter. 📝`
 
   const handleSend = async () => {
     if (!message.trim()) {
@@ -53,10 +49,9 @@ Vi gleder oss til å se deg der! 🎉`
 
     setIsSending(true)
     try {
-      const result = await sendReminderMutation.mutateAsync({
+      const result = await sendFeedbackRequestMutation.mutateAsync({
         slug: eventSlug,
         message: message.trim(),
-        statusFilter,
         testMode: isTestMode,
       })
 
@@ -65,8 +60,8 @@ Vi gleder oss til å se deg der! 🎉`
       setIsTestMode(false)
       onClose()
     } catch (error) {
-      console.error('Error sending reminder:', error)
-      onError('Noe gikk galt ved sending av påminnelse')
+      console.error('Error sending feedback request:', error)
+      onError('Noe gikk galt ved sending av tilbakemeldingsforespørsel')
     } finally {
       setIsSending(false)
     }
@@ -112,7 +107,7 @@ Vi gleder oss til å se deg der! 🎉`
                     as="h3"
                     className="text-lg leading-6 font-semibold text-gray-900 dark:text-white"
                   >
-                    Send påminnelse til deltakere
+                    Be om tilbakemelding
                   </Dialog.Title>
                   <button
                     type="button"
@@ -161,14 +156,14 @@ Vi gleder oss til å se deg der! 🎉`
                       </div>
                       <div className="ml-3">
                         <h3 className="text-sm font-medium text-blue-800 dark:text-blue-300">
-                          Om påminnelser
+                          Om tilbakemeldingsforespørsler
                         </h3>
                         <div className="mt-2 text-sm text-blue-700 dark:text-blue-400">
                           <p>
-                            Påminnelsen vil bli sendt som en privat melding på
+                            Forespørselen vil bli sendt som en privat melding på
                             Slack til alle påmeldte med status
-                            &quot;Bekreftet&quot; eller &quot;Deltok&quot;. Du
-                            kan filtrere basert på status.
+                            &quot;Deltok&quot;. Meldingen inkluderer en lenke
+                            til tilbakemeldingsskjemaet.
                           </p>
                         </div>
                       </div>
@@ -194,35 +189,6 @@ Vi gleder oss til å se deg der! 🎉`
                     </label>
                   </div>
 
-                  {!isTestMode && (
-                    <div>
-                      <label
-                        htmlFor="statusFilter"
-                        className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
-                      >
-                        Filtrer etter status
-                      </label>
-                      <select
-                        id="statusFilter"
-                        value={statusFilter}
-                        onChange={e =>
-                          setStatusFilter(
-                            e.target.value as RegistrationStatus | 'all'
-                          )
-                        }
-                        disabled={isSending}
-                        className="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
-                      >
-                        <option value="all">
-                          Alle bekreftede (Bekreftet + Deltok)
-                        </option>
-                        <option value="confirmed">Kun bekreftede</option>
-                        <option value="attended">Kun de som deltok</option>
-                        <option value="waitlist">Kun venteliste</option>
-                      </select>
-                    </div>
-                  )}
-
                   <div>
                     <label
                       htmlFor="message"
@@ -241,16 +207,16 @@ Vi gleder oss til å se deg der! 🎉`
                     />
                     <div className="mt-2 space-y-1">
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Skriv en vennlig påminnelse til deltakerne. Meldingen
-                        vil sendes som en formatert melding på Slack med
-                        arrangement-detaljer.
+                        Be deltakerne om å gi tilbakemelding på arrangementet.
+                        Meldingen vil sendes som en formatert melding på Slack
+                        med lenke til tilbakemeldingsskjemaet.
                       </p>
                       <p className="text-xs text-gray-600 dark:text-gray-300">
                         <span className="font-medium">
                           Inkludert automatisk:
                         </span>{' '}
-                        Dato, tid, sted, lenke til program, og direktestrøm-link
-                        (hvis tilgjengelig)
+                        Arrangementsnavn, dato og lenke til
+                        tilbakemeldingsskjema.
                       </p>
                     </div>
                   </div>
@@ -309,7 +275,7 @@ Vi gleder oss til å se deg der! 🎉`
                     ) : (
                       <>
                         <PaperAirplaneIcon className="mr-2 h-4 w-4" />
-                        {isTestMode ? 'Send test' : 'Send påminnelse'}
+                        {isTestMode ? 'Send test' : 'Be om tilbakemelding'}
                       </>
                     )}
                   </button>

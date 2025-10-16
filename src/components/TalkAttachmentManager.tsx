@@ -165,7 +165,7 @@ export function TalkAttachmentManager({
           isAdminContext={isAdminContext}
           onUploadComplete={handleUploadComplete}
           onError={onError}
-          compact={attachments.length === 0}
+          compact={true}
         />
       )}
     </div>

@@ -23,8 +23,17 @@ import {
   type MessagePayload,
 } from '@/lib/slack/messaging'
 import type { KnownBlock } from '@slack/web-api'
-import { formatDateLong, formatTimeRange } from '@/lib/formatDate'
+import {
+  formatDateLong,
+  formatTimeRange,
+  formatDateShort,
+} from '@/lib/formatDate'
 import { getEventParticipantInfo } from '@/lib/sanity/event-participant-info'
+import {
+  getAllEvents,
+  getDetailedEventInfoFromSlug,
+} from '@/lib/events/helpers'
+import { getUniqueCleanedOrganizations } from '@/lib/organization-utils'
 
 const registrationRepository = new EventRegistrationRepository()
 
@@ -512,7 +521,7 @@ Mvh ${organizerNames}`
     .mutation(async ({ input, ctx }) => {
       if (process.env.NODE_ENV === 'development' && !input.testMode) {
         const host =
-          process.env.NEXT_PUBLIC_SITE_URL?.replace(/^https?:\/\//, '') ||
+          process.env.NEXT_PUBLIC_URL?.replace(/^https?:\/\//, '') ||
           'offentlig-paas.no'
         const isDevelopmentUrl =
           host.includes('localhost') || host.includes('127.0.0.1')
@@ -532,7 +541,7 @@ Mvh ${organizerNames}`
       }
       const protocol = 'https'
       const host =
-        process.env.NEXT_PUBLIC_SITE_URL?.replace(/^https?:\/\//, '') ||
+        process.env.NEXT_PUBLIC_URL?.replace(/^https?:\/\//, '') ||
         'offentlig-paas.no'
       const eventUrl = `${protocol}://${host}/fagdag/${input.slug}`
 
@@ -678,4 +687,279 @@ Mvh ${organizerNames}`
         results: result.results,
       }
     }),
+
+  sendFeedbackRequest: adminEventProcedure
+    .input(
+      z.object({
+        slug: z.string(),
+        message: z.string(),
+        testMode: z.boolean().optional(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      if (process.env.NODE_ENV === 'development' && !input.testMode) {
+        const host =
+          process.env.NEXT_PUBLIC_URL?.replace(/^https?:\/\//, '') ||
+          'offentlig-paas.no'
+        const isDevelopmentUrl =
+          host.includes('localhost') || host.includes('127.0.0.1')
+
+        if (isDevelopmentUrl) {
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: 'Cannot send feedback requests in development environment',
+          })
+        }
+      }
+
+      const protocol = 'https'
+      const host =
+        process.env.NEXT_PUBLIC_URL?.replace(/^https?:\/\//, '') ||
+        'offentlig-paas.no'
+      const feedbackUrl = `${protocol}://${host}/fagdag/${input.slug}/tilbakemelding`
+
+      const blocks: KnownBlock[] = [
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: input.message,
+          },
+        },
+        {
+          type: 'divider',
+        },
+        {
+          type: 'section',
+          fields: [
+            {
+              type: 'mrkdwn',
+              text: `*${ctx.event.title}*`,
+            },
+            {
+              type: 'mrkdwn',
+              text: `📅 ${formatDateLong(ctx.event.start)}`,
+            },
+          ],
+        },
+        {
+          type: 'actions',
+          elements: [
+            {
+              type: 'button',
+              text: {
+                type: 'plain_text',
+                text: '📝 Gi tilbakemelding',
+                emoji: true,
+              },
+              url: feedbackUrl,
+              action_id: 'submit_feedback',
+              style: 'primary',
+            },
+          ],
+        },
+      ]
+
+      const payload: MessagePayload = {
+        text: `${input.message} - ${ctx.event.title}`,
+        blocks,
+      }
+
+      let userIds: string[]
+
+      if (input.testMode) {
+        if (!ctx.user.slackId) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'Slack ID not found for current user',
+          })
+        }
+        userIds = [ctx.user.slackId]
+      } else {
+        const registrations =
+          await eventRegistrationService.getEventRegistrations(input.slug)
+
+        // Only send to users who attended
+        const attendedRegistrations = registrations.filter(
+          r => r.status === 'attended'
+        )
+
+        userIds = attendedRegistrations
+          .map(r => r.slackUserId)
+          .filter((id): id is string => !!id)
+
+        if (userIds.length === 0) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'No attended users with Slack IDs found',
+          })
+        }
+      }
+
+      const result = await sendBulkDirectMessages(userIds, payload, {
+        batchSize: 50,
+        delayBetweenBatches: 1000,
+      })
+
+      const responseMessage = input.testMode
+        ? 'Test-forespørsel sendt til deg'
+        : `Tilbakemeldingsforespørsel sendt til ${result.sent} av ${userIds.length} deltakere`
+
+      return {
+        message: responseMessage,
+        sent: result.sent,
+        failed: result.failed,
+        total: userIds.length,
+        results: result.results,
+      }
+    }),
+
+  events: router({
+    list: protectedProcedure.query(async ({ ctx }) => {
+      if (!ctx.user.isAdmin) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Admin access required',
+        })
+      }
+
+      const allEvents = getAllEvents()
+      const registrationsByEvent =
+        await eventRegistrationService.getRegistrationsByEvent()
+
+      const eventsWithStats = allEvents.map(event => {
+        const eventRegistrations = registrationsByEvent[event.slug] || []
+        const registrations = Array.isArray(eventRegistrations)
+          ? eventRegistrations
+          : []
+
+        const totalRegistrations = registrations.length
+        const uniqueOrganisations = new Set(
+          registrations.map(r => r.organisation)
+        ).size
+
+        const organizerCount = event.organizers?.length || 0
+        const scheduleItemCount = event.schedule?.length || 0
+        const hasRecording = !!event.recordingUrl
+        const hasCallForPapers = !!event.callForPapersUrl
+        const feedbackRating = event.stats?.feedback?.averageRating
+        const feedbackRespondents = event.stats?.feedback?.respondents || 0
+
+        return {
+          slug: event.slug,
+          title: event.title,
+          date: formatDateShort(event.start),
+          location: event.location,
+          audience: event.audience,
+          totalRegistrations,
+          uniqueOrganisations,
+          organizerCount,
+          scheduleItemCount,
+          hasRecording,
+          hasCallForPapers,
+          feedbackRating,
+          feedbackRespondents,
+          price: event.price,
+          statsRegistrations: event.stats?.registrations,
+          statsParticipants: event.stats?.participants,
+          statsOrganisations: event.stats?.organisations,
+        }
+      })
+
+      const events = eventsWithStats.sort((a, b) => {
+        const aEvent = allEvents.find(e => e.slug === a.slug)
+        const bEvent = allEvents.find(e => e.slug === b.slug)
+        return (bEvent?.start.getTime() || 0) - (aEvent?.start.getTime() || 0)
+      })
+
+      const totalRegistrations = events.reduce(
+        (sum, e) => sum + e.totalRegistrations,
+        0
+      )
+      const uniqueOrganisations = new Set(
+        events.flatMap(e =>
+          (registrationsByEvent[e.slug] || []).map(r => r.organisation)
+        )
+      ).size
+
+      return {
+        events,
+        totalStats: {
+          totalRegistrations,
+          uniqueOrganisations,
+          totalEvents: events.length,
+        },
+      }
+    }),
+
+    getDetails: adminEventProcedure
+      .input(z.object({ slug: z.string() }))
+      .query(async ({ input, ctx }) => {
+        const registrations =
+          await eventRegistrationService.getEventRegistrations(input.slug)
+        const eventInfo = getDetailedEventInfoFromSlug(input.slug)
+        const eventRegistrations = registrations || []
+
+        const uniqueOrganisations = getUniqueCleanedOrganizations(
+          eventRegistrations.map(r => r.organisation)
+        ).size
+
+        const statusStats =
+          eventRegistrations.length > 0
+            ? await eventRegistrationService.getEventRegistrationStats(
+                input.slug
+              )
+            : { confirmed: 0, attended: 0, cancelled: 0, pending: 0 }
+
+        const channelName = generateChannelName(new Date(ctx.event.start))
+        const slackChannel = await findChannelByName(channelName)
+
+        const feedbackSummary = await eventFeedbackService.getFeedbackSummary(
+          input.slug
+        )
+
+        return {
+          title: eventInfo.title,
+          date: eventInfo.date,
+          location: eventInfo.location,
+          ingress: ctx.event.ingress,
+          description: ctx.event.description,
+          audience: ctx.event.audience,
+          price: ctx.event.price,
+          startTime: ctx.event.start.toISOString(),
+          endTime: ctx.event.end.toISOString(),
+          registrationUrl: ctx.event.registrationUrl,
+          callForPapersUrl: ctx.event.callForPapersUrl,
+          recordingUrl: ctx.event.recordingUrl,
+          organizers: ctx.event.organizers,
+          schedule: ctx.event.schedule,
+          eventStats: ctx.event.stats,
+          registration: ctx.event.registration,
+          slackChannel,
+          registrations: eventRegistrations.map(reg => ({
+            _id: reg._id,
+            name: reg.name,
+            email: reg.email,
+            organisation: reg.organisation,
+            slackUserId: reg.slackUserId,
+            dietary: reg.dietary,
+            comments: reg.comments,
+            attendanceType: reg.attendanceType,
+            attendingSocialEvent: reg.attendingSocialEvent,
+            registeredAt: reg.registeredAt.toISOString(),
+            status: reg.status,
+          })),
+          stats: {
+            totalRegistrations: eventRegistrations.length,
+            uniqueOrganisations,
+            statusBreakdown: statusStats,
+            activeRegistrations: statusStats.confirmed + statusStats.attended,
+            feedbackSummary: {
+              averageEventRating: feedbackSummary.averageEventRating,
+              totalResponses: feedbackSummary.totalResponses,
+            },
+          },
+        }
+      }),
+  }),
 })

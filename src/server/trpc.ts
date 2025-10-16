@@ -5,7 +5,7 @@ import type { Session } from 'next-auth'
 import type { Event } from '@/lib/events/types'
 import superjson from 'superjson'
 
-export interface Context {
+interface Context {
   session: Session | null
   headers: Headers
 }
@@ -74,7 +74,7 @@ export const adminProcedure = t.procedure.use(enforceUserIsAdmin)
 export const createEventAccessMiddleware = (
   slugExtractor: (input: unknown) => string
 ) =>
-  t.middleware(async ({ ctx, next, input }) => {
+  t.middleware(async ({ ctx, next, getRawInput }) => {
     if (!ctx.session?.user) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',
@@ -82,7 +82,8 @@ export const createEventAccessMiddleware = (
       })
     }
 
-    const slug = slugExtractor(input)
+    const rawInput = await getRawInput()
+    const slug = slugExtractor(rawInput)
 
     let event: Event | null = null
     try {

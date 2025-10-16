@@ -1,7 +1,7 @@
 import { sanityClient } from './config'
 import type { EventParticipantInfo } from '@/lib/events/types'
 
-export interface SanityEventParticipantInfo {
+interface SanityEventParticipantInfo {
   _id: string
   _type: 'eventParticipantInfo'
   eventSlug: string

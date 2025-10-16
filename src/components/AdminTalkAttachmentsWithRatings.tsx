@@ -2,22 +2,32 @@
 
 import { TalkAttachmentManager } from './TalkAttachmentManager'
 import { BulkNudgeSpeakers } from './BulkNudgeSpeakers'
+import { StarRating } from './StarRating'
 import { PresentationChartLineIcon } from '@heroicons/react/20/solid'
+import { trpc } from '@/lib/trpc/client'
 import type { Item } from '@/lib/events/types'
+import type { EventFeedbackSummary } from '@/domains/event-feedback/types'
 
-interface AdminTalkAttachmentsProps {
+interface AdminTalkAttachmentsWithRatingsProps {
   eventSlug: string
   schedule: Item[]
   onError?: (error: string) => void
   onSuccess?: (message: string) => void
 }
 
-export function AdminTalkAttachments({
+export function AdminTalkAttachmentsWithRatings({
   eventSlug,
   schedule,
   onError,
   onSuccess,
-}: AdminTalkAttachmentsProps) {
+}: AdminTalkAttachmentsWithRatingsProps) {
+  const { data: feedbackData } = trpc.admin.feedback.getAll.useQuery(
+    { slug: eventSlug, format: 'summary' },
+    { refetchOnWindowFocus: false }
+  )
+
+  const summary = feedbackData as EventFeedbackSummary | undefined
+
   const talksWithSpeakers = schedule.filter(
     item =>
       (item.type === 'Presentation' ||
@@ -37,6 +47,11 @@ export function AdminTalkAttachments({
     )
   }
 
+  // Create a map of talk ratings for easy lookup
+  const talkRatingsMap = new Map(
+    summary?.talkSummaries?.map(t => [t.talkTitle, t]) || []
+  )
+
   return (
     <div className="space-y-4">
       <BulkNudgeSpeakers
@@ -50,6 +65,7 @@ export function AdminTalkAttachments({
         {talksWithSpeakers.map((talk, idx) => {
           const speakerSlackId =
             talk.speakers?.[0]?.url?.match(/\/team\/([A-Z0-9]+)$/)?.[1] || ''
+          const talkRating = talkRatingsMap.get(talk.title)
 
           return (
             <div key={`${talk.title}-${idx}`} className="py-3">
@@ -70,6 +86,22 @@ export function AdminTalkAttachments({
                       </>
                     )}
                   </div>
+                  {talkRating && (
+                    <div className="mt-2 flex items-center gap-2">
+                      <StarRating
+                        rating={talkRating.averageRating}
+                        readonly
+                        size="sm"
+                        showLabel={false}
+                      />
+                      <span className="text-sm font-medium text-zinc-900 dark:text-white">
+                        {talkRating.averageRating.toFixed(1)}
+                      </span>
+                      <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                        ({talkRating.totalRatings})
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
 

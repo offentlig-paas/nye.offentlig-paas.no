@@ -8,28 +8,6 @@ export function extractSlackUserId(slackUrl: string): string | null {
   return match ? match[1] || null : null
 }
 
-/**
- * Generates Slack team URL from user ID
- * @param userId Slack user ID
- * @param teamDomain Slack team domain
- * @returns Full Slack team URL
- */
-export function generateSlackTeamUrl(
-  userId: string,
-  teamDomain: string = 'offentlig-paas-no'
-): string {
-  return `https://${teamDomain}.slack.com/team/${userId}`
-}
-
-/**
- * Validates Slack user ID format
- * @param userId User ID to validate
- * @returns True if valid format
- */
-export function isValidSlackUserId(userId: string): boolean {
-  return /^U[A-Z0-9]+$/.test(userId)
-}
-
 interface SlackIdMapping {
   slackId?: string
   slackUserId?: string

@@ -1,4 +1,4 @@
-import { router, protectedProcedure } from '../trpc'
+import { router, protectedProcedure, publicProcedure } from '../trpc'
 import { z } from 'zod'
 import { eventFeedbackService } from '@/domains/event-feedback/service'
 import type { CreateEventFeedbackInput } from '@/domains/event-feedback/types'
@@ -26,6 +26,12 @@ const submitFeedbackSchema = z.object({
 })
 
 export const eventFeedbackRouter = router({
+  getSummary: publicProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async ({ input }) => {
+      return await eventFeedbackService.getFeedbackSummary(input.slug)
+    }),
+
   submit: protectedProcedure
     .input(submitFeedbackSchema)
     .mutation(async ({ input, ctx }) => {

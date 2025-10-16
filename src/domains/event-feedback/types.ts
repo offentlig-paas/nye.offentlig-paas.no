@@ -23,7 +23,7 @@ export interface EventFeedback {
   metadata?: FeedbackMetadata
 }
 
-export interface FeedbackMetadata {
+interface FeedbackMetadata {
   userAgent?: string
   submissionSource?: string
   [key: string]: unknown

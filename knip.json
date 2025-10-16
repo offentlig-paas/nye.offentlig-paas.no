@@ -1,0 +1,37 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "src/app/**/page.{ts,tsx}",
+    "src/app/**/layout.{ts,tsx}",
+    "src/app/**/route.{ts,tsx}",
+    "src/app/**/loading.{ts,tsx}",
+    "src/app/**/*.mdx",
+    "src/auth.ts",
+    "src/server/root.ts",
+    "sanity.cli.ts",
+    "sanity.config.ts"
+  ],
+  "project": [
+    "src/**/*.{ts,tsx,js,jsx}",
+    "!src/**/*.test.{ts,tsx}",
+    "!src/**/__tests__/**"
+  ],
+  "ignore": [
+    "src/__mocks__/**",
+    "coverage/**",
+    "**/*.test.{ts,tsx}",
+    "**/__tests__/**",
+    "jest.setup.cjs",
+    "jest.config.cjs"
+  ],
+  "ignoreDependencies": ["@types/webpack-env", "eslint-config-next", "postcss"],
+  "next": {
+    "entry": [
+      "src/app/**/page.{ts,tsx}",
+      "src/app/**/layout.{ts,tsx}",
+      "src/app/**/route.{ts,tsx}",
+      "src/app/**/loading.{ts,tsx}",
+      "src/app/**/*.mdx"
+    ]
+  }
+}

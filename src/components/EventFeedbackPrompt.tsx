@@ -52,7 +52,7 @@ export function EventFeedbackPrompt({
         </p>
       </div>
       <Button
-        href={`/fagdag/${event.slug}/feedback`}
+        href={`/fagdag/${event.slug}/tilbakemelding`}
         variant="primary"
         className="w-full"
       >
