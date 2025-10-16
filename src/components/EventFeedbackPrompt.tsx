@@ -34,23 +34,36 @@ export function EventFeedbackPrompt({
 
   if (hasFeedback) {
     return (
-      <div className="mt-4 rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-800 dark:border-green-800 dark:bg-green-900/20 dark:text-green-200">
-        Takk for tilbakemeldingen din!
+      <div className="rounded-xl bg-gray-50 p-6 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800/50 dark:ring-gray-700/50">
+        <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
+          <svg
+            className="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span className="font-semibold">Takk for tilbakemeldingen din!</span>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="mt-4 space-y-3 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
-      <div>
-        <h4 className="font-semibold text-blue-900 dark:text-blue-100">
-          Gi tilbakemelding
-        </h4>
-        <p className="mt-1 text-sm text-blue-700 dark:text-blue-300">
-          Hjelp oss å forbedre fremtidige arrangementer ved å dele dine tanker
-          om {event.title}.
-        </p>
-      </div>
+    <div className="rounded-xl bg-gray-50 p-6 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800/50 dark:ring-gray-700/50">
+      <h2 className="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
+        Gi tilbakemelding
+      </h2>
+      <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
+        Hjelp oss å forbedre fremtidige arrangementer ved å dele dine tanker om{' '}
+        {event.title}.
+      </p>
       <Button
         href={`/fagdag/${event.slug}/tilbakemelding`}
         variant="primary"

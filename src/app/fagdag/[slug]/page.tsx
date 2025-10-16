@@ -6,7 +6,6 @@ import { SimpleLayout } from '@/components/SimpleLayout'
 import { EventRegistration } from '@/components/EventRegistration'
 import { EventParticipantInfo } from '@/components/EventParticipantInfo'
 import { EventFeedbackPrompt } from '@/components/EventFeedbackPrompt'
-import { EventFeedbackSummaryWrapper } from '@/components/EventFeedbackSummaryWrapper'
 import { EventCalendarDownload } from '@/components/EventCalendarDownload'
 import { EventRegistrationProvider } from '@/contexts/EventRegistrationContext'
 import { Container } from '@/components/Container'
@@ -268,9 +267,9 @@ export default async function Fagdag({ params }: { params: Params }) {
           </div>
         </div>
         <div className="mx-auto max-w-7xl py-8">
-          <div className="mx-auto grid max-w-2xl grid-cols-1 grid-rows-1 items-start gap-x-8 gap-y-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+          <div className="mx-auto grid max-w-2xl grid-cols-1 items-start gap-x-8 gap-y-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
             {/* Event summary */}
-            <div className="lg:col-start-3 lg:row-end-1">
+            <div className="space-y-8 lg:col-start-3">
               <h2 className="sr-only">Oppsummering</h2>
               <div className="rounded-lg bg-gray-50 shadow-sm ring-1 ring-gray-900/5 dark:bg-transparent dark:ring-gray-400/5">
                 <dl className="flex flex-wrap">
@@ -357,106 +356,73 @@ export default async function Fagdag({ params }: { params: Params }) {
                     </dd>
                   </div>
                 </dl>
-
-                <div className="mt-6 border-t border-gray-900/5 px-6 py-6 dark:border-gray-400/5">
-                  {isAcceptingRegistrations(event) ? (
-                    <>
-                      <EventRegistration
-                        eventSlug={slug}
-                        eventTitle={event.title}
-                        isAcceptingRegistrations={true}
-                        attendanceTypes={event.registration.attendanceTypes}
-                        socialEvent={event.socialEvent}
-                      />
-                      <EventParticipantInfo />
-                      <EventFeedbackPrompt
-                        event={event}
-                        eventStatus={getStatus(event)}
-                      />
-                      <EventFeedbackSummaryWrapper
-                        eventSlug={slug}
-                        variant="compact"
-                      />
-                      {event.registrationUrl && (
-                        <div className="mt-4">
-                          <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                            Eller bruk ekstern påmelding:
-                          </p>
-                          <Button
-                            href={event.registrationUrl}
-                            variant="secondary"
-                            className="w-full"
-                          >
-                            Ekstern registrering
-                          </Button>
-                        </div>
-                      )}
-                      {isCallForPapersOpen(event) && (
-                        <Button
-                          href={event.callForPapersUrl}
-                          variant="secondary"
-                          className="group mt-4 w-full"
-                        >
-                          <PresentationChartLineIcon
-                            className="mr-1 h-4 w-4"
-                            aria-hidden="true"
-                          />
-                          Send inn forslag
-                        </Button>
-                      )}
-                      <div className="mt-4 flex flex-col gap-2">
-                        <EventCalendarDownload event={event} url={url} />
-                      </div>
-                    </>
-                  ) : event.recordingUrl ? (
-                    <>
-                      <Button
-                        href={event.recordingUrl}
-                        variant="secondary"
-                        className="w-full"
-                      >
-                        <VideoCameraIcon
-                          className="mr-1 h-4 w-4"
-                          aria-hidden="true"
-                        />
-                        Se opptak
-                      </Button>
-                      <EventParticipantInfo event={event} />
-                      <EventFeedbackPrompt
-                        event={event}
-                        eventStatus={getStatus(event)}
-                      />
-                      <EventFeedbackSummaryWrapper
-                        eventSlug={slug}
-                        variant="compact"
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <EventRegistration
-                        eventSlug={slug}
-                        eventTitle={event.title}
-                        isAcceptingRegistrations={false}
-                        attendanceTypes={event.registration.attendanceTypes}
-                        socialEvent={event.socialEvent}
-                      />
-                      <EventParticipantInfo event={event} />
-                      <EventFeedbackPrompt
-                        event={event}
-                        eventStatus={getStatus(event)}
-                      />
-                      <EventFeedbackSummaryWrapper
-                        eventSlug={slug}
-                        variant="compact"
-                      />
-                    </>
-                  )}
-                </div>
               </div>
-            </div>
 
-            {/* Organizers */}
-            <div className="lg:col-start-3">
+              {/* Registration */}
+              <div className="rounded-xl bg-gray-50 p-6 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800/50 dark:ring-gray-700/50">
+                <EventRegistration
+                  eventSlug={slug}
+                  eventTitle={event.title}
+                  isAcceptingRegistrations={isAcceptingRegistrations(event)}
+                  attendanceTypes={event.registration.attendanceTypes}
+                  socialEvent={event.socialEvent}
+                />
+                <EventParticipantInfo event={event} />
+                {isAcceptingRegistrations(event) && event.registrationUrl && (
+                  <div className="mt-4">
+                    <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                      Eller bruk ekstern påmelding:
+                    </p>
+                    <Button
+                      href={event.registrationUrl}
+                      variant="secondary"
+                      className="w-full"
+                    >
+                      Ekstern registrering
+                    </Button>
+                  </div>
+                )}
+                {isAcceptingRegistrations(event) &&
+                  isCallForPapersOpen(event) && (
+                    <Button
+                      href={event.callForPapersUrl}
+                      variant="secondary"
+                      className="group mt-4 w-full"
+                    >
+                      <PresentationChartLineIcon
+                        className="mr-1 h-4 w-4"
+                        aria-hidden="true"
+                      />
+                      Send inn forslag
+                    </Button>
+                  )}
+                {isAcceptingRegistrations(event) && (
+                  <div className="mt-4 flex flex-col gap-2">
+                    <EventCalendarDownload event={event} url={url} />
+                  </div>
+                )}
+                {!isAcceptingRegistrations(event) && event.recordingUrl && (
+                  <Button
+                    href={event.recordingUrl}
+                    variant="secondary"
+                    className="mt-4 w-full"
+                  >
+                    <VideoCameraIcon
+                      className="mr-1 h-4 w-4"
+                      aria-hidden="true"
+                    />
+                    Se opptak
+                  </Button>
+                )}
+              </div>
+
+              {/* Feedback */}
+              <EventFeedbackPrompt
+                event={event}
+                eventStatus={getStatus(event)}
+              />
+
+              {/* Organizers */}
               <div className="rounded-xl bg-gray-50 p-6 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800/50 dark:ring-gray-700/50">
                 <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
                   <UserGroupIcon
@@ -491,10 +457,9 @@ export default async function Fagdag({ params }: { params: Params }) {
                   ))}
                 </ul>
               </div>
-            </div>
 
-            {event.stats && (
-              <div className="lg:col-start-3">
+              {/* Stats */}
+              {event.stats && (
                 <div className="rounded-xl bg-gray-50 p-6 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800/50 dark:ring-gray-700/50">
                   <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
                     <ChartBarIcon
@@ -561,11 +526,11 @@ export default async function Fagdag({ params }: { params: Params }) {
                       )}
                   </dl>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
             {/* Event details */}
-            <div className="-mx-4 px-6 py-6 shadow-sm ring-1 ring-gray-900/5 sm:mx-0 sm:rounded-lg lg:col-span-2 lg:row-span-2 lg:row-end-2 dark:ring-gray-400/5">
+            <div className="-mx-4 px-6 py-6 shadow-sm ring-1 ring-gray-900/5 sm:mx-0 sm:rounded-lg lg:col-span-2 lg:row-start-1 dark:ring-gray-400/5">
               <h2 className="mb-4 text-base leading-6 font-semibold">
                 Beskrivelse
               </h2>
@@ -631,16 +596,6 @@ export default async function Fagdag({ params }: { params: Params }) {
                       </span>
                     </div>
                   </div>
-                  {isAcceptingRegistrations(event) && (
-                    <EventRegistration
-                      eventSlug={slug}
-                      eventTitle={event.title}
-                      isAcceptingRegistrations={true}
-                      attendanceTypes={event.registration.attendanceTypes}
-                      socialEvent={event.socialEvent}
-                      showOnlySocialEvent={true}
-                    />
-                  )}
                 </div>
               )}
               <h2 className="mt-8 text-base leading-6 font-semibold">Agenda</h2>
