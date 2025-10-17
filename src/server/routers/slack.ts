@@ -1,4 +1,4 @@
-import { router, adminProcedure } from '../trpc'
+import { router, adminProcedure, publicProcedure } from '../trpc'
 import { z } from 'zod'
 import { WebClient } from '@slack/web-api'
 import { TRPCError } from '@trpc/server'
@@ -22,6 +22,40 @@ interface SlackUser {
 }
 
 export const slackRouter = router({
+  userCount: publicProcedure.query(async () => {
+    if (!SLACK_BOT_TOKEN) {
+      return { userCount: 0 }
+    }
+
+    try {
+      const slack = new WebClient(SLACK_BOT_TOKEN)
+      let totalUsers = 0
+      let cursor = ''
+
+      do {
+        const response = await slack.users.list({
+          cursor: cursor || undefined,
+          limit: 200,
+        })
+
+        if (!response.ok || !response.members) {
+          return { userCount: 0 }
+        }
+
+        const activeUsers = (response.members as SlackUser[]).filter(
+          user => !user.deleted && !user.is_bot
+        )
+        totalUsers += activeUsers.length
+        cursor = response.response_metadata?.next_cursor || ''
+      } while (cursor)
+
+      return { userCount: totalUsers }
+    } catch (error) {
+      console.error('Error fetching Slack user count:', error)
+      return { userCount: 0 }
+    }
+  }),
+
   searchUsers: adminProcedure
     .input(z.object({ query: z.string().min(2) }))
     .query(async ({ input }) => {

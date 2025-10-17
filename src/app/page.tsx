@@ -26,8 +26,8 @@ import { type ArticleWithSlug, getAllArticles } from '@/lib/articles'
 import { formatDate } from '@/lib/formatDate'
 import { metadata as globalMetadata } from './layout'
 import { getUpcomingEvents } from '@/lib/events/helpers'
-import { getUserCount } from '@/lib/slack/client'
 import { InfoCard } from '@/components/Stats'
+import { createCaller } from '@/server/root'
 
 export const revalidate = 3600
 
@@ -105,12 +105,13 @@ function Bluesky() {
 }
 
 async function SlackUsers() {
-  const slackUserCount = await getUserCount()
+  const caller = await createCaller()
+  const { userCount } = await caller.slack.userCount()
 
   return (
     <InfoCard
       title="Antall brukere på Slack"
-      number={slackUserCount}
+      number={userCount}
       label="kontoer"
     />
   )
