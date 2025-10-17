@@ -23,7 +23,8 @@ import {
 } from '@/lib/events/helpers'
 import { getAllEventAttachments } from '@/lib/events/attachment-helpers'
 import { getEventPhotos, urlForImage } from '@/lib/sanity/event-photos'
-import { EventPhotoGallery } from '@/components/EventPhotoGallery'
+import { EventHeroGallery } from '@/components/EventHeroGallery'
+import { EventAdditionalPhotosGallery } from '@/components/EventAdditionalPhotosGallery'
 import { EventPhotoSkeleton } from '@/components/skeletons/EventPhotoSkeleton'
 import { EventAgendaSkeleton } from '@/components/skeletons/EventAgendaSkeleton'
 import {
@@ -157,23 +158,24 @@ export async function generateMetadata({
 
 async function EventPhotos({ slug }: { slug: string }) {
   const photos = await getEventPhotos(slug)
+  const heroPhotos = photos.slice(0, 4)
 
-  if (photos.length > 0) {
-    return <EventPhotoGallery photos={photos} variant="hero" />
+  if (heroPhotos.length === 0) {
+    return null
   }
 
-  return null
+  return <EventHeroGallery photos={heroPhotos} />
 }
 
-async function FullGalleryPhotos({ slug }: { slug: string }) {
+async function AdditionalPhotos({ slug }: { slug: string }) {
   const photos = await getEventPhotos(slug)
 
-  if (photos.length > 4) {
-    const nonHeroPhotos = photos.slice(4)
-    return <EventPhotoGallery photos={nonHeroPhotos} variant="full" />
+  if (photos.length <= 4) {
+    return null
   }
 
-  return null
+  const additionalPhotos = photos.slice(4)
+  return <EventAdditionalPhotosGallery photos={additionalPhotos} />
 }
 
 async function EventAgendaSection({
@@ -261,7 +263,7 @@ export default async function Fagdag({ params }: { params: Params }) {
                   className="flex items-center gap-2"
                 >
                   <PencilSquareIcon className="h-4 w-4" aria-hidden="true" />
-                  Rediger
+                  <span className="hidden sm:inline">Rediger</span>
                 </Button>
                 {hasAdminAccess && (
                   <Button
@@ -270,7 +272,7 @@ export default async function Fagdag({ params }: { params: Params }) {
                     className="flex items-center gap-2"
                   >
                     <CogIcon className="h-4 w-4" aria-hidden="true" />
-                    Admin
+                    <span className="hidden sm:inline">Admin</span>
                   </Button>
                 )}
               </div>
@@ -366,9 +368,9 @@ export default async function Fagdag({ params }: { params: Params }) {
                 </div>
               </div>
 
-              {/* Photo Gallery */}
+              {/* Additional Photos */}
               <Suspense fallback={null}>
-                <FullGalleryPhotos slug={slug} />
+                <AdditionalPhotos slug={slug} />
               </Suspense>
 
               {/* Agenda */}
