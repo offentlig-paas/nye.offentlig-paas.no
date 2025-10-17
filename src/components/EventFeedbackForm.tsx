@@ -326,12 +326,22 @@ export function EventFeedbackForm({
           />
           <div className="flex-1">
             <span className="block text-sm font-medium text-zinc-900 dark:text-zinc-100">
-              Jeg ønsker at min tilbakemelding vises offentlig
+              Jeg ønsker at min vurdering av fagdagen vises offentlig
             </span>
             <span className="mt-1 block text-sm text-zinc-600 dark:text-zinc-400">
-              Din vurdering og kommentar er privat som standard. Kryss av her
-              hvis du ønsker at navnet ditt og tilbakemeldingen skal vises på
-              arrangementets side.
+              Din vurdering og kommentar om fagdagen er privat som standard.
+              Kryss av her hvis du ønsker at navnet ditt og tilbakemeldingen
+              vises på arrangementets side. Dine vurderinger av individuelle
+              foredrag er alltid private. Les mer i våre{' '}
+              <a
+                href="/vilkar#tilbakemelding"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-zinc-900 dark:hover:text-zinc-100"
+              >
+                vilkår
+              </a>
+              .
             </span>
           </div>
         </label>

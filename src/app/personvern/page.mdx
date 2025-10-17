@@ -11,7 +11,7 @@ export default function MDXContent(props) {
     <SimpleLayout
       title="Personvernerklæring"
       intro="Vi i Offentlig PaaS bygger et åpent fagmiljø der vi deler kunnskap og erfaringer på tvers av offentlig sektor. Samtidig tar vi personvernet ditt på alvor. Denne erklæringen forklarer hvordan vi samler inn og bruker personopplysninger når du logger inn, melder deg på fagdager eller deltar i våre arrangementer. Vi er transparente om hva som skjer med dataene dine, og du har full kontroll – inkludert mulighet til å slette kontoen din når som helst."
-      lastUpdated="2025-10-09"
+      lastUpdated="2025-10-17"
     >
       <Prose className="max-w-none">{props.children}</Prose>
     </SimpleLayout>
@@ -44,6 +44,27 @@ Når du melder deg på en fagdag, lagrer vi nødvendig informasjon for å admini
 - Oppmøtepreferanser (fysisk/digitalt) og deltakelse på sosiale arrangementer
 - Matpreferanser og andre praktiske behov (valgfritt)
 - Påmeldingsstatus og tidspunkt
+
+### 2.2a Tilbakemelding på arrangementer
+
+Når du gir tilbakemelding på en fagdag, samler vi inn:
+
+- **Vurderinger**: Karakterer på en skala fra 1-5 for ulike aspekter ved arrangementet
+- **Fritekstkommentarer**: Dine synspunkter og forbedringsforslag
+- **Identitet** (valgfritt): Du velger selv om tilbakemeldingen skal være anonym eller navngitt
+- **Tidspunkt**: Når tilbakemeldingen ble gitt
+
+Anonym tilbakemelding:
+
+- Lagres uten kobling til din bruker
+- Kan ikke spores tilbake til deg
+- Kan ikke slettes da vi ikke vet hvem som ga den
+
+Navngitt tilbakemelding:
+
+- Lagres med kobling til din Slack-ID
+- Kan slettes på forespørsel
+- Brukes kun internt av arrangører og foredragsholdere
 
 ### 2.3 Bilder, video og opptak
 
@@ -86,6 +107,21 @@ Personopplysninger knyttet til arrangementspåmeldinger lagres i 2 år etter arr
 ### 3.2 Lagringsperiode for bilder og videoopptak
 
 Bilder som publiseres på nettsiden og videoopptak som publiseres på YouTube kan lagres uten tidsbegrensning, da disse er av allmenn interesse og dokumenterer fagmiljøets aktiviteter. For bilder og opptak som ikke publiseres offentlig, gjelder en lagringsperiode på 2 år. Du har rett til å be om sletting av bilder/opptak hvor du er identifiserbar, men dette kan bli avslått dersom bildet/opptaket er av vesentlig allmenn interesse.
+
+### 3.3 Lagringsperiode for tilbakemeldinger
+
+Tilbakemeldinger på arrangementer lagres i 2 år etter arrangementets gjennomføring. Etter dette blir navngitte tilbakemeldinger anonymisert eller slettet. Anonyme tilbakemeldinger kan beholdes for statistiske formål.
+
+## 4. Formål med behandlingen
+
+Vi bruker personopplysningene dine til følgende formål:
+
+- **Arrangementshåndtering**: Administrere påmeldinger og deltakelse på fagdager
+- **Kommunikasjon**: Sende informasjon om arrangementer og endringer
+- **Dokumentasjon**: Bilder og video for å dokumentere og markedsføre fagmiljøet
+- **Forbedring**: Tilbakemeldinger brukes til å forbedre fremtidige arrangementer
+- **Statistikk**: Aggregert data for innsikt i deltakelse og engasjement
+- **Nettsideadministrasjon**: Autentisering og brukerhåndtering
 
 ## 5. Deling av personopplysninger
 
