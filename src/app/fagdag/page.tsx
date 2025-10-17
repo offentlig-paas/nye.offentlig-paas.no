@@ -6,8 +6,12 @@ import Link from 'next/link'
 import { Card } from '@/components/Card'
 import { Section } from '@/components/Section'
 import { SimpleLayout } from '@/components/SimpleLayout'
+import { EventThumbnailGallery } from '@/components/EventThumbnailGallery'
 import { getAllEvents } from '@/lib/events/helpers'
-import { getEventPhotos, urlForImage } from '@/lib/sanity/event-photos'
+import {
+  getEventPhotos,
+  prepareEventThumbnailUrls,
+} from '@/lib/sanity/event-photos'
 import { formatDate } from '@/lib/formatDate'
 
 import rssLogo from '@/images/rss.svg'
@@ -24,61 +28,26 @@ function SpeakingSection({
   )
 }
 
-function Appearance({
-  title,
-  description,
-  date,
-  cta,
-  href,
-  heroPhotos,
-}: {
+interface EventCardProps {
   title: string
   description: string
   date: string
   cta: string
   href: string
-  heroPhotos?: string[]
-}) {
+  thumbnailUrls?: string[]
+}
+
+function EventCard({
+  title,
+  description,
+  date,
+  cta,
+  href,
+  thumbnailUrls,
+}: EventCardProps) {
   return (
     <Card as="article">
-      {heroPhotos && heroPhotos.length >= 4 && (
-        <div className="relative z-10 mb-4 w-full">
-          <div className="grid grid-cols-3 gap-2">
-            <Image
-              src={heroPhotos[0]!}
-              alt={title}
-              width={400}
-              height={600}
-              unoptimized
-              className="row-span-2 aspect-[3/4] size-full rounded-lg object-cover"
-            />
-            <Image
-              src={heroPhotos[1]!}
-              alt={title}
-              width={400}
-              height={300}
-              unoptimized
-              className="col-start-2 aspect-[3/2] size-full rounded-lg object-cover"
-            />
-            <Image
-              src={heroPhotos[2]!}
-              alt={title}
-              width={400}
-              height={300}
-              unoptimized
-              className="col-start-2 row-start-2 aspect-[3/2] size-full rounded-lg object-cover"
-            />
-            <Image
-              src={heroPhotos[3]!}
-              alt={title}
-              width={400}
-              height={600}
-              unoptimized
-              className="row-span-2 aspect-[3/4] size-full rounded-lg object-cover"
-            />
-          </div>
-        </div>
-      )}
+      <EventThumbnailGallery photos={thumbnailUrls ?? []} title={title} />
       <Card.Title as="h3" href={href}>
         {title}
       </Card.Title>
@@ -98,23 +67,15 @@ export const metadata: Metadata = {
 export default async function Fagdager() {
   const events = getAllEvents()
 
-  // Fetch hero photos (first 4) for all events
   const eventsWithPhotos = await Promise.all(
     events.map(async event => {
       const photos = await getEventPhotos(event.slug)
-      const heroPhotos =
-        photos.length >= 4
-          ? photos.slice(0, 4).map(photo =>
-              urlForImage(photo.image)
-                .width(800)
-                .height(photo === photos[0] || photo === photos[3] ? 1200 : 600)
-                .url()
-            )
-          : undefined
+      const thumbnailUrls =
+        photos.length > 0 ? prepareEventThumbnailUrls(photos) : undefined
 
       return {
         event,
-        heroPhotos,
+        thumbnailUrls,
       }
     })
   )
@@ -126,15 +87,15 @@ export default async function Fagdager() {
     >
       <div className="space-y-20">
         <SpeakingSection title="Fagdager">
-          {eventsWithPhotos.map(({ event, heroPhotos }) => (
-            <Appearance
+          {eventsWithPhotos.map(({ event, thumbnailUrls }) => (
+            <EventCard
               key={event.slug}
               href={`/fagdag/${event.slug}`}
               title={event.title}
               description={event.ingress}
               date={formatDate(event.start)}
               cta="Mer informasjon"
-              heroPhotos={heroPhotos}
+              thumbnailUrls={thumbnailUrls}
             />
           ))}
         </SpeakingSection>

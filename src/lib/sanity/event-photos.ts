@@ -90,3 +90,13 @@ export async function reorderEventPhotos(photoIds: string[]): Promise<void> {
 
   await transaction.commit()
 }
+
+export function prepareEventThumbnailUrls(photos: EventPhoto[]): string[] {
+  return photos.slice(0, 4).map((photo, index) => {
+    const isFirstOrLast = index === 0 || index === 3
+    return urlForImage(photo.image)
+      .width(800)
+      .height(isFirstOrLast ? 1200 : 600)
+      .url()
+  })
+}
