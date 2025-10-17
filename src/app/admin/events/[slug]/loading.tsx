@@ -1,20 +1,15 @@
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { ArrowLeftIcon } from '@heroicons/react/24/outline'
-import Link from 'next/link'
 
 export default function Loading() {
   return (
-    <SimpleLayout title="Laster fagdag..." intro="">
-      <div className="mb-6">
-        <Link
-          href="/admin/events"
-          className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
-        >
-          <ArrowLeftIcon className="mr-1 h-4 w-4" />
-          Tilbake til oversikt
-        </Link>
-      </div>
-
+    <SimpleLayout
+      title="Laster fagdag..."
+      intro=""
+      backButton={{
+        href: '/admin/events',
+        label: 'Tilbake til oversikt',
+      }}
+    >
       {/* Header Skeleton */}
       <div className="mb-8">
         <div className="mb-2 h-8 w-2/3 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>

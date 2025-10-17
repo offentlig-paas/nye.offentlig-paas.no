@@ -91,7 +91,7 @@ export function EventAgenda({
   }
 
   return (
-    <ol className="mt-6 space-y-6 text-sm leading-6">
+    <ol className="mt-6 space-y-6 text-base leading-7">
       {schedule.map(item => {
         const staticAttachments = item.attachments || []
         const uploadedForTalk = attachments.get(item.title) || []
@@ -107,17 +107,17 @@ export function EventAgenda({
           >
             <EventIcon
               type={item.type}
-              className="h-8 w-8 flex-none text-gray-400 dark:text-gray-500"
+              className="h-9 w-9 flex-none text-gray-400 dark:text-gray-500"
             />
 
             <div className="flex-auto">
-              <h3 className="pr-10 font-semibold text-gray-900 dark:text-gray-100">
+              <h3 className="pr-10 text-lg font-semibold text-gray-900 dark:text-gray-100">
                 {item.title}
               </h3>
-              <p className="mt-2 text-gray-600 dark:text-gray-400">
+              <p className="mt-2 text-base text-gray-600 dark:text-gray-400">
                 {item.description}
               </p>
-              <dl className="mt-2 flex flex-col text-gray-500 xl:flex-row dark:text-gray-400">
+              <dl className="mt-3 flex flex-col text-base text-gray-500 xl:flex-row dark:text-gray-400">
                 <div className="flex items-start space-x-3">
                   <dt className="mt-0.5">
                     <span className="sr-only">Tidspunkt</span>

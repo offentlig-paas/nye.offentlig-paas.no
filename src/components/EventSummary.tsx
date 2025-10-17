@@ -71,7 +71,7 @@ export function EventSummary({ event, status }: EventSummaryProps) {
               aria-hidden="true"
             />
           </dt>
-          <dd className="text-sm leading-6 font-medium text-gray-900 dark:text-gray-100">
+          <dd className="text-base leading-6 font-medium text-gray-900 dark:text-gray-100">
             {event.location}
           </dd>
         </div>

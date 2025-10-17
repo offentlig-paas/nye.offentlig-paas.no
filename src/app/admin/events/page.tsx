@@ -22,6 +22,10 @@ export default async function AdminEventsPage() {
     <SimpleLayout
       title="Admin - Fagdager"
       intro="Oversikt over alle fagdager og påmeldinger."
+      backButton={{
+        href: '/',
+        label: 'Tilbake til forsiden',
+      }}
     >
       <AdminEventsClient eventsData={eventsData} />
     </SimpleLayout>

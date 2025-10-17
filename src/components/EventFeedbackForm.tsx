@@ -161,7 +161,7 @@ export function EventFeedbackForm({
             return (
               <div
                 key={talk.title}
-                className="space-y-2 rounded-lg border border-zinc-200 p-3 dark:border-zinc-700"
+                className="space-y-2 rounded-lg border border-zinc-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-800"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex flex-1 items-start gap-3">
@@ -215,7 +215,7 @@ export function EventFeedbackForm({
       </div>
 
       {/* Event Rating */}
-      <div className="space-y-4">
+      <div className="space-y-4 rounded-lg border border-zinc-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
         <div className="flex items-center gap-3">
           {organizers.length > 0 && (
             <div className="flex -space-x-2">
@@ -255,7 +255,7 @@ export function EventFeedbackForm({
       </div>
 
       {/* Topic Suggestions */}
-      <div className="space-y-4">
+      <div className="space-y-4 rounded-lg border border-zinc-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
         <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
           Forslag til temaer for fremtidige arrangementer
         </h3>

@@ -13,6 +13,7 @@ import { Container } from '@/components/Container'
 import { Button } from '@/components/Button'
 import { Rating } from '@/components/Rating'
 import { BatchedServerAvatar } from '@/components/BatchedServerAvatar'
+import Link from 'next/link'
 import {
   getEvent,
   getStatus,
@@ -48,6 +49,7 @@ import {
   CogIcon,
   CheckBadgeIcon,
   ChartBarIcon,
+  ArrowLeftIcon,
 } from '@heroicons/react/20/solid'
 
 type Params = Promise<{ slug: string }>
@@ -172,6 +174,10 @@ export default async function Fagdag({ params }: { params: Params }) {
       <SimpleLayout
         title="Fagdag ikke funnet"
         intro="Fagdagen du leter etter finnes ikke."
+        backButton={{
+          href: '/fagdag',
+          label: 'Tilbake til fagdager',
+        }}
       />
     )
   }
@@ -197,16 +203,25 @@ export default async function Fagdag({ params }: { params: Params }) {
       <Container className="mt-16 lg:mt-32">
         <div className="xl:relative">
           <div className="mx-auto max-w-7xl">
-            <div className="flex items-start justify-between">
-              <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-                {event.title}
-              </h1>
-              <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <Link
+                  href="/fagdag"
+                  className="group flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-white shadow-md ring-1 shadow-zinc-800/5 ring-zinc-900/5 transition dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0 dark:ring-white/10 dark:hover:border-zinc-700 dark:hover:ring-white/20"
+                  aria-label="Tilbake til fagdager"
+                >
+                  <ArrowLeftIcon className="h-4 w-4 stroke-zinc-500 transition group-hover:stroke-zinc-700 dark:stroke-zinc-500 dark:group-hover:stroke-zinc-400" />
+                </Link>
+                <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
+                  {event.title}
+                </h1>
+              </div>
+              <div className="flex flex-shrink-0 items-center gap-2">
                 <Button
                   href="https://github.com/offentlig-paas/nye.offentlig-paas.no/edit/main/src/data/events.ts"
                   target="_blank"
                   variant="secondary"
-                  className="mt-1 flex items-center gap-2"
+                  className="flex items-center gap-2"
                 >
                   <PencilSquareIcon className="h-4 w-4" aria-hidden="true" />
                   Rediger
@@ -215,7 +230,7 @@ export default async function Fagdag({ params }: { params: Params }) {
                   <Button
                     href={`/admin/events/${slug}`}
                     variant="secondary"
-                    className="mt-1 flex items-center gap-2"
+                    className="flex items-center gap-2"
                   >
                     <CogIcon className="h-4 w-4" aria-hidden="true" />
                     Admin

@@ -1,6 +1,6 @@
 'use client'
 
-import { StarIcon } from '@heroicons/react/20/solid'
+import { CheckIcon, StarIcon } from '@heroicons/react/20/solid'
 import { Button } from './Button'
 import type { EventFeedback } from '@/domains/event-feedback/types'
 
@@ -160,10 +160,12 @@ export function EventReviews({
 
           {hasSubmittedFeedback && (
             <div className="mt-6 rounded-lg border border-green-200 bg-green-50 p-3 dark:border-green-800 dark:bg-green-950/20">
-              <p className="text-xs text-green-800 dark:text-green-200">
-                ✓ Du har allerede gitt tilbakemelding på dette arrangementet.
-                Takk for din deltakelse!
-              </p>
+              <div className="flex items-center gap-2">
+                <CheckIcon className="h-4 w-4 text-green-600 dark:text-green-400" />
+                <p className="text-xs text-green-800 dark:text-green-200">
+                  Takk for din tilbakemelding!
+                </p>
+              </div>
             </div>
           )}
         </div>

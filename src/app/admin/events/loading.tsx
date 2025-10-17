@@ -2,7 +2,14 @@ import { SimpleLayout } from '@/components/SimpleLayout'
 
 export default function Loading() {
   return (
-    <SimpleLayout title="Admin - Fagdager" intro="Laster fagdager...">
+    <SimpleLayout
+      title="Admin - Fagdager"
+      intro="Laster fagdager..."
+      backButton={{
+        href: '/',
+        label: 'Tilbake til forsiden',
+      }}
+    >
       {/* Overall Stats Skeleton */}
       <div className="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-3">
         {[...Array(3)].map((_, i) => (
