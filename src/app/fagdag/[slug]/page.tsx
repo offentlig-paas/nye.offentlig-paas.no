@@ -1,26 +1,36 @@
 import { type Metadata } from 'next'
 import { headers } from 'next/headers'
-import React from 'react'
+import React, { Suspense } from 'react'
 
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { EventRegistration } from '@/components/EventRegistration'
-import { EventParticipantInfo } from '@/components/EventParticipantInfo'
+import { EventRegistrationPanel } from '@/components/EventRegistrationPanel'
 import { EventFeedbackPrompt } from '@/components/EventFeedbackPrompt'
-import { EventCalendarDownload } from '@/components/EventCalendarDownload'
+import { EventFeedbackSummaryWrapper } from '@/components/EventFeedbackSummaryWrapper'
 import { EventRegistrationProvider } from '@/contexts/EventRegistrationContext'
+import { EventSummary } from '@/components/EventSummary'
+import { EventAgenda } from '@/components/EventAgenda'
 import { Container } from '@/components/Container'
 import { Button } from '@/components/Button'
 import { Rating } from '@/components/Rating'
-import { ServerAvatar } from '@/components/ServerAvatar'
+import { BatchedServerAvatar } from '@/components/BatchedServerAvatar'
+import Link from 'next/link'
 import {
   getEvent,
   getStatus,
   isAcceptingRegistrations,
   isCallForPapersOpen,
   canUserAccessEvent,
-  getAttachmentIcon,
 } from '@/lib/events/helpers'
 import { getAllEventAttachments } from '@/lib/events/attachment-helpers'
+import { getEventPhotos } from '@/lib/sanity/event-photos'
+import { EventPhotoGallery } from '@/components/EventPhotoGallery'
+import { EventPhotoSkeleton } from '@/components/skeletons/EventPhotoSkeleton'
+import { EventAgendaSkeleton } from '@/components/skeletons/EventAgendaSkeleton'
+import {
+  batchFetchSlackUsers,
+  extractEventUserIds,
+} from '@/lib/slack/batch-users'
+import { extractSlackUserId } from '@/lib/slack/utils'
 import {
   formatDateTime,
   formatDateLong,
@@ -28,113 +38,19 @@ import {
   formatTime,
 } from '@/lib/formatDate'
 import { auth } from '@/auth'
-import type { Attachment } from '@/lib/events/types'
-import {
-  AttachmentType,
-  ItemType,
-  Status,
-  AttendanceTypeDisplay,
-} from '@/lib/events/types'
+import { ItemType, Status } from '@/lib/events/types'
 import {
   CalendarDaysIcon,
   MapPinIcon,
-  BanknotesIcon,
   UserGroupIcon,
-  UsersIcon,
-  CalendarIcon,
   PencilSquareIcon,
-  InformationCircleIcon,
   PresentationChartLineIcon,
-  Battery50Icon,
   ChatBubbleBottomCenterIcon,
-  VideoCameraIcon,
   CogIcon,
   CheckBadgeIcon,
   ChartBarIcon,
+  ArrowLeftIcon,
 } from '@heroicons/react/20/solid'
-
-function EventIcon({
-  type,
-  className,
-}: {
-  type: ItemType
-  className?: string
-}) {
-  switch (type) {
-    case ItemType.Panel:
-      return <UsersIcon className={className} aria-hidden="true" />
-    case ItemType.Talk:
-      return (
-        <PresentationChartLineIcon className={className} aria-hidden="true" />
-      )
-    case ItemType.Break:
-      return <Battery50Icon className={className} aria-hidden="true" />
-    default:
-      return <InformationCircleIcon className={className} aria-hidden="true" />
-  }
-}
-
-function EventStatus({ status }: { status: Status }) {
-  const statusClass = (status: Status) => {
-    switch (status) {
-      case Status.Upcoming:
-        return 'bg-blue-50 text-blue-600 ring-blue-600/20 dark:bg-blue-950/20 dark:text-blue-400 dark:ring-blue-400/20'
-      case Status.Past:
-        return 'bg-gray-50 text-gray-600 ring-gray-600/20 dark:bg-gray-800/50 dark:text-gray-400 dark:ring-gray-400/20'
-      case Status.Current:
-        return 'bg-yellow-50 text-yellow-600 ring-yellow-600/20 dark:bg-yellow-950/20 dark:text-yellow-400 dark:ring-yellow-400/20'
-      default:
-        return 'bg-gray-50 text-gray-600 ring-gray-600/20 dark:bg-gray-800/50 dark:text-gray-400 dark:ring-gray-400/20'
-    }
-  }
-
-  const statusText = (status: Status) => {
-    switch (status) {
-      case Status.Upcoming:
-        return 'Kommende'
-      case Status.Past:
-        return 'Tidligere'
-      case Status.Current:
-        return 'Pågående'
-      default:
-        return 'Ukjent'
-    }
-  }
-
-  return (
-    <dd
-      className={`rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${statusClass(status)}`}
-    >
-      {statusText(status)}
-    </dd>
-  )
-}
-
-function AttachmentLink({
-  attachment,
-  className,
-}: {
-  attachment: Attachment
-  className?: string
-}) {
-  return (
-    <a href={attachment.url} className={className}>
-      {(() => {
-        const hostname = new URL(attachment.url).hostname
-        switch (attachment.type) {
-          case AttachmentType.Recording:
-            return `Se opptak (${hostname})`
-          case AttachmentType.Slides:
-            return attachment.title || `Se slides (${hostname})`
-          case AttachmentType.Link:
-            return attachment.title || `Lenke (${hostname})`
-          default:
-            return attachment.title || `Vedlegg (${attachment.type})`
-        }
-      })()}
-    </a>
-  )
-}
 
 type Params = Promise<{ slug: string }>
 
@@ -153,11 +69,9 @@ export async function generateMetadata({
     }
   }
 
-  // Format date and location
   const eventDate = formatDateLong(event.start)
   const eventTime = formatTimeRange(event.start, event.end)
 
-  // Get speakers from schedule (unique list)
   const speakers = Array.from(
     new Set(
       event.schedule
@@ -166,7 +80,6 @@ export async function generateMetadata({
     )
   )
 
-  // Create agenda summary (talks only, max 5)
   const talks = event.schedule
     .filter(item => item.type === ItemType.Talk && item.title)
     .slice(0, 5)
@@ -176,7 +89,6 @@ export async function generateMetadata({
     )
     .join('\n')
 
-  // Create enhanced description with date, location, agenda and speakers
   const enhancedDescription = [
     event.ingress,
     '',
@@ -209,6 +121,51 @@ export async function generateMetadata({
   }
 }
 
+async function EventPhotos({ slug }: { slug: string }) {
+  const photos = await getEventPhotos(slug)
+
+  if (photos.length >= 4) {
+    return <EventPhotoGallery photos={photos} variant="hero" />
+  }
+
+  if (photos.length > 0) {
+    return (
+      <div className="mx-auto max-w-7xl">
+        <EventPhotoGallery photos={photos} variant="compact" />
+      </div>
+    )
+  }
+
+  return null
+}
+
+async function EventAgendaSection({
+  event,
+  slug,
+  hasAdminAccess,
+}: {
+  event: ReturnType<typeof getEvent>
+  slug: string
+  hasAdminAccess: boolean
+}) {
+  if (!event) return null
+
+  const [attachments, slackUserData] = await Promise.all([
+    getAllEventAttachments(slug),
+    batchFetchSlackUsers(extractEventUserIds(event)),
+  ])
+
+  return (
+    <EventAgenda
+      schedule={event.schedule}
+      attachments={attachments}
+      hasAdminAccess={hasAdminAccess}
+      eventSlug={slug}
+      slackUserData={slackUserData}
+    />
+  )
+}
+
 export default async function Fagdag({ params }: { params: Params }) {
   const { slug } = await params
   const event = getEvent(slug)
@@ -217,15 +174,23 @@ export default async function Fagdag({ params }: { params: Params }) {
       <SimpleLayout
         title="Fagdag ikke funnet"
         intro="Fagdagen du leter etter finnes ikke."
+        backButton={{
+          href: '/fagdag',
+          label: 'Tilbake til fagdager',
+        }}
       />
     )
   }
 
-  // Check if user has admin access to this event
   const session = await auth()
   const hasAdminAccess = session?.user
     ? canUserAccessEvent(event, session.user)
     : false
+
+  const organizerUserIds = event.organizers
+    .map(org => (org.url ? extractSlackUserId(org.url) : null))
+    .filter((id): id is string => id !== null)
+  const organizerSlackData = await batchFetchSlackUsers(organizerUserIds)
 
   const headersList = await headers()
   const protocol = headersList.get('x-forwarded-proto') || 'http'
@@ -238,16 +203,25 @@ export default async function Fagdag({ params }: { params: Params }) {
       <Container className="mt-16 lg:mt-32">
         <div className="xl:relative">
           <div className="mx-auto max-w-7xl">
-            <div className="flex items-start justify-between">
-              <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-                {event.title}
-              </h1>
-              <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <Link
+                  href="/fagdag"
+                  className="group flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-white shadow-md ring-1 shadow-zinc-800/5 ring-zinc-900/5 transition dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0 dark:ring-white/10 dark:hover:border-zinc-700 dark:hover:ring-white/20"
+                  aria-label="Tilbake til fagdager"
+                >
+                  <ArrowLeftIcon className="h-4 w-4 stroke-zinc-500 transition group-hover:stroke-zinc-700 dark:stroke-zinc-500 dark:group-hover:stroke-zinc-400" />
+                </Link>
+                <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
+                  {event.title}
+                </h1>
+              </div>
+              <div className="flex flex-shrink-0 items-center gap-2">
                 <Button
                   href="https://github.com/offentlig-paas/nye.offentlig-paas.no/edit/main/src/data/events.ts"
                   target="_blank"
                   variant="secondary"
-                  className="mt-1 flex items-center gap-2"
+                  className="flex items-center gap-2"
                 >
                   <PencilSquareIcon className="h-4 w-4" aria-hidden="true" />
                   Rediger
@@ -256,7 +230,7 @@ export default async function Fagdag({ params }: { params: Params }) {
                   <Button
                     href={`/admin/events/${slug}`}
                     variant="secondary"
-                    className="mt-1 flex items-center gap-2"
+                    className="flex items-center gap-2"
                   >
                     <CogIcon className="h-4 w-4" aria-hidden="true" />
                     Admin
@@ -266,165 +240,146 @@ export default async function Fagdag({ params }: { params: Params }) {
             </div>
           </div>
         </div>
-        <div className="mx-auto max-w-7xl py-8">
-          <div className="mx-auto grid max-w-2xl grid-cols-1 items-start gap-x-8 gap-y-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-            {/* Event summary */}
-            <div className="space-y-8 lg:col-start-3">
-              <h2 className="sr-only">Oppsummering</h2>
-              <div className="rounded-lg bg-gray-50 shadow-sm ring-1 ring-gray-900/5 dark:bg-transparent dark:ring-gray-400/5">
-                <dl className="flex flex-wrap">
-                  <div className="flex-auto pt-6 pl-6">
-                    <dd className="text-base leading-6 font-semibold text-gray-900 dark:text-gray-100">
-                      Fagdag
-                    </dd>
+
+        {/* Hero Photo Gallery */}
+        <Suspense fallback={<EventPhotoSkeleton variant="hero" />}>
+          <EventPhotos slug={slug} />
+        </Suspense>
+
+        {/* Main Content */}
+        <div className="mx-auto max-w-7xl py-6">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+            {/* Left Column: Description + Agenda (2/3 width) */}
+            <div className="space-y-6 lg:col-span-2">
+              {/* Description */}
+              <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-gray-400/5">
+                <div className="px-6 py-6">
+                  <h2 className="mb-4 text-base font-semibold text-gray-900 dark:text-gray-100">
+                    Beskrivelse
+                  </h2>
+                  <div className="space-y-6">
+                    <p className="text-base leading-7 text-gray-700 dark:text-gray-300">
+                      {event.ingress}
+                    </p>
+                    {event.description && (
+                      <p className="leading-7 text-gray-700 dark:text-gray-300">
+                        {event.description.split('\n').map((line, index) => (
+                          <React.Fragment key={index}>
+                            {line}
+                            <br />
+                          </React.Fragment>
+                        ))}
+                      </p>
+                    )}
                   </div>
-                  <div className="flex-none self-start px-6 pt-6">
-                    <dt className="sr-only">Status</dt>
-                    <EventStatus status={getStatus(event)} />
-                  </div>
-                  <div className="mt-6 flex w-full flex-none gap-x-4 border-t border-gray-900/5 px-6 pt-6 dark:border-gray-400/5">
-                    <dt className="flex-none">
-                      <span className="sr-only">Lokasjon</span>
-                      <MapPinIcon
-                        className="h-6 w-5 text-gray-400"
-                        aria-hidden="true"
-                      />
-                    </dt>
-                    <dd className="text-sm leading-6 font-medium">
-                      {event.location}
-                    </dd>
-                  </div>
-                  <div className="mt-4 flex w-full flex-none gap-x-4 px-6">
-                    <dt className="flex-none">
-                      <span className="sr-only">Start</span>
-                      <CalendarDaysIcon
-                        className="h-6 w-5 text-gray-400"
-                        aria-hidden="true"
-                      />
-                    </dt>
-                    <dd className="text-sm leading-6 text-gray-500 dark:text-gray-400">
-                      <ul>
-                        <li>
-                          <time dateTime={event.start.toISOString()}>
-                            {formatDateTime(event.start)}
-                          </time>
-                        </li>
-                        <li>
-                          <time dateTime={event.end.toISOString()}>
-                            {formatDateTime(event.end)}
-                          </time>
-                        </li>
-                      </ul>
-                    </dd>
-                  </div>
-                  <div className="mt-4 flex w-full flex-none gap-x-4 px-6">
-                    <dt className="flex-none">
-                      <span className="sr-only">Deltakere</span>
-                      <UserGroupIcon
-                        className="h-6 w-5 text-gray-400"
-                        aria-hidden="true"
-                      />
-                    </dt>
-                    <dd className="text-sm leading-6 text-gray-500 dark:text-gray-400">
-                      {event.audience}
-                    </dd>
-                  </div>
-                  <div className="mt-4 flex w-full flex-none gap-x-4 px-6">
-                    <dt className="flex-none">
-                      <span className="sr-only">Deltakelse</span>
-                      <UsersIcon
-                        className="h-6 w-5 text-gray-400"
-                        aria-hidden="true"
-                      />
-                    </dt>
-                    <dd className="text-sm leading-6 text-gray-500 dark:text-gray-400">
-                      {event.registration.attendanceTypes
-                        .map(type => AttendanceTypeDisplay[type])
-                        .join(', ')}
-                    </dd>
-                  </div>
-                  <div className="mt-4 flex w-full flex-none gap-x-4 px-6">
-                    <dt className="flex-none">
-                      <span className="sr-only">Pris</span>
-                      <BanknotesIcon
-                        className="h-6 w-5 text-gray-400"
-                        aria-hidden="true"
-                      />
-                    </dt>
-                    <dd className="text-sm leading-6 text-gray-500 dark:text-gray-400">
-                      {event.price ?? 'Ingen deltakeravgift'}
-                    </dd>
-                  </div>
-                </dl>
+
+                  {isCallForPapersOpen(event) && (
+                    <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950/20">
+                      <div className="flex items-start">
+                        <PresentationChartLineIcon
+                          className="mt-1 mr-3 h-6 w-6 flex-shrink-0 text-blue-600 dark:text-blue-400"
+                          aria-hidden="true"
+                        />
+                        <div>
+                          <h3 className="text-base font-semibold text-blue-900 dark:text-blue-100">
+                            Call for Papers er åpen
+                          </h3>
+                          <p className="mt-1 text-sm text-blue-700 dark:text-blue-200">
+                            Vi tar imot forslag til presentasjoner for denne
+                            fagdagen. Del din kunnskap og erfaring med
+                            fellesskapet!
+                          </p>
+                          {event.callForPapersClosedDate && (
+                            <p className="mt-2 text-sm font-medium text-blue-800 dark:text-blue-300">
+                              Frist:{' '}
+                              {formatDateTime(event.callForPapersClosedDate)}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {event.socialEvent && (
+                    <div className="mt-6 rounded-lg border border-teal-200 bg-teal-50 p-4 dark:border-teal-800 dark:bg-teal-950/20">
+                      <h3 className="mb-2 flex items-center gap-2 text-base font-semibold text-teal-900 dark:text-teal-100">
+                        <CheckBadgeIcon
+                          className="h-5 w-5 text-teal-600 dark:text-teal-400"
+                          aria-hidden="true"
+                        />
+                        Sosialt arrangement etter fagdagen
+                      </h3>
+                      <p className="mb-3 text-sm text-teal-700 dark:text-teal-300">
+                        {event.socialEvent.description}
+                      </p>
+                      <div className="space-y-1 text-sm text-teal-600 dark:text-teal-400">
+                        <div className="flex items-center gap-2">
+                          <MapPinIcon className="h-4 w-4 flex-shrink-0" />
+                          <span>{event.socialEvent.location}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CalendarDaysIcon className="h-4 w-4 flex-shrink-0" />
+                          <span>
+                            {formatDateLong(event.socialEvent.start)} kl.{' '}
+                            {formatTime(event.socialEvent.start)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
+
+              {/* Agenda */}
+              <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-gray-400/5">
+                <div className="px-6 py-6">
+                  <h2 className="mb-4 text-base font-semibold text-gray-900 dark:text-gray-100">
+                    Agenda
+                  </h2>
+                  <Suspense fallback={<EventAgendaSkeleton />}>
+                    <EventAgendaSection
+                      event={event}
+                      slug={slug}
+                      hasAdminAccess={hasAdminAccess}
+                    />
+                  </Suspense>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Event Summary + Registration + Sidebar (1/3 width) */}
+            <div className="space-y-6">
+              <h2 className="sr-only">Oppsummering</h2>
+              <EventSummary event={event} status={getStatus(event)} />
 
               {/* Registration */}
-              <div className="rounded-xl bg-gray-50 p-6 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800/50 dark:ring-gray-700/50">
-                <EventRegistration
+              {getStatus(event) !== Status.Past && (
+                <EventRegistrationPanel
+                  event={event}
                   eventSlug={slug}
-                  eventTitle={event.title}
+                  eventUrl={url}
                   isAcceptingRegistrations={isAcceptingRegistrations(event)}
-                  attendanceTypes={event.registration.attendanceTypes}
-                  socialEvent={event.socialEvent}
+                  isCallForPapersOpen={isCallForPapersOpen(event)}
                 />
-                <EventParticipantInfo event={event} />
-                {isAcceptingRegistrations(event) && event.registrationUrl && (
-                  <div className="mt-4">
-                    <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                      Eller bruk ekstern påmelding:
-                    </p>
-                    <Button
-                      href={event.registrationUrl}
-                      variant="secondary"
-                      className="w-full"
-                    >
-                      Ekstern registrering
-                    </Button>
-                  </div>
-                )}
-                {isAcceptingRegistrations(event) &&
-                  isCallForPapersOpen(event) && (
-                    <Button
-                      href={event.callForPapersUrl}
-                      variant="secondary"
-                      className="group mt-4 w-full"
-                    >
-                      <PresentationChartLineIcon
-                        className="mr-1 h-4 w-4"
-                        aria-hidden="true"
-                      />
-                      Send inn forslag
-                    </Button>
-                  )}
-                {isAcceptingRegistrations(event) && (
-                  <div className="mt-4 flex flex-col gap-2">
-                    <EventCalendarDownload event={event} url={url} />
-                  </div>
-                )}
-                {!isAcceptingRegistrations(event) && event.recordingUrl && (
-                  <Button
-                    href={event.recordingUrl}
-                    variant="secondary"
-                    className="mt-4 w-full"
-                  >
-                    <VideoCameraIcon
-                      className="mr-1 h-4 w-4"
-                      aria-hidden="true"
-                    />
-                    Se opptak
-                  </Button>
-                )}
-              </div>
+              )}
 
-              {/* Feedback */}
-              <EventFeedbackPrompt
-                event={event}
-                eventStatus={getStatus(event)}
-              />
+              {/* Feedback & Reviews */}
+              {!isAcceptingRegistrations(event) ? (
+                <div className="overflow-hidden rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-gray-400/5">
+                  <EventFeedbackSummaryWrapper
+                    eventSlug={slug}
+                    variant="reviews"
+                  />
+                </div>
+              ) : (
+                <EventFeedbackPrompt
+                  event={event}
+                  eventStatus={getStatus(event)}
+                />
+              )}
 
               {/* Organizers */}
-              <div className="rounded-xl bg-gray-50 p-6 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800/50 dark:ring-gray-700/50">
-                <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
+              <div className="overflow-hidden rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-gray-400/5">
+                <h2 className="mb-4 flex items-center gap-2 text-base font-semibold text-gray-900 dark:text-gray-100">
                   <UserGroupIcon
                     className="h-5 w-5 text-gray-600 dark:text-gray-400"
                     aria-hidden="true"
@@ -432,36 +387,46 @@ export default async function Fagdag({ params }: { params: Params }) {
                   Arrangører
                 </h2>
                 <ul className="space-y-4">
-                  {event.organizers.map(organizer => (
-                    <li key={organizer.name} className="flex gap-x-3">
-                      <ServerAvatar
-                        name={organizer.name}
-                        slackUrl={organizer.url}
-                        size="md"
-                        className="bg-gray-100 dark:bg-gray-700"
-                      />
-                      <div className="flex-auto">
-                        <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                          <a
-                            href={organizer.url}
-                            className="transition hover:text-blue-600 dark:hover:text-blue-400"
-                          >
-                            {organizer.name}
-                          </a>
-                        </h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                          {organizer.org}
-                        </p>
-                      </div>
-                    </li>
-                  ))}
+                  {event.organizers.map(organizer => {
+                    const userId = organizer.url
+                      ? extractSlackUserId(organizer.url)
+                      : null
+                    const userData = userId
+                      ? organizerSlackData.get(userId)
+                      : undefined
+
+                    return (
+                      <li key={organizer.name} className="flex gap-x-3">
+                        <BatchedServerAvatar
+                          name={organizer.name}
+                          slackUserId={userId || undefined}
+                          userData={userData}
+                          size="md"
+                          className="bg-gray-100 dark:bg-gray-700"
+                        />
+                        <div className="flex-auto">
+                          <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                            <a
+                              href={organizer.url}
+                              className="transition hover:text-blue-600 dark:hover:text-blue-400"
+                            >
+                              {organizer.name}
+                            </a>
+                          </h3>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                            {organizer.org}
+                          </p>
+                        </div>
+                      </li>
+                    )
+                  })}
                 </ul>
               </div>
 
               {/* Stats */}
               {event.stats && (
-                <div className="rounded-xl bg-gray-50 p-6 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800/50 dark:ring-gray-700/50">
-                  <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
+                <div className="overflow-hidden rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-gray-400/5">
+                  <h2 className="mb-4 flex items-center gap-2 text-base font-semibold text-gray-900 dark:text-gray-100">
                     <ChartBarIcon
                       className="h-5 w-5 text-gray-600 dark:text-gray-400"
                       aria-hidden="true"
@@ -525,216 +490,6 @@ export default async function Fagdag({ params }: { params: Params }) {
                         </div>
                       )}
                   </dl>
-                </div>
-              )}
-            </div>
-
-            {/* Event details */}
-            <div className="-mx-4 px-6 py-6 shadow-sm ring-1 ring-gray-900/5 sm:mx-0 sm:rounded-lg lg:col-span-2 lg:row-start-1 dark:ring-gray-400/5">
-              <h2 className="mb-4 text-base leading-6 font-semibold">
-                Beskrivelse
-              </h2>
-              <p className="leading-6 text-gray-500 dark:text-gray-400">
-                {event.ingress}
-              </p>
-              {event.description && (
-                <p className="mt-4 leading-6 text-gray-500 dark:text-gray-400">
-                  {event.description.split('\n').map((line, index) => (
-                    <React.Fragment key={index}>
-                      {line}
-                      <br />
-                    </React.Fragment>
-                  ))}
-                </p>
-              )}
-              {isCallForPapersOpen(event) && (
-                <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950/20">
-                  <div className="flex items-start">
-                    <PresentationChartLineIcon
-                      className="mt-1 mr-3 h-6 w-6 flex-shrink-0 text-blue-600 dark:text-blue-400"
-                      aria-hidden="true"
-                    />
-                    <div>
-                      <h3 className="text-base font-semibold text-blue-900 dark:text-blue-100">
-                        Call for Papers er åpen
-                      </h3>
-                      <p className="mt-1 text-sm text-blue-700 dark:text-blue-200">
-                        Vi tar imot forslag til presentasjoner for denne
-                        fagdagen. Del din kunnskap og erfaring med fellesskapet!
-                      </p>
-                      {event.callForPapersClosedDate && (
-                        <p className="mt-2 text-sm font-medium text-blue-800 dark:text-blue-300">
-                          Frist: {formatDateTime(event.callForPapersClosedDate)}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
-              {event.socialEvent && (
-                <div className="mt-6 rounded-lg border border-teal-200 bg-teal-50 p-4 dark:border-teal-800 dark:bg-teal-950/20">
-                  <h3 className="mb-2 flex items-center gap-2 text-base font-semibold text-teal-900 dark:text-teal-100">
-                    <CheckBadgeIcon
-                      className="h-5 w-5 text-teal-600 dark:text-teal-400"
-                      aria-hidden="true"
-                    />
-                    Sosialt arrangement etter fagdagen
-                  </h3>
-                  <p className="mb-3 text-sm text-teal-700 dark:text-teal-300">
-                    {event.socialEvent.description}
-                  </p>
-                  <div className="space-y-1 text-sm text-teal-600 dark:text-teal-400">
-                    <div className="flex items-center gap-2">
-                      <MapPinIcon className="h-4 w-4 flex-shrink-0" />
-                      <span>{event.socialEvent.location}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <CalendarDaysIcon className="h-4 w-4 flex-shrink-0" />
-                      <span>
-                        {formatDateLong(event.socialEvent.start)} kl.{' '}
-                        {formatTime(event.socialEvent.start)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
-              <h2 className="mt-8 text-base leading-6 font-semibold">Agenda</h2>
-              {event.schedule.length > 0 ? (
-                <ol className="mt-4 divide-y divide-gray-100 text-sm leading-6 lg:col-span-7 xl:col-span-8 dark:divide-gray-800">
-                  {await (async () => {
-                    const uploadedAttachments =
-                      await getAllEventAttachments(slug)
-
-                    return event.schedule.map(item => {
-                      const staticAttachments = item.attachments || []
-                      const uploadedForTalk =
-                        uploadedAttachments.get(item.title) || []
-                      const allAttachments: Attachment[] = [
-                        ...staticAttachments,
-                        ...uploadedForTalk,
-                      ]
-
-                      return (
-                        <li
-                          key={item.time}
-                          className="relative flex space-x-6 py-6 xl:static"
-                        >
-                          <EventIcon
-                            type={item.type}
-                            className="h-8 w-8 flex-none text-gray-400"
-                          />
-
-                          <div className="flex-auto">
-                            <h3 className="pr-10 font-semibold xl:pr-0">
-                              {item.title}
-                            </h3>
-                            <p className="mt-2 text-gray-500 dark:text-gray-400">
-                              {item.description}
-                            </p>
-                            <dl className="mt-2 flex flex-col xl:flex-row">
-                              <div className="flex items-start space-x-3">
-                                <dt className="mt-0.5">
-                                  <span className="sr-only">Tidspunkt</span>
-                                  <CalendarIcon
-                                    className="h-5 w-5 text-gray-400"
-                                    aria-hidden="true"
-                                  />
-                                </dt>
-                                <dd>
-                                  <time dateTime={item.time}>{item.time}</time>
-                                </dd>
-                              </div>
-                              {item.speakers && item.speakers.length > 0 && (
-                                <div className="xl:border-opacity-50 mt-2 flex items-start space-x-3 xl:mt-0 xl:ml-3.5 xl:border-l xl:border-gray-400 xl:pl-3.5">
-                                  <dt className="mt-0.5 flex -space-x-1">
-                                    {item.speakers.map((speaker, idx) => (
-                                      <ServerAvatar
-                                        key={idx}
-                                        name={speaker.name}
-                                        slackUrl={speaker.url}
-                                        size="sm"
-                                        className="bg-gray-100 ring-2 ring-white dark:bg-gray-700 dark:ring-gray-900"
-                                      />
-                                    ))}
-                                  </dt>
-                                  <dd>
-                                    {item.speakers.map((speaker, idx) => (
-                                      <React.Fragment key={idx}>
-                                        {idx > 0 && ', '}
-                                        {speaker.url ? (
-                                          <a
-                                            href={speaker.url}
-                                            className="transition hover:text-blue-600 dark:hover:text-blue-400"
-                                          >
-                                            {speaker.name}
-                                          </a>
-                                        ) : (
-                                          speaker.name
-                                        )}
-                                        {speaker.org && (
-                                          <span className="ml-1 text-gray-600 dark:text-gray-400">
-                                            ({speaker.org})
-                                          </span>
-                                        )}
-                                      </React.Fragment>
-                                    ))}
-                                  </dd>
-                                </div>
-                              )}
-                            </dl>
-                            {allAttachments && allAttachments.length > 0 && (
-                              <dl className="mt-4 flex flex-col space-y-2">
-                                {allAttachments.map((attachment, index) => (
-                                  <div
-                                    key={index}
-                                    className="flex items-start space-x-3"
-                                  >
-                                    <dt className="mt-0.5">
-                                      {React.createElement(
-                                        getAttachmentIcon(attachment.type),
-                                        {
-                                          className: 'h-5 w-5 text-gray-400',
-                                          'aria-hidden': 'true',
-                                        }
-                                      )}
-                                    </dt>
-                                    <dd>
-                                      {AttachmentLink({
-                                        attachment,
-                                        className:
-                                          'text-teal-600 hover:text-teal-500 dark:text-teal-400 dark:hover:text-teal-300',
-                                      })}
-                                    </dd>
-                                  </div>
-                                ))}
-                              </dl>
-                            )}
-                          </div>
-                        </li>
-                      )
-                    })
-                  })()}
-                </ol>
-              ) : (
-                <div className="mt-4 rounded-lg border border-gray-200 bg-gray-50 p-6 text-center dark:border-gray-700 dark:bg-gray-800/50">
-                  <CalendarIcon
-                    className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500"
-                    aria-hidden="true"
-                  />
-                  <h3 className="mt-2 text-sm font-semibold text-gray-900 dark:text-white">
-                    Agenda kommer snart
-                  </h3>
-                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    Vi jobber med å lage programmet for denne fagdagen.
-                    {getStatus(event) === Status.Upcoming &&
-                      ' Følg med for oppdateringer!'}
-                  </p>
-                  {hasAdminAccess && (
-                    <p className="mt-2 text-xs text-blue-600 dark:text-blue-400">
-                      Som arrangør kan du administrere dette arrangementet via
-                      admin-panelet.
-                    </p>
-                  )}
                 </div>
               )}
             </div>

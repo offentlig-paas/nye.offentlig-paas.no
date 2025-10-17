@@ -21,6 +21,10 @@ export default async function SignInPage({
     <SimpleLayout
       title="Logg inn"
       intro="Logg inn med din Slack-konto for å melde deg på fagdager."
+      backButton={{
+        href: callbackUrl || '/',
+        label: 'Tilbake',
+      }}
     >
       <Container className="mt-16">
         <div className="mx-auto max-w-md">

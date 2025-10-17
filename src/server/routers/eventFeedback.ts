@@ -23,6 +23,7 @@ const submitFeedbackSchema = z.object({
   eventRating: z.number().min(1).max(5),
   eventComment: z.string().optional(),
   topicSuggestions: z.array(topicSuggestionSchema).optional(),
+  isPublic: z.boolean().optional(),
 })
 
 export const eventFeedbackRouter = router({
@@ -30,6 +31,12 @@ export const eventFeedbackRouter = router({
     .input(z.object({ slug: z.string() }))
     .query(async ({ input }) => {
       return await eventFeedbackService.getFeedbackSummary(input.slug)
+    }),
+
+  getPublicReviews: publicProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async ({ input }) => {
+      return await eventFeedbackService.getPublicFeedback(input.slug)
     }),
 
   submit: protectedProcedure
@@ -66,6 +73,7 @@ export const eventFeedbackRouter = router({
         eventRating: feedbackData.eventRating,
         eventComment: feedbackData.eventComment,
         topicSuggestions: feedbackData.topicSuggestions || [],
+        isPublic: feedbackData.isPublic,
         metadata: {
           submissionSource: 'web',
         },

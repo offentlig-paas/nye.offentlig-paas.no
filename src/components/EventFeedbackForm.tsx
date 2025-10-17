@@ -24,6 +24,7 @@ interface FormState {
   eventRating: number
   eventComment: string
   topicSuggestions: Array<{ topic: string; willingToPresent: boolean }>
+  isPublic: boolean
   isSubmitting: boolean
   isSuccess: boolean
   error: string | null
@@ -42,6 +43,7 @@ export function EventFeedbackForm({
     eventRating: 0,
     eventComment: '',
     topicSuggestions: [{ topic: '', willingToPresent: false }],
+    isPublic: false,
     isSubmitting: false,
     isSuccess: false,
     error: null,
@@ -121,6 +123,7 @@ export function EventFeedbackForm({
         eventRating: state.eventRating,
         eventComment: state.eventComment || undefined,
         topicSuggestions,
+        isPublic: state.isPublic,
       })
 
       setState(prev => ({ ...prev, isSubmitting: false, isSuccess: true }))
@@ -158,7 +161,7 @@ export function EventFeedbackForm({
             return (
               <div
                 key={talk.title}
-                className="space-y-2 rounded-lg border border-zinc-200 p-3 dark:border-zinc-700"
+                className="space-y-2 rounded-lg border border-zinc-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-800"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex flex-1 items-start gap-3">
@@ -212,7 +215,7 @@ export function EventFeedbackForm({
       </div>
 
       {/* Event Rating */}
-      <div className="space-y-4">
+      <div className="space-y-4 rounded-lg border border-zinc-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
         <div className="flex items-center gap-3">
           {organizers.length > 0 && (
             <div className="flex -space-x-2">
@@ -252,7 +255,7 @@ export function EventFeedbackForm({
       </div>
 
       {/* Topic Suggestions */}
-      <div className="space-y-4">
+      <div className="space-y-4 rounded-lg border border-zinc-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
         <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
           Forslag til temaer for fremtidige arrangementer
         </h3>
@@ -308,6 +311,30 @@ export function EventFeedbackForm({
         >
           + Legg til flere forslag
         </Button>
+      </div>
+
+      {/* Public Display Checkbox */}
+      <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50">
+        <label className="flex items-start gap-3">
+          <input
+            type="checkbox"
+            checked={state.isPublic}
+            onChange={e =>
+              setState(prev => ({ ...prev, isPublic: e.target.checked }))
+            }
+            className="mt-0.5 rounded border-zinc-300 text-blue-600 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-700"
+          />
+          <div className="flex-1">
+            <span className="block text-sm font-medium text-zinc-900 dark:text-zinc-100">
+              Jeg ønsker at min tilbakemelding vises offentlig
+            </span>
+            <span className="mt-1 block text-sm text-zinc-600 dark:text-zinc-400">
+              Din vurdering og kommentar er privat som standard. Kryss av her
+              hvis du ønsker at navnet ditt og tilbakemeldingen skal vises på
+              arrangementets side.
+            </span>
+          </div>
+        </label>
       </div>
 
       {state.error && (

@@ -39,7 +39,9 @@ export function EventRegistrationProvider({
     { slug: eventSlug },
     {
       enabled: !!session?.user?.slackId,
+      staleTime: 5 * 60 * 1000,
       refetchOnWindowFocus: false,
+      refetchOnReconnect: true,
     }
   )
 
@@ -48,7 +50,9 @@ export function EventRegistrationProvider({
       { slug: eventSlug },
       {
         enabled: !session?.user?.slackId && status !== 'loading',
+        staleTime: 2 * 60 * 1000,
         refetchOnWindowFocus: false,
+        refetchOnReconnect: true,
       }
     )
 

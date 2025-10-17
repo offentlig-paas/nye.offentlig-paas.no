@@ -210,6 +210,13 @@ describe('tRPC Routers - Edge Cases', () => {
         eventSlug: 'test-event',
         totalResponses: 0,
         averageEventRating: 0,
+        ratingDistribution: [
+          { rating: 5, count: 0 },
+          { rating: 4, count: 0 },
+          { rating: 3, count: 0 },
+          { rating: 2, count: 0 },
+          { rating: 1, count: 0 },
+        ],
         talkSummaries: [],
         topicSuggestions: [],
         eventComments: [],
@@ -226,6 +233,13 @@ describe('tRPC Routers - Edge Cases', () => {
         eventSlug: 'test-event',
         totalResponses: 5,
         averageEventRating: 4.5,
+        ratingDistribution: [
+          { rating: 5, count: 3 },
+          { rating: 4, count: 2 },
+          { rating: 3, count: 0 },
+          { rating: 2, count: 0 },
+          { rating: 1, count: 0 },
+        ],
         talkSummaries: [
           {
             talkTitle: 'Talk 1',

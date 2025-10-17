@@ -19,6 +19,7 @@ export interface EventFeedback {
   eventRating: number
   eventComment?: string
   topicSuggestions: TopicSuggestion[]
+  isPublic?: boolean
   submittedAt: Date
   metadata?: FeedbackMetadata
 }
@@ -38,6 +39,7 @@ export interface CreateEventFeedbackInput {
   eventRating: number
   eventComment?: string
   topicSuggestions: TopicSuggestion[]
+  isPublic?: boolean
   metadata?: FeedbackMetadata
 }
 
@@ -59,6 +61,7 @@ export interface EventFeedbackSummary {
   eventSlug: string
   totalResponses: number
   averageEventRating: number
+  ratingDistribution: Array<{ rating: number; count: number }>
   talkSummaries: TalkFeedbackSummary[]
   topicSuggestions: Array<{
     topic: string

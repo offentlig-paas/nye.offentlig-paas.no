@@ -34,6 +34,12 @@ import {
   getDetailedEventInfoFromSlug,
 } from '@/lib/events/helpers'
 import { getUniqueCleanedOrganizations } from '@/lib/organization-utils'
+import {
+  getEventPhotos,
+  updateEventPhoto,
+  deleteEventPhoto,
+  reorderEventPhotos,
+} from '@/lib/sanity/event-photos'
 
 const registrationRepository = new EventRegistrationRepository()
 
@@ -960,6 +966,49 @@ Mvh ${organizerNames}`
             },
           },
         }
+      }),
+  }),
+
+  photos: router({
+    list: adminEventProcedure
+      .input(z.object({ slug: z.string() }))
+      .query(async ({ input }) => {
+        const photos = await getEventPhotos(input.slug)
+        return photos
+      }),
+
+    update: adminEventProcedure
+      .input(
+        z.object({
+          slug: z.string(),
+          photoId: z.string(),
+          caption: z.string().optional(),
+          speakers: z.array(z.string()).optional(),
+          order: z.number().optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const { photoId, caption, speakers, order } = input
+        const updated = await updateEventPhoto(photoId, {
+          caption,
+          speakers,
+          order,
+        })
+        return updated
+      }),
+
+    delete: adminEventProcedure
+      .input(z.object({ slug: z.string(), photoId: z.string() }))
+      .mutation(async ({ input }) => {
+        await deleteEventPhoto(input.photoId)
+        return { success: true }
+      }),
+
+    reorder: adminEventProcedure
+      .input(z.object({ slug: z.string(), photoIds: z.array(z.string()) }))
+      .mutation(async ({ input }) => {
+        await reorderEventPhotos(input.photoIds)
+        return { success: true }
       }),
   }),
 })

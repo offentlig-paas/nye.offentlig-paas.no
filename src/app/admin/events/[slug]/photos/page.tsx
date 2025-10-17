@@ -1,48 +1,50 @@
 import { redirect, notFound } from 'next/navigation'
 import { auth } from '@/auth'
-import { getEvent, canUserAccessEvent } from '@/lib/events/helpers'
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { AdminEventFeedback } from '@/components/AdminEventFeedback'
+import { AdminEventPhotos } from '@/components/AdminEventPhotos'
+import { getEvent, canUserAccessEvent } from '@/lib/events/helpers'
 
-interface AdminEventFeedbackPageProps {
+interface AdminEventPhotosPageProps {
   params: Promise<{
     slug: string
   }>
 }
 
-export default async function AdminEventFeedbackPage({
+export default async function AdminEventPhotosPage({
   params,
-}: AdminEventFeedbackPageProps) {
+}: AdminEventPhotosPageProps) {
   const session = await auth()
 
   if (!session?.user) {
     redirect('/auth/signin')
   }
 
-  const { slug } = await params
-  const event = getEvent(slug)
+  if (!session.user.isAdmin) {
+    redirect('/')
+  }
 
+  const { slug } = await params
+
+  const event = getEvent(slug)
   if (!event) {
     notFound()
   }
 
   const hasAccess = canUserAccessEvent(event, session.user)
   if (!hasAccess) {
-    redirect('/admin/events')
+    redirect('/')
   }
 
   return (
     <SimpleLayout
-      title={event.title}
-      intro="Tilbakemeldinger fra deltakere"
+      title={`Bilder: ${event.title}`}
+      intro="Last opp og administrer bilder fra fagdagen"
       backButton={{
         href: `/admin/events/${slug}`,
-        label: 'Tilbake til arrangement',
+        label: 'Tilbake til administrasjon',
       }}
     >
-      <div className="mx-auto max-w-7xl">
-        <AdminEventFeedback eventSlug={slug} />
-      </div>
+      <AdminEventPhotos slug={slug} event={event} />
     </SimpleLayout>
   )
 }

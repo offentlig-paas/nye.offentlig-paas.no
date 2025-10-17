@@ -37,6 +37,11 @@ class EventFeedbackService {
     return await this.repository.findMany({ eventSlug })
   }
 
+  async getPublicFeedback(eventSlug: string): Promise<EventFeedback[]> {
+    const allFeedback = await this.repository.findMany({ eventSlug })
+    return allFeedback.filter(fb => fb.isPublic && fb.eventComment)
+  }
+
   async getUserFeedback(
     eventSlug: string,
     slackUserId: string
@@ -52,6 +57,13 @@ class EventFeedbackService {
         eventSlug,
         totalResponses: 0,
         averageEventRating: 0,
+        ratingDistribution: [
+          { rating: 5, count: 0 },
+          { rating: 4, count: 0 },
+          { rating: 3, count: 0 },
+          { rating: 2, count: 0 },
+          { rating: 1, count: 0 },
+        ],
         talkSummaries: [],
         topicSuggestions: [],
         eventComments: [],
@@ -64,6 +76,22 @@ class EventFeedbackService {
       0
     )
     const averageEventRating = totalEventRating / feedback.length
+
+    // Calculate rating distribution
+    const ratingCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
+    feedback.forEach(fb => {
+      const rating = fb.eventRating
+      if (rating >= 1 && rating <= 5) {
+        ratingCounts[rating as 1 | 2 | 3 | 4 | 5]++
+      }
+    })
+    const ratingDistribution = [
+      { rating: 5, count: ratingCounts[5] },
+      { rating: 4, count: ratingCounts[4] },
+      { rating: 3, count: ratingCounts[3] },
+      { rating: 2, count: ratingCounts[2] },
+      { rating: 1, count: ratingCounts[1] },
+    ]
 
     // Aggregate talk ratings
     const talkMap = new Map<string, { ratings: number[]; comments: string[] }>()
@@ -128,6 +156,7 @@ class EventFeedbackService {
       eventSlug,
       totalResponses: feedback.length,
       averageEventRating,
+      ratingDistribution,
       talkSummaries,
       topicSuggestions,
       eventComments,

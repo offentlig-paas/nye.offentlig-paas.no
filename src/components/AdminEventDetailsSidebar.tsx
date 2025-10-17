@@ -9,6 +9,7 @@ import {
   VideoCameraIcon,
   StarIcon,
   GlobeAltIcon,
+  PhotoIcon,
 } from '@heroicons/react/24/outline'
 import { Avatar } from './Avatar'
 import { AddToSlackChannelButton } from './AddToSlackChannelButton'
@@ -182,15 +183,24 @@ export function AdminEventDetailsSidebar({
             </dt>
             <dd className="flex flex-wrap gap-3">
               {eventSlug && (
-                <a
-                  href={`/fagdag/${eventSlug}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center text-xs text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
-                >
-                  <GlobeAltIcon className="mr-1 h-3 w-3" />
-                  Offentlig side
-                </a>
+                <>
+                  <a
+                    href={`/fagdag/${eventSlug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                  >
+                    <GlobeAltIcon className="mr-1 h-3 w-3" />
+                    Offentlig side
+                  </a>
+                  <a
+                    href={`/admin/events/${eventSlug}/photos`}
+                    className="inline-flex items-center text-xs text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                  >
+                    <PhotoIcon className="mr-1 h-3 w-3" />
+                    Bilder
+                  </a>
+                </>
               )}
               {eventDetails.registrationUrl && (
                 <a

@@ -31,7 +31,7 @@ export function EventParticipantInfo({
   }
 
   return (
-    <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950/20">
+    <div className="overflow-hidden rounded-xl bg-blue-50 p-6 shadow-sm ring-1 ring-blue-900/10 dark:bg-blue-950/20 dark:ring-blue-400/10">
       <div className="flex items-start">
         <div className="flex-shrink-0">
           <VideoCameraIcon

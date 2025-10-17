@@ -8,6 +8,27 @@ import {
 
 export const events: Event[] = [
   {
+    slug: '2025-12-04-fagdag-digital',
+    title: 'Offentlig PAAS Fagdag Digital',
+    ingress:
+      'Vi inviterer til årets siste fagdag i Offentlig PAAS. Agenda kommer.',
+    start: new Date('2025-12-04T12:00+02:00'),
+    end: new Date('2025-12-04T15:00+02:00'),
+    audience: Audience.PublicSector,
+    location: 'Zoom',
+    registration: {
+      attendanceTypes: [AttendanceType.Digital],
+    },
+    organizers: [
+      {
+        name: 'Hans Kristian Flaatten',
+        org: 'Nav',
+        url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+      },
+    ],
+    schedule: [],
+  },
+  {
     slug: '2025-10-15-selvbetjening-fagdag',
     title: 'Offentlig PaaS Fagdag Selvbetjening',
     ingress:
