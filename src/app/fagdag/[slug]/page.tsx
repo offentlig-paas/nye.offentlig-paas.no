@@ -290,6 +290,13 @@ export default async function Fagdag({ params }: { params: Params }) {
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             {/* Left Column: Description + Agenda (2/3 width) */}
             <div className="space-y-6 lg:col-span-2">
+              {/* Summary (mobile only) */}
+              <EventSummary
+                event={event}
+                status={getStatus(event)}
+                className="lg:hidden"
+              />
+
               {/* Description */}
               <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-gray-400/5">
                 <div className="px-6 py-6">
@@ -393,7 +400,11 @@ export default async function Fagdag({ params }: { params: Params }) {
             {/* Right Column: Event Summary + Registration + Sidebar (1/3 width) */}
             <div className="space-y-6">
               <h2 className="sr-only">Oppsummering</h2>
-              <EventSummary event={event} status={getStatus(event)} />
+              <EventSummary
+                event={event}
+                status={getStatus(event)}
+                className="hidden lg:block"
+              />
 
               {/* Registration */}
               {getStatus(event) !== Status.Past && (

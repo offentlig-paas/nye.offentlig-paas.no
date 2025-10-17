@@ -8,6 +8,7 @@ import {
 import { formatDateTime } from '@/lib/formatDate'
 import { Status, AttendanceTypeDisplay } from '@/lib/events/types'
 import type { Event } from '@/lib/events/types'
+import clsx from 'clsx'
 
 function EventStatus({ status }: { status: Status }) {
   const statusClass = (status: Status) => {
@@ -44,15 +45,20 @@ function EventStatus({ status }: { status: Status }) {
     </dd>
   )
 }
-
 interface EventSummaryProps {
   event: Event
   status: Status
+  className?: string
 }
 
-export function EventSummary({ event, status }: EventSummaryProps) {
+export function EventSummary({ event, status, className }: EventSummaryProps) {
   return (
-    <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-gray-400/5">
+    <div
+      className={clsx(
+        'overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-gray-400/5',
+        className
+      )}
+    >
       <dl className="flex flex-wrap">
         <div className="flex-auto px-6 pt-6">
           <dd className="text-base font-semibold text-gray-900 dark:text-gray-100">
