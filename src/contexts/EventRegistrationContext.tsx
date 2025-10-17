@@ -39,7 +39,9 @@ export function EventRegistrationProvider({
     { slug: eventSlug },
     {
       enabled: !!session?.user?.slackId,
-      refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000, // 5 minutes - registration status is relatively static
+      refetchOnWindowFocus: false, // Avoid unnecessary refetches, use manual refetch() instead
+      refetchOnReconnect: true, // Refetch after network reconnection
     }
   )
 
@@ -48,7 +50,9 @@ export function EventRegistrationProvider({
       { slug: eventSlug },
       {
         enabled: !session?.user?.slackId && status !== 'loading',
-        refetchOnWindowFocus: false,
+        staleTime: 2 * 60 * 1000, // 2 minutes - public stats can be slightly stale
+        refetchOnWindowFocus: false, // Avoid excessive API calls on tab switching
+        refetchOnReconnect: true,
       }
     )
 

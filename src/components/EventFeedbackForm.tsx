@@ -24,6 +24,7 @@ interface FormState {
   eventRating: number
   eventComment: string
   topicSuggestions: Array<{ topic: string; willingToPresent: boolean }>
+  isPublic: boolean
   isSubmitting: boolean
   isSuccess: boolean
   error: string | null
@@ -42,6 +43,7 @@ export function EventFeedbackForm({
     eventRating: 0,
     eventComment: '',
     topicSuggestions: [{ topic: '', willingToPresent: false }],
+    isPublic: false,
     isSubmitting: false,
     isSuccess: false,
     error: null,
@@ -121,6 +123,7 @@ export function EventFeedbackForm({
         eventRating: state.eventRating,
         eventComment: state.eventComment || undefined,
         topicSuggestions,
+        isPublic: state.isPublic,
       })
 
       setState(prev => ({ ...prev, isSubmitting: false, isSuccess: true }))
@@ -308,6 +311,30 @@ export function EventFeedbackForm({
         >
           + Legg til flere forslag
         </Button>
+      </div>
+
+      {/* Public Display Checkbox */}
+      <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50">
+        <label className="flex items-start gap-3">
+          <input
+            type="checkbox"
+            checked={state.isPublic}
+            onChange={e =>
+              setState(prev => ({ ...prev, isPublic: e.target.checked }))
+            }
+            className="mt-0.5 rounded border-zinc-300 text-blue-600 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-700"
+          />
+          <div className="flex-1">
+            <span className="block text-sm font-medium text-zinc-900 dark:text-zinc-100">
+              Jeg ønsker at min tilbakemelding vises offentlig
+            </span>
+            <span className="mt-1 block text-sm text-zinc-600 dark:text-zinc-400">
+              Din vurdering og kommentar er privat som standard. Kryss av her
+              hvis du ønsker at navnet ditt og tilbakemeldingen skal vises på
+              arrangementets side.
+            </span>
+          </div>
+        </label>
       </div>
 
       {state.error && (

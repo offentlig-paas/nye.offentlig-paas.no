@@ -353,6 +353,13 @@ const eventFeedbackSchema = defineType({
       type: 'text',
     },
     {
+      name: 'isPublic',
+      title: 'Display Publicly',
+      type: 'boolean',
+      description:
+        'If true, this review can be displayed publicly on the event page',
+    },
+    {
       name: 'topicSuggestions',
       title: 'Topic Suggestions',
       type: 'array',
@@ -422,9 +429,94 @@ const eventFeedbackSchema = defineType({
   ],
 })
 
+const eventPhotoSchema = defineType({
+  name: 'eventPhoto',
+  title: 'Event Photo',
+  type: 'document',
+  fields: [
+    {
+      name: 'eventSlug',
+      title: 'Event Slug',
+      type: 'string',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'image',
+      title: 'Photo',
+      type: 'image',
+      options: {
+        hotspot: true,
+      },
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'caption',
+      title: 'Caption',
+      type: 'string',
+    },
+    {
+      name: 'speakers',
+      title: 'Tagged Speakers',
+      type: 'array',
+      of: [{ type: 'string' }],
+      description: 'Speaker names tagged in this photo',
+    },
+    {
+      name: 'uploadedAt',
+      title: 'Uploaded At',
+      type: 'datetime',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'uploadedBy',
+      title: 'Uploaded By Slack ID',
+      type: 'string',
+      description: 'Slack ID of uploader',
+    },
+    {
+      name: 'order',
+      title: 'Display Order',
+      type: 'number',
+      description: 'Order in which photos are displayed',
+      validation: Rule => Rule.integer().min(0),
+    },
+  ],
+  preview: {
+    select: {
+      title: 'caption',
+      eventSlug: 'eventSlug',
+      media: 'image',
+      speakers: 'speakers',
+    },
+    prepare(selection) {
+      const { title, eventSlug, media, speakers } = selection
+      const speakersText =
+        speakers && speakers.length > 0 ? ` - ${speakers.join(', ')}` : ''
+      return {
+        title: title || 'Untitled Photo',
+        subtitle: `${eventSlug}${speakersText}`,
+        media,
+      }
+    },
+  },
+  orderings: [
+    {
+      title: 'Display Order',
+      name: 'orderAsc',
+      by: [{ field: 'order', direction: 'asc' }],
+    },
+    {
+      title: 'Upload Date (Newest First)',
+      name: 'uploadedAtDesc',
+      by: [{ field: 'uploadedAt', direction: 'desc' }],
+    },
+  ],
+})
+
 export const schemas = [
   eventRegistrationSchema,
   eventParticipantInfoSchema,
   talkAttachmentSchema,
   eventFeedbackSchema,
+  eventPhotoSchema,
 ]

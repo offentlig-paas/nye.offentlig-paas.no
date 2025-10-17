@@ -21,7 +21,7 @@ import {
 import { formatTime } from '@/lib/formatDate'
 import { trpc } from '@/lib/trpc/client'
 
-interface EventRegistrationProps {
+interface EventRegistrationFormProps {
   eventSlug: string
   eventTitle: string
   isAcceptingRegistrations: boolean
@@ -316,14 +316,21 @@ const RegistrationForm = memo(function RegistrationForm({
   )
 })
 
-export const EventRegistration = memo(function EventRegistration({
+/**
+ * Event registration form with multiple states:
+ * - Not logged in: prompts user to log in
+ * - Not registered: shows registration form
+ * - Registered: shows confirmation with unregister option
+ * - Special mode for social event opt-in only
+ */
+export const EventRegistrationForm = memo(function EventRegistrationForm({
   eventSlug,
   eventTitle,
   isAcceptingRegistrations,
   attendanceTypes,
   socialEvent,
   showOnlySocialEvent = false,
-}: EventRegistrationProps) {
+}: EventRegistrationFormProps) {
   const { data: session } = useSession()
   const { showSuccess, showError } = useToast()
   const { registrationStatus, registration, stats, isCheckingStatus, refetch } =
@@ -434,7 +441,7 @@ export const EventRegistration = memo(function EventRegistration({
 
   if (isCheckingStatus) {
     return (
-      <div className="rounded-lg bg-gray-50 p-6 dark:bg-gray-800">
+      <div className="overflow-hidden rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-gray-400/5">
         <p className="text-sm text-gray-500 dark:text-gray-400">Laster...</p>
       </div>
     )
@@ -442,7 +449,7 @@ export const EventRegistration = memo(function EventRegistration({
 
   if (!isAcceptingRegistrations) {
     return (
-      <div className="rounded-lg bg-gray-50 p-6 dark:bg-gray-800">
+      <div className="overflow-hidden rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-gray-400/5">
         <p className="text-sm font-semibold text-gray-500 dark:text-gray-400">
           Påmelding er stengt
         </p>
@@ -514,7 +521,7 @@ export const EventRegistration = memo(function EventRegistration({
 
   if (!session) {
     return (
-      <div className="rounded-lg bg-gray-50 p-6 dark:bg-gray-800">
+      <div className="overflow-hidden rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-gray-400/5">
         <h3 className="mb-4 text-base font-semibold text-gray-900 dark:text-gray-100">
           Bli med på fagdagen
         </h3>
@@ -537,7 +544,7 @@ export const EventRegistration = memo(function EventRegistration({
 
   if (isActivelyRegistered) {
     return (
-      <div className="rounded-lg bg-green-50 p-6 dark:bg-green-900/20">
+      <div className="overflow-hidden rounded-xl bg-green-50 p-6 shadow-sm ring-1 ring-green-900/10 dark:bg-green-900/20 dark:ring-green-400/10">
         <h3 className="mb-2 flex items-center gap-2 text-base font-semibold text-green-900 dark:text-green-100">
           <CheckCircleIcon
             className="h-5 w-5 text-green-600 dark:text-green-400"
@@ -593,10 +600,10 @@ export const EventRegistration = memo(function EventRegistration({
   }
 
   return (
-    <div className="rounded-lg bg-blue-50 p-6 dark:bg-blue-900/20">
+    <div className="overflow-hidden rounded-xl bg-blue-50 p-6 shadow-sm ring-1 ring-blue-900/10 dark:bg-blue-900/20 dark:ring-blue-400/10">
       <div className="mb-4">
         <h3 className="mb-2 text-base font-semibold text-blue-900 dark:text-blue-100">
-          Meld deg på fagdagen
+          Påmelding
         </h3>
 
         {stats && stats.total > 0 && (

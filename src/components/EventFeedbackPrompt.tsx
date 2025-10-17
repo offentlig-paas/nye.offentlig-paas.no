@@ -34,7 +34,7 @@ export function EventFeedbackPrompt({
 
   if (hasFeedback) {
     return (
-      <div className="rounded-xl bg-gray-50 p-6 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800/50 dark:ring-gray-700/50">
+      <div className="overflow-hidden rounded-xl bg-gray-50 p-6 shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800/50 dark:ring-gray-400/5">
         <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
           <svg
             className="h-5 w-5"
@@ -56,8 +56,8 @@ export function EventFeedbackPrompt({
   }
 
   return (
-    <div className="rounded-xl bg-gray-50 p-6 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800/50 dark:ring-gray-700/50">
-      <h2 className="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
+    <div className="overflow-hidden rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-gray-400/5">
+      <h2 className="mb-4 text-base font-semibold text-gray-900 dark:text-gray-100">
         Gi tilbakemelding
       </h2>
       <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">

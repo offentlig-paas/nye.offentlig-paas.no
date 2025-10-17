@@ -2,22 +2,73 @@
 
 import { trpc } from '@/lib/trpc/client'
 import { EventFeedbackSummary } from './EventFeedbackSummary'
+import { EventReviews } from './EventReviews'
+import { useSession } from 'next-auth/react'
 
 interface EventFeedbackSummaryWrapperProps {
   eventSlug: string
-  variant?: 'compact' | 'full' | 'admin'
+  variant?: 'compact' | 'full' | 'admin' | 'reviews'
 }
 
 export function EventFeedbackSummaryWrapper({
   eventSlug,
   variant = 'compact',
 }: EventFeedbackSummaryWrapperProps) {
-  const { data: summary, isLoading } = trpc.eventFeedback.getSummary.useQuery({
-    slug: eventSlug,
-  })
+  const { data: session } = useSession()
 
-  if (isLoading) {
+  // Fetch summary and reviews in parallel for reviews variant
+  const { data: summary, isLoading: summaryLoading } =
+    trpc.eventFeedback.getSummary.useQuery(
+      { slug: eventSlug },
+      {
+        staleTime: 5 * 60 * 1000, // 5 minutes - feedback data doesn't change frequently
+        refetchOnWindowFocus: false,
+      }
+    )
+
+  const { data: reviews, isLoading: reviewsLoading } =
+    trpc.eventFeedback.getPublicReviews.useQuery(
+      { slug: eventSlug },
+      {
+        enabled: variant === 'reviews',
+        staleTime: 5 * 60 * 1000,
+        refetchOnWindowFocus: false,
+      }
+    )
+
+  const { data: hasFeedbackData } = trpc.eventFeedback.hasFeedback.useQuery(
+    { slug: eventSlug },
+    {
+      enabled: variant === 'reviews' && !!session?.user,
+      staleTime: 1 * 60 * 1000, // 1 minute - user-specific data
+      refetchOnWindowFocus: false,
+    }
+  )
+
+  if (summaryLoading || (variant === 'reviews' && reviewsLoading)) {
     return null
+  }
+
+  // Show reviews variant for public event pages
+  if (variant === 'reviews') {
+    if (!summary || summary.totalResponses === 0) {
+      return null
+    }
+
+    const canSubmitFeedback = !!session?.user && !hasFeedbackData?.hasFeedback
+    const hasSubmittedFeedback = !!session?.user && hasFeedbackData?.hasFeedback
+
+    return (
+      <EventReviews
+        reviews={reviews || []}
+        eventSlug={eventSlug}
+        averageRating={summary.averageEventRating}
+        totalReviews={summary.totalResponses}
+        canSubmitFeedback={canSubmitFeedback}
+        hasSubmittedFeedback={hasSubmittedFeedback}
+        ratingDistribution={summary.ratingDistribution}
+      />
+    )
   }
 
   // Show empty state if no feedback yet
