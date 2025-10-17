@@ -11,6 +11,7 @@ interface EventReviewsProps {
   totalReviews: number
   canSubmitFeedback: boolean
   hasSubmittedFeedback?: boolean
+  needsLogin?: boolean
   ratingDistribution?: { rating: number; count: number }[]
 }
 
@@ -49,6 +50,7 @@ export function EventReviews({
   totalReviews,
   canSubmitFeedback,
   hasSubmittedFeedback = false,
+  needsLogin = false,
   ratingDistribution,
 }: EventReviewsProps) {
   // Use provided distribution or calculate from all reviews if not provided
@@ -154,6 +156,25 @@ export function EventReviews({
                 className="mt-4 w-full"
               >
                 Gi tilbakemelding
+              </Button>
+            </div>
+          )}
+
+          {needsLogin && (
+            <div className="mt-6">
+              <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                Del dine erfaringer
+              </h3>
+              <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+                Logg inn for å gi tilbakemelding på dette arrangementet
+              </p>
+
+              <Button
+                href={`/auth/signin?callbackUrl=${encodeURIComponent(`/fagdag/${eventSlug}/tilbakemelding`)}`}
+                variant="secondary"
+                className="mt-4 w-full"
+              >
+                Logg inn for å gi tilbakemelding
               </Button>
             </div>
           )}

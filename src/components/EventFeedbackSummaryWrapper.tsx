@@ -53,8 +53,11 @@ export function EventFeedbackSummaryWrapper({
       return null
     }
 
-    const canSubmitFeedback = !!session?.user && !hasFeedbackData?.hasFeedback
-    const hasSubmittedFeedback = !!session?.user && hasFeedbackData?.hasFeedback
+    // Show login button if not authenticated, otherwise check feedback status
+    const isAuthenticated = !!session?.user
+    const canSubmitFeedback = isAuthenticated && !hasFeedbackData?.hasFeedback
+    const hasSubmittedFeedback = isAuthenticated && hasFeedbackData?.hasFeedback
+    const needsLogin = !isAuthenticated
 
     return (
       <EventReviews
@@ -64,6 +67,7 @@ export function EventFeedbackSummaryWrapper({
         totalReviews={summary.totalResponses}
         canSubmitFeedback={canSubmitFeedback}
         hasSubmittedFeedback={hasSubmittedFeedback}
+        needsLogin={needsLogin}
         ratingDistribution={summary.ratingDistribution}
       />
     )

@@ -18,18 +18,33 @@ export function EventFeedbackPrompt({
   const { data: session } = useSession()
   const { registration } = useEventRegistration()
 
-  const { data: feedbackData } = trpc.eventFeedback.hasFeedback.useQuery(
-    { slug: event.slug },
-    {
-      enabled: !!session?.user?.slackId,
-    }
-  )
+  const { data: feedbackData, isLoading } =
+    trpc.eventFeedback.hasFeedback.useQuery(
+      { slug: event.slug },
+      {
+        enabled: !!session?.user?.slackId,
+      }
+    )
 
   const hasFeedback = feedbackData?.hasFeedback ?? null
 
   // Only show for past events where user attended
   if (eventStatus !== 'past') return null
   if (!registration || registration.status !== 'attended') return null
+
+  // Show loading state while checking feedback status
+  if (isLoading) {
+    return (
+      <div className="overflow-hidden rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-gray-400/5">
+        <div className="animate-pulse space-y-4">
+          <div className="h-4 w-32 rounded bg-gray-200 dark:bg-gray-700"></div>
+          <div className="h-3 w-full rounded bg-gray-200 dark:bg-gray-700"></div>
+          <div className="h-10 w-full rounded bg-gray-200 dark:bg-gray-700"></div>
+        </div>
+      </div>
+    )
+  }
+
   if (hasFeedback === null) return null
 
   if (hasFeedback) {

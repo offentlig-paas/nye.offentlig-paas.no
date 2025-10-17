@@ -35,7 +35,9 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
 
   // Redirect if not authenticated
   if (!session?.user?.slackId) {
-    redirect(`/fagdag/${slug}`)
+    redirect(
+      `/auth/signin?callbackUrl=${encodeURIComponent(`/fagdag/${slug}/tilbakemelding`)}`
+    )
   }
 
   const caller = await createCaller()
