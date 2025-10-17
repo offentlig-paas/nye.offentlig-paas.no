@@ -66,6 +66,16 @@
 
 **Events:** Static data in `src/data/events.ts` with file-based JSON storage for registrations in `data/registrations/`.
 
+### Component Strategy
+
+**Avoid unnecessary wrapper components**. Before creating a new component:
+
+1. **Check if existing component can be extended** with props or composition
+2. **Evaluate if refactoring** existing component is better than wrapping
+3. **Only create wrappers** when there's clear separation of concerns
+
+Keep component hierarchy flat and maintainable.
+
 ### tRPC API
 
 **Type-safe API layer** - Most endpoints use tRPC v11 for end-to-end type safety:
@@ -115,6 +125,7 @@ When adding content, maintain the professional tone and focus on practical techn
 - Do not create lengthy summaries after coding sessions
 - Clean up comments and unused code before finalizing
 - Always run `yarn run check` after making changes
+- Use Heroicons for icons, not emojis
 
 ## Development Best Practices
 
