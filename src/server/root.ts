@@ -4,6 +4,7 @@ import { eventFeedbackRouter } from './routers/eventFeedback'
 import { adminRouter } from './routers/admin'
 import { slackRouter } from './routers/slack'
 import { userRouter } from './routers/user'
+import { photosRouter } from './routers/photos'
 import { headers } from 'next/headers'
 
 export const appRouter = router({
@@ -12,6 +13,7 @@ export const appRouter = router({
   admin: adminRouter,
   slack: slackRouter,
   user: userRouter,
+  photos: photosRouter,
 })
 
 export type AppRouter = typeof appRouter

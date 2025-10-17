@@ -985,14 +985,16 @@ Mvh ${organizerNames}`
           caption: z.string().optional(),
           speakers: z.array(z.string()).optional(),
           order: z.number().optional(),
+          featured: z.boolean().optional(),
         })
       )
       .mutation(async ({ input }) => {
-        const { photoId, caption, speakers, order } = input
+        const { photoId, caption, speakers, order, featured } = input
         const updated = await updateEventPhoto(photoId, {
           caption,
           speakers,
           order,
+          featured,
         })
         return updated
       }),

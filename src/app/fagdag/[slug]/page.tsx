@@ -139,6 +139,17 @@ async function EventPhotos({ slug }: { slug: string }) {
   return null
 }
 
+async function FullGalleryPhotos({ slug }: { slug: string }) {
+  const photos = await getEventPhotos(slug)
+
+  if (photos.length > 4) {
+    const nonHeroPhotos = photos.slice(4)
+    return <EventPhotoGallery photos={nonHeroPhotos} variant="full" />
+  }
+
+  return null
+}
+
 async function EventAgendaSection({
   event,
   slug,
@@ -328,6 +339,11 @@ export default async function Fagdag({ params }: { params: Params }) {
                   )}
                 </div>
               </div>
+
+              {/* Photo Gallery */}
+              <Suspense fallback={null}>
+                <FullGalleryPhotos slug={slug} />
+              </Suspense>
 
               {/* Agenda */}
               <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-gray-400/5">

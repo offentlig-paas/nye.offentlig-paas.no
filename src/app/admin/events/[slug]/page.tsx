@@ -1,6 +1,6 @@
 import { redirect, notFound } from 'next/navigation'
 import { auth } from '@/auth'
-import { Container } from '@/components/Container'
+import { SimpleLayout } from '@/components/SimpleLayout'
 import { AdminEventDetailsClient } from '@/components/AdminEventDetailsClient'
 import { createCaller } from '@/server/root'
 import { getUniqueSpeakersWithoutUrls } from '@/lib/events/helpers'
@@ -36,23 +36,21 @@ export default async function AdminEventPage({ params }: AdminEventPageProps) {
     )
 
     return (
-      <Container className="mt-16 sm:mt-24">
-        <header className="mb-10">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl dark:text-white">
-            {eventDetails.title}
-          </h1>
-          <p className="mt-3 text-lg text-gray-600 dark:text-gray-400">
-            {eventDetails.date} · {eventDetails.location}
-          </p>
-        </header>
-
+      <SimpleLayout
+        title={eventDetails.title}
+        intro={`${eventDetails.date} · ${eventDetails.location}`}
+        backButton={{
+          href: '/admin/events',
+          label: 'Tilbake til fagdager',
+        }}
+      >
         <AdminEventDetailsClient
           slug={slug}
           initialEventDetails={eventDetails}
           initialParticipantInfo={participantInfo}
           speakersWithoutUrls={speakersWithoutUrls}
         />
-      </Container>
+      </SimpleLayout>
     )
   } catch (error) {
     console.error('Error loading event:', error)

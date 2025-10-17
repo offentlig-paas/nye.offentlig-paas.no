@@ -7,6 +7,7 @@ import { Card } from '@/components/Card'
 import { Section } from '@/components/Section'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { getAllEvents } from '@/lib/events/helpers'
+import { getEventPhotos, urlForImage } from '@/lib/sanity/event-photos'
 import { formatDate } from '@/lib/formatDate'
 
 import rssLogo from '@/images/rss.svg'
@@ -29,15 +30,55 @@ function Appearance({
   date,
   cta,
   href,
+  heroPhotos,
 }: {
   title: string
   description: string
   date: string
   cta: string
   href: string
+  heroPhotos?: string[]
 }) {
   return (
     <Card as="article">
+      {heroPhotos && heroPhotos.length >= 4 && (
+        <div className="relative z-10 mb-4 w-full">
+          <div className="grid grid-cols-3 gap-2">
+            <Image
+              src={heroPhotos[0]!}
+              alt={title}
+              width={400}
+              height={600}
+              unoptimized
+              className="row-span-2 aspect-[3/4] size-full rounded-lg object-cover"
+            />
+            <Image
+              src={heroPhotos[1]!}
+              alt={title}
+              width={400}
+              height={300}
+              unoptimized
+              className="col-start-2 aspect-[3/2] size-full rounded-lg object-cover"
+            />
+            <Image
+              src={heroPhotos[2]!}
+              alt={title}
+              width={400}
+              height={300}
+              unoptimized
+              className="col-start-2 row-start-2 aspect-[3/2] size-full rounded-lg object-cover"
+            />
+            <Image
+              src={heroPhotos[3]!}
+              alt={title}
+              width={400}
+              height={600}
+              unoptimized
+              className="row-span-2 aspect-[3/4] size-full rounded-lg object-cover"
+            />
+          </div>
+        </div>
+      )}
       <Card.Title as="h3" href={href}>
         {title}
       </Card.Title>
@@ -54,8 +95,29 @@ export const metadata: Metadata = {
     'Fagdager er Offentlig PaaS nettverket sin helt egen dag hvor vi inviterer til faglig påfyll, erfaringsdeling og nettverksbygging.',
 }
 
-export default function Fagdager() {
+export default async function Fagdager() {
   const events = getAllEvents()
+
+  // Fetch hero photos (first 4) for all events
+  const eventsWithPhotos = await Promise.all(
+    events.map(async event => {
+      const photos = await getEventPhotos(event.slug)
+      const heroPhotos =
+        photos.length >= 4
+          ? photos.slice(0, 4).map(photo =>
+              urlForImage(photo.image)
+                .width(800)
+                .height(photo === photos[0] || photo === photos[3] ? 1200 : 600)
+                .url()
+            )
+          : undefined
+
+      return {
+        event,
+        heroPhotos,
+      }
+    })
+  )
 
   return (
     <SimpleLayout
@@ -64,7 +126,7 @@ export default function Fagdager() {
     >
       <div className="space-y-20">
         <SpeakingSection title="Fagdager">
-          {events.map(event => (
+          {eventsWithPhotos.map(({ event, heroPhotos }) => (
             <Appearance
               key={event.slug}
               href={`/fagdag/${event.slug}`}
@@ -72,6 +134,7 @@ export default function Fagdager() {
               description={event.ingress}
               date={formatDate(event.start)}
               cta="Mer informasjon"
+              heroPhotos={heroPhotos}
             />
           ))}
         </SpeakingSection>

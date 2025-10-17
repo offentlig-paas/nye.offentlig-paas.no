@@ -13,6 +13,7 @@ export interface EventPhoto {
   uploadedAt: string
   uploadedBy?: string
   order?: number
+  featured?: boolean
 }
 
 export function urlForImage(source: SanityImageSource) {
@@ -36,10 +37,30 @@ export async function getEventPhotos(eventSlug: string): Promise<EventPhoto[]> {
     speakers,
     uploadedAt,
     uploadedBy,
-    order
+    order,
+    featured
   }`
 
   return sanityClient.fetch<EventPhoto[]>(query, { eventSlug })
+}
+
+export async function getPhotosByEventAndSpeaker(
+  eventSlug: string,
+  speakerName: string
+): Promise<EventPhoto[]> {
+  const query = `*[_type == "eventPhoto" && eventSlug == $eventSlug && $speakerName in speakers] | order(order asc, uploadedAt desc) {
+    _id,
+    eventSlug,
+    image,
+    caption,
+    speakers,
+    uploadedAt,
+    uploadedBy,
+    order,
+    featured
+  }`
+
+  return sanityClient.fetch<EventPhoto[]>(query, { eventSlug, speakerName })
 }
 
 export async function updateEventPhoto(
@@ -48,6 +69,7 @@ export async function updateEventPhoto(
     caption?: string
     speakers?: string[]
     order?: number
+    featured?: boolean
   }
 ): Promise<EventPhoto> {
   const updates = removeUndefinedFields(input)
