@@ -16,12 +16,11 @@ export function EventFeedbackSummaryWrapper({
 }: EventFeedbackSummaryWrapperProps) {
   const { data: session } = useSession()
 
-  // Fetch summary and reviews in parallel for reviews variant
   const { data: summary, isLoading: summaryLoading } =
     trpc.eventFeedback.getSummary.useQuery(
       { slug: eventSlug },
       {
-        staleTime: 5 * 60 * 1000, // 5 minutes - feedback data doesn't change frequently
+        staleTime: 5 * 60 * 1000,
         refetchOnWindowFocus: false,
       }
     )
@@ -40,7 +39,7 @@ export function EventFeedbackSummaryWrapper({
     { slug: eventSlug },
     {
       enabled: variant === 'reviews' && !!session?.user,
-      staleTime: 1 * 60 * 1000, // 1 minute - user-specific data
+      staleTime: 1 * 60 * 1000,
       refetchOnWindowFocus: false,
     }
   )
@@ -49,7 +48,6 @@ export function EventFeedbackSummaryWrapper({
     return null
   }
 
-  // Show reviews variant for public event pages
   if (variant === 'reviews') {
     if (!summary || summary.totalResponses === 0) {
       return null
@@ -71,7 +69,6 @@ export function EventFeedbackSummaryWrapper({
     )
   }
 
-  // Show empty state if no feedback yet
   if (!summary || summary.totalResponses === 0) {
     return (
       <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">

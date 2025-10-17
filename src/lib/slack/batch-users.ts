@@ -50,10 +50,7 @@ export async function batchFetchSlackUsers(
     return results
   }
 
-  // Remove duplicates
   const uniqueUserIds = Array.from(new Set(userIds))
-
-  // Fetch all users in parallel
   const promises = uniqueUserIds.map(async userId => {
     try {
       const userInfo = await slack.users.info({ user: userId })
@@ -85,7 +82,6 @@ export async function batchFetchSlackUsers(
         data: { avatarUrl, displayName },
       }
     } catch (error) {
-      // Log error for debugging, but continue processing other users
       console.error(`Failed to fetch Slack user info for ${userId}:`, error)
       return null
     }
@@ -93,7 +89,6 @@ export async function batchFetchSlackUsers(
 
   const userDataArray = await Promise.all(promises)
 
-  // Build map from results
   for (const result of userDataArray) {
     if (result) {
       results.set(result.userId, result.data)
@@ -114,7 +109,6 @@ export function extractEventUserIds(event: {
 }): string[] {
   const userIds: string[] = []
 
-  // Extract from speakers
   for (const item of event.schedule) {
     if (item.speakers) {
       for (const speaker of item.speakers) {
@@ -128,7 +122,6 @@ export function extractEventUserIds(event: {
     }
   }
 
-  // Extract from organizers
   for (const organizer of event.organizers) {
     if (organizer.url) {
       const userId = extractSlackUserId(organizer.url)

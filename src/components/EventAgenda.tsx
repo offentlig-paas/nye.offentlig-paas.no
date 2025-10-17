@@ -42,9 +42,6 @@ function EventIcon({
   }
 }
 
-/**
- * Event agenda component displaying schedule with speakers and attachments
- */
 export function EventAgenda({
   schedule,
   attachments,

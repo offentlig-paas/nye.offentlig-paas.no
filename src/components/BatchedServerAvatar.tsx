@@ -17,10 +17,6 @@ interface BatchedServerAvatarProps {
   } | null
 }
 
-/**
- * Optimized ServerAvatar that accepts pre-fetched user data
- * Use with batchFetchSlackUsers for better performance
- */
 export function BatchedServerAvatar({
   name,
   slackUserId: _slackUserId,

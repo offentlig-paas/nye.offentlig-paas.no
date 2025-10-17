@@ -19,9 +19,6 @@ export function urlForImage(source: SanityImageSource) {
   return builder.image(source)
 }
 
-/**
- * Removes undefined values from an object to create a clean patch object
- */
 function removeUndefinedFields<T extends Record<string, unknown>>(
   obj: T
 ): Partial<T> {

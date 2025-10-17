@@ -67,11 +67,9 @@ export async function generateMetadata({
     }
   }
 
-  // Format date and location
   const eventDate = formatDateLong(event.start)
   const eventTime = formatTimeRange(event.start, event.end)
 
-  // Get speakers from schedule (unique list)
   const speakers = Array.from(
     new Set(
       event.schedule
@@ -80,7 +78,6 @@ export async function generateMetadata({
     )
   )
 
-  // Create agenda summary (talks only, max 5)
   const talks = event.schedule
     .filter(item => item.type === ItemType.Talk && item.title)
     .slice(0, 5)
@@ -90,7 +87,6 @@ export async function generateMetadata({
     )
     .join('\n')
 
-  // Create enhanced description with date, location, agenda and speakers
   const enhancedDescription = [
     event.ingress,
     '',
@@ -185,7 +181,6 @@ export default async function Fagdag({ params }: { params: Params }) {
     ? canUserAccessEvent(event, session.user)
     : false
 
-  // Batch fetch Slack user data for organizers
   const organizerUserIds = event.organizers
     .map(org => (org.url ? extractSlackUserId(org.url) : null))
     .filter((id): id is string => id !== null)
