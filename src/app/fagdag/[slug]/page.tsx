@@ -22,7 +22,7 @@ import {
   canUserAccessEvent,
 } from '@/lib/events/helpers'
 import { getAllEventAttachments } from '@/lib/events/attachment-helpers'
-import { getEventPhotos } from '@/lib/sanity/event-photos'
+import { getEventPhotos, urlForImage } from '@/lib/sanity/event-photos'
 import { EventPhotoGallery } from '@/components/EventPhotoGallery'
 import { EventPhotoSkeleton } from '@/components/skeletons/EventPhotoSkeleton'
 import { EventAgendaSkeleton } from '@/components/skeletons/EventAgendaSkeleton'
@@ -89,19 +89,40 @@ export async function generateMetadata({
     )
     .join('\n')
 
-  const enhancedDescription = [
+  const photos = await getEventPhotos(slug)
+  const firstPhoto = photos[0]
+
+  const descriptionParts = [
     event.ingress,
     '',
     `📅 ${eventDate}`,
     `🕐 ${eventTime}`,
     `📍 ${event.location}`,
     '',
-    talks ? `Agenda:\n${talks}` : '',
-    '',
-    speakers.length > 0 ? `Foredragsholdere: ${speakers.join(', ')}` : '',
   ]
-    .filter(Boolean)
-    .join('\n')
+
+  if (event.stats?.feedback?.averageRating) {
+    const stars = '⭐'.repeat(Math.round(event.stats.feedback.averageRating))
+    descriptionParts.push(
+      `${stars} ${event.stats.feedback.averageRating.toFixed(1)}/5 (${event.stats.feedback.respondents} vurderinger)`
+    )
+    descriptionParts.push('')
+  }
+
+  if (talks) {
+    descriptionParts.push(`Agenda:\n${talks}`)
+    descriptionParts.push('')
+  }
+
+  if (speakers.length > 0) {
+    descriptionParts.push(`Foredragsholdere: ${speakers.join(', ')}`)
+  }
+
+  const enhancedDescription = descriptionParts.filter(Boolean).join('\n')
+
+  const ogImage = firstPhoto
+    ? urlForImage(firstPhoto.image).width(1200).height(630).url()
+    : undefined
 
   return {
     title: event.title,
@@ -112,11 +133,24 @@ export async function generateMetadata({
       type: 'website',
       locale: 'nb_NO',
       siteName: 'Offentlig PaaS',
+      ...(ogImage && {
+        images: [
+          {
+            url: ogImage,
+            width: 1200,
+            height: 630,
+            alt: firstPhoto?.caption || event.title,
+          },
+        ],
+      }),
     },
     twitter: {
       card: 'summary_large_image',
       title: event.title,
       description: enhancedDescription,
+      ...(ogImage && {
+        images: [ogImage],
+      }),
     },
   }
 }
@@ -130,8 +164,12 @@ async function EventPhotos({ slug }: { slug: string }) {
 
   if (photos.length > 0) {
     return (
-      <div className="mx-auto max-w-7xl">
-        <EventPhotoGallery photos={photos} variant="compact" />
+      <div className="mx-auto mt-6 max-w-7xl">
+        <EventPhotoGallery
+          photos={photos}
+          variant="compact"
+          showHeading={false}
+        />
       </div>
     )
   }

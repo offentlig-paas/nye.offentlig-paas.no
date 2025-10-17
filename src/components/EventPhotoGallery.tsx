@@ -6,11 +6,13 @@ import { urlForImage, type EventPhoto } from '@/lib/sanity/event-photos'
 interface EventPhotoGalleryProps {
   photos: EventPhoto[]
   variant?: 'hero' | 'compact' | 'full'
+  showHeading?: boolean
 }
 
 export function EventPhotoGallery({
   photos,
   variant = 'compact',
+  showHeading = true,
 }: EventPhotoGalleryProps) {
   if (!photos || photos.length === 0) {
     return null
@@ -18,38 +20,41 @@ export function EventPhotoGallery({
 
   if (variant === 'hero' && photos.length >= 4) {
     return (
-      <div className="mx-auto mt-6 max-w-7xl lg:grid lg:grid-cols-3 lg:gap-x-8 lg:gap-y-8">
+      <div className="mx-auto mt-6 grid max-w-7xl grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-8">
+        {/* First vertical image - left side on lg */}
         <Image
           alt={photos[0]?.caption || 'Event photo'}
           src={urlForImage(photos[0]!.image).width(1600).height(2400).url()}
           width={800}
           height={1200}
           unoptimized
-          className="row-span-2 aspect-[3/4] size-full rounded-lg object-cover max-lg:hidden"
+          className="aspect-[4/3] w-full rounded-lg object-cover sm:aspect-[3/2] lg:row-span-2 lg:aspect-[3/4] lg:h-full"
         />
+        {/* Two horizontal images - middle on lg, stacked */}
         <Image
           alt={photos[1]?.caption || 'Event photo'}
-          src={urlForImage(photos[1]!.image).width(1600).height(1200).url()}
+          src={urlForImage(photos[1]!.image).width(1600).height(900).url()}
           width={800}
-          height={600}
+          height={450}
           unoptimized
-          className="col-start-2 aspect-[3/2] size-full rounded-lg object-cover max-lg:hidden"
+          className="aspect-[4/3] w-full rounded-lg object-cover sm:aspect-[3/2] lg:col-start-2 lg:aspect-[16/9] lg:h-full"
         />
         <Image
           alt={photos[2]?.caption || 'Event photo'}
-          src={urlForImage(photos[2]!.image).width(1600).height(1200).url()}
+          src={urlForImage(photos[2]!.image).width(1600).height(900).url()}
           width={800}
-          height={600}
+          height={450}
           unoptimized
-          className="col-start-2 row-start-2 aspect-[3/2] size-full rounded-lg object-cover max-lg:hidden"
+          className="aspect-[4/3] w-full rounded-lg object-cover sm:aspect-[3/2] lg:col-start-2 lg:row-start-2 lg:aspect-[16/9] lg:h-full"
         />
+        {/* Second vertical image - right side on lg */}
         <Image
           alt={photos[3]?.caption || 'Event photo'}
           src={urlForImage(photos[3]!.image).width(1600).height(2400).url()}
           width={800}
           height={1200}
           unoptimized
-          className="row-span-2 aspect-[4/5] size-full object-cover sm:rounded-lg lg:aspect-[3/4]"
+          className="aspect-[4/3] w-full rounded-lg object-cover sm:col-span-2 sm:aspect-[3/2] md:col-span-1 md:aspect-[3/2] lg:row-span-2 lg:aspect-[3/4] lg:h-full"
         />
       </div>
     )
@@ -110,10 +115,12 @@ export function EventPhotoGallery({
 
   return (
     <div className="mb-12">
-      <h2 className="mb-6 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-        Bilder fra fagdagen
-      </h2>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      {showHeading && (
+        <h2 className="mb-6 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+          Bilder fra fagdagen
+        </h2>
+      )}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
         {displayPhotos.map(photo => (
           <div
             key={photo._id}
