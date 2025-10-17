@@ -158,20 +158,8 @@ export async function generateMetadata({
 async function EventPhotos({ slug }: { slug: string }) {
   const photos = await getEventPhotos(slug)
 
-  if (photos.length >= 4) {
-    return <EventPhotoGallery photos={photos} variant="hero" />
-  }
-
   if (photos.length > 0) {
-    return (
-      <div className="mx-auto mt-6 max-w-7xl">
-        <EventPhotoGallery
-          photos={photos}
-          variant="compact"
-          showHeading={false}
-        />
-      </div>
-    )
+    return <EventPhotoGallery photos={photos} variant="hero" />
   }
 
   return null
@@ -418,12 +406,10 @@ export default async function Fagdag({ params }: { params: Params }) {
 
               {/* Feedback & Reviews */}
               {!isAcceptingRegistrations(event) ? (
-                <div className="overflow-hidden rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-gray-400/5">
-                  <EventFeedbackSummaryWrapper
-                    eventSlug={slug}
-                    variant="reviews"
-                  />
-                </div>
+                <EventFeedbackSummaryWrapper
+                  eventSlug={slug}
+                  variant="reviews"
+                />
               ) : (
                 <EventFeedbackPrompt
                   event={event}

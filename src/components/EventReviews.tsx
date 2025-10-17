@@ -64,7 +64,7 @@ export function EventReviews({
   }
 
   return (
-    <div>
+    <div className="overflow-hidden rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-gray-400/5">
       <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
         Tilbakemeldinger
       </h2>

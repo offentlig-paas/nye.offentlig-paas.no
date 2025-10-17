@@ -4,6 +4,13 @@
 @config '../../typography.ts';
 @custom-variant dark (&:where(.dark, .dark *));
 
+@utility scrollbar-hide {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @theme {
   --text-xs: 0.8125rem;
   --text-xs--line-height: 1.5rem;
