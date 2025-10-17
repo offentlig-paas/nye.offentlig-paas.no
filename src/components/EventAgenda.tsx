@@ -1,7 +1,15 @@
+'use client'
+
 import React from 'react'
+import { useSession } from 'next-auth/react'
+import { usePathname } from 'next/navigation'
 import { BatchedServerAvatar } from './BatchedServerAvatar'
 import { Button } from './Button'
-import { CalendarIcon, LightBulbIcon } from '@heroicons/react/20/solid'
+import {
+  CalendarIcon,
+  LightBulbIcon,
+  LockClosedIcon,
+} from '@heroicons/react/20/solid'
 import {
   UsersIcon,
   PresentationChartLineIcon,
@@ -49,6 +57,9 @@ export function EventAgenda({
   eventSlug,
   slackUserData,
 }: EventAgendaProps) {
+  const { data: session } = useSession()
+  const pathname = usePathname()
+
   if (schedule.length === 0) {
     return (
       <div className="mt-8 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 px-6 py-12 text-center dark:border-gray-600 dark:bg-gray-800/50">
@@ -154,7 +165,32 @@ export function EventAgenda({
                       })}
                     </dt>
                     <dd className="ml-2">
-                      {item.speakers.map(s => s.name).join(', ')}
+                      {item.speakers.map((speaker, idx) => {
+                        const userId = speaker.url
+                          ? extractSlackUserId(speaker.url)
+                          : null
+                        const slackUrl = userId
+                          ? `https://offentlig-paas-no.slack.com/team/${userId}`
+                          : null
+
+                        return (
+                          <React.Fragment key={idx}>
+                            {idx > 0 && ', '}
+                            {slackUrl ? (
+                              <a
+                                href={slackUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 transition hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                              >
+                                {speaker.name}
+                              </a>
+                            ) : (
+                              speaker.name
+                            )}
+                          </React.Fragment>
+                        )
+                      })}
                     </dd>
                   </div>
                 )}
@@ -165,29 +201,54 @@ export function EventAgenda({
                   <h4 className="mb-2 text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400">
                     Ressurser
                   </h4>
-                  <ul className="space-y-1">
-                    {allAttachments.map((attachment, idx) => (
-                      <li key={idx}>
+                  {session ? (
+                    <ul className="space-y-1">
+                      {allAttachments.map((attachment, idx) => (
+                        <li key={idx}>
+                          <a
+                            href={attachment.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group inline-flex items-center gap-1.5 text-blue-600 transition hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                          >
+                            {React.createElement(
+                              getAttachmentIcon(attachment.type),
+                              {
+                                className: 'h-4 w-4',
+                                'aria-hidden': 'true',
+                              }
+                            )}
+                            <span className="text-sm">
+                              {attachment.title || 'Vedlegg'}
+                            </span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div className="rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 dark:border-gray-600 dark:bg-gray-800/50">
+                      <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                        <LockClosedIcon
+                          className="h-4 w-4"
+                          aria-hidden="true"
+                        />
+                        <span>
+                          {allAttachments.length === 1
+                            ? '1 ressurs tilgjengelig'
+                            : `${allAttachments.length} ressurser tilgjengelige`}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-xs text-gray-500 dark:text-gray-500">
                         <a
-                          href={attachment.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group inline-flex items-center gap-1.5 text-blue-600 transition hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                          href={`/auth/signin?callbackUrl=${encodeURIComponent(pathname)}`}
+                          className="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
                         >
-                          {React.createElement(
-                            getAttachmentIcon(attachment.type),
-                            {
-                              className: 'h-4 w-4',
-                              'aria-hidden': 'true',
-                            }
-                          )}
-                          <span className="text-sm">
-                            {attachment.title || 'Vedlegg'}
-                          </span>
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
+                          Logg inn
+                        </a>{' '}
+                        for å se vedlegg
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
