@@ -1,6 +1,7 @@
 import { router, createTRPCContext } from './trpc'
 import { eventRegistrationRouter } from './routers/eventRegistration'
 import { eventFeedbackRouter } from './routers/eventFeedback'
+import { eventRouter } from './routers/event'
 import { adminRouter } from './routers/admin'
 import { slackRouter } from './routers/slack'
 import { userRouter } from './routers/user'
@@ -8,6 +9,7 @@ import { photosRouter } from './routers/photos'
 import { headers } from 'next/headers'
 
 export const appRouter = router({
+  event: eventRouter,
   eventRegistration: eventRegistrationRouter,
   eventFeedback: eventFeedbackRouter,
   admin: adminRouter,

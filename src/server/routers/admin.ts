@@ -18,17 +18,10 @@ import { extractSlackIds } from '@/lib/slack/utils'
 import { USER_GROUPS, buildInvitationMessage } from '@/lib/slack/types'
 import { EventRegistrationRepository } from '@/domains/event-registration/repository'
 import type { SlackUser } from '@/lib/events/types'
-import {
-  sendBulkDirectMessages,
-  type MessagePayload,
-} from '@/lib/slack/messaging'
-import type { KnownBlock } from '@slack/web-api'
-import {
-  formatDateLong,
-  formatTimeRange,
-  formatDateShort,
-} from '@/lib/formatDate'
+import { sendBulkDirectMessages } from '@/lib/slack/messaging'
+import { formatDateShort } from '@/lib/formatDate'
 import { getEventParticipantInfo } from '@/lib/sanity/event-participant-info'
+import { enrichEventWithDynamicData } from './event'
 import {
   getAllEvents,
   getDetailedEventInfoFromSlug,
@@ -40,6 +33,13 @@ import {
   deleteEventPhoto,
   reorderEventPhotos,
 } from '@/lib/sanity/event-photos'
+import { shouldBlockMessaging } from '../lib/environment'
+import {
+  buildReminderMessage,
+  buildFeedbackRequestMessage,
+  filterRegistrationsByStatus,
+  extractUserIds,
+} from '../lib/slack-message-builder'
 
 const registrationRepository = new EventRegistrationRepository()
 
@@ -354,18 +354,11 @@ export const adminRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      if (process.env.NODE_ENV === 'development') {
-        const isDevelopmentUrl =
-          !process.env.NEXT_PUBLIC_URL ||
-          process.env.NEXT_PUBLIC_URL.includes('localhost') ||
-          process.env.NEXT_PUBLIC_URL.includes('127.0.0.1')
-
-        if (isDevelopmentUrl) {
-          throw new TRPCError({
-            code: 'FORBIDDEN',
-            message: 'Cannot send speaker nudges in development environment',
-          })
-        }
+      if (shouldBlockMessaging()) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Cannot send speaker nudges in development environment',
+        })
       }
 
       const { getAllEventAttachments } = await import(
@@ -525,19 +518,11 @@ Mvh ${organizerNames}`
       })
     )
     .mutation(async ({ input, ctx }) => {
-      if (process.env.NODE_ENV === 'development' && !input.testMode) {
-        const host =
-          process.env.NEXT_PUBLIC_URL?.replace(/^https?:\/\//, '') ||
-          'offentlig-paas.no'
-        const isDevelopmentUrl =
-          host.includes('localhost') || host.includes('127.0.0.1')
-
-        if (isDevelopmentUrl) {
-          throw new TRPCError({
-            code: 'FORBIDDEN',
-            message: 'Cannot send reminders in development environment',
-          })
-        }
+      if (shouldBlockMessaging(input.testMode)) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Cannot send reminders in development environment',
+        })
       }
 
       const participantInfo = await getEventParticipantInfo(input.slug)
@@ -545,99 +530,8 @@ Mvh ${organizerNames}`
         ...ctx.event,
         participantInfo: participantInfo || undefined,
       }
-      const protocol = 'https'
-      const host =
-        process.env.NEXT_PUBLIC_URL?.replace(/^https?:\/\//, '') ||
-        'offentlig-paas.no'
-      const eventUrl = `${protocol}://${host}/fagdag/${input.slug}`
 
-      const blocks: KnownBlock[] = [
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: input.message,
-          },
-        },
-        {
-          type: 'divider',
-        },
-        {
-          type: 'section',
-          fields: [
-            {
-              type: 'mrkdwn',
-              text: `*${event.title}*`,
-            },
-            {
-              type: 'mrkdwn',
-              text: `📅 ${formatDateLong(event.start)}`,
-            },
-            {
-              type: 'mrkdwn',
-              text: `🕒 ${formatTimeRange(event.start, event.end)}`,
-            },
-            {
-              type: 'mrkdwn',
-              text: `📍 ${event.location}`,
-            },
-          ],
-        },
-      ]
-
-      const profileUrl = `${protocol}://${host}/profil`
-
-      const actionButtons: Array<{
-        type: 'button'
-        text: { type: 'plain_text'; text: string; emoji: boolean }
-        url: string
-        action_id: string
-      }> = [
-        {
-          type: 'button',
-          text: {
-            type: 'plain_text',
-            text: '📝 Se program',
-            emoji: true,
-          },
-          url: eventUrl,
-          action_id: 'view_event',
-        },
-      ]
-
-      if (event.participantInfo?.streamingUrl) {
-        actionButtons.push({
-          type: 'button',
-          text: {
-            type: 'plain_text',
-            text: '🎥 Direktestrøm',
-            emoji: true,
-          },
-          url: event.participantInfo.streamingUrl,
-          action_id: 'join_stream',
-        })
-      }
-
-      actionButtons.push({
-        type: 'button',
-        text: {
-          type: 'plain_text',
-          text: '📋 Mine påmeldinger',
-          emoji: true,
-        },
-        url: profileUrl,
-        action_id: 'view_profile',
-      })
-
-      blocks.push({
-        type: 'actions',
-        elements: actionButtons,
-      })
-
-      const payload: MessagePayload = {
-        text: `${input.message} - ${event.title}`,
-        blocks,
-      }
+      const payload = buildReminderMessage(event, input.message, input.slug)
 
       let userIds: string[]
 
@@ -653,20 +547,12 @@ Mvh ${organizerNames}`
         const registrations =
           await eventRegistrationService.getEventRegistrations(input.slug)
 
-        let filteredRegistrations = registrations
-        if (input.statusFilter && input.statusFilter !== 'all') {
-          filteredRegistrations = registrations.filter(
-            r => r.status === input.statusFilter
-          )
-        } else {
-          filteredRegistrations = registrations.filter(r =>
-            ['confirmed', 'attended'].includes(r.status)
-          )
-        }
+        const filteredRegistrations = filterRegistrationsByStatus(
+          registrations,
+          input.statusFilter
+        )
 
-        userIds = filteredRegistrations
-          .map(r => r.slackUserId)
-          .filter((id): id is string => !!id)
+        userIds = extractUserIds(filteredRegistrations)
 
         if (userIds.length === 0) {
           throw new TRPCError({
@@ -703,73 +589,18 @@ Mvh ${organizerNames}`
       })
     )
     .mutation(async ({ input, ctx }) => {
-      if (process.env.NODE_ENV === 'development' && !input.testMode) {
-        const host =
-          process.env.NEXT_PUBLIC_URL?.replace(/^https?:\/\//, '') ||
-          'offentlig-paas.no'
-        const isDevelopmentUrl =
-          host.includes('localhost') || host.includes('127.0.0.1')
-
-        if (isDevelopmentUrl) {
-          throw new TRPCError({
-            code: 'FORBIDDEN',
-            message: 'Cannot send feedback requests in development environment',
-          })
-        }
+      if (shouldBlockMessaging(input.testMode)) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Cannot send feedback requests in development environment',
+        })
       }
 
-      const protocol = 'https'
-      const host =
-        process.env.NEXT_PUBLIC_URL?.replace(/^https?:\/\//, '') ||
-        'offentlig-paas.no'
-      const feedbackUrl = `${protocol}://${host}/fagdag/${input.slug}/tilbakemelding`
-
-      const blocks: KnownBlock[] = [
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: input.message,
-          },
-        },
-        {
-          type: 'divider',
-        },
-        {
-          type: 'section',
-          fields: [
-            {
-              type: 'mrkdwn',
-              text: `*${ctx.event.title}*`,
-            },
-            {
-              type: 'mrkdwn',
-              text: `📅 ${formatDateLong(ctx.event.start)}`,
-            },
-          ],
-        },
-        {
-          type: 'actions',
-          elements: [
-            {
-              type: 'button',
-              text: {
-                type: 'plain_text',
-                text: '📝 Gi tilbakemelding',
-                emoji: true,
-              },
-              url: feedbackUrl,
-              action_id: 'submit_feedback',
-              style: 'primary',
-            },
-          ],
-        },
-      ]
-
-      const payload: MessagePayload = {
-        text: `${input.message} - ${ctx.event.title}`,
-        blocks,
-      }
+      const payload = buildFeedbackRequestMessage(
+        ctx.event,
+        input.message,
+        input.slug
+      )
 
       let userIds: string[]
 
@@ -786,13 +617,12 @@ Mvh ${organizerNames}`
           await eventRegistrationService.getEventRegistrations(input.slug)
 
         // Only send to users who attended
-        const attendedRegistrations = registrations.filter(
-          r => r.status === 'attended'
+        const filteredRegistrations = filterRegistrationsByStatus(
+          registrations,
+          'attended'
         )
 
-        userIds = attendedRegistrations
-          .map(r => r.slackUserId)
-          .filter((id): id is string => !!id)
+        userIds = extractUserIds(filteredRegistrations)
 
         if (userIds.length === 0) {
           throw new TRPCError({
@@ -830,42 +660,67 @@ Mvh ${organizerNames}`
       }
 
       const allEvents = getAllEvents()
-      const registrationsByEvent =
-        await eventRegistrationService.getRegistrationsByEvent()
 
-      const eventsWithStats = allEvents.map(event => {
-        const eventRegistrations = registrationsByEvent[event.slug] || []
-        const registrations = Array.isArray(eventRegistrations)
-          ? eventRegistrations
-          : []
+      // Use enrichEventWithDynamicData for each event
+      const enrichedEvents = await Promise.all(
+        allEvents.map(async event => {
+          try {
+            return await enrichEventWithDynamicData(event.slug)
+          } catch (error) {
+            console.error(`Failed to enrich event ${event.slug}:`, error)
+            // Return minimal data on error
+            return {
+              ...event,
+              dynamicStats: {
+                registrations: {
+                  total: event.stats?.registrations || 0,
+                  confirmed: 0,
+                  attended: 0,
+                  cancelled: 0,
+                  pending: 0,
+                  waitlist: 0,
+                  organizations: event.stats?.organisations || 0,
+                  physicalCount: 0,
+                  digitalCount: 0,
+                  socialEventCount: 0,
+                  participants: event.stats?.participants || 0,
+                },
+                feedback: {
+                  averageRating: event.stats?.feedback?.averageRating || 0,
+                  totalResponses: event.stats?.feedback?.respondents || 0,
+                  hasLegacyData: !!event.stats,
+                  historicalComments: event.stats?.feedback?.comments || [],
+                  historicalFeedbackUrl: event.stats?.feedback?.url,
+                },
+              },
+            }
+          }
+        })
+      )
 
-        const totalRegistrations = registrations.length
-        const uniqueOrganisations = new Set(
-          registrations.map(r => r.organisation)
-        ).size
-
+      const eventsWithStats = enrichedEvents.map(event => {
         const organizerCount = event.organizers?.length || 0
         const scheduleItemCount = event.schedule?.length || 0
         const hasRecording = !!event.recordingUrl
         const hasCallForPapers = !!event.callForPapersUrl
-        const feedbackRating = event.stats?.feedback?.averageRating
-        const feedbackRespondents = event.stats?.feedback?.respondents || 0
 
         return {
           slug: event.slug,
           title: event.title,
           date: formatDateShort(event.start),
+          startDate: event.start.toISOString(),
           location: event.location,
           audience: event.audience,
-          totalRegistrations,
-          uniqueOrganisations,
+          totalRegistrations: event.dynamicStats.registrations.total,
+          uniqueOrganisations: event.dynamicStats.registrations.organizations,
           organizerCount,
           scheduleItemCount,
           hasRecording,
           hasCallForPapers,
-          feedbackRating,
-          feedbackRespondents,
+          feedbackRating: event.dynamicStats.feedback.averageRating,
+          feedbackRespondents: event.dynamicStats.feedback.totalResponses,
           price: event.price,
+          // Keep legacy stats for backward compatibility if needed
           statsRegistrations: event.stats?.registrations,
           statsParticipants: event.stats?.participants,
           statsOrganisations: event.stats?.organisations,
@@ -873,20 +728,17 @@ Mvh ${organizerNames}`
       })
 
       const events = eventsWithStats.sort((a, b) => {
-        const aEvent = allEvents.find(e => e.slug === a.slug)
-        const bEvent = allEvents.find(e => e.slug === b.slug)
-        return (bEvent?.start.getTime() || 0) - (aEvent?.start.getTime() || 0)
+        return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
       })
 
       const totalRegistrations = events.reduce(
         (sum, e) => sum + e.totalRegistrations,
         0
       )
-      const uniqueOrganisations = new Set(
-        events.flatMap(e =>
-          (registrationsByEvent[e.slug] || []).map(r => r.organisation)
-        )
-      ).size
+      const uniqueOrganisations = events.reduce(
+        (sum, e) => sum + e.uniqueOrganisations,
+        0
+      )
 
       return {
         events,
@@ -901,6 +753,9 @@ Mvh ${organizerNames}`
     getDetails: adminEventProcedure
       .input(z.object({ slug: z.string() }))
       .query(async ({ input, ctx }) => {
+        // Use enrichEventWithDynamicData for consistency
+        const enrichedEvent = await enrichEventWithDynamicData(input.slug)
+
         const registrations =
           await eventRegistrationService.getEventRegistrations(input.slug)
         const eventInfo = getDetailedEventInfoFromSlug(input.slug)
@@ -910,19 +765,8 @@ Mvh ${organizerNames}`
           eventRegistrations.map(r => r.organisation)
         ).size
 
-        const statusStats =
-          eventRegistrations.length > 0
-            ? await eventRegistrationService.getEventRegistrationStats(
-                input.slug
-              )
-            : { confirmed: 0, attended: 0, cancelled: 0, pending: 0 }
-
         const channelName = generateChannelName(new Date(ctx.event.start))
         const slackChannel = await findChannelByName(channelName)
-
-        const feedbackSummary = await eventFeedbackService.getFeedbackSummary(
-          input.slug
-        )
 
         return {
           title: eventInfo.title,
@@ -958,11 +802,20 @@ Mvh ${organizerNames}`
           stats: {
             totalRegistrations: eventRegistrations.length,
             uniqueOrganisations,
-            statusBreakdown: statusStats,
-            activeRegistrations: statusStats.confirmed + statusStats.attended,
+            statusBreakdown: {
+              confirmed: enrichedEvent.dynamicStats.registrations.confirmed,
+              attended: enrichedEvent.dynamicStats.registrations.attended,
+              cancelled: enrichedEvent.dynamicStats.registrations.cancelled,
+              pending: enrichedEvent.dynamicStats.registrations.pending,
+            },
+            activeRegistrations:
+              enrichedEvent.dynamicStats.registrations.confirmed +
+              enrichedEvent.dynamicStats.registrations.attended,
             feedbackSummary: {
-              averageEventRating: feedbackSummary.averageEventRating,
-              totalResponses: feedbackSummary.totalResponses,
+              averageEventRating:
+                enrichedEvent.dynamicStats.feedback.averageRating,
+              totalResponses:
+                enrichedEvent.dynamicStats.feedback.totalResponses,
             },
           },
         }

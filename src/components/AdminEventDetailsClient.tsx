@@ -1,327 +1,311 @@
 'use client'
 
-import { useState, useMemo, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
+import { useTransition } from 'react'
+import Link from 'next/link'
 import { useToast } from '@/components/ToastProvider'
 import { generateRegistrationsCSV, downloadCSV } from '@/lib/csv-utils'
-import { AdminRegistrationList } from '@/components/AdminRegistrationList'
-import { SendReminderModal } from '@/components/SendReminderModal'
-import { SendFeedbackRequestModal } from '@/components/SendFeedbackRequestModal'
-import { SpeakerMatcher } from '@/components/SpeakerMatcher'
-import { AdminEventStats } from '@/components/AdminEventStats'
-import { AdminEventActionBar } from '@/components/AdminEventActionBar'
-import { AdminRegistrationFilters } from '@/components/AdminRegistrationFilters'
-import { AdminEventDetailsSidebar } from '@/components/AdminEventDetailsSidebar'
 import { AdminSlackChannelManager } from '@/components/AdminSlackChannelManager'
-import { AdminTalkAttachmentsWithRatings } from '@/components/AdminTalkAttachmentsWithRatings'
-import { EventFeedbackSummaryWrapper } from '@/components/EventFeedbackSummaryWrapper'
 import { ParticipantInfoEditor } from '@/components/ParticipantInfoEditor'
+import { AdminEventChecklist } from '@/components/AdminEventChecklist'
+import { AdminEventActions } from '@/components/AdminEventActions'
+import { AdminEventStatCard } from '@/components/AdminEventStatCard'
+import { Avatar } from '@/components/Avatar'
+import { AddToSlackChannelButton } from '@/components/AddToSlackChannelButton'
+import { formatDateTime } from '@/lib/formatDate'
+import { getUniqueSpeakers, getTalksCount } from '@/lib/events/helpers'
 import {
-  deleteRegistration,
-  updateRegistrationStatus,
-  bulkUpdateRegistrationStatus,
-} from '@/app/admin/events/[slug]/actions'
-import { VideoCameraIcon } from '@heroicons/react/24/outline'
-import type { RegistrationStatus } from '@/domains/event-registration/types'
-import type { EventParticipantInfo, SlackUser } from '@/lib/events/types'
-import type { inferRouterOutputs } from '@trpc/server'
-import type { AppRouter } from '@/server/root'
-
-type RouterOutput = inferRouterOutputs<AppRouter>
-type EventDetails = RouterOutput['admin']['events']['getDetails']
+  StarIcon,
+  UsersIcon,
+  BuildingOfficeIcon,
+  UserGroupIcon,
+  PresentationChartLineIcon,
+} from '@heroicons/react/24/outline'
+import { getEventState } from '@/lib/events/state-machine'
+import { useAdminEvent } from '@/contexts/AdminEventContext'
+import type { EventParticipantInfo } from '@/lib/events/types'
+import React from 'react'
 
 interface AdminEventDetailsClientProps {
-  slug: string
-  initialEventDetails: EventDetails
   initialParticipantInfo: EventParticipantInfo
-  speakersWithoutUrls: SlackUser[]
 }
 
 export function AdminEventDetailsClient({
-  slug,
-  initialEventDetails,
   initialParticipantInfo,
-  speakersWithoutUrls: initialSpeakersWithoutUrls,
 }: AdminEventDetailsClientProps) {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState<RegistrationStatus | 'all'>(
-    'all'
-  )
-  const [attendanceFilter, setAttendanceFilter] = useState<string>('all')
-  const [socialEventFilter, setSocialEventFilter] = useState<string>('all')
-  const [selectedRegistrations, setSelectedRegistrations] = useState<string[]>(
-    []
-  )
-  const [isDeleting, setIsDeleting] = useState<string | null>(null)
-  const [isUpdatingStatus, setIsUpdatingStatus] = useState<string | null>(null)
-  const [isReminderModalOpen, setIsReminderModalOpen] = useState(false)
-  const [isFeedbackRequestModalOpen, setIsFeedbackRequestModalOpen] =
-    useState(false)
+  const { slug, eventDetails, photosCount } = useAdminEvent()
   const { showSuccess, showError } = useToast()
   const router = useRouter()
-  const [_isPending, startTransition] = useTransition()
+  const [, startTransition] = useTransition()
 
-  // Use only the initial data - no redundant fetching
-  const eventDetails = initialEventDetails
   const participantInfoData = initialParticipantInfo
-  const speakersWithoutUrls = initialSpeakersWithoutUrls
 
-  // Callback to refresh data after mutations
   const handleRefresh = () => {
     startTransition(() => {
       router.refresh()
     })
   }
 
-  const handleDeleteRegistration = async (registrationId: string) => {
-    if (!confirm('Er du sikker på at du vil slette denne påmeldingen?')) {
-      return
-    }
-
-    setIsDeleting(registrationId)
-    try {
-      await deleteRegistration(slug, registrationId)
-
-      showSuccess('Slettet', 'Påmeldingen ble slettet')
-      startTransition(() => {
-        router.refresh()
-      })
-    } catch (error) {
-      console.error('Error deleting registration:', error)
-      showError('Feil', 'Noe gikk galt ved sletting')
-    } finally {
-      setIsDeleting(null)
-    }
-  }
-
-  const handleStatusUpdate = async (
-    registrationId: string,
-    newStatus: RegistrationStatus
-  ) => {
-    setIsUpdatingStatus(registrationId)
-    try {
-      await updateRegistrationStatus(slug, registrationId, newStatus)
-
-      showSuccess('Oppdatert', 'Status ble oppdatert')
-      startTransition(() => {
-        router.refresh()
-      })
-    } catch (error) {
-      console.error('Error updating status:', error)
-      showError('Feil', 'Noe gikk galt ved oppdatering av status')
-    } finally {
-      setIsUpdatingStatus(null)
-    }
-  }
-
-  const handleBulkStatusUpdate = async (status: RegistrationStatus) => {
-    if (selectedRegistrations.length === 0) {
-      showError('Feil', 'Velg minst én påmelding')
-      return
-    }
-
-    if (
-      !confirm(
-        `Er du sikker på at du vil oppdatere status til "${status}" for ${selectedRegistrations.length} påmeldinger?`
-      )
-    ) {
-      return
-    }
-
-    try {
-      const result = await bulkUpdateRegistrationStatus(
-        slug,
-        selectedRegistrations,
-        status
-      )
-
-      showSuccess('Oppdatert', result.message)
-      setSelectedRegistrations([])
-      startTransition(() => {
-        router.refresh()
-      })
-    } catch (error) {
-      console.error('Error bulk updating status:', error)
-      showError('Feil', 'Noe gikk galt ved bulk-oppdatering')
-    }
-  }
-
   const handleExportCSV = () => {
-    if (!eventDetails) return
-
-    const csvContent = generateRegistrationsCSV(filteredRegistrations)
+    const csvContent = generateRegistrationsCSV(eventDetails.registrations)
     downloadCSV(csvContent, `${slug}-paemeldinger.csv`)
   }
 
-  const filteredRegistrations = useMemo(
-    () =>
-      eventDetails?.registrations.filter(
-        (
-          registration
-        ): registration is typeof registration & { _id: string } => {
-          if (!registration._id) return false
+  const talksCount = getTalksCount(eventDetails.schedule)
+  const speakers = getUniqueSpeakers(eventDetails.schedule || [])
 
-          const matchesSearch =
-            registration.name
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase()) ||
-            registration.email
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase()) ||
-            registration.organisation
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase())
+  const state = getEventState(eventDetails.startTime)
+  const isPostEvent = state === 'POST_EVENT'
 
-          const matchesStatus =
-            statusFilter === 'all' || registration.status === statusFilter
-
-          const matchesAttendance =
-            attendanceFilter === 'all' ||
-            registration.attendanceType === attendanceFilter
-
-          const matchesSocialEvent =
-            socialEventFilter === 'all' ||
-            (socialEventFilter === 'yes' &&
-              registration.attendingSocialEvent) ||
-            (socialEventFilter === 'no' && !registration.attendingSocialEvent)
-
-          return (
-            matchesSearch &&
-            matchesStatus &&
-            matchesAttendance &&
-            matchesSocialEvent
-          )
-        }
-      ) || [],
-    [
-      eventDetails?.registrations,
-      searchTerm,
-      statusFilter,
-      attendanceFilter,
-      socialEventFilter,
-    ]
-  )
+  // Calculate attendance type breakdown
+  const socialCount = eventDetails.registrations.filter(
+    r => r.attendingSocialEvent && r.status !== 'cancelled'
+  ).length
 
   if (!eventDetails) {
     return null
   }
 
-  const eventDate = new Date(eventDetails.startTime)
-  const now = new Date()
-  const isPreEvent = eventDate > now
-
   return (
-    <div className="space-y-8">
-      {/* Event Stats */}
-      <AdminEventStats eventDetails={eventDetails} />
-
-      {/* Recording Link */}
-      {eventDetails.recordingUrl && (
-        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800/50 dark:bg-blue-900/10">
-          <div className="flex items-center">
-            <VideoCameraIcon className="mr-3 h-5 w-5 text-blue-600 dark:text-blue-400" />
-            <div className="flex-1">
-              <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                Opptak tilgjengelig
-              </p>
-              <a
-                href={eventDetails.recordingUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
-              >
-                {eventDetails.recordingUrl}
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        {/* Left Column: Registration List (2/3 width) */}
-        <div className="space-y-6 lg:col-span-2">
-          {/* Action Bar */}
-          <AdminEventActionBar
-            mode={
-              selectedRegistrations.length > 0
-                ? 'bulk'
-                : isPreEvent
-                  ? 'pre-event'
-                  : 'post-event'
-            }
-            selectedCount={selectedRegistrations.length}
-            activeRegistrations={eventDetails.stats.activeRegistrations}
-            attendedCount={eventDetails.stats.statusBreakdown.attended || 0}
-            feedbackPageUrl={`/fagdag/${slug}/tilbakemeldinger`}
-            onSendReminder={() => setIsReminderModalOpen(true)}
-            onSendFeedbackRequest={() => setIsFeedbackRequestModalOpen(true)}
-            onExport={handleExportCSV}
-            onBulkStatusUpdate={handleBulkStatusUpdate}
-          />
-
-          {/* Filters */}
-          <AdminRegistrationFilters
-            searchTerm={searchTerm}
-            statusFilter={statusFilter}
-            attendanceFilter={attendanceFilter}
-            socialEventFilter={socialEventFilter}
-            onSearchChange={setSearchTerm}
-            onStatusChange={setStatusFilter}
-            onAttendanceChange={setAttendanceFilter}
-            onSocialEventChange={setSocialEventFilter}
-          />
-
-          {/* Registration List */}
-          <AdminRegistrationList
-            registrations={filteredRegistrations}
-            selectedRegistrations={selectedRegistrations}
-            onSelectAll={checked => {
-              if (checked) {
-                setSelectedRegistrations(
-                  filteredRegistrations
-                    .map(r => r._id)
-                    .filter((id): id is string => id !== undefined)
-                )
-              } else {
-                setSelectedRegistrations([])
-              }
-            }}
-            onSelectOne={(id, checked) => {
-              if (checked) {
-                setSelectedRegistrations([...selectedRegistrations, id])
-              } else {
-                setSelectedRegistrations(
-                  selectedRegistrations.filter(regId => regId !== id)
-                )
-              }
-            }}
-            onStatusChange={handleStatusUpdate}
-            onDelete={handleDeleteRegistration}
-            isUpdatingStatus={isUpdatingStatus}
-            isDeleting={isDeleting}
-            searchTerm={searchTerm}
-          />
-        </div>
-
-        {/* Right Column: Event Details Sidebar (1/3 width) */}
-        <div className="space-y-6">
-          {/* Event Details Sidebar */}
-          <AdminEventDetailsSidebar
+    <div className="space-y-4">
+      {/* Top Section: Checklist and Stats */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        {/* Checklist - 2/3 width */}
+        <div className="lg:col-span-2">
+          <AdminEventChecklist
             eventDetails={eventDetails}
             eventSlug={slug}
-            slackChannelName={eventDetails.slackChannel?.name}
-            onUpdate={handleRefresh}
-            showError={showError}
-            showSuccess={showSuccess}
+            participantInfo={participantInfoData}
+            photosCount={photosCount}
           />
+        </div>
 
-          {/* Participant Info Editor */}
+        {/* Stats Grid - 1/3 width */}
+        <div className="grid h-full auto-rows-fr grid-cols-2 gap-4">
+          <AdminEventStatCard
+            label="Påmeldte"
+            value={eventDetails.stats.activeRegistrations}
+            icon={UsersIcon}
+            color="blue"
+          />
+          <AdminEventStatCard
+            label="Organisasjoner"
+            value={eventDetails.stats.uniqueOrganisations}
+            icon={BuildingOfficeIcon}
+            color="purple"
+          />
+          <AdminEventStatCard
+            label="Foredrag"
+            value={talksCount}
+            icon={PresentationChartLineIcon}
+            color="green"
+          />
+          {isPostEvent && eventDetails.stats.feedbackSummary ? (
+            <AdminEventStatCard
+              label={`${eventDetails.stats.feedbackSummary.totalResponses} svar`}
+              value={eventDetails.stats.feedbackSummary.averageEventRating.toFixed(
+                1
+              )}
+              icon={StarIcon}
+              color="yellow"
+            />
+          ) : (
+            <AdminEventStatCard
+              label="Foredragsholdere"
+              value={speakers.length}
+              icon={UserGroupIcon}
+              color="purple"
+            />
+          )}
+          {isPostEvent && (
+            <AdminEventStatCard
+              label="Sosialt"
+              value={socialCount}
+              icon={UserGroupIcon}
+              color="orange"
+            />
+          )}
+        </div>
+      </div>
+
+      {/* Management Section - 3 Equal Columns */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        {/* Column 1: Arrangement & Participant Info */}
+        <div className="space-y-4">
+          {/* Basic Event Info */}
+          <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+            <h3 className="mb-3 text-base font-semibold text-gray-900 dark:text-white">
+              Arrangement
+            </h3>
+            <div className="space-y-2">
+              <div>
+                <dt className="text-xs text-gray-500 dark:text-gray-400">
+                  Tid
+                </dt>
+                <dd className="text-sm text-gray-900 dark:text-white">
+                  {formatDateTime(eventDetails.startTime)}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-gray-500 dark:text-gray-400">
+                  Sted
+                </dt>
+                <dd className="text-sm text-gray-900 dark:text-white">
+                  {eventDetails.location}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-gray-500 dark:text-gray-400">
+                  Påmelding
+                </dt>
+                <dd className="flex flex-wrap gap-1">
+                  <span
+                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+                      !eventDetails.registration.disabled
+                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                        : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                    }`}
+                  >
+                    {!eventDetails.registration.disabled ? 'Åpen' : 'Stengt'}
+                  </span>
+                </dd>
+              </div>
+            </div>
+          </div>
+
+          {/* Participant Info */}
           <ParticipantInfoEditor
             slug={slug}
             initialData={participantInfoData}
             showSuccess={showSuccess}
             showError={showError}
+          />
+        </div>
+
+        {/* Column 2: Organizers & Speakers */}
+        <div className="space-y-4">
+          {/* Organizers */}
+          {eventDetails.organizers.length > 0 && (
+            <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+              <div className="mb-3 flex items-center justify-between">
+                <h3 className="text-base font-semibold text-gray-900 dark:text-white">
+                  Arrangører
+                </h3>
+                {eventDetails.slackChannel && (
+                  <AddToSlackChannelButton
+                    eventSlug={slug}
+                    userGroup="organizers"
+                    count={eventDetails.organizers.length}
+                    channelName={eventDetails.slackChannel.name}
+                    onUpdate={handleRefresh}
+                    showError={showError}
+                    showSuccess={showSuccess}
+                  />
+                )}
+              </div>
+              <div className="space-y-2">
+                {eventDetails.organizers.map((organizer, index) => (
+                  <div key={index} className="flex items-center space-x-2">
+                    <Avatar
+                      name={organizer.name}
+                      slackUrl={organizer.url}
+                      size="xs"
+                    />
+                    <div className="min-w-0 flex-1 text-sm">
+                      {organizer.url ? (
+                        <a
+                          href={organizer.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                        >
+                          {organizer.name}
+                        </a>
+                      ) : (
+                        <span className="font-medium text-gray-900 dark:text-white">
+                          {organizer.name}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Speakers */}
+          <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+            <div className="mb-3 flex items-center justify-between">
+              <h3 className="text-base font-semibold text-gray-900 dark:text-white">
+                Foredragsholdere
+              </h3>
+              {eventDetails.slackChannel &&
+                speakers.filter(s => s.url).length > 0 && (
+                  <AddToSlackChannelButton
+                    eventSlug={slug}
+                    userGroup="speakers"
+                    count={speakers.filter(s => s.url).length}
+                    channelName={eventDetails.slackChannel.name}
+                    onUpdate={handleRefresh}
+                    showError={showError}
+                    showSuccess={showSuccess}
+                  />
+                )}
+            </div>
+            {speakers.filter(s => s.url).length > 0 ? (
+              <div className="space-y-2">
+                {speakers
+                  .filter(s => s.url)
+                  .map((speaker, index) => (
+                    <div key={index} className="flex items-center space-x-2">
+                      <Avatar
+                        name={speaker.name}
+                        slackUrl={speaker.url}
+                        size="xs"
+                      />
+                      <div className="min-w-0 flex-1 text-sm">
+                        <a
+                          href={speaker.url!}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                        >
+                          {speaker.name}
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            ) : (
+              <div className="rounded-lg bg-gray-50 p-3 dark:bg-gray-900/50">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Ingen foredragsholdere lagt til ennå. Gå til{' '}
+                  <Link
+                    href={`/admin/events/${slug}/agenda`}
+                    className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                  >
+                    Program
+                  </Link>{' '}
+                  for å legge til foredragsholdere.
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Column 3: Actions & Slack */}
+        <div className="space-y-4">
+          {/* Quick Actions */}
+          <AdminEventActions
+            eventSlug={slug}
+            eventTitle={eventDetails.title}
+            eventDate={eventDetails.date}
+            eventStartTime={eventDetails.startTime}
+            activeRegistrations={eventDetails.stats.activeRegistrations}
+            attendedCount={eventDetails.stats.statusBreakdown.attended || 0}
+            onExport={handleExportCSV}
+            onSuccess={message => showSuccess('Sendt', message)}
+            onError={message => showError('Feil', message)}
           />
 
           {/* Slack Channel Manager */}
@@ -348,72 +332,8 @@ export function AdminEventDetailsClient({
               showSuccess={showSuccess}
             />
           )}
-
-          {/* Feedback Summary */}
-          {!isPreEvent && <EventFeedbackSummaryWrapper eventSlug={slug} />}
-
-          {/* Presentations and Attachments */}
-          {eventDetails.schedule && eventDetails.schedule.length > 0 && (
-            <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-              <div className="border-b border-gray-200 px-6 py-3 dark:border-gray-700">
-                <h3 className="text-base font-semibold text-gray-900 dark:text-white">
-                  Presentasjoner og vedlegg
-                </h3>
-              </div>
-              <div className="p-6">
-                <AdminTalkAttachmentsWithRatings
-                  eventSlug={slug}
-                  schedule={eventDetails.schedule}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Speaker Matcher */}
-          {speakersWithoutUrls.length > 0 && (
-            <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-              <div className="border-b border-gray-200 px-6 py-3 dark:border-gray-700">
-                <h3 className="text-base font-semibold text-gray-900 dark:text-white">
-                  Koble foredragsholdere
-                </h3>
-              </div>
-              <div className="p-3">
-                <SpeakerMatcher
-                  eventSlug={slug}
-                  speakers={speakersWithoutUrls}
-                />
-              </div>
-            </div>
-          )}
         </div>
       </div>
-
-      {/* Modals */}
-      <SendReminderModal
-        isOpen={isReminderModalOpen}
-        onClose={() => setIsReminderModalOpen(false)}
-        eventSlug={slug}
-        eventTitle={eventDetails.title}
-        eventDate={eventDetails.date}
-        onSuccess={message => {
-          showSuccess('Sendt', message)
-          setIsReminderModalOpen(false)
-        }}
-        onError={message => showError('Feil', message)}
-      />
-
-      <SendFeedbackRequestModal
-        isOpen={isFeedbackRequestModalOpen}
-        onClose={() => setIsFeedbackRequestModalOpen(false)}
-        eventSlug={slug}
-        eventTitle={eventDetails.title}
-        eventDate={eventDetails.date}
-        onSuccess={message => {
-          showSuccess('Sendt', message)
-          setIsFeedbackRequestModalOpen(false)
-        }}
-        onError={message => showError('Feil', message)}
-      />
     </div>
   )
 }

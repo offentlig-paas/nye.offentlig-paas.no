@@ -126,7 +126,7 @@ export function AdminSlackChannelManager({
   }
 
   return (
-    <div className="rounded-lg border border-purple-200 bg-purple-50 p-4 dark:border-purple-800 dark:bg-purple-900/20">
+    <div className="rounded-lg border border-purple-200 bg-purple-50 p-4 shadow-sm dark:border-purple-800 dark:bg-purple-900/20">
       <div className="mb-3 flex items-center">
         <ChatBubbleLeftRightIcon className="mr-2 h-5 w-5 text-purple-600 dark:text-purple-400" />
         <h3 className="text-sm font-semibold text-purple-900 dark:text-purple-100">

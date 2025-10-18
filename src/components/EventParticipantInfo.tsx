@@ -11,12 +11,14 @@ interface EventParticipantInfoProps {
 }
 
 export function EventParticipantInfo({
-  event,
+  event: propsEvent,
 }: EventParticipantInfoProps = {}) {
-  const { participantInfo, isCheckingStatus } = useEventRegistration()
+  const { event: eventData, isLoading: isCheckingStatus } =
+    useEventRegistration()
+  const participantInfo = eventData?.participantInfo
 
   // Don't show streaming info for past events
-  if (event && getStatus(event) === Status.Past) {
+  if (propsEvent && getStatus(propsEvent) === Status.Past) {
     return null
   }
 

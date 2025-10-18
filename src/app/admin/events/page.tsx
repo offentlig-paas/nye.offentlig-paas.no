@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { auth } from '@/auth'
-import { SimpleLayout } from '@/components/SimpleLayout'
+import { AdminLayout } from '@/components/AdminLayout'
 import { AdminEventsClient } from '@/components/AdminEventsClient'
 import { createCaller } from '@/server/root'
 
@@ -19,7 +19,7 @@ export default async function AdminEventsPage() {
   const eventsData = await caller.admin.events.list()
 
   return (
-    <SimpleLayout
+    <AdminLayout
       title="Admin - Fagdager"
       intro="Oversikt over alle fagdager og påmeldinger."
       backButton={{
@@ -28,6 +28,6 @@ export default async function AdminEventsPage() {
       }}
     >
       <AdminEventsClient eventsData={eventsData} />
-    </SimpleLayout>
+    </AdminLayout>
   )
 }

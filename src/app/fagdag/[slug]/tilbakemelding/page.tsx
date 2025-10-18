@@ -42,12 +42,10 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
 
   const caller = await createCaller()
 
-  // Fetch registration status
-  const registrationData = await caller.eventRegistration.getRegistrationStatus(
-    { slug }
-  )
+  // Fetch enriched event data (replaces deprecated getRegistrationStatus)
+  const enrichedEvent = await caller.event.getBySlug({ slug })
 
-  const registration = registrationData.registration
+  const registration = enrichedEvent.userRegistration
 
   // Redirect if user didn't attend
   if (!registration || registration.status !== 'attended') {

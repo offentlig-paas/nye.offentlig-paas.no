@@ -1,7 +1,12 @@
 import { events } from '@/data/events'
-import type { Event, SlackUser } from '@/lib/events/types'
+import type { Event, SlackUser, EventDynamicStats } from '@/lib/events/types'
 import { Status, AttachmentType, ItemType } from '@/lib/events/types'
 import { formatDateShort, formatDateTime } from '@/lib/formatDate'
+import type {
+  EventRegistration,
+  RegistrationStatus,
+} from '@/domains/event-registration/types'
+import type { EventFeedbackSummary } from '@/domains/event-feedback/types'
 // Note: DocumentChartBarIcon is used for slides instead of PresentationChartLineIcon for visual consistency across the application.
 import {
   DocumentTextIcon,
@@ -22,6 +27,19 @@ export function isTalkType(
   type: ItemType
 ): type is (typeof TALK_TYPES)[number] {
   return TALK_TYPES.includes(type as (typeof TALK_TYPES)[number])
+}
+
+/**
+ * Count talks (presentations, panels, workshops) in event schedule
+ * @param schedule Event schedule items
+ * @returns Number of talk-type items
+ */
+export function getTalksCount(
+  schedule?: Array<{ type: string | ItemType }>
+): number {
+  if (!schedule) return 0
+
+  return schedule.filter(item => isTalkType(item.type as ItemType)).length
 }
 
 export function getStatus(event: Event) {
@@ -265,5 +283,143 @@ export function getAttachmentIcon(type: AttachmentType) {
       return LinkIcon
     default:
       return PaperClipIcon
+  }
+}
+
+/**
+ * Compute registration statistics from registrations array (pure function, no DB queries)
+ * @param registrations Array of event registrations
+ * @returns Registration stats by status
+ */
+export function computeStatsFromRegistrations(
+  registrations: EventRegistration[]
+): Record<RegistrationStatus, number> {
+  const stats: Record<RegistrationStatus, number> = {
+    confirmed: 0,
+    waitlist: 0,
+    cancelled: 0,
+    attended: 0,
+    'no-show': 0,
+  }
+
+  registrations.forEach(reg => {
+    if (reg.status in stats) {
+      stats[reg.status]++
+    }
+  })
+
+  return stats
+}
+
+/**
+ * Compute registration counts by category from registrations array (pure function, no DB queries)
+ * @param registrations Array of event registrations
+ * @returns Counts by category (total, persons, organizations, etc.)
+ */
+export function computeCountsFromRegistrations(
+  registrations: EventRegistration[]
+): {
+  totalActive: number
+  persons: number
+  organizations: number
+  uniqueOrganizations: number
+  physicalCount: number
+  digitalCount: number
+  socialEventCount: number
+} {
+  const activeRegs = registrations.filter(
+    r => r.status === 'confirmed' || r.status === 'attended'
+  )
+
+  const organizations = new Set(
+    activeRegs.map(r => r.organisation.trim()).filter(org => org.length > 0)
+  )
+
+  const physicalCount = activeRegs.filter(
+    r => r.attendanceType === 'physical'
+  ).length
+
+  const digitalCount = activeRegs.filter(
+    r => r.attendanceType === 'digital'
+  ).length
+
+  const socialEventCount = activeRegs.filter(
+    r => r.attendingSocialEvent === true
+  ).length
+
+  return {
+    totalActive: activeRegs.length,
+    persons: activeRegs.length,
+    organizations: organizations.size,
+    uniqueOrganizations: organizations.size,
+    physicalCount,
+    digitalCount,
+    socialEventCount,
+  }
+}
+
+/**
+ * Resolve event statistics from dynamic data and legacy fallback
+ * Uses dynamic data when available (takes precedence), falls back to event.stats for legacy events
+ * Merges legacy feedback comments as separate field
+ * @param event Event with optional legacy stats
+ * @param registrations Dynamic registrations from Sanity
+ * @param feedbackSummary Dynamic feedback summary from Sanity
+ * @returns Unified EventDynamicStats
+ */
+export function resolveEventStats(
+  event: Event,
+  registrations: EventRegistration[],
+  feedbackSummary: EventFeedbackSummary
+): EventDynamicStats {
+  const hasLegacyStats = !!event.stats
+  // const hasDynamicData = registrations.length > 0 || feedbackSummary.totalResponses > 0
+
+  // Compute stats from registrations
+  const registrationStats = computeStatsFromRegistrations(registrations)
+  const counts = computeCountsFromRegistrations(registrations)
+
+  // Determine if we should use legacy data (only if no dynamic data exists)
+  const useLegacyRegistrations = hasLegacyStats && registrations.length === 0
+  const useLegacyFeedback =
+    hasLegacyStats &&
+    event.stats!.feedback &&
+    feedbackSummary.totalResponses === 0
+
+  return {
+    registrations: {
+      total: useLegacyRegistrations
+        ? event.stats!.registrations
+        : registrations.length,
+      confirmed: useLegacyRegistrations ? 0 : registrationStats.confirmed,
+      attended: useLegacyRegistrations ? 0 : registrationStats.attended,
+      cancelled: useLegacyRegistrations ? 0 : registrationStats.cancelled,
+      pending: 0,
+      waitlist: useLegacyRegistrations ? 0 : registrationStats.waitlist,
+      organizations: useLegacyRegistrations
+        ? event.stats!.organisations
+        : counts.uniqueOrganizations,
+      participants: useLegacyRegistrations
+        ? event.stats!.participants
+        : counts.persons,
+      physicalCount: useLegacyRegistrations ? 0 : counts.physicalCount,
+      digitalCount: useLegacyRegistrations ? 0 : counts.digitalCount,
+      socialEventCount: useLegacyRegistrations ? 0 : counts.socialEventCount,
+    },
+    feedback: {
+      averageRating: useLegacyFeedback
+        ? event.stats!.feedback!.averageRating
+        : feedbackSummary.averageEventRating,
+      totalResponses: useLegacyFeedback
+        ? event.stats!.feedback!.respondents
+        : feedbackSummary.totalResponses,
+      hasLegacyData: !!useLegacyFeedback,
+      historicalComments: useLegacyFeedback
+        ? event.stats!.feedback!.comments || []
+        : [],
+      historicalFeedbackUrl: useLegacyFeedback
+        ? event.stats!.feedback!.url
+        : undefined,
+    },
   }
 }

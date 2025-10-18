@@ -12,15 +12,16 @@ interface EventFeedbackPromptProps {
 }
 
 export function EventFeedbackPrompt({
-  event,
+  event: propsEvent,
   eventStatus,
 }: EventFeedbackPromptProps) {
   const { data: session } = useSession()
-  const { registration } = useEventRegistration()
+  const { event: eventData } = useEventRegistration()
+  const registration = eventData?.userRegistration
 
   const { data: feedbackData, isLoading } =
     trpc.eventFeedback.hasFeedback.useQuery(
-      { slug: event.slug },
+      { slug: propsEvent.slug },
       {
         enabled: !!session?.user?.slackId,
       }
@@ -77,10 +78,10 @@ export function EventFeedbackPrompt({
       </h2>
       <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
         Hjelp oss å forbedre fremtidige arrangementer ved å dele dine tanker om{' '}
-        {event.title}.
+        {propsEvent.title}.
       </p>
       <Button
-        href={`/fagdag/${event.slug}/tilbakemelding`}
+        href={`/fagdag/${propsEvent.slug}/tilbakemelding`}
         variant="primary"
         className="w-full"
       >

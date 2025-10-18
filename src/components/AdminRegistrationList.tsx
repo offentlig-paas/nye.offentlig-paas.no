@@ -2,24 +2,18 @@ import { Avatar } from '@/components/Avatar'
 import { StatusBadge } from '@/components/StatusBadge'
 import { ActionsMenu } from '@/components/ActionsMenu'
 import { UsersIcon, UserGroupIcon } from '@heroicons/react/20/solid'
-import type { RegistrationStatus } from '@/domains/event-registration/types'
+import type {
+  EventRegistration,
+  RegistrationStatus,
+} from '@/domains/event-registration/types'
 
-interface EventRegistration {
-  _id: string
-  name: string
-  email: string
-  organisation: string
-  slackUserId?: string
-  dietary?: string
-  comments?: string
-  attendanceType?: string
-  attendingSocialEvent?: boolean
+type AdminRegistration = Omit<EventRegistration, 'registeredAt'> & {
   registeredAt: string
-  status: RegistrationStatus
+  _id: string
 }
 
 interface RegistrationListProps {
-  registrations: EventRegistration[]
+  registrations: AdminRegistration[]
   selectedRegistrations: string[]
   onSelectAll: (checked: boolean) => void
   onSelectOne: (id: string, checked: boolean) => void

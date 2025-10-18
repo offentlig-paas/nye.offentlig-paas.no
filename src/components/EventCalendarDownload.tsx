@@ -12,26 +12,27 @@ interface EventCalendarDownloadProps {
 }
 
 export function EventCalendarDownload({
-  event,
+  event: propsEvent,
   url,
 }: EventCalendarDownloadProps) {
-  const { participantInfo } = useEventRegistration()
+  const { event: eventData } = useEventRegistration()
+  const participantInfo = eventData?.participantInfo
   const streamingUrl = participantInfo?.streamingUrl
 
   const description = useMemo(() => {
-    let desc = event.description || ''
+    let desc = propsEvent.description || ''
     if (streamingUrl) {
       desc += `\n\nStreaming: ${streamingUrl}`
     }
     return desc
-  }, [event.description, streamingUrl])
+  }, [propsEvent.description, streamingUrl])
 
   const dynamicGoogleCalendarUrl = useMemo(
-    () => getGoogleCalendarUrl(event, description),
-    [event, description]
+    () => getGoogleCalendarUrl(propsEvent, description),
+    [propsEvent, description]
   )
 
-  const icsFileContent = getIcsFileContent(event, url, streamingUrl)
+  const icsFileContent = getIcsFileContent(propsEvent, url, streamingUrl)
   const icsFileUrl = `data:text/calendar;charset=utf8,${encodeURIComponent(icsFileContent)}`
 
   return (
@@ -50,7 +51,7 @@ export function EventCalendarDownload({
       </a>
       <a
         href={icsFileUrl}
-        download={`${event.slug}.ics`}
+        download={`${propsEvent.slug}.ics`}
         className="flex items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
       >
         <CalendarIcon

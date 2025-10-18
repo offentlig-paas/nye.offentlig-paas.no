@@ -1,3 +1,13 @@
+import {
+  UsersIcon,
+  BuildingOfficeIcon,
+  UserGroupIcon,
+  CheckCircleIcon,
+  ChartBarIcon,
+  StarIcon,
+} from '@heroicons/react/24/outline'
+import { AdminEventStatCard } from '@/components/AdminEventStatCard'
+
 interface AdminEventStatsProps {
   eventDetails: {
     registration: { disabled?: boolean }
@@ -36,18 +46,24 @@ export function AdminEventStats({ eventDetails }: AdminEventStatsProps) {
 
   if (useLegacyStats && eventDetails.eventStats) {
     return (
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
-        <StatCard
-          value={eventDetails.eventStats.participants}
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+        <AdminEventStatCard
           label="Deltakere"
+          value={eventDetails.eventStats.participants}
+          icon={UsersIcon}
+          color="blue"
         />
-        <StatCard
-          value={eventDetails.eventStats.organisations}
+        <AdminEventStatCard
           label="Organisasjoner"
+          value={eventDetails.eventStats.organisations}
+          icon={BuildingOfficeIcon}
+          color="gray"
         />
-        <StatCard
-          value={eventDetails.eventStats.registrations}
+        <AdminEventStatCard
           label="Påmeldinger"
+          value={eventDetails.eventStats.registrations}
+          icon={CheckCircleIcon}
+          color="green"
         />
       </div>
     )
@@ -68,17 +84,36 @@ export function AdminEventStats({ eventDetails }: AdminEventStatsProps) {
     ).length
 
     return (
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
-        <StatCard
-          value={eventDetails.stats.activeRegistrations}
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
+        <AdminEventStatCard
           label="Påmeldte"
+          value={eventDetails.stats.activeRegistrations}
+          icon={UsersIcon}
+          color="blue"
         />
-        <StatCard value={physicalCount} label="Fysisk" />
-        <StatCard value={digitalCount} label="Digitalt" />
-        <StatCard value={socialEventCount} label="Sosialt" />
-        <StatCard
-          value={eventDetails.stats.uniqueOrganisations}
+        <AdminEventStatCard
+          label="Fysisk"
+          value={physicalCount}
+          icon={UserGroupIcon}
+          color="green"
+        />
+        <AdminEventStatCard
+          label="Digitalt"
+          value={digitalCount}
+          icon={UserGroupIcon}
+          color="purple"
+        />
+        <AdminEventStatCard
+          label="Sosialt"
+          value={socialEventCount}
+          icon={UserGroupIcon}
+          color="orange"
+        />
+        <AdminEventStatCard
           label="Organisasjoner"
+          value={eventDetails.stats.uniqueOrganisations}
+          icon={BuildingOfficeIcon}
+          color="gray"
         />
       </div>
     )
@@ -100,39 +135,31 @@ export function AdminEventStats({ eventDetails }: AdminEventStatsProps) {
       : '0'
 
   return (
-    <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-      <StatCard
-        value={eventDetails.stats.statusBreakdown.attended}
+    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <AdminEventStatCard
         label="Deltok"
+        value={eventDetails.stats.statusBreakdown.attended}
+        icon={CheckCircleIcon}
+        color="green"
       />
-      <StatCard value={`${attendanceRate}%`} label="Oppmøte %" />
-      <StatCard value={feedbackDisplay} label="Tilbakemeldinger" />
-      <StatCard
-        value={eventDetails.stats.uniqueOrganisations}
+      <AdminEventStatCard
+        label="Oppmøte %"
+        value={`${attendanceRate}%`}
+        icon={ChartBarIcon}
+        color="blue"
+      />
+      <AdminEventStatCard
+        label="Tilbakemeldinger"
+        value={feedbackDisplay}
+        icon={StarIcon}
+        color="yellow"
+      />
+      <AdminEventStatCard
         label="Organisasjoner"
+        value={eventDetails.stats.uniqueOrganisations}
+        icon={BuildingOfficeIcon}
+        color="gray"
       />
-    </div>
-  )
-}
-
-interface StatCardProps {
-  value: number | string
-  label: string
-}
-
-function StatCard({ value, label }: StatCardProps) {
-  return (
-    <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-      <div className="p-4">
-        <div className="flex flex-col items-center text-center">
-          <dd className="text-3xl font-bold text-gray-900 dark:text-white">
-            {value}
-          </dd>
-          <dt className="mt-2 text-xs font-medium text-gray-500 dark:text-gray-400">
-            {label}
-          </dt>
-        </div>
-      </div>
     </div>
   )
 }

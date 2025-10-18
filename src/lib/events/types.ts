@@ -25,13 +25,13 @@ export interface Event {
   audience: Audience
   location: string
   registration: RegistrationSettings
-  registrationUrl?: string
+  registrationUrl?: string // legacy registration from before we had a registration system
   callForPapersUrl?: string
   callForPapersClosedDate?: Date
   recordingUrl?: string
   organizers: SlackUser[]
   schedule: Item[]
-  stats?: Stats
+  stats?: Stats // legacy stats before we had a registration and feedback system
   socialEvent?: SocialEvent
   participantInfo?: EventParticipantInfo
   slackChannel?: SlackChannel
@@ -114,4 +114,46 @@ export enum ItemType {
   Registration = 'Registrering',
   Talk = 'Presentation',
   Workshop = 'Workshop',
+}
+
+export interface EventDynamicStats {
+  registrations: {
+    total: number
+    confirmed: number
+    attended: number
+    cancelled: number
+    pending: number
+    waitlist: number
+    organizations: number
+    participants: number
+    physicalCount: number
+    digitalCount: number
+    socialEventCount: number
+  }
+  feedback: {
+    averageRating: number
+    totalResponses: number
+    hasLegacyData: boolean
+    historicalComments: string[]
+    historicalFeedbackUrl?: string
+  }
+}
+
+export interface EventWithDynamicData extends Event {
+  dynamicStats: EventDynamicStats
+  userRegistration?: Pick<
+    import('@/domains/event-registration/types').EventRegistration,
+    | '_id'
+    | 'status'
+    | 'attendanceType'
+    | 'attendingSocialEvent'
+    | 'comments'
+    | 'dietary'
+    | 'registeredAt'
+  > | null
+  participantInfo?: EventParticipantInfo
+  participants?: Array<{
+    name: string
+    slackUserId: string
+  }>
 }

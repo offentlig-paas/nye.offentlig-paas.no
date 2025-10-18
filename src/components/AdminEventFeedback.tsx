@@ -1,7 +1,14 @@
 'use client'
 
 import { StarRating } from './StarRating'
+import { AdminEventStatCard } from './AdminEventStatCard'
 import { trpc } from '@/lib/trpc/client'
+import {
+  StarIcon,
+  ChatBubbleLeftIcon,
+  UserGroupIcon,
+  LightBulbIcon,
+} from '@heroicons/react/24/outline'
 import type { EventFeedbackSummary } from '@/domains/event-feedback/types'
 
 interface AdminEventFeedbackProps {
@@ -49,36 +56,37 @@ export function AdminEventFeedback({ eventSlug }: AdminEventFeedbackProps) {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Overview with rating */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
-        <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
-          Samlet vurdering av arrangementet
-        </h3>
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-4">
-            <div className="text-4xl font-bold text-emerald-600 dark:text-emerald-400">
-              {summary.averageEventRating !== null
-                ? summary.averageEventRating.toFixed(1)
-                : 'N/A'}
-            </div>
-            {summary.averageEventRating !== null && (
-              <StarRating
-                rating={Math.round(summary.averageEventRating)}
-                size="md"
-                readonly
-              />
-            )}
-          </div>
-          <div className="border-l border-gray-300 pl-6 dark:border-gray-600">
-            <div className="text-sm text-gray-600 dark:text-gray-400">
-              Antall svar
-            </div>
-            <div className="text-2xl font-semibold text-gray-900 dark:text-white">
-              {summary.totalResponses}
-            </div>
-          </div>
-        </div>
+    <div className="space-y-4">
+      {/* Stats Overview */}
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <AdminEventStatCard
+          label="Snitt vurdering"
+          value={
+            summary.averageEventRating !== null
+              ? summary.averageEventRating.toFixed(1)
+              : 'N/A'
+          }
+          icon={StarIcon}
+          color="yellow"
+        />
+        <AdminEventStatCard
+          label="Totalt svar"
+          value={summary.totalResponses}
+          icon={ChatBubbleLeftIcon}
+          color="blue"
+        />
+        <AdminEventStatCard
+          label="Foredrag vurdert"
+          value={summary.talkSummaries.length}
+          icon={UserGroupIcon}
+          color="green"
+        />
+        <AdminEventStatCard
+          label="Nye temaforslag"
+          value={summary.topicSuggestions.length}
+          icon={LightBulbIcon}
+          color="purple"
+        />
       </div>
 
       {/* Talk Ratings */}

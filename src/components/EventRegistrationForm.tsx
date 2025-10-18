@@ -9,7 +9,6 @@ import { ConfirmationModal } from '@/components/ConfirmationModal'
 import { OverlappingAvatars } from '@/components/OverlappingAvatars'
 import { useEventRegistration } from '@/contexts/EventRegistrationContext'
 import type { SocialEvent } from '@/lib/events/types'
-import type { RegistrationStats } from '@/types/api/registration'
 import { AttendanceType, AttendanceTypeDisplay } from '@/lib/events/types'
 import {
   UserGroupIcon,
@@ -30,11 +29,17 @@ interface EventRegistrationFormProps {
   showOnlySocialEvent?: boolean
 }
 
-const RegistrationStats = memo(function RegistrationStats({
+interface RegistrationCountsDisplay {
+  persons: number
+  organizations: number
+  participants: Array<{ name: string; slackUserId: string }>
+}
+
+const RegistrationStatsDisplay = memo(function RegistrationStatsDisplay({
   counts,
   variant = 'blue',
 }: {
-  counts: RegistrationStats
+  counts: RegistrationCountsDisplay
   variant?: 'blue' | 'green'
 }) {
   const colorClasses = {
@@ -333,12 +338,25 @@ export const EventRegistrationForm = memo(function EventRegistrationForm({
 }: EventRegistrationFormProps) {
   const { data: session } = useSession()
   const { showSuccess, showError } = useToast()
-  const { registrationStatus, registration, stats, isCheckingStatus, refetch } =
-    useEventRegistration()
+  const { event, isLoading: isCheckingStatus, refetch } = useEventRegistration()
 
   const registerMutation = trpc.eventRegistration.register.useMutation()
   const cancelMutation = trpc.eventRegistration.cancel.useMutation()
   const updateMutation = trpc.eventRegistration.update.useMutation()
+
+  const registration = event?.userRegistration
+  const registrationStatus = registration?.status || null
+  const stats = event?.dynamicStats
+    ? {
+        total:
+          event.dynamicStats.registrations.confirmed +
+          event.dynamicStats.registrations.attended,
+        persons: event.dynamicStats.registrations.participants,
+        organizations: event.dynamicStats.registrations.organizations,
+        uniqueOrganizations: event.dynamicStats.registrations.organizations,
+        participants: event.participants || [],
+      }
+    : null
 
   const isActivelyRegistered =
     registrationStatus === 'confirmed' || registrationStatus === 'attended'
@@ -528,7 +546,7 @@ export const EventRegistrationForm = memo(function EventRegistrationForm({
 
         {stats && stats.total > 0 && (
           <div className="mb-4">
-            <RegistrationStats counts={stats} variant="blue" />
+            <RegistrationStatsDisplay counts={stats} variant="blue" />
           </div>
         )}
 
@@ -555,7 +573,7 @@ export const EventRegistrationForm = memo(function EventRegistrationForm({
 
         {stats && stats.total > 0 && (
           <div className="mb-3">
-            <RegistrationStats counts={stats} variant="green" />
+            <RegistrationStatsDisplay counts={stats} variant="green" />
           </div>
         )}
 
@@ -608,7 +626,7 @@ export const EventRegistrationForm = memo(function EventRegistrationForm({
 
         {stats && stats.total > 0 && (
           <div className="mb-3">
-            <RegistrationStats counts={stats} variant="blue" />
+            <RegistrationStatsDisplay counts={stats} variant="blue" />
           </div>
         )}
 

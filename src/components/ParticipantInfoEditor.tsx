@@ -52,7 +52,7 @@ export function ParticipantInfoEditor({
 
   return (
     <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-      <div className="flex items-center justify-between border-b border-gray-200 px-6 py-3 dark:border-gray-700">
+      <div className="flex items-center justify-between border-b border-gray-200 px-4 py-4 dark:border-gray-700">
         <h3 className="text-base font-semibold text-gray-900 dark:text-white">
           Deltakerinformasjon
         </h3>
@@ -66,7 +66,7 @@ export function ParticipantInfoEditor({
         )}
       </div>
 
-      <div className="space-y-4 p-6">
+      <div className="space-y-4 p-4">
         <div>
           <label
             htmlFor="streamingUrl"
