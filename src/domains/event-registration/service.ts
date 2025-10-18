@@ -15,7 +15,8 @@ export class EventRegistrationService {
   }
 
   async registerForEvent(
-    input: CreateEventRegistrationInput
+    input: CreateEventRegistrationInput,
+    event?: { maxCapacity?: number }
   ): Promise<EventRegistration> {
     const existingRegistration = await this.repository.findByEventAndUser(
       input.eventSlug,
@@ -28,10 +29,25 @@ export class EventRegistrationService {
 
     this.validateRegistrationInput(input)
 
+    let registrationStatus: RegistrationStatus = 'confirmed'
+
+    // Check capacity only for physical attendance when limit is defined
+    if (
+      input.attendanceType === 'physical' &&
+      event?.maxCapacity !== undefined
+    ) {
+      const currentPhysicalCount =
+        await this.repository.getPhysicalAttendeesCount(input.eventSlug)
+
+      if (currentPhysicalCount >= event.maxCapacity) {
+        registrationStatus = 'waitlist'
+      }
+    }
+
     if (existingRegistration && existingRegistration.status === 'cancelled') {
       return await this.repository.update(existingRegistration._id!, {
         ...input,
-        status: 'confirmed',
+        status: registrationStatus,
         metadata: {
           ...existingRegistration.metadata,
           reregisteredAt: new Date().toISOString(),
@@ -39,7 +55,7 @@ export class EventRegistrationService {
       })
     }
 
-    return await this.repository.create(input)
+    return await this.repository.create(input, registrationStatus)
   }
 
   async getEventRegistrations(eventSlug: string): Promise<EventRegistration[]> {

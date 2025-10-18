@@ -219,6 +219,35 @@ export function AdminAttendeesClient() {
         </div>
       )}
 
+      {/* Waitlist Quick Action */}
+      {statusFilter === 'waitlist' &&
+        filteredRegistrations.length > 0 &&
+        selectedRegistrations.length === 0 && (
+          <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 shadow-sm dark:border-yellow-800 dark:bg-yellow-900/20">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-medium text-yellow-800 dark:text-yellow-300">
+                  {filteredRegistrations.length} på venteliste
+                </h3>
+                <p className="mt-1 text-sm text-yellow-700 dark:text-yellow-400">
+                  Velg deltakere du ønsker å bekrefte fra ventelisten
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  const waitlistIds = filteredRegistrations
+                    .filter(r => r.status === 'waitlist' && r._id)
+                    .map(r => r._id!)
+                  setSelectedRegistrations(waitlistIds)
+                }}
+                className="inline-flex items-center rounded-lg bg-yellow-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-yellow-700 dark:bg-yellow-700 dark:hover:bg-yellow-600"
+              >
+                Velg alle på venteliste
+              </button>
+            </div>
+          </div>
+        )}
+
       {/* Filters */}
       <AdminRegistrationFilters
         searchTerm={searchTerm}

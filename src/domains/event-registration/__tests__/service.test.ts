@@ -57,7 +57,10 @@ describe('EventRegistrationService', () => {
         'test-event',
         'U123456'
       )
-      expect(mockRepository.create).toHaveBeenCalledWith(validInput)
+      expect(mockRepository.create).toHaveBeenCalledWith(
+        validInput,
+        'confirmed'
+      )
     })
 
     it('should throw error when user already has active registration', async () => {

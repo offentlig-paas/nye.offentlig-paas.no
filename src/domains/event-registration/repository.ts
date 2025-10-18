@@ -16,13 +16,14 @@ export class EventRegistrationRepository {
    * Create a new event registration
    */
   async create(
-    input: CreateEventRegistrationInput
+    input: CreateEventRegistrationInput,
+    status: import('./types').RegistrationStatus = 'confirmed'
   ): Promise<EventRegistration> {
     const doc = {
       _type: 'eventRegistration',
       ...input,
       registeredAt: new Date().toISOString(),
-      status: 'confirmed' as const,
+      status,
     }
 
     const result = await sanityClient.create(doc)
@@ -146,6 +147,24 @@ export class EventRegistrationRepository {
       cache: 'no-store',
       next: { revalidate: 0 },
     })
+  }
+
+  /**
+   * Get count of physical attendees with confirmed or attended status
+   * Used for enforcing event capacity limits
+   * @param eventSlug - The event slug to count attendees for
+   * @returns Number of physical attendees (confirmed or attended)
+   */
+  async getPhysicalAttendeesCount(eventSlug: string): Promise<number> {
+    const query = groq`count(*[_type == "eventRegistration" && eventSlug == $eventSlug && attendanceType == "physical" && (status == "confirmed" || status == "attended")])`
+    return await sanityClient.fetch(
+      query,
+      { eventSlug },
+      {
+        cache: 'no-store',
+        next: { revalidate: 0 },
+      }
+    )
   }
 
   /**

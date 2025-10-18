@@ -35,6 +35,7 @@ export interface Event {
   socialEvent?: SocialEvent
   participantInfo?: EventParticipantInfo
   slackChannel?: SlackChannel
+  maxCapacity?: number // Maximum physical attendees allowed
 }
 
 interface RegistrationSettings {

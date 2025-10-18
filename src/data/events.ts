@@ -39,6 +39,7 @@ export const events: Event[] = [
     end: new Date('2025-10-15T15:00+02:00'),
     audience: Audience.PublicSector,
     location: 'Telenor Fornebu, Snarøyveien 30, 1360 Fornebu',
+    maxCapacity: 100,
     registration: {
       attendanceTypes: [AttendanceType.Physical, AttendanceType.Digital],
     },

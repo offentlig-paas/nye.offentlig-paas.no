@@ -52,26 +52,34 @@ export const eventRegistrationRouter = router({
       }
 
       try {
-        const registration = await eventRegistrationService.registerForEvent({
-          eventSlug: slug,
-          name: ctx.user.name,
-          email: ctx.user.email,
-          slackUserId: ctx.user.slackId,
-          organisation:
-            registrationData.organisation ||
-            ctx.user.statusText ||
-            'Ikke oppgitt',
-          dietary: registrationData.dietary,
-          comments: registrationData.comments,
-          attendanceType: registrationData.attendanceType,
-          attendingSocialEvent: registrationData.attendingSocialEvent,
-        })
+        const registration = await eventRegistrationService.registerForEvent(
+          {
+            eventSlug: slug,
+            name: ctx.user.name,
+            email: ctx.user.email,
+            slackUserId: ctx.user.slackId,
+            organisation:
+              registrationData.organisation ||
+              ctx.user.statusText ||
+              'Ikke oppgitt',
+            dietary: registrationData.dietary,
+            comments: registrationData.comments,
+            attendanceType: registrationData.attendanceType,
+            attendingSocialEvent: registrationData.attendingSocialEvent,
+          },
+          event
+        )
 
         revalidatePath(`/fagdag/${slug}`)
         revalidatePath('/profil')
 
+        const message =
+          registration.status === 'waitlist'
+            ? 'Påmelding registrert på venteliste!'
+            : 'Påmelding registrert!'
+
         return {
-          message: 'Påmelding registrert!',
+          message,
           registration,
         }
       } catch (error) {
