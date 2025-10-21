@@ -388,10 +388,18 @@ export const adminRouter = router({
 
       const allAttachments = await getAllEventAttachments(input.slug)
 
+      // Merge attachments into talks for consistent logic with UI
+      const talksWithAttachments = talksWithSpeakers.map(talk => {
+        const attachments = allAttachments.get(talk.title)
+        return attachments ? { ...talk, attachments } : talk
+      })
+
       const speakerTalksMap = new Map()
 
-      for (const talk of talksWithSpeakers) {
-        const hasAttachments = allAttachments.has(talk.title)
+      for (const talk of talksWithAttachments) {
+        const hasAttachments = !!(
+          talk.attachments && talk.attachments.length > 0
+        )
 
         if (input.onlyWithoutAttachments && hasAttachments) {
           continue
@@ -768,6 +776,16 @@ Mvh ${organizerNames}`
         const channelName = generateChannelName(new Date(ctx.event.start))
         const slackChannel = await findChannelByName(channelName)
 
+        // Fetch attachments and merge into schedule
+        const { getAllEventAttachments } = await import(
+          '@/lib/events/attachment-helpers'
+        )
+        const attachmentsMap = await getAllEventAttachments(input.slug)
+        const scheduleWithAttachments = ctx.event.schedule.map(item => {
+          const attachments = attachmentsMap.get(item.title)
+          return attachments ? { ...item, attachments } : item
+        })
+
         return {
           title: eventInfo.title,
           date: eventInfo.date,
@@ -782,7 +800,7 @@ Mvh ${organizerNames}`
           callForPapersUrl: ctx.event.callForPapersUrl,
           recordingUrl: ctx.event.recordingUrl,
           organizers: ctx.event.organizers,
-          schedule: ctx.event.schedule,
+          schedule: scheduleWithAttachments,
           eventStats: ctx.event.stats,
           registration: ctx.event.registration,
           slackChannel,
