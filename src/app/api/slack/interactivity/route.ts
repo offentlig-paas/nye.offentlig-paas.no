@@ -190,7 +190,11 @@ slackApp.view('feedback_submission', async ({ ack, body, view, client }) => {
 
 export async function POST(request: NextRequest) {
   try {
-    const rawBody = await request.text()
+    // Read body as ArrayBuffer and convert to string to preserve exact bytes
+    // This is critical for Slack signature verification
+    const buffer = await request.arrayBuffer()
+    const rawBody = Buffer.from(buffer).toString('utf-8')
+
     const signature = request.headers.get('x-slack-signature')
     const timestamp = request.headers.get('x-slack-request-timestamp')
 
@@ -202,7 +206,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing signature' }, { status: 401 })
     }
 
-    // Verify request signature
+    // CRITICAL: Verify signature against raw body (still URL-encoded)
+    // Slack's signature is computed from the exact bytes sent, before any decoding
     if (!verifySlackRequest(rawBody, signature, timestamp)) {
       console.error('Slack signature verification failed', {
         timestampAge: Math.floor(Date.now() / 1000) - parseInt(timestamp, 10),
@@ -212,11 +217,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
     }
 
-    let payload: string | undefined
+    // Now decode the payload for processing
+    let payload: string
 
     if (rawBody.startsWith('payload=')) {
+      // URL-encoded form data: payload=<encoded_json>
       payload = decodeURIComponent(rawBody.substring('payload='.length))
     } else {
+      // Plain JSON (shouldn't happen with Slack, but kept for compatibility)
       payload = rawBody
     }
 
@@ -259,6 +267,13 @@ function verifySlackRequest(
     console.error('SLACK_SIGNING_SECRET not configured')
     return false
   }
+
+  // Debug: Log signing secret details (first/last chars only for security)
+  console.log('Signing secret check:', {
+    length: SLACK_SIGNING_SECRET.length,
+    first4: SLACK_SIGNING_SECRET.substring(0, 4),
+    last4: SLACK_SIGNING_SECRET.substring(SLACK_SIGNING_SECRET.length - 4),
+  })
 
   // Reject old requests (older than 5 minutes)
   const currentTime = Math.floor(Date.now() / 1000)
