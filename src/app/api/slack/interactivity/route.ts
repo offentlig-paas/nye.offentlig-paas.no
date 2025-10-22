@@ -12,13 +12,16 @@ import {
 } from '@/lib/slack/modals'
 import { getAppUrl } from '@/server/lib/environment'
 
+// Disable Next.js body parsing to preserve raw body for signature verification
+export const runtime = 'nodejs'
+
 const SLACK_BOT_TOKEN = process.env.SLACK_BOT_TOKEN
 const SLACK_SIGNING_SECRET = process.env.SLACK_SIGNING_SECRET
 
 if (!SLACK_BOT_TOKEN || !SLACK_SIGNING_SECRET) {
-  console.error(
-    'Missing required Slack environment variables: SLACK_BOT_TOKEN or SLACK_SIGNING_SECRET'
-  )
+  const errorMsg = `Missing required Slack environment variables: ${!SLACK_BOT_TOKEN ? 'SLACK_BOT_TOKEN ' : ''}${!SLACK_SIGNING_SECRET ? 'SLACK_SIGNING_SECRET' : ''}`
+  console.error(errorMsg)
+  throw new Error(errorMsg)
 }
 
 const slackApp = new App({
@@ -192,12 +195,20 @@ export async function POST(request: NextRequest) {
     const timestamp = request.headers.get('x-slack-request-timestamp')
 
     if (!signature || !timestamp) {
+      console.error('Missing Slack headers:', {
+        signature: !!signature,
+        timestamp: !!timestamp,
+      })
       return NextResponse.json({ error: 'Missing signature' }, { status: 401 })
     }
 
     // Verify request signature
     if (!verifySlackRequest(rawBody, signature, timestamp)) {
-      console.error('Invalid Slack signature')
+      console.error('Slack signature verification failed', {
+        timestampAge: Math.floor(Date.now() / 1000) - parseInt(timestamp, 10),
+        bodyLength: rawBody.length,
+        bodyPreview: rawBody.substring(0, 100),
+      })
       return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
     }
 
@@ -253,7 +264,11 @@ function verifySlackRequest(
   const currentTime = Math.floor(Date.now() / 1000)
   const requestTime = parseInt(timestamp, 10)
   if (Math.abs(currentTime - requestTime) > 60 * 5) {
-    console.error('Request timestamp too old')
+    console.error('Request timestamp too old', {
+      currentTime,
+      requestTime,
+      diff: Math.abs(currentTime - requestTime),
+    })
     return false
   }
 
@@ -266,5 +281,22 @@ function verifySlackRequest(
   const computedSignature = `v0=${hmac.digest('hex')}`
 
   // Compare signatures using timing-safe comparison
-  return timingSafeEqual(Buffer.from(computedSignature), Buffer.from(signature))
+  try {
+    const isValid = timingSafeEqual(
+      Buffer.from(computedSignature),
+      Buffer.from(signature)
+    )
+
+    if (!isValid) {
+      console.error('Signature mismatch', {
+        received: signature.substring(0, 20) + '...',
+        computed: computedSignature.substring(0, 20) + '...',
+      })
+    }
+
+    return isValid
+  } catch (error) {
+    console.error('Signature comparison failed', error)
+    return false
+  }
 }
