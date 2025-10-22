@@ -148,12 +148,21 @@ export function buildFeedbackRequestMessage(
           type: 'button',
           text: {
             type: 'plain_text',
-            text: '📝 Gi tilbakemelding',
+            text: '⚡ Rask vurdering',
+            emoji: true,
+          },
+          action_id: 'quick_feedback',
+          style: 'primary',
+        },
+        {
+          type: 'button',
+          text: {
+            type: 'plain_text',
+            text: '📝 Full tilbakemelding',
             emoji: true,
           },
           url: feedbackUrl,
-          action_id: 'submit_feedback',
-          style: 'primary',
+          action_id: 'full_feedback',
         },
       ],
     },
@@ -162,6 +171,12 @@ export function buildFeedbackRequestMessage(
   return {
     text: `${customMessage} - ${event.title}`,
     blocks,
+    metadata: {
+      event_type: 'feedback_request',
+      event_payload: {
+        eventSlug,
+      },
+    },
   }
 }
 

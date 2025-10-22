@@ -22,13 +22,33 @@ class EventFeedbackService {
     )
 
     if (existingFeedback) {
-      throw new Error('User has already submitted feedback for this event')
+      // Allow upgrading from quick feedback to full feedback
+      if (existingFeedback.isQuickFeedback && !input.isQuickFeedback) {
+        if (!existingFeedback._id) {
+          throw new Error('Cannot upgrade feedback: missing feedback ID')
+        }
+        return await this.upgradeFeedback(existingFeedback._id, input)
+      }
+      throw new Error('User has already submitted full feedback for this event')
     }
 
     this.validateFeedbackInput(input)
 
     return await this.repository.create({
       ...input,
+      submittedAt: new Date(),
+    })
+  }
+
+  async upgradeFeedback(
+    feedbackId: string,
+    input: CreateEventFeedbackInput
+  ): Promise<EventFeedback> {
+    this.validateFeedbackInput(input)
+
+    return await this.repository.update(feedbackId, {
+      ...input,
+      isQuickFeedback: false,
       submittedAt: new Date(),
     })
   }
@@ -47,6 +67,31 @@ class EventFeedbackService {
     slackUserId: string
   ): Promise<EventFeedback | null> {
     return await this.repository.findByEventAndUser(eventSlug, slackUserId)
+  }
+
+  async hasFeedbackForEvent(
+    eventSlug: string,
+    slackUserId: string
+  ): Promise<boolean> {
+    const feedback = await this.repository.findByEventAndUser(
+      eventSlug,
+      slackUserId
+    )
+    return feedback !== null
+  }
+
+  async hasFeedback(
+    eventSlug: string,
+    slackUserId: string
+  ): Promise<{ hasFeedback: boolean; isQuickFeedback: boolean }> {
+    const feedback = await this.repository.findByEventAndUser(
+      eventSlug,
+      slackUserId
+    )
+    return {
+      hasFeedback: feedback !== null,
+      isQuickFeedback: feedback?.isQuickFeedback || false,
+    }
   }
 
   async getFeedbackSummary(eventSlug: string): Promise<EventFeedbackSummary> {
@@ -167,12 +212,51 @@ class EventFeedbackService {
     return await this.repository.delete(feedbackId)
   }
 
-  async hasFeedback(eventSlug: string, slackUserId: string): Promise<boolean> {
-    const feedback = await this.repository.findByEventAndUser(
-      eventSlug,
-      slackUserId
+  async submitQuickFeedback(
+    input: {
+      eventSlug: string
+      slackUserId: string
+      eventRating: number
+      eventComment?: string
+    },
+    registration?: { name: string; email: string } | null
+  ): Promise<EventFeedback> {
+    const existingFeedback = await this.repository.findByEventAndUser(
+      input.eventSlug,
+      input.slackUserId
     )
-    return feedback !== null
+
+    if (input.eventRating < 1 || input.eventRating > 5) {
+      throw new Error('Event rating must be between 1 and 5')
+    }
+
+    const feedbackData: CreateEventFeedbackInput = {
+      eventSlug: input.eventSlug,
+      slackUserId: input.slackUserId,
+      name: registration?.name || 'Slack User',
+      email: registration?.email || 'slack@offentlig-paas.no',
+      talkRatings: [],
+      eventRating: input.eventRating,
+      eventComment: input.eventComment,
+      topicSuggestions: [],
+      isPublic: false,
+      isQuickFeedback: true,
+      metadata: {
+        submissionSource: 'slack',
+      },
+    }
+
+    if (existingFeedback) {
+      if (existingFeedback.isQuickFeedback) {
+        throw new Error('ALREADY_SUBMITTED_QUICK')
+      }
+      throw new Error('ALREADY_SUBMITTED_FULL')
+    }
+
+    return await this.repository.create({
+      ...feedbackData,
+      submittedAt: new Date(),
+    })
   }
 
   private validateFeedbackInput(input: CreateEventFeedbackInput): void {
@@ -185,6 +269,10 @@ class EventFeedbackService {
         throw new Error('Talk rating must be between 1 and 5')
       }
     })
+
+    if (input.isQuickFeedback) {
+      return
+    }
 
     if (input.talkRatings.length === 0) {
       throw new Error('At least one talk rating is required')

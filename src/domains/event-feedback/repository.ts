@@ -79,6 +79,26 @@ export class EventFeedbackRepository {
     }
   }
 
+  async update(
+    id: string,
+    feedback: Partial<Omit<EventFeedback, '_id'>>
+  ): Promise<EventFeedback> {
+    const preparedDoc = prepareSanityDocument(feedback)
+
+    const updatedDoc = await sanityClient
+      .patch(id)
+      .set({
+        ...preparedDoc,
+        submittedAt: new Date().toISOString(),
+      })
+      .commit()
+
+    return {
+      ...(updatedDoc as unknown as EventFeedback),
+      submittedAt: new Date(updatedDoc.submittedAt as string),
+    }
+  }
+
   async delete(id: string): Promise<boolean> {
     try {
       await sanityClient.delete(id)

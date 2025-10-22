@@ -186,14 +186,15 @@ describe('tRPC Routers - Edge Cases', () => {
     })
 
     it('should check if user already submitted feedback', async () => {
-      mockFeedbackService.hasFeedback.mockResolvedValue(true)
+      mockFeedbackService.hasFeedback.mockResolvedValue({
+        hasFeedback: true,
+        isQuickFeedback: false,
+      })
 
-      const hasFeedback = await mockFeedbackService.hasFeedback(
-        'test-event',
-        'U123'
-      )
+      const result = await mockFeedbackService.hasFeedback('test-event', 'U123')
 
-      expect(hasFeedback).toBe(true)
+      expect(result.hasFeedback).toBe(true)
+      expect(result.isQuickFeedback).toBe(false)
     })
   })
 

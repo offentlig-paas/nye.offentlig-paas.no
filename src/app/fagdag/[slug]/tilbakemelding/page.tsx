@@ -54,11 +54,12 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
 
   // Check if user already submitted feedback
   const feedbackData = await caller.eventFeedback.hasFeedback({ slug })
-  const hasFeedback = feedbackData.hasFeedback
+  const { hasFeedback, isQuickFeedback } = feedbackData
 
   const talks = event.schedule.filter(item => isTalkType(item.type))
 
-  if (hasFeedback) {
+  // If user has full feedback, show thank you message
+  if (hasFeedback && !isQuickFeedback) {
     return (
       <Container className="mt-16 lg:mt-32">
         <div className="xl:relative">
@@ -134,6 +135,11 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
     )
   }
 
+  // Fetch existing feedback only when upgrading from quick to full
+  const existingFeedback = isQuickFeedback
+    ? await caller.eventFeedback.getUserFeedback({ slug })
+    : null
+
   return (
     <Container className="mt-16 lg:mt-32">
       <div className="xl:relative">
@@ -147,13 +153,41 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
               <ArrowLeftIcon className="h-4 w-4 stroke-zinc-500 transition group-hover:stroke-zinc-700 dark:stroke-zinc-500 dark:group-hover:stroke-zinc-400" />
             </Link>
             <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-              Gi tilbakemelding
+              {isQuickFeedback
+                ? 'Utvid tilbakemeldingen din'
+                : 'Gi tilbakemelding'}
             </h1>
           </div>
-          <p className="mt-4 text-base text-zinc-600 dark:text-zinc-400">
-            Hjelp oss å forbedre fremtidige arrangementer ved å dele dine tanker
-            om {event.title}.
-          </p>
+          {isQuickFeedback ? (
+            <div className="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg
+                    className="h-5 w-5 text-blue-400"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-blue-700 dark:text-blue-300">
+                    Du har allerede gitt en rask vurdering via Slack. Nå kan du
+                    gi mer detaljert tilbakemelding til foredragsholderne.
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <p className="mt-4 text-base text-zinc-600 dark:text-zinc-400">
+              Hjelp oss å forbedre fremtidige arrangementer ved å dele dine
+              tanker om {event.title}.
+            </p>
+          )}
         </div>
       </div>
 
@@ -164,6 +198,8 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
               eventSlug={slug}
               talks={talks}
               organizers={event.organizers}
+              isUpgrade={isQuickFeedback}
+              existingFeedback={existingFeedback}
             />
           </div>
 

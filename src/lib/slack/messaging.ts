@@ -23,6 +23,10 @@ interface SendMessageResult {
 export interface MessagePayload {
   text: string
   blocks?: (Block | KnownBlock)[]
+  metadata?: {
+    event_type: string
+    event_payload: Record<string, string | number | boolean>
+  }
 }
 
 export async function sendDirectMessage(
@@ -39,24 +43,45 @@ export async function sendDirectMessage(
     }
   }
 
-  try {
-    const messageOptions =
-      typeof payload === 'string'
-        ? {
-            channel: userId,
-            text: payload,
-            unfurl_links: false,
-            unfurl_media: false,
-          }
-        : {
-            channel: userId,
-            text: payload.text,
-            blocks: payload.blocks,
-            unfurl_links: false,
-            unfurl_media: false,
-          }
+  const channel = userId
 
-    const result = await slack.chat.postMessage(messageOptions)
+  try {
+    let result
+    if (typeof payload === 'string') {
+      result = await slack.chat.postMessage({
+        channel,
+        text: payload,
+        unfurl_links: false,
+        unfurl_media: false,
+      })
+    } else {
+      const messageOptions: {
+        channel: string
+        text: string
+        unfurl_links: boolean
+        unfurl_media: boolean
+        blocks?: (Block | KnownBlock)[]
+        metadata?: {
+          event_type: string
+          event_payload: Record<string, string | number | boolean>
+        }
+      } = {
+        channel,
+        text: payload.text,
+        unfurl_links: false,
+        unfurl_media: false,
+      }
+
+      if (payload.blocks) {
+        messageOptions.blocks = payload.blocks
+      }
+
+      if (payload.metadata) {
+        messageOptions.metadata = payload.metadata
+      }
+
+      result = await slack.chat.postMessage(messageOptions)
+    }
 
     if (result.ok) {
       return {

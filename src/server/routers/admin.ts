@@ -597,7 +597,8 @@ Mvh ${organizerNames}`
       })
     )
     .mutation(async ({ input, ctx }) => {
-      if (shouldBlockMessaging(input.testMode)) {
+      // Allow test mode even in development (sends only to current user)
+      if (!input.testMode && shouldBlockMessaging(input.testMode)) {
         throw new TRPCError({
           code: 'FORBIDDEN',
           message: 'Cannot send feedback requests in development environment',
@@ -630,12 +631,25 @@ Mvh ${organizerNames}`
           'attended'
         )
 
-        userIds = extractUserIds(filteredRegistrations)
+        const allUserIds = extractUserIds(filteredRegistrations)
+
+        // Filter out users who already submitted feedback (optimized: single query)
+        const allFeedback = await eventFeedbackService.getEventFeedback(
+          input.slug
+        )
+        const userIdsWithFeedback = new Set(
+          allFeedback.map(fb => fb.slackUserId)
+        )
+        const userIdsWithoutFeedback = allUserIds.filter(
+          userId => !userIdsWithFeedback.has(userId)
+        )
+
+        userIds = userIdsWithoutFeedback
 
         if (userIds.length === 0) {
           throw new TRPCError({
             code: 'BAD_REQUEST',
-            message: 'No attended users with Slack IDs found',
+            message: 'No attended users without feedback found',
           })
         }
       }

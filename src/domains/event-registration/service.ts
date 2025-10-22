@@ -249,6 +249,13 @@ export class EventRegistrationService {
     return await this.repository.findMany({ slackUserId })
   }
 
+  async getRegistrationBySlackUserId(
+    eventSlug: string,
+    slackUserId: string
+  ): Promise<EventRegistration | null> {
+    return await this.repository.findByEventAndUser(eventSlug, slackUserId)
+  }
+
   /**
    * Anonymize all registrations for a user (GDPR right to be forgotten)
    * Keeps registrations for capacity/statistics but removes personal data

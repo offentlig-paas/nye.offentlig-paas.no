@@ -37,9 +37,7 @@ export function SendFeedbackRequestModal({
 
   const defaultMessage = `Takk for at du deltok på ${eventTitle}! 🎉
 
-Vi vil gjerne høre dine tanker om arrangementet. Din tilbakemelding hjelper oss å forbedre framtidige fagdager.
-
-Vennligst ta deg tid til å gi oss tilbakemelding. Det tar bare noen få minutter. 📝`
+Gi en rask vurdering via knappen under, eller gå til nettsiden for mer utfyllende tilbakemelding. 📝`
 
   const handleSend = async () => {
     if (!message.trim()) {
@@ -131,14 +129,14 @@ Vennligst ta deg tid til å gi oss tilbakemelding. Det tar bare noen få minutte
                         </div>
                         <div className="ml-3">
                           <h3 className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
-                            Development Environment
+                            Utviklingsmiljø
                           </h3>
                           <div className="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
                             <p>
-                              You&apos;re running in development mode. Messages
-                              containing localhost URLs will be blocked unless
-                              you enable test mode or set NEXT_PUBLIC_URL to
-                              production.
+                              Du kjører i utviklingsmodus. Meldinger som
+                              inneholder localhost-URLer vil bli blokkert med
+                              mindre du aktiverer testmodus eller setter
+                              NEXT_PUBLIC_URL til produksjon.
                             </p>
                           </div>
                         </div>
@@ -146,29 +144,32 @@ Vennligst ta deg tid til å gi oss tilbakemelding. Det tar bare noen få minutte
                     </div>
                   )}
 
-                  <div className="rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">
-                    <div className="flex">
-                      <div className="flex-shrink-0">
-                        <ExclamationTriangleIcon
-                          className="h-5 w-5 text-blue-400"
-                          aria-hidden="true"
-                        />
-                      </div>
-                      <div className="ml-3">
-                        <h3 className="text-sm font-medium text-blue-800 dark:text-blue-300">
-                          Om tilbakemeldingsforespørsler
-                        </h3>
-                        <div className="mt-2 text-sm text-blue-700 dark:text-blue-400">
-                          <p>
-                            Forespørselen vil bli sendt som en privat melding på
-                            Slack til alle påmeldte med status
-                            &quot;Deltok&quot;. Meldingen inkluderer en lenke
-                            til tilbakemeldingsskjemaet.
-                          </p>
+                  {!isDevelopment && (
+                    <div className="rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">
+                      <div className="flex">
+                        <div className="flex-shrink-0">
+                          <ExclamationTriangleIcon
+                            className="h-5 w-5 text-blue-400"
+                            aria-hidden="true"
+                          />
+                        </div>
+                        <div className="ml-3">
+                          <h3 className="text-sm font-medium text-blue-800 dark:text-blue-300">
+                            Om tilbakemeldingsforespørsler
+                          </h3>
+                          <div className="mt-2 text-sm text-blue-700 dark:text-blue-400">
+                            <p>
+                              Forespørselen vil bli sendt som en privat melding
+                              på Slack til alle påmeldte med status
+                              &quot;Deltok&quot; som ikke allerede har gitt
+                              tilbakemelding. Meldingen inkluderer en lenke til
+                              tilbakemeldingsskjemaet.
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
 
                 <div className="mt-6 space-y-4">

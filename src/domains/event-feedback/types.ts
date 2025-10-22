@@ -22,6 +22,7 @@ export interface EventFeedback {
   isPublic?: boolean
   submittedAt: Date
   metadata?: FeedbackMetadata
+  isQuickFeedback?: boolean
 }
 
 interface FeedbackMetadata {
@@ -41,6 +42,7 @@ export interface CreateEventFeedbackInput {
   topicSuggestions: TopicSuggestion[]
   isPublic?: boolean
   metadata?: FeedbackMetadata
+  isQuickFeedback?: boolean
 }
 
 export interface EventFeedbackQuery {

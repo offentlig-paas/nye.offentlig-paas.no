@@ -17,6 +17,11 @@ interface EventFeedbackFormProps {
   talks: Item[]
   organizers: SlackUser[]
   onSubmit?: () => void
+  isUpgrade?: boolean
+  existingFeedback?: {
+    eventRating: number
+    eventComment?: string
+  } | null
 }
 
 interface FormState {
@@ -35,13 +40,15 @@ export function EventFeedbackForm({
   talks,
   organizers,
   onSubmit,
+  isUpgrade = false,
+  existingFeedback = null,
 }: EventFeedbackFormProps) {
   const submitFeedbackMutation = trpc.eventFeedback.submit.useMutation()
 
   const [state, setState] = useState<FormState>({
     talkRatings: new Map(talks.map(t => [t.title, { rating: 0, comment: '' }])),
-    eventRating: 0,
-    eventComment: '',
+    eventRating: existingFeedback?.eventRating || 0,
+    eventComment: existingFeedback?.eventComment || '',
     topicSuggestions: [{ topic: '', willingToPresent: false }],
     isPublic: false,
     isSubmitting: false,
@@ -233,6 +240,15 @@ export function EventFeedbackForm({
           <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
             Hvor fornøyd er du med fagdagen?
           </h3>
+          {isUpgrade && existingFeedback && (
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+              Din tidligere vurdering fra Slack:{' '}
+              <span className="font-medium">
+                {existingFeedback.eventRating} stjerne
+                {existingFeedback.eventRating !== 1 ? 'r' : ''}
+              </span>
+            </p>
+          )}
         </div>
         <StarRating
           rating={state.eventRating}
@@ -242,16 +258,24 @@ export function EventFeedbackForm({
           }
           showLabel
         />
-        <textarea
-          id="eventComment"
-          rows={3}
-          value={state.eventComment}
-          onChange={e =>
-            setState(prev => ({ ...prev, eventComment: e.target.value }))
-          }
-          className="block w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder:text-zinc-500"
-          placeholder="Hva synes du om arrangementet?"
-        />
+        <div className="space-y-2">
+          <textarea
+            id="eventComment"
+            rows={3}
+            value={state.eventComment}
+            onChange={e =>
+              setState(prev => ({ ...prev, eventComment: e.target.value }))
+            }
+            className="block w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder:text-zinc-500"
+            placeholder="Hva synes du om arrangementet?"
+          />
+          {isUpgrade && existingFeedback?.eventComment && (
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              Din tidligere kommentar: &ldquo;{existingFeedback.eventComment}
+              &rdquo;
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Topic Suggestions */}
@@ -358,11 +382,7 @@ export function EventFeedbackForm({
           title="Takk for tilbakemeldingen!"
           description="Din tilbakemelding er mottatt og hjelper oss å forbedre fremtidige arrangementer."
         >
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={() => onSubmit?.()}
-          >
+          <Button variant="secondary" href={`/fagdag/${eventSlug}`}>
             Tilbake
           </Button>
         </SuccessMessage>

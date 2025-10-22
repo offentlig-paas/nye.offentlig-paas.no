@@ -100,13 +100,27 @@ export const eventFeedbackRouter = router({
         })
       }
 
-      const hasFeedback = await eventFeedbackService.hasFeedback(
+      return await eventFeedbackService.hasFeedback(
+        input.slug,
+        ctx.user.slackId
+      )
+    }),
+
+  getUserFeedback: protectedProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async ({ input, ctx }) => {
+      if (!ctx.user.slackId) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'Unauthorized',
+        })
+      }
+
+      const feedback = await eventFeedbackService.getUserFeedback(
         input.slug,
         ctx.user.slackId
       )
 
-      return {
-        hasFeedback,
-      }
+      return feedback
     }),
 })
