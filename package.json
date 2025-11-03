@@ -61,21 +61,21 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@eslint/js": "^9.38.0",
-    "@sanity/cli": "^4.9.0",
-    "@sanity/vision": "^4.9.0",
+    "@eslint/js": "^9.39.0",
+    "@sanity/cli": "^4.12.0",
+    "@sanity/vision": "^4.12.0",
     "@types/jest": "^30.0.0",
     "@types/mdx": "^2.0.13",
     "eslint": "^9.32.0",
-    "eslint-config-next": "^15.5.6",
-    "globals": "^16.4.0",
+    "eslint-config-next": "^16.0.1",
+    "globals": "^16.5.0",
     "jest": "^30.1.3",
-    "knip": "^5.66.1",
+    "knip": "^5.67.0",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.7.1",
-    "sanity": "^4.9.0",
+    "sanity": "^4.12.0",
     "ts-jest": "^29.4.5",
-    "typescript-eslint": "^8.46.0"
+    "typescript-eslint": "^8.46.2"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
