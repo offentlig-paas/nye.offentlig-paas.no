@@ -56,6 +56,31 @@
 
 **IMPORTANT**: When creating Sanity documents with arrays, always use `prepareSanityDocument()` to ensure all array items have the required `_key` property. Sanity will reject documents with array items missing `_key`.
 
+**Avatar utilities** - `src/lib/avatar-utils.ts`:
+
+- `getInitials()` - Extract initials from full name
+- `getBackgroundColor()` - Get consistent color for user avatar
+- `AVATAR_SIZE_CLASSES` - Tailwind classes for avatar sizes
+- `AVATAR_SIZE_PX` - Pixel sizes for avatars
+
+**Calendar utilities** - `src/lib/calendar-utils.ts`:
+
+- `getGoogleCalendarUrl()` - Generate Google Calendar add event URL
+- `getIcsFileContent()` - Generate ICS file content for calendar events
+
+**CSV utilities** - `src/lib/csv-utils.ts`:
+
+- `generateRegistrationsCSV()` - Generate CSV export of registrations
+
+**Organization utilities** - `src/lib/organization-utils.ts`:
+
+- `cleanOrganizationName()` - Normalize and clean organization names
+- `getOrganizationStats()` - Aggregate organization statistics
+
+**Auth guards** - `src/lib/auth-guards.ts`:
+
+- `requireAdmin()` - Server-side admin authentication guard (redirects if not authenticated/admin)
+
 ## Key Patterns & Conventions
 
 ### Key Patterns
@@ -64,7 +89,7 @@
 
 **Members:** Class instances in `src/data/members.ts` with name, type, logo, and optional GitHub/LinkedIn links.
 
-**Events:** Static data in `src/data/events.ts` with file-based JSON storage for registrations in `data/registrations/`.
+**Events:** Static data in `src/data/events.ts` with Sanity storage for registrations and feedback.
 
 ### Component Strategy
 
