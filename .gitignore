@@ -131,3 +131,4 @@ dist
 
 certificates
 .sanity/
+next-env.d.ts
