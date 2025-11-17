@@ -11,9 +11,11 @@ export const events: Event[] = [
     slug: '2025-12-04-fagdag-digital',
     title: 'Offentlig PAAS Fagdag Digital',
     ingress:
-      'Vi inviterer til årets siste fagdag i Offentlig PAAS. Agenda kommer.',
-    start: new Date('2025-12-04T12:00+02:00'),
-    end: new Date('2025-12-04T15:00+02:00'),
+      'Vi inviterer til årets siste fagdag i Offentlig PAAS med fokus på alternativer til Nginx Ingress Controller.',
+    description:
+      'Nginx Ingress Controller er bekreftet deprecated og vi inviterer til en diskusjon om alternativer. Kom og del dine erfaringer og hør hvordan andre løser dette.',
+    start: new Date('2025-12-04T11:00+01:00'),
+    end: new Date('2025-12-04T14:00+01:00'),
     audience: Audience.PublicSector,
     location: 'Zoom',
     registration: {
@@ -26,7 +28,63 @@ export const events: Event[] = [
         url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
       },
     ],
-    schedule: [],
+    schedule: [
+      {
+        time: '11:00 - 11:30',
+        title: 'Velkommen og introduksjon',
+        description:
+          'Velkommen til fagdagen og introduksjon til Nginx Ingress Controller som deprecated.',
+        speakers: [
+          {
+            name: 'Hans Kristian Flaatten',
+            org: 'Nav',
+            url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+          },
+        ],
+        type: ItemType.Info,
+      },
+      {
+        time: '11:30 - 11:55',
+        title: 'Driftly - CUE, Argo og Kargo i Kystverket',
+        description:
+          'Kystverket har kjørt en plattform pilot siden oktober. Dagens landskap for generering av yaml har mange flere valg enn bare helm / kustomize. I kystverket kom vi fram til at CUE har blitt voksent nok til å bli tatt i bruk, etter noen år med spekuleringer. Rendererte manifester med CUE, argo og kargo fungerte så bra at vi endte opp med å legge ut Driftly for alle som leter etter inspirasjon. Vi tar en titt på oppsettet, sammenligner med andre verktøy, og prater løst om fremtidige muligheter som open telemetry integrasjon og veien fra monorepo til OCI moduler.',
+        speakers: [
+          {
+            name: 'Kai Hanssen',
+            org: 'Kystverket',
+            url: 'https://offentlig-paas-no.slack.com/team/U087FNCDVNX',
+          },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '12:00 - 12:25',
+        title: 'Kgateway - Feature-rich API gateway built on Envoy',
+        description:
+          'Kgateway is a feature-rich, fast, and flexible API gateway that is built on top of Envoy proxy and the Kubernetes Gateway API. It excels in function-level routing, supports legacy apps, microservices and serverless, offers robust discovery capabilities, integrates seamlessly with open-source projects, and is designed to support hybrid applications with various technologies, architectures, protocols, and clouds.',
+        speakers: [
+          {
+            name: 'Leon Nunes',
+            org: 'Solo.io',
+          },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '12:45 - 13:00',
+        title: 'Pause',
+        type: ItemType.Break,
+      },
+      {
+        time: '13:00 - 14:00',
+        title:
+          'Diskusjon: Erfaringer med alternativer til Nginx Ingress Controller',
+        description:
+          'En åpen diskusjon hvor medlemmer fra ulike organisasjoner deler sine erfaringer med alternativer til Nginx Ingress Controller.',
+        speakers: [{ name: 'Deltakere fra medlemsorganisasjoner' }],
+        type: ItemType.Panel,
+      },
+    ],
   },
   {
     slug: '2025-10-15-selvbetjening-fagdag',
