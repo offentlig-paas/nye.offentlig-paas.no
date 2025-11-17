@@ -60,8 +60,6 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@eslint/js": "^9.38.0",
     "@sanity/cli": "^4.9.0",
     "@sanity/vision": "^4.9.0",
     "@types/jest": "^30.0.0",

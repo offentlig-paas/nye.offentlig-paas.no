@@ -2,11 +2,13 @@
 
 ## Architecture Overview
 
-**Next.js 15** website with **TypeScript**, **Tailwind CSS**, and **MDX**. Public site for Norwegian public sector technology professionals.
+**Next.js 16** website with **TypeScript**, **Tailwind CSS 4**, and **MDX**. Public site for Norwegian public sector technology professionals.
 
 **Tech Stack:**
 
-- Next.js App Router with file-based routing
+- Next.js 16 App Router with file-based routing
+- React 19 with React Compiler support
+- Turbopack bundler (stable)
 - MDX articles with metadata exports
 - Static data in `src/data/` (members, platforms, events)
 - NextAuth.js v5 with Slack OAuth

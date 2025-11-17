@@ -1,20 +1,11 @@
-import { FlatCompat } from '@eslint/eslintrc'
-import js from '@eslint/js'
+import nextTypescript from 'eslint-config-next/typescript'
+import nextCoreWebVitals from 'eslint-config-next/core-web-vitals'
 import globals from 'globals'
 import typescriptEslint from 'typescript-eslint'
-import { dirname } from 'path'
-import { fileURLToPath } from 'url'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-})
 
 const config = [
+  ...nextTypescript,
+  ...nextCoreWebVitals,
   {
     ignores: [
       '**/node_modules/**',
@@ -23,16 +14,10 @@ const config = [
       '**/dist/**',
       '**/build/**',
       '**/coverage/**',
-      '**/coverage/**',
       'next-env.d.ts',
     ],
   },
-  js.configs.recommended,
   ...typescriptEslint.configs.recommended,
-  ...compat.extends('next/core-web-vitals').map(config => ({
-    ...config,
-    files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx'],
-  })),
   {
     languageOptions: {
       globals: {

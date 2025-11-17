@@ -216,9 +216,9 @@ function ThemeToggle() {
   const otherTheme = resolvedTheme === 'dark' ? 'light' : 'dark'
   const [mounted, setMounted] = useState(false)
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  if (typeof window !== 'undefined' && !mounted) {
+    queueMicrotask(() => setMounted(true))
+  }
 
   return (
     <button

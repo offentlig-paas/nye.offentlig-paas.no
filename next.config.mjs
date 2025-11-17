@@ -1,11 +1,7 @@
 import nextMDX from '@next/mdx'
-import remarkGfm from 'remark-gfm'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  publicRuntimeConfig: {
-    githubRepo: 'offentlig-paas/nye.offentlig-paas.no',
-  },
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'mdx'],
   images: {
     remotePatterns: [
@@ -40,9 +36,8 @@ const nextConfig = {
 const withMDX = nextMDX({
   extension: /\.mdx?$/,
   options: {
-    remarkPlugins: [remarkGfm],
+    remarkPlugins: ['remark-gfm'],
   },
 })
 
-export const publicRuntimeConfig = nextConfig.publicRuntimeConfig
 export default withMDX(nextConfig)

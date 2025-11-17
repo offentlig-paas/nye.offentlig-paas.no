@@ -24,7 +24,7 @@
     "jest.setup.cjs",
     "jest.config.cjs"
   ],
-  "ignoreDependencies": ["@types/webpack-env", "eslint-config-next", "postcss"],
+  "ignoreDependencies": ["@types/webpack-env", "postcss", "remark-gfm"],
   "next": {
     "entry": [
       "src/app/**/page.{ts,tsx}",

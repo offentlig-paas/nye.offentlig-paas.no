@@ -12,12 +12,13 @@ export default async function AdminEventPage({ params }: AdminEventPageProps) {
   const { slug } = await params
   const caller = await createCaller()
 
+  let participantInfo
   try {
-    const participantInfo = await caller.admin.participantInfo.get({ slug })
-
-    return <AdminEventDetailsClient initialParticipantInfo={participantInfo} />
+    participantInfo = await caller.admin.participantInfo.get({ slug })
   } catch (error) {
     console.error('Error loading event:', error)
     notFound()
   }
+
+  return <AdminEventDetailsClient initialParticipantInfo={participantInfo} />
 }

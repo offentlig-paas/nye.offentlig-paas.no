@@ -88,6 +88,8 @@ For å sette opp Slack OAuth:
 
 ## Arkitektur
 
+Bygg med **Next.js 16** (App Router), **React 19**, **TypeScript**, **Tailwind CSS 4**, og **tRPC v11**.
+
 ### API og Type Safety
 
 Bruker **tRPC v11** for type-safe API-kall mellom klient og server:

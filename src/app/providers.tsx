@@ -8,13 +8,15 @@ import { ToastProvider } from '@/components/ToastProvider'
 import { TRPCProvider } from '@/lib/trpc/TRPCProvider'
 
 function usePrevious<T>(value: T) {
-  const ref = useRef<T | null>(null)
+  const ref = useRef<T | undefined>(undefined)
+  const [previous, setPrevious] = React.useState<T | undefined>(undefined)
 
   useEffect(() => {
+    setPrevious(ref.current)
     ref.current = value
   }, [value])
 
-  return ref.current
+  return previous
 }
 
 function ThemeWatcher() {
