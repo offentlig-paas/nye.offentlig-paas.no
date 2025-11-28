@@ -7,6 +7,8 @@ updates:
       day: 'monday'
       time: '09:00'
       timezone: 'Europe/Oslo'
+    cooldown:
+      default-days: 7
     groups:
       production-dependencies:
         dependency-type: 'production'

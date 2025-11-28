@@ -17,7 +17,7 @@ Nettside for Offentlig PaaS - et samarbeid mellom offentlige virksomheter om del
 For å komme i gang med denne malen, installer først avhengighetene:
 
 ```bash
-yarn install
+pnpm install
 ```
 
 Konfigurer miljøvariabler:
@@ -30,7 +30,7 @@ cp .env.example .env.local
 Kjør deretter utviklingsserveren:
 
 ```bash
-yarn dev
+pnpm dev
 ```
 
 Sist, åpne [https://localhost:3000](https://localhost:3000) i nettleseren din for å se nettsiden.
@@ -128,12 +128,12 @@ Bruker NextAuth.js v5 med Slack OAuth. Brukere logger inn med Slack workspace-ko
 ### Utviklingskommandoer
 
 ```bash
-yarn dev             # Utviklingsserver med HTTPS (https://localhost:3000)
-yarn build           # Produksjonsbygg
-yarn start           # Start produksjonsserver
-yarn lint            # ESLint sjekking
-yarn format          # Prettier formatering
-yarn typecheck       # TypeScript sjekking
+pnpm dev             # Utviklingsserver med HTTPS (https://localhost:3000)
+pnpm build           # Produksjonsbygg
+pnpm start           # Start produksjonsserver
+pnpm lint            # ESLint sjekking
+pnpm format          # Prettier formatering
+pnpm typecheck       # TypeScript sjekking
 ```
 
 ### VS Code
