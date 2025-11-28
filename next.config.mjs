@@ -31,6 +31,7 @@ const nextConfig = {
     '/': ['./src/app/artikkel/**/*.mdx'],
     '/artikkel': ['./src/app/artikkel/**/*.mdx'],
   },
+  serverExternalPackages: ['@slack/bolt'],
 }
 
 const withMDX = nextMDX({
