@@ -311,9 +311,8 @@ export const adminRouter = router({
     get: adminEventProcedure
       .input(z.object({ slug: z.string() }))
       .query(async ({ input }) => {
-        const { getEventParticipantInfo } = await import(
-          '@/lib/sanity/event-participant-info'
-        )
+        const { getEventParticipantInfo } =
+          await import('@/lib/sanity/event-participant-info')
         const participantInfo = await getEventParticipantInfo(input.slug)
         return participantInfo || {}
       }),
@@ -327,9 +326,8 @@ export const adminRouter = router({
         })
       )
       .mutation(async ({ input }) => {
-        const { upsertEventParticipantInfo } = await import(
-          '@/lib/sanity/event-participant-info'
-        )
+        const { upsertEventParticipantInfo } =
+          await import('@/lib/sanity/event-participant-info')
         const result = await upsertEventParticipantInfo(input.slug, {
           streamingUrl: input.streamingUrl,
           notes: input.notes,
@@ -361,9 +359,8 @@ export const adminRouter = router({
         })
       }
 
-      const { getAllEventAttachments } = await import(
-        '@/lib/events/attachment-helpers'
-      )
+      const { getAllEventAttachments } =
+        await import('@/lib/events/attachment-helpers')
       const { extractSlackUserId } = await import('@/lib/slack/utils')
       const { sendBulkDirectMessages } = await import('@/lib/slack/messaging')
       const { formatDateLong } = await import('@/lib/formatDate')
@@ -791,9 +788,8 @@ Mvh ${organizerNames}`
         const slackChannel = await findChannelByName(channelName)
 
         // Fetch attachments and merge into schedule
-        const { getAllEventAttachments } = await import(
-          '@/lib/events/attachment-helpers'
-        )
+        const { getAllEventAttachments } =
+          await import('@/lib/events/attachment-helpers')
         const attachmentsMap = await getAllEventAttachments(input.slug)
         const scheduleWithAttachments = ctx.event.schedule.map(item => {
           const attachments = attachmentsMap.get(item.title)
