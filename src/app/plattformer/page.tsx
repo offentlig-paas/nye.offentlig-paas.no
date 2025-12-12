@@ -16,7 +16,7 @@ const plattformer = [
     name: 'Altinn Studio',
     description: 'Digdir sin applikasjonsplattform basert på Kubernetes',
     link: {
-      href: 'https://docs.altinn.studio/nb/altinn-studio/',
+      href: 'https://docs.altinn.studio/nb/altinn-studio/about/',
       label: 'docs.altinn.studio',
     },
     logo: logoAltinn,
