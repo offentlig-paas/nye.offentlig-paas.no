@@ -66,14 +66,14 @@
     "@types/mdx": "^2.0.13",
     "eslint": "^9.39.2",
     "eslint-config-next": "^16.1.1",
-    "globals": "^16.5.0",
+    "globals": "^17.0.0",
     "jest": "^30.2.0",
-    "knip": "^5.78.0",
+    "knip": "^5.79.0",
     "prettier": "^3.7.4",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "sanity": "^5.1.0",
     "ts-jest": "^29.4.6",
-    "typescript-eslint": "^8.50.1"
+    "typescript-eslint": "^8.51.0"
   },
   "packageManager": "pnpm@10.24.0"
 }
