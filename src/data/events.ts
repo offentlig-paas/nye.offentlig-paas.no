@@ -11,7 +11,7 @@ export const events: Event[] = [
     slug: '2026-02-23-fagdag',
     title: 'Offentlig PaaS Fagdag',
     ingress:
-      'Vi inviterer til fagdag mandag 23. februar fra kl 12 - 16 i Forskningsparken / Oslo. Foreløpig har vi bare satt av tid og auditorium, men håper på godt engasjement og oppmøte.',
+      'Vi inviterer til fagdag mandag 23. februar fra kl 12:00 - 16:00 i Forskningsparken / Oslo. Foreløpig har vi bare satt av tid og auditorium, men håper på godt engasjement og oppmøte.',
     description:
       'En fagdag hvor vi samles for å dele erfaringer og kunnskap om plattformutvikling i offentlig sektor. Legg gjerne igjen en kommentar på https://offentlig-paas-no.slack.com/archives/CDJ1J491V/p1769703426987569 om det er noe du ønsker å høre om eller presentere! Mer informasjon kommer.',
     start: new Date('2026-02-23T12:00+01:00'),
