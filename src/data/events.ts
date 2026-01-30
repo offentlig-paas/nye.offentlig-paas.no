@@ -11,13 +11,13 @@ export const events: Event[] = [
     slug: '2026-02-23-fagdag',
     title: 'Offentlig PaaS Fagdag',
     ingress:
-      'Vi inviterer til fagdag mandag 23. februar etter lunsj. Foreløpig har vi bare satt av tid og auditorium, men håper på godt engasjement og oppmøte.',
+      'Vi inviterer til fagdag mandag 23. februar fra kl 12 - 16 i Forskningsparken / Oslo. Foreløpig har vi bare satt av tid og auditorium, men håper på godt engasjement og oppmøte.',
     description:
-      'En fagdag hvor vi samles for å dele erfaringer og kunnskap om plattformutvikling i offentlig sektor. Legg gjerne igjen en kommentar på https://offentlig-paas-no.slack.com/archives/CDJ1J491V/p1769703426987569 om det er noe du ønsker å høre om eller presentere! Mer informasjon når planen har tatt litt mer form.',
-    start: new Date('2026-02-23T13:00+01:00'),
+      'En fagdag hvor vi samles for å dele erfaringer og kunnskap om plattformutvikling i offentlig sektor. Legg gjerne igjen en kommentar på https://offentlig-paas-no.slack.com/archives/CDJ1J491V/p1769703426987569 om det er noe du ønsker å høre om eller presentere! Mer informasjon kommer.',
+    start: new Date('2026-02-23T12:00+01:00'),
     end: new Date('2026-02-23T16:00+01:00'),
     audience: Audience.PublicSector,
-    location: 'TBA',
+    location: 'Forskningsparken, Oslo',
     registration: {
       attendanceTypes: [AttendanceType.Physical],
     },
@@ -34,7 +34,7 @@ export const events: Event[] = [
     ],
     schedule: [
       {
-        time: '13:00 - 16:00',
+        time: '12:00 - 16:00',
         title: 'Program kommer',
         description:
           'Detaljert program vil bli publisert når vi har mottatt forslag til presentasjoner.',
