@@ -20,6 +20,8 @@ export default defineConfig({
 
   plugins: [
     structureTool({
+      // Note: Using 'any' type because sanity/structure exports structureTool with 'any' type
+      // and does not provide proper types for the structure builder parameter
       structure: (S: any) =>
         S.list()
           .title('Content')
