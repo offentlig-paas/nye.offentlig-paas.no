@@ -20,6 +20,7 @@ export default defineConfig({
 
   plugins: [
     structureTool({
+      // @ts-expect-error - Sanity's structureTool does not export proper types for the structure builder
       structure: S =>
         S.list()
           .title('Content')
