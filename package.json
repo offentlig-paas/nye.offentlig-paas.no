@@ -60,20 +60,20 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@sanity/cli": "^5.5.0",
-    "@sanity/vision": "^5.5.0",
+    "@sanity/cli": "^5.7.0",
+    "@sanity/vision": "^5.7.0",
     "@types/jest": "^30.0.0",
     "@types/mdx": "^2.0.13",
     "eslint": "^9.39.2",
-    "eslint-config-next": "^16.1.4",
-    "globals": "^17.0.0",
+    "eslint-config-next": "^16.1.6",
+    "globals": "^17.3.0",
     "jest": "^30.2.0",
     "knip": "^5.82.1",
-    "prettier": "^3.8.0",
+    "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
-    "sanity": "^5.5.0",
+    "sanity": "^5.7.0",
     "ts-jest": "^29.4.6",
-    "typescript-eslint": "^8.53.1"
+    "typescript-eslint": "^8.54.0"
   },
   "packageManager": "pnpm@10.24.0"
 }
