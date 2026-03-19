@@ -15,19 +15,19 @@ async function importArticle(
   articleFilename: string
 ): Promise<ArticleWithSlug> {
   const { article } = (await import(
-    `../app/artikkel/${articleFilename.replace('/page.mdx', '')}/article`
+    `../app/artikkel/${articleFilename.replace('/article.ts', '')}/article`
   )) as {
     article: Article
   }
 
   return {
-    slug: articleFilename.replace(/(\/page)?\.mdx$/, ''),
+    slug: articleFilename.replace(/\/article\.ts$/, ''),
     ...article,
   }
 }
 
 export async function getAllArticles() {
-  const articleFilenames = await glob('*/page.mdx', {
+  const articleFilenames = await glob('*/article.ts', {
     cwd: `${process.cwd()}/src/app/artikkel`,
   })
 

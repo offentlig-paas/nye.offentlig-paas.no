@@ -7,14 +7,14 @@ export function InfoCard({
   className,
 }: {
   title: string
-  number: number
+  number: number | string
   label?: string
   className?: string
 }) {
   return (
     <div
       className={clsx(
-        'rounded-2xl bg-zinc-100 px-4 py-6 sm:px-6 lg:px-8 dark:bg-zinc-800',
+        'flex flex-col justify-between rounded-2xl bg-zinc-100 px-4 py-6 sm:px-6 lg:px-8 dark:bg-zinc-800',
         className
       )}
     >

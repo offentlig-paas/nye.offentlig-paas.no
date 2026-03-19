@@ -44,9 +44,13 @@ export function AuthButton({
   // Prevent hydration mismatch by not rendering session-dependent UI until mounted
   if (!mounted || status === 'loading') {
     return (
-      <Button variant="primary" disabled>
+      <button
+        className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-md bg-zinc-800 px-3 py-2 text-sm font-semibold text-zinc-100 outline-offset-2 transition active:transition-none disabled:cursor-not-allowed dark:bg-zinc-700"
+        disabled
+        suppressHydrationWarning
+      >
         Laster...
-      </Button>
+      </button>
     )
   }
 

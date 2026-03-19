@@ -8,24 +8,24 @@ This project ships four Copilot CLI extensions that provide domain-specific tool
 
 Copilot CLI has two customization mechanisms:
 
-| | Agents (`.agent.md`) | Extensions (`.mjs`) |
-|---|---|---|
-| What they are | Static system-prompt files | JavaScript programs running via the SDK |
-| What they can do | Influence the LLM's persona and instructions | Register **callable tools** and **hooks** |
-| How they activate | User explicitly `@mentions` them | Hooks detect keywords and inject context **automatically** |
-| Output | Text advice | Structured data, scaffolded files, generated code |
+|                   | Agents (`.agent.md`)                         | Extensions (`.mjs`)                                        |
+| ----------------- | -------------------------------------------- | ---------------------------------------------------------- |
+| What they are     | Static system-prompt files                   | JavaScript programs running via the SDK                    |
+| What they can do  | Influence the LLM's persona and instructions | Register **callable tools** and **hooks**                  |
+| How they activate | User explicitly `@mentions` them             | Hooks detect keywords and inject context **automatically** |
+| Output            | Text advice                                  | Structured data, scaffolded files, generated code          |
 
 We use **extensions** for the content workflow because the value is in _tools that do things_ — scaffolding an MDX article, generating a TypeScript event skeleton, returning the design token reference — not in persona prompts. An agent can tell you _how_ to write an article; an extension creates the boilerplate and hands you the design rules.
 
 Extensions also **compose with agents**. The language-quality agents (`plain-language-no`, `plain-language-en`) are persona-based — they review and rewrite text. The extensions handle everything before and around that: planning, scaffolding, reference data, and checklists. Together they form a pipeline:
 
-```
+```plain
 Plan (extension) → Scaffold (extension) → Write → Language cleanup (agent) → Validate
 ```
 
 ## Architecture
 
-```
+```plain
 .github/extensions/
 ├── redaktor/          Editor-in-chief — triages requests, plans workflows
 │   └── extension.mjs  Tools: content_plan, site_overview
@@ -52,45 +52,45 @@ Example: typing "write an article about observability" triggers the article-writ
 
 ### Redaktør (editor-in-chief)
 
-| Tool | Parameters | What it does |
-|------|-----------|-------------|
-| `content_plan` | `topic`, `content_type`, `language?` | Returns a step-by-step editorial workflow for the content type. Types: `article`, `event`, `event-summary`, `member-update`, `landing-page`, `component` |
-| `site_overview` | — | Returns a map of all content domains, tools, and available agents |
+| Tool            | Parameters                           | What it does                                                                                                                                             |
+| --------------- | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `content_plan`  | `topic`, `content_type`, `language?` | Returns a step-by-step editorial workflow for the content type. Types: `article`, `event`, `event-summary`, `member-update`, `landing-page`, `component` |
+| `site_overview` | —                                    | Returns a map of all content domains, tools, and available agents                                                                                        |
 
 ### Article Writer
 
-| Tool | Parameters | What it does |
-|------|-----------|-------------|
-| `scaffold_article` | `title`, `author`, `description`, `language?`, `slug?` | Creates the MDX directory and `page.mdx` with correct metadata exports, ArticleLayout wrapper, and Next.js metadata |
-| `article_guidelines` | `section?` | Returns writing and design guidelines. Sections: `structure`, `design`, `writing`, `components`, `images`, or `all` |
+| Tool                 | Parameters                                             | What it does                                                                                                        |
+| -------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| `scaffold_article`   | `title`, `author`, `description`, `language?`, `slug?` | Creates the MDX directory and `page.mdx` with correct metadata exports, ArticleLayout wrapper, and Next.js metadata |
+| `article_guidelines` | `section?`                                             | Returns writing and design guidelines. Sections: `structure`, `design`, `writing`, `components`, `images`, or `all` |
 
 ### Event Manager
 
-| Tool | Parameters | What it does |
-|------|-----------|-------------|
-| `scaffold_event` | `title`, `date`, `start_time`, `end_time`, `location`, `ingress`, `description?`, `max_capacity?`, `attendance_types?`, `has_social_event?`, `num_talks?` | Generates a complete TypeScript event object with correct types (`Event`, `Item`, `SlackUser`, `ItemType`, `AttendanceType`, `Audience`) ready to paste into `src/data/events.ts` |
-| `event_checklist` | `phase?` | Returns operational checklist for event lifecycle. Phases: `before`, `during`, `after`, or `all` |
+| Tool              | Parameters                                                                                                                                                | What it does                                                                                                                                                                      |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `scaffold_event`  | `title`, `date`, `start_time`, `end_time`, `location`, `ingress`, `description?`, `max_capacity?`, `attendance_types?`, `has_social_event?`, `num_talks?` | Generates a complete TypeScript event object with correct types (`Event`, `Item`, `SlackUser`, `ItemType`, `AttendanceType`, `Audience`) ready to paste into `src/data/events.ts` |
+| `event_checklist` | `phase?`                                                                                                                                                  | Returns operational checklist for event lifecycle. Phases: `before`, `during`, `after`, or `all`                                                                                  |
 
 ### Designer
 
-| Tool | Parameters | What it does |
-|------|-----------|-------------|
+| Tool                      | Parameters | What it does                                                                                                                  |
+| ------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | `design_system_reference` | `section?` | Returns the design system reference. Sections: `colors`, `typography`, `components`, `layout`, `dark-mode`, `icons`, or `all` |
 
 ## Language agents
 
 These are persona agents (not extensions) that handle text quality. Use them _after_ writing content:
 
-| Agent | What it does |
-|-------|-------------|
-| `plain-language-no` | Norwegian plain-language cleanup — klarspråk, AI markers, anglicisms, readability |
+| Agent               | What it does                                                                          |
+| ------------------- | ------------------------------------------------------------------------------------- |
+| `plain-language-no` | Norwegian plain-language cleanup — klarspråk, AI markers, anglicisms, readability     |
 | `plain-language-en` | English plain-language cleanup — simplifies, strips AI patterns, improves readability |
 
 ## Workflows
 
 ### Write a new article
 
-```
+```plain
 1. Ask Copilot to write an article about [topic]
    → article-writer hook auto-injects context
    → LLM calls scaffold_article to create boilerplate
@@ -102,7 +102,7 @@ These are persona agents (not extensions) that handle text quality. Use them _af
 
 ### Create a new event
 
-```
+```plain
 1. Ask Copilot to create a fagdag about [topic] on [date]
    → event-manager hook auto-injects context
    → LLM calls scaffold_event to generate the TypeScript skeleton
@@ -114,7 +114,7 @@ These are persona agents (not extensions) that handle text quality. Use them _af
 
 ### Plan any content
 
-```
+```plain
 1. Ask: "Plan content about [topic]"
    → redaktor hook auto-injects context
    → LLM calls content_plan with the right content_type

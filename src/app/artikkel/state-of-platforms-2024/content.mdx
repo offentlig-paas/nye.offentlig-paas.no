@@ -1,5 +1,3 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
-import { article } from './article'
 import maturityModel from './1-maturity-model.png'
 import respondents from './2-respondents.png'
 import motivation from './4-motivation.png'
@@ -7,69 +5,38 @@ import teams from './6-teams-and-languages.png'
 import years from './8-years-in-prod.png'
 import tech from './10-cncf-tech.png'
 import maturity from './11-maturity-results.png'
+import Image from 'next/image'
 
-export const metadata = {
   title: article.title,
   language: 'en',
   description: article.description,
 }
-
-export default props => <ArticleLayout article={article} {...props} />
-
 This is the English version of the article. The Norwegian version can be found [here](/artikkel/plattformmodenhet-2024).
-
 Platform Engineering is a relatively new discipline in the Norwegian public sector. The first application platforms were established back in 2016, and since then, the number of platforms has grown rapidly. In 2024, there are more than 50 known platforms in the public sector, and the number is expected to grow even more in the coming years.
-
 CNCF has developed a platform maturity model that can be used to assess the maturity of a platform. The model consists of five levels: Level 1 (Provisional), Level 2 (Operational), Level 3 (Scalable), and Level 4 (Optimizing) and covers aspects of platform maturity, such as how organizations are investing in platforms, how teams are adopting and interfacing with the platforms, how the platforms are operated and continously improved.
-
 <Image src={maturityModel} alt="" />
-
 ## Methodology
-
 The survey consisted of 31 questions in three different categories: general platform engineering, kubernetes and cloud. The survey was distributed on Offentlig PaaS Slack and LinkedIn during the last quater of 2023. We recieved a total of 51 individual responses accross 35 unique organizations when filtering out duplicates.
-
 <Image src={respondents} alt="" />
-
 We do accnowledge that the survey is not representative for the entire public sector of Norway and that there is a strong sampling bias towards organizations that has already adopted platform engineering principles. We do believe that the results can give an indication of the state of platform maturity in the Norwegian public sector.
-
 Only state agencies have been included in the final analysis, this represents one third of the state agencies in Norway in number of employees (35%), budget (35%) and number of agencies (28%).
-
 ## Findings
-
 Not suprisingly the motivation for building platforms is to increase the speed and quality of software delivery. This is in line with the findings from the State of DevOps report, where high performing organizations are able to deliver software faster and with higher quality than low performing organizations.
-
 <Image src={motivation} alt="" />
-
 The majority of the respondents have between 11 and 50 software teams that are using the platform, but there is also a great number of smaller organizations that have less than 5 teams using the platform. The most common programming languages for applications running on these platforms are Java/Kotlin and JavaScript/TypeScript.
-
 <Image src={teams} alt="" />
-
 The platform engineering revolution started when the Labor and Welfare Administration (Nav) and Tax Administration (Skatt) adopted Kubernetes back in 2016, after creatng the Offentlig PaaS community you can see an explosive growth in Kubernetes adoption in the public sector. The majority of the respondents have been running Kubernetes in production for more than 3 years.
-
 <Image src={years} alt="" />
-
 Unsurprisingly, the most popular CNCF projects are Kubernetes, Prometheus, and Helm, but other projects within networking and security are being used to a large degree as welwithin networking and security are being used to a large degree as welll. It will be interesting to see the adoption of OpenTelemetry and Backstage in the coming years.
-
 <Image src={tech} alt="" />
-
 Which brings us to the most interesting part of the survey, the maturity results. Lets break them down by aspect.
-
 **Investment** covers how platform temas are organized, it ranges from volentary, dedicated team, product team, through enabled ecosystem where the users of the platform are also contributing back to the platform. Most organizations are at level 2, with a dedicated team, but graduating to a product mindset is a challenge for many organizations.
-
 **Adoption** covers how teams are onboarded to the platform, it ranges from chaos and all the way to self-onboarding because they see a clear benefit. Here we see the most mature aspect of the survey, with most organizations at level 3 or 4. Clarely developers see the benefit of using the platform.
-
 **Interfaces** covers how the platform is interfacing with the rest of the organization, it ranges from manual processes to fully automated and integrated with other services in the organization. This is where we find slightly more teams still on level 1 but the majority are at level 2 or 3. Only a few organizations have reached level 4 which requires a lot development effort of custom integrations.
-
 **Operations** covers how the life-cycle of platform capabilities are being handled by the platform team, it ranges from by-request to fully managed services. Here we see a slightly larger gap between level 2 and 4. This was probably the the most difficult aspect to understand for the respondents due to the complexity of the question.
-
 **Measurements** covers how the process of measuring the success of the platform, it ranges from ad-hock to a culture of continous improvement. This is where we see the lowest maturity accross the board, with no organizations higher than level 2 and a 50/50 split between level 1 and 2. I guess this is where we need to focus our efforts in the coming years.
-
 <Image src={maturity} alt="" />
-
 ## Conclusion
-
 The survey shows that the public sector in Norway is investing heavily in platform engineering, and that the majority of the organizations have adopted Kubernetes and cloud native technologies.
-
 The main motivation for building platforms is to increase the speed and quality of software delivery. The platforms are most mature when it comes to how they are adopted and used by the teams, but there is still a lot of work to be done when it comes to how the platform teams are funded and how the success of the platforms are measured on a continous basis.
-
 The survey does not shed much light on particular challenges that the organizations are facing, nor what the users of the platforms actually think about them. This is something that we will have to investigate further in the coming years.
