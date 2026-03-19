@@ -1,4 +1,4 @@
-import { joinSession } from "@github/copilot-sdk/extension";
+import { joinSession } from '@github/copilot-sdk/extension'
 
 // ─── Designer — Web Design Specialist ───────────────────────────────────────
 //
@@ -13,25 +13,33 @@ import { joinSession } from "@github/copilot-sdk/extension";
 const session = await joinSession({
   tools: [
     {
-      name: "design_system_reference",
+      name: 'design_system_reference',
       description:
-        "Returns the design system reference for the Offentlig PaaS website. " +
-        "Covers the color palette, typography scale, component inventory, " +
-        "layout patterns, dark mode, and Tailwind configuration. " +
-        "Use this before creating or modifying any UI component or page.",
+        'Returns the design system reference for the Offentlig PaaS website. ' +
+        'Covers the color palette, typography scale, component inventory, ' +
+        'layout patterns, dark mode, and Tailwind configuration. ' +
+        'Use this before creating or modifying any UI component or page.',
       parameters: {
-        type: "object",
+        type: 'object',
         properties: {
           section: {
-            type: "string",
-            enum: ["all", "colors", "typography", "components", "layout", "dark-mode", "icons"],
+            type: 'string',
+            enum: [
+              'all',
+              'colors',
+              'typography',
+              'components',
+              'layout',
+              'dark-mode',
+              'icons',
+            ],
             description: "Which section to return. Defaults to 'all'.",
           },
         },
       },
-      handler: async (args) => {
-        const section = args.section || "all";
-        const sections = {};
+      handler: async args => {
+        const section = args.section || 'all'
+        const sections = {}
 
         sections.colors = `
 ## Fargepalett
@@ -68,7 +76,7 @@ Nettsiden bruker **zinc** (nøytral) og **teal** (aksent) fra Tailwind.
 - Kort/paneler: bg-zinc-50 / dark:bg-zinc-800
 - Skygger: shadow-zinc-800/5
 - Ringer/borders: ring-zinc-900/5 / dark:ring-zinc-700/50
-`;
+`
 
         sections.typography = `
 ## Typografi
@@ -101,7 +109,7 @@ Nettsiden bruker **zinc** (nøytral) og **teal** (aksent) fra Tailwind.
 - medium (500): Kodeblokker
 - semibold (600): Overskrifter, lenker, inline-kode, listepunkter
 - bold (700): Kode i overskrifter
-`;
+`
 
         sections.components = `
 ## Komponentbibliotek (65+ komponenter)
@@ -167,7 +175,7 @@ Nettsiden bruker **zinc** (nøytral) og **teal** (aksent) fra Tailwind.
 
 ### Sosiale medier
 - SocialIcons — GitHub, Slack, YouTube, LinkedIn, X, Bluesky-ikoner
-`;
+`
 
         sections.layout = `
 ## Layout-mønstre
@@ -206,9 +214,9 @@ Nettsiden bruker **zinc** (nøytral) og **teal** (aksent) fra Tailwind.
   <InfoCard title="Tittel" number="123" />
 </div>
 \`\`\`
-`;
+`
 
-        sections["dark-mode"] = `
+        sections['dark-mode'] = `
 ## Mørk modus
 
 ### Konfigurasjon
@@ -240,7 +248,7 @@ className="shadow-zinc-800/5 dark:shadow-none"
 // Hover
 className="hover:bg-zinc-50 dark:hover:bg-zinc-800"
 \`\`\`
-`;
+`
 
         sections.icons = `
 ## Ikoner
@@ -262,35 +270,50 @@ Egendefinerte SVG-ikoner i src/components/SocialIcons.tsx:
 - 24px outline-varianter for generelle ikoner
 - 24px solid-varianter for fylt tilstand (f.eks. aktiv stjerne)
 - 20px mini-varianter for trange steder
-`;
+`
 
-        if (section === "all") {
-          return Object.values(sections).join("\n---\n");
+        if (section === 'all') {
+          return Object.values(sections).join('\n---\n')
         }
         if (sections[section]) {
-          return sections[section];
+          return sections[section]
         }
         return {
           textResultForLlm: `Ukjent seksjon '${section}'. Gyldige: all, colors, typography, components, layout, dark-mode, icons`,
-          resultType: "failure",
-        };
+          resultType: 'failure',
+        }
       },
     },
   ],
 
   hooks: {
-    onUserPromptSubmitted: async (input) => {
-      const prompt = input.prompt.toLowerCase();
+    onUserPromptSubmitted: async input => {
+      const prompt = input.prompt.toLowerCase()
 
       const designKeywords = [
-        "design", "komponent", "component", "layout", "styling",
-        "tailwind", "css", "responsiv", "responsive", "dark mode",
-        "mørk modus", "farge", "color", "typografi", "typography",
-        "ikon", "icon", "ui", "grensesnitt",
-      ];
+        'design',
+        'komponent',
+        'component',
+        'layout',
+        'styling',
+        'tailwind',
+        'css',
+        'responsiv',
+        'responsive',
+        'dark mode',
+        'mørk modus',
+        'farge',
+        'color',
+        'typografi',
+        'typography',
+        'ikon',
+        'icon',
+        'ui',
+        'grensesnitt',
+      ]
 
-      const isDesignRelated = designKeywords.some((kw) => prompt.includes(kw));
-      if (!isDesignRelated) return;
+      const isDesignRelated = designKeywords.some(kw => prompt.includes(kw))
+      if (!isDesignRelated) return
 
       return {
         additionalContext: `
@@ -310,9 +333,9 @@ Regler:
 - Hold komponenthierarkiet flatt — unngå unødvendige wrappere
 - Kjør 'yarn run check' etter endringer
 `,
-      };
+      }
     },
   },
-});
+})
 
-await session.log("Designer ready — design_system_reference available");
+await session.log('Designer ready — design_system_reference available')

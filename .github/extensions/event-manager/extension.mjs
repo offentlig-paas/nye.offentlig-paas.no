@@ -1,4 +1,4 @@
-import { joinSession } from "@github/copilot-sdk/extension";
+import { joinSession } from '@github/copilot-sdk/extension'
 
 // ─── Event Manager — Fagdag Scaffolding & Checklist ─────────────────────────
 //
@@ -8,85 +8,102 @@ import { joinSession } from "@github/copilot-sdk/extension";
 // The event data model is the most complex structure in the codebase — this
 // extension eliminates manual type reference and reduces scaffolding errors.
 
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
+import { readFile } from 'node:fs/promises'
+import { join } from 'node:path'
 
 function slugFromDate(dateStr) {
-  return dateStr.replace(/T.*/, "");
+  return dateStr.replace(/T.*/, '')
 }
 
 const session = await joinSession({
   tools: [
     {
-      name: "scaffold_event",
+      name: 'scaffold_event',
       description:
-        "Generates a TypeScript event skeleton for the Offentlig PaaS fagdag system. " +
-        "Returns the complete event object with correct types (Event, Item, SlackUser, " +
-        "AttendanceType, Audience, ItemType) ready to paste into src/data/events.ts. " +
-        "Use this when creating a new fagdag or event.",
+        'Generates a TypeScript event skeleton for the Offentlig PaaS fagdag system. ' +
+        'Returns the complete event object with correct types (Event, Item, SlackUser, ' +
+        'AttendanceType, Audience, ItemType) ready to paste into src/data/events.ts. ' +
+        'Use this when creating a new fagdag or event.',
       parameters: {
-        type: "object",
+        type: 'object',
         properties: {
           title: {
-            type: "string",
-            description: "Event title, e.g. 'Offentlig PaaS Fagdag Observability'",
+            type: 'string',
+            description:
+              "Event title, e.g. 'Offentlig PaaS Fagdag Observability'",
           },
           date: {
-            type: "string",
-            description: "Event date in YYYY-MM-DD format",
+            type: 'string',
+            description: 'Event date in YYYY-MM-DD format',
           },
           start_time: {
-            type: "string",
+            type: 'string',
             description: "Start time in HH:MM format (24h), e.g. '11:00'",
           },
           end_time: {
-            type: "string",
+            type: 'string',
             description: "End time in HH:MM format (24h), e.g. '15:00'",
           },
           location: {
-            type: "string",
+            type: 'string',
             description: "Physical location or 'Zoom' for digital events",
           },
           ingress: {
-            type: "string",
-            description: "Short description (1-2 sentences) shown on event cards",
+            type: 'string',
+            description:
+              'Short description (1-2 sentences) shown on event cards',
           },
           description: {
-            type: "string",
-            description: "Longer description of the event",
+            type: 'string',
+            description: 'Longer description of the event',
           },
           max_capacity: {
-            type: "number",
-            description: "Maximum physical attendees. Omit for unlimited.",
+            type: 'number',
+            description: 'Maximum physical attendees. Omit for unlimited.',
           },
           attendance_types: {
-            type: "array",
-            items: { type: "string", enum: ["physical", "digital"] },
-            description: "How people can attend. Default: ['physical', 'digital']",
+            type: 'array',
+            items: { type: 'string', enum: ['physical', 'digital'] },
+            description:
+              "How people can attend. Default: ['physical', 'digital']",
           },
           has_social_event: {
-            type: "boolean",
-            description: "Include a social event (mingling) after the main event",
+            type: 'boolean',
+            description:
+              'Include a social event (mingling) after the main event',
           },
           num_talks: {
-            type: "number",
-            description: "Number of talk placeholder slots to generate in the schedule. Default: 4",
+            type: 'number',
+            description:
+              'Number of talk placeholder slots to generate in the schedule. Default: 4',
           },
         },
-        required: ["title", "date", "start_time", "end_time", "location", "ingress"],
+        required: [
+          'title',
+          'date',
+          'start_time',
+          'end_time',
+          'location',
+          'ingress',
+        ],
       },
-      handler: async (args) => {
-        const slug = `${args.date}-${args.title.toLowerCase().replace(/[^a-z0-9æøå]+/gi, "-").replace(/(^-|-$)/g, "")}`;
-        const attendanceTypes = args.attendance_types || ["physical", "digital"];
-        const numTalks = args.num_talks || 4;
-        const tz = "+02:00";
+      handler: async args => {
+        const slug = `${args.date}-${args.title
+          .toLowerCase()
+          .replace(/[^a-z0-9æøå]+/gi, '-')
+          .replace(/(^-|-$)/g, '')}`
+        const attendanceTypes = args.attendance_types || ['physical', 'digital']
+        const numTalks = args.num_talks || 4
+        const tz = '+02:00'
 
         const attendanceStr = attendanceTypes
-          .map((t) => `AttendanceType.${t === "physical" ? "Physical" : "Digital"}`)
-          .join(", ");
+          .map(
+            t => `AttendanceType.${t === 'physical' ? 'Physical' : 'Digital'}`
+          )
+          .join(', ')
 
         // Build schedule
-        const scheduleItems = [];
+        const scheduleItems = []
 
         scheduleItems.push(`    {
       time: '${args.start_time} - ${addMinutes(args.start_time, 30)}',
@@ -99,12 +116,12 @@ const session = await joinSession({
         },
       ],
       type: ItemType.Registration,
-    }`);
+    }`)
 
-        let currentTime = addMinutes(args.start_time, 30);
+        let currentTime = addMinutes(args.start_time, 30)
 
         for (let i = 0; i < numTalks; i++) {
-          const talkEnd = addMinutes(currentTime, 25);
+          const talkEnd = addMinutes(currentTime, 25)
           scheduleItems.push(`    {
       time: '${currentTime} - ${talkEnd}',
       title: 'TALK_TITLE_${i + 1}',
@@ -117,36 +134,38 @@ const session = await joinSession({
         },
       ],
       type: ItemType.Talk,
-    }`);
-          currentTime = talkEnd;
+    }`)
+          currentTime = talkEnd
 
           if (i === Math.floor(numTalks / 2) - 1) {
-            const breakEnd = addMinutes(currentTime, 60);
+            const breakEnd = addMinutes(currentTime, 60)
             scheduleItems.push(`    {
       time: '${currentTime} - ${breakEnd}',
       title: 'Lunsj',
       type: ItemType.Break,
-    }`);
-            currentTime = breakEnd;
+    }`)
+            currentTime = breakEnd
           }
         }
 
-        let socialEventStr = "";
+        let socialEventStr = ''
         if (args.has_social_event) {
           socialEventStr = `
   socialEvent: {
     description: 'Bli med på mingling og nettverksbygging. En uformell anledning til å møte andre deltakere, dele erfaringer og bygge nettverk over pizza og drikke.',
     start: new Date('${args.date}T${addMinutes(args.end_time, 60)}${tz}'),
     location: '${args.location}',
-  },`;
+  },`
         }
 
-        const capacityStr = args.max_capacity ? `\n  maxCapacity: ${args.max_capacity},` : "";
+        const capacityStr = args.max_capacity
+          ? `\n  maxCapacity: ${args.max_capacity},`
+          : ''
 
         const event = `{
   slug: '${slug}',
   title: '${args.title}',
-  ingress: '${args.ingress}',${args.description ? `\n  description: '${args.description}',` : ""}
+  ingress: '${args.ingress}',${args.description ? `\n  description: '${args.description}',` : ''}
   start: new Date('${args.date}T${args.start_time}${tz}'),
   end: new Date('${args.date}T${args.end_time}${tz}'),
   audience: Audience.PublicSector,
@@ -162,56 +181,56 @@ const session = await joinSession({
     },
   ],${socialEventStr}
   schedule: [
-${scheduleItems.join(",\n")}
+${scheduleItems.join(',\n')}
   ],
-}`;
+}`
 
         return [
           `✅ Event scaffolded: ${slug}`,
-          "",
-          "Add this to the events array in src/data/events.ts:",
-          "(Insert at the TOP of the array — newest events first)",
-          "",
-          "```typescript",
+          '',
+          'Add this to the events array in src/data/events.ts:',
+          '(Insert at the TOP of the array — newest events first)',
+          '',
+          '```typescript',
           event,
-          "```",
-          "",
-          "The file uses these imports (already present at top of events.ts):",
-          "```typescript",
+          '```',
+          '',
+          'The file uses these imports (already present at top of events.ts):',
+          '```typescript',
           "import type { Event } from '@/lib/events/types'",
           "import { AttachmentType, Audience, ItemType, AttendanceType } from '@/lib/events/types'",
-          "```",
-          "",
-          "Replace all UPPERCASE placeholders:",
-          "- ORGANIZER_NAME, ORGANIZER_ORG, SLACK_ID — Event organizers",
-          "- TALK_TITLE_N, TALK_DESCRIPTION — Talk details",
-          "- SPEAKER_NAME, SPEAKER_ORG — Speaker info",
-          "",
-          "SlackUser URLs follow the pattern: https://offentlig-paas-no.slack.com/team/<SLACK_USER_ID>",
-        ].join("\n");
+          '```',
+          '',
+          'Replace all UPPERCASE placeholders:',
+          '- ORGANIZER_NAME, ORGANIZER_ORG, SLACK_ID — Event organizers',
+          '- TALK_TITLE_N, TALK_DESCRIPTION — Talk details',
+          '- SPEAKER_NAME, SPEAKER_ORG — Speaker info',
+          '',
+          'SlackUser URLs follow the pattern: https://offentlig-paas-no.slack.com/team/<SLACK_USER_ID>',
+        ].join('\n')
       },
     },
 
     {
-      name: "event_checklist",
+      name: 'event_checklist',
       description:
-        "Returns the operational checklist for managing Offentlig PaaS events (fagdager). " +
-        "Covers before, during, and after the event — registration, Slack channels, " +
-        "reminders, feedback collection, and article writing. " +
-        "Use this when planning or running a fagdag.",
+        'Returns the operational checklist for managing Offentlig PaaS events (fagdager). ' +
+        'Covers before, during, and after the event — registration, Slack channels, ' +
+        'reminders, feedback collection, and article writing. ' +
+        'Use this when planning or running a fagdag.',
       parameters: {
-        type: "object",
+        type: 'object',
         properties: {
           phase: {
-            type: "string",
-            enum: ["all", "before", "during", "after"],
+            type: 'string',
+            enum: ['all', 'before', 'during', 'after'],
             description: "Which phase of the event lifecycle. Default: 'all'.",
           },
         },
       },
-      handler: async (args) => {
-        const phase = args.phase || "all";
-        const phases = {};
+      handler: async args => {
+        const phase = args.phase || 'all'
+        const phases = {}
 
         phases.before = `
 ## Før arrangementet
@@ -238,7 +257,7 @@ ${scheduleItems.join(",\n")}
 - [ ] Test streaming-oppsett (Zoom/YouTube)
 - [ ] Legg inn streaming-URL via Admin → Participant Info
 - [ ] Sett opp opptak om ønskelig
-`;
+`
 
         phases.during = `
 ## Under arrangementet
@@ -257,7 +276,7 @@ ${scheduleItems.join(",\n")}
 ### Sosialt arrangement
 - [ ] Bekreft deltakere for sosialt arrangement
 - [ ] Legg ut bilder i Slack-kanalen
-`;
+`
 
         phases.after = `
 ## Etter arrangementet
@@ -292,34 +311,43 @@ Event-registreringer lagres i Sanity med status:
 - cancelled (avmeldt)
 
 Tilbakemeldinger samles per foredrag (1-5 stjerner + kommentar) + helhetlig vurdering.
-`;
+`
 
-        if (phase === "all") {
-          return Object.values(phases).join("\n---\n");
+        if (phase === 'all') {
+          return Object.values(phases).join('\n---\n')
         }
         if (phases[phase]) {
-          return phases[phase];
+          return phases[phase]
         }
         return {
           textResultForLlm: `Ukjent fase '${phase}'. Gyldige: all, before, during, after`,
-          resultType: "failure",
-        };
+          resultType: 'failure',
+        }
       },
     },
   ],
 
   hooks: {
-    onUserPromptSubmitted: async (input) => {
-      const prompt = input.prompt.toLowerCase();
+    onUserPromptSubmitted: async input => {
+      const prompt = input.prompt.toLowerCase()
 
       const eventKeywords = [
-        "fagdag", "event", "arrangement", "foredrag", "talk",
-        "registrering", "registration", "agenda", "schedule",
-        "program", "foredragsholder", "speaker",
-      ];
+        'fagdag',
+        'event',
+        'arrangement',
+        'foredrag',
+        'talk',
+        'registrering',
+        'registration',
+        'agenda',
+        'schedule',
+        'program',
+        'foredragsholder',
+        'speaker',
+      ]
 
-      const isEventRelated = eventKeywords.some((kw) => prompt.includes(kw));
-      if (!isEventRelated) return;
+      const isEventRelated = eventKeywords.some(kw => prompt.includes(kw))
+      if (!isEventRelated) return
 
       return {
         additionalContext: `
@@ -339,17 +367,19 @@ SlackUser-format: { name: 'Navn', org: 'Organisasjon', url: 'https://offentlig-p
 Registreringer og tilbakemeldinger lagres i Sanity CMS (ikke i koden).
 Admin-verktøy: /admin/events/[slug] for påmelding, tilbakemeldinger, bilder, Slack-kanal.
 `,
-      };
+      }
     },
   },
-});
+})
 
 function addMinutes(timeStr, minutes) {
-  const [h, m] = timeStr.split(":").map(Number);
-  const totalMinutes = h * 60 + m + minutes;
-  const newH = Math.floor(totalMinutes / 60) % 24;
-  const newM = totalMinutes % 60;
-  return `${String(newH).padStart(2, "0")}:${String(newM).padStart(2, "0")}`;
+  const [h, m] = timeStr.split(':').map(Number)
+  const totalMinutes = h * 60 + m + minutes
+  const newH = Math.floor(totalMinutes / 60) % 24
+  const newM = totalMinutes % 60
+  return `${String(newH).padStart(2, '0')}:${String(newM).padStart(2, '0')}`
 }
 
-await session.log("Event Manager ready — scaffold_event & event_checklist available");
+await session.log(
+  'Event Manager ready — scaffold_event & event_checklist available'
+)

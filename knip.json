@@ -24,7 +24,12 @@
     "jest.setup.cjs",
     "jest.config.cjs"
   ],
-  "ignoreDependencies": ["@types/webpack-env", "postcss", "remark-gfm"],
+  "ignoreDependencies": [
+    "@types/webpack-env",
+    "@types/mdx",
+    "postcss",
+    "remark-gfm"
+  ],
   "next": {
     "entry": [
       "src/app/**/page.{ts,tsx}",

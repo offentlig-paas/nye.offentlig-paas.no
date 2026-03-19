@@ -1,4 +1,4 @@
-import { joinSession } from "@github/copilot-sdk/extension";
+import { joinSession } from '@github/copilot-sdk/extension'
 
 // ─── Article Writer Agent Extension ─────────────────────────────────────────
 //
@@ -11,26 +11,32 @@ import { joinSession } from "@github/copilot-sdk/extension";
 //   - github/awesome-copilot agent patterns
 //   - wshobson/agents progressive disclosure architecture
 
-import { readdir, mkdir, writeFile, access } from "node:fs/promises";
-import { join, resolve } from "node:path";
+import { readdir, mkdir, writeFile, access } from 'node:fs/promises'
+import { join, resolve } from 'node:path'
 
-const ARTICLE_DIR = "src/app/artikkel";
+const ARTICLE_DIR = 'src/app/artikkel'
 
 function todayISO() {
-  return new Date().toISOString().slice(0, 10);
+  return new Date().toISOString().slice(0, 10)
 }
 
 function slugify(text) {
   return text
     .toLowerCase()
-    .replace(/[æ]/g, "ae")
-    .replace(/[ø]/g, "o")
-    .replace(/[å]/g, "a")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
+    .replace(/[æ]/g, 'ae')
+    .replace(/[ø]/g, 'o')
+    .replace(/[å]/g, 'a')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
 }
 
-function generateMDXBoilerplate({ title, author, date, description, language }) {
+function generateMDXBoilerplate({
+  title,
+  author,
+  date,
+  description,
+  language,
+}) {
   return `import { ArticleLayout } from '@/components/ArticleLayout'
 
 export const article = {
@@ -49,63 +55,66 @@ export const metadata = {
 
 export default props => <ArticleLayout article={article} {...props} />
 
-`;
+`
 }
 
 // ─── Tool: scaffold_article ─────────────────────────────────────────────────
 
 const scaffoldArticleTool = {
-  name: "scaffold_article",
+  name: 'scaffold_article',
   description:
-    "Creates a new MDX article directory with boilerplate for the Offentlig PaaS website. " +
-    "Generates the slug, directory, and page.mdx with correct metadata exports, " +
-    "ArticleLayout wrapper, and Next.js metadata. Returns the file path for further editing.",
+    'Creates a new MDX article directory with boilerplate for the Offentlig PaaS website. ' +
+    'Generates the slug, directory, and page.mdx with correct metadata exports, ' +
+    'ArticleLayout wrapper, and Next.js metadata. Returns the file path for further editing.',
   parameters: {
-    type: "object",
+    type: 'object',
     properties: {
       title: {
-        type: "string",
-        description: "Article title (Norwegian or English)",
+        type: 'string',
+        description: 'Article title (Norwegian or English)',
       },
       author: {
-        type: "string",
+        type: 'string',
         description: "Author full name, e.g. 'Hans Kristian Flaatten'",
       },
       description: {
-        type: "string",
-        description: "Short meta description (1-2 sentences) for SEO and article cards",
+        type: 'string',
+        description:
+          'Short meta description (1-2 sentences) for SEO and article cards',
       },
       language: {
-        type: "string",
-        enum: ["no", "en"],
-        description: "Content language: 'no' for Norwegian bokmål (default), 'en' for English",
+        type: 'string',
+        enum: ['no', 'en'],
+        description:
+          "Content language: 'no' for Norwegian bokmål (default), 'en' for English",
       },
       slug: {
-        type: "string",
-        description: "Optional URL slug override. If omitted, auto-generated from title.",
+        type: 'string',
+        description:
+          'Optional URL slug override. If omitted, auto-generated from title.',
       },
     },
-    required: ["title", "author", "description"],
+    required: ['title', 'author', 'description'],
   },
   handler: async (args, invocation) => {
-    const slug = args.slug || slugify(args.title);
-    const language = args.language || "no";
-    const date = todayISO();
-    const cwd = process.cwd();
-    const dirPath = join(cwd, ARTICLE_DIR, slug);
-    const filePath = join(dirPath, "page.mdx");
+    const slug = args.slug || slugify(args.title)
+    const language = args.language || 'no'
+    const date = todayISO()
+    const cwd = process.cwd()
+    const dirPath = join(cwd, ARTICLE_DIR, slug)
+    const filePath = join(dirPath, 'page.mdx')
 
     try {
-      await access(dirPath);
+      await access(dirPath)
       return {
         textResultForLlm: `Article directory already exists at ${ARTICLE_DIR}/${slug}/. Use the existing page.mdx or choose a different slug.`,
-        resultType: "failure",
-      };
+        resultType: 'failure',
+      }
     } catch {
       // Directory doesn't exist — good, we'll create it
     }
 
-    await mkdir(dirPath, { recursive: true });
+    await mkdir(dirPath, { recursive: true })
 
     const content = generateMDXBoilerplate({
       title: args.title,
@@ -113,52 +122,52 @@ const scaffoldArticleTool = {
       date,
       description: args.description,
       language,
-    });
+    })
 
-    await writeFile(filePath, content, "utf-8");
+    await writeFile(filePath, content, 'utf-8')
 
     return [
       `✅ Article scaffolded at ${ARTICLE_DIR}/${slug}/page.mdx`,
-      "",
-      "Created with:",
+      '',
+      'Created with:',
       `  Title:       ${args.title}`,
       `  Author:      ${args.author}`,
       `  Date:        ${date}`,
       `  Language:    ${language}`,
       `  Slug:        ${slug}`,
-      "",
-      "Next steps:",
+      '',
+      'Next steps:',
       `  1. Open ${ARTICLE_DIR}/${slug}/page.mdx and write the article content below the boilerplate`,
       "  2. Add images to the same directory and import them: import myImage from './my-image.png'",
-      "  3. Use <Image src={myImage} alt=\"descriptive alt text\" /> to display images",
-      "  4. Import custom components from @/components/ if needed (e.g. InfoCard, SocialLink)",
+      '  3. Use <Image src={myImage} alt="descriptive alt text" /> to display images',
+      '  4. Import custom components from @/components/ if needed (e.g. InfoCard, SocialLink)',
       "  5. Run 'yarn run check' when finished",
-    ].join("\n");
+    ].join('\n')
   },
-};
+}
 
 // ─── Tool: article_guidelines ─────────────────────────────────────────────────
 
 const articleGuidelinesTool = {
-  name: "article_guidelines",
+  name: 'article_guidelines',
   description:
-    "Returns comprehensive writing and design guidelines for Offentlig PaaS articles. " +
-    "Covers MDX structure, Tailwind typography tokens, Norwegian content conventions, " +
-    "image handling, component usage, and editorial tone. " +
-    "Use this before writing or reviewing article content.",
+    'Returns comprehensive writing and design guidelines for Offentlig PaaS articles. ' +
+    'Covers MDX structure, Tailwind typography tokens, Norwegian content conventions, ' +
+    'image handling, component usage, and editorial tone. ' +
+    'Use this before writing or reviewing article content.',
   parameters: {
-    type: "object",
+    type: 'object',
     properties: {
       section: {
-        type: "string",
-        enum: ["all", "structure", "design", "writing", "components", "images"],
+        type: 'string',
+        enum: ['all', 'structure', 'design', 'writing', 'components', 'images'],
         description: "Which guideline section to return. Defaults to 'all'.",
       },
     },
   },
-  handler: async (args) => {
-    const section = args.section || "all";
-    const sections = {};
+  handler: async args => {
+    const section = args.section || 'all'
+    const sections = {}
 
     sections.structure = `
 ## MDX Article Structure
@@ -193,7 +202,7 @@ Key rules:
 - Article content uses standard Markdown plus JSX components
 - remark-gfm is enabled: tables, strikethrough, autolinks, and task lists all work
 - Images are co-located in the same directory as page.mdx
-`;
+`
 
     sections.design = `
 ## Design System & Typography
@@ -227,7 +236,7 @@ The site uses a zinc/teal color palette with @tailwindcss/typography (prose).
 - All prose elements have dark variants via CSS custom properties
 - Dark backgrounds shift from zinc.900 to transparent blacks
 - Never hardcode colors — let the prose plugin handle it
-`;
+`
 
     sections.writing = `
 ## Writing Guidelines
@@ -262,7 +271,7 @@ The site uses a zinc/teal color palette with @tailwindcss/typography (prose).
 - Prefer code examples over long explanations when relevant
 - Link to external resources (YouTube videos, GitHub repos) where appropriate
 - Always include alt text for images (accessibility)
-`;
+`
 
     sections.components = `
 ## Available Components
@@ -294,7 +303,7 @@ The site uses a zinc/teal color palette with @tailwindcss/typography (prose).
 - Use className on JSX elements: \`<div className="mt-6 flex gap-6">\`
 - Use "not-prose" class to opt out of typography styles for custom layouts
 - Never use inline styles — always Tailwind utilities
-`;
+`
 
     sections.images = `
 ## Image Guidelines
@@ -327,46 +336,46 @@ import respondents from './2-respondents.png'
 ### Remote Images
 - The site allows images from: github.com, slack-edge.com, gravatar.com, cdn.sanity.io
 - For other remote sources, add the domain to next.config.mjs remotePatterns
-`;
+`
 
-    if (section === "all") {
-      return Object.values(sections).join("\n---\n");
+    if (section === 'all') {
+      return Object.values(sections).join('\n---\n')
     }
 
     if (sections[section]) {
-      return sections[section];
+      return sections[section]
     }
 
     return {
       textResultForLlm: `Unknown section '${section}'. Valid: all, structure, design, writing, components, images`,
-      resultType: "failure",
-    };
+      resultType: 'failure',
+    }
   },
-};
+}
 
 // ─── Hook: onUserPromptSubmitted ────────────────────────────────────────────
 
 async function onUserPromptSubmitted(input) {
-  const prompt = input.prompt.toLowerCase();
+  const prompt = input.prompt.toLowerCase()
 
   const articleKeywords = [
-    "artikkel",
-    "article",
-    "blog",
-    "write",
-    "skriv",
-    "mdx",
-    "fagdag",
-    "annual report",
-    "årsberetning",
-    "survey",
-    "undersøkelse",
-    "publiser",
-    "publish",
-  ];
+    'artikkel',
+    'article',
+    'blog',
+    'write',
+    'skriv',
+    'mdx',
+    'fagdag',
+    'annual report',
+    'årsberetning',
+    'survey',
+    'undersøkelse',
+    'publiser',
+    'publish',
+  ]
 
-  const isArticleRelated = articleKeywords.some((kw) => prompt.includes(kw));
-  if (!isArticleRelated) return;
+  const isArticleRelated = articleKeywords.some(kw => prompt.includes(kw))
+  if (!isArticleRelated) return
 
   return {
     additionalContext: `
@@ -387,7 +396,7 @@ Quick reference:
 
 Call article_guidelines for comprehensive writing, design, and structural reference.
 `,
-  };
+  }
 }
 
 // ─── Start Extension ────────────────────────────────────────────────────────
@@ -397,6 +406,8 @@ const session = await joinSession({
   hooks: {
     onUserPromptSubmitted,
   },
-});
+})
 
-await session.log("Article Writer agent ready — scaffold_article & article_guidelines available");
+await session.log(
+  'Article Writer agent ready — scaffold_article & article_guidelines available'
+)

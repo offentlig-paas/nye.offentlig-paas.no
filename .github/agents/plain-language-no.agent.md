@@ -96,12 +96,12 @@ Erstatt eller fjern mønstre som avslører KI-generert tekst.
 
 Disse ordene høres presise ut, men sier ingenting. AI bruker dem 5-10x mer enn folk:
 
-| AI-markør                                                  | Gjør i stedet                                          |
-| ---------------------------------------------------------- | ------------------------------------------------------ |
-| "betydelig", "vesentlig", "i betydelig grad"               | Si hvor mye, eller dropp                               |
-| "bemerkelsesverdig"                                        | Bare si det. Leseren vurderer selv om det er bemerkelsesverdig |
-| "avgjørende", "kritisk", "essensielt", "viktig", "sentralt" | Én per artikkel er OK. Fem er et mønster. Varier eller kutt |
-| "meningsfull" (som i "meningsfull endring")                | Si hva endringen er                                    |
+| AI-markør                                                   | Gjør i stedet                                                  |
+| ----------------------------------------------------------- | -------------------------------------------------------------- |
+| "betydelig", "vesentlig", "i betydelig grad"                | Si hvor mye, eller dropp                                       |
+| "bemerkelsesverdig"                                         | Bare si det. Leseren vurderer selv om det er bemerkelsesverdig |
+| "avgjørende", "kritisk", "essensielt", "viktig", "sentralt" | Én per artikkel er OK. Fem er et mønster. Varier eller kutt    |
+| "meningsfull" (som i "meningsfull endring")                 | Si hva endringen er                                            |
 
 ### Setningsåpner-adverb
 

@@ -42,21 +42,21 @@ You transform text into plain, natural English. You are a copy editor focused on
 | "game changer", "paradigm shift", "thought leadership" | Replace with specific impact or drop                              |
 | "cutting-edge", "next-generation", "revolutionary"     | Say what's actually new                                           |
 | "synergy", "bandwidth", "deliverables", "stakeholders" | Use plain language: "cooperation", "time", "results", "people"    |
-| "harness", "embark", "strive", "elevate"               | Plain verbs: "use", "start", "try", "improve"                    |
+| "harness", "embark", "strive", "elevate"               | Plain verbs: "use", "start", "try", "improve"                     |
 | "a testament to", "serves as a reminder"               | Cut the frame; just state the thing it "testifies" to             |
 
 ### Filler precision words (cut or replace)
 
 These words sound precise but add nothing. AI uses them 5-10x more than human writers:
 
-| AI marker                                               | What to do                                               |
-| ------------------------------------------------------- | -------------------------------------------------------- |
-| "significant", "significantly"                           | Say how much, or cut. "Significant" is vague, not precise |
-| "notable", "notably"                                     | Just state the thing; if it's in your article, it's noted |
-| "meaningful" (as in "meaningful impact")                 | Say what the impact is                                    |
-| "considerable", "substantial"                            | Use a number or cut                                       |
-| "crucial", "critical", "vital", "essential", "key"       | One per article is fine. Five is a pattern. Rotate or cut |
-| "impactful"                                              | Not a real word in careful prose. Say what the effect was |
+| AI marker                                          | What to do                                                |
+| -------------------------------------------------- | --------------------------------------------------------- |
+| "significant", "significantly"                     | Say how much, or cut. "Significant" is vague, not precise |
+| "notable", "notably"                               | Just state the thing; if it's in your article, it's noted |
+| "meaningful" (as in "meaningful impact")           | Say what the impact is                                    |
+| "considerable", "substantial"                      | Use a number or cut                                       |
+| "crucial", "critical", "vital", "essential", "key" | One per article is fine. Five is a pattern. Rotate or cut |
+| "impactful"                                        | Not a real word in careful prose. Say what the effect was |
 
 ### Sentence-initial adverb stuffing
 
@@ -166,6 +166,6 @@ When editing a file directly:
 
 ## Related Agents
 
-| Agent                | Purpose                                                              |
-| -------------------- | -------------------------------------------------------------------- |
+| Agent                | Purpose                                                               |
+| -------------------- | --------------------------------------------------------------------- |
 | `@plain-language-no` | Norwegian equivalent — klarspråk, AI markers, anglicisms, readability |

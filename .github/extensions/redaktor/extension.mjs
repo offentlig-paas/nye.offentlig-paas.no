@@ -1,4 +1,4 @@
-import { joinSession } from "@github/copilot-sdk/extension";
+import { joinSession } from '@github/copilot-sdk/extension'
 
 // ─── Redaktør — Editor-in-Chief Orchestrator ────────────────────────────────
 //
@@ -12,39 +12,47 @@ import { joinSession } from "@github/copilot-sdk/extension";
 const session = await joinSession({
   tools: [
     {
-      name: "content_plan",
+      name: 'content_plan',
       description:
-        "Creates an editorial plan for new content on the Offentlig PaaS website. " +
-        "Analyzes the request and recommends which tools and workflow to follow. " +
-        "Use this when you need to plan articles, event write-ups, member updates, " +
-        "or any content work on the site.",
+        'Creates an editorial plan for new content on the Offentlig PaaS website. ' +
+        'Analyzes the request and recommends which tools and workflow to follow. ' +
+        'Use this when you need to plan articles, event write-ups, member updates, ' +
+        'or any content work on the site.',
       parameters: {
-        type: "object",
+        type: 'object',
         properties: {
           topic: {
-            type: "string",
-            description: "What the content is about (e.g. 'fagdag summary', 'new member announcement', 'platform comparison')",
+            type: 'string',
+            description:
+              "What the content is about (e.g. 'fagdag summary', 'new member announcement', 'platform comparison')",
           },
           content_type: {
-            type: "string",
-            enum: ["article", "event", "event-summary", "member-update", "landing-page", "component"],
-            description: "Type of content to create",
+            type: 'string',
+            enum: [
+              'article',
+              'event',
+              'event-summary',
+              'member-update',
+              'landing-page',
+              'component',
+            ],
+            description: 'Type of content to create',
           },
           language: {
-            type: "string",
-            enum: ["no", "en"],
+            type: 'string',
+            enum: ['no', 'en'],
             description: "Content language. Default: 'no' (Norwegian bokmål)",
           },
         },
-        required: ["topic", "content_type"],
+        required: ['topic', 'content_type'],
       },
-      handler: async (args) => {
-        const lang = args.language || "no";
+      handler: async args => {
+        const lang = args.language || 'no'
         const plans = {
           article: [
             `# Redaksjonell plan: Artikkel`,
             `**Tema:** ${args.topic}`,
-            `**Språk:** ${lang === "no" ? "Norsk bokmål" : "English"}`,
+            `**Språk:** ${lang === 'no' ? 'Norsk bokmål' : 'English'}`,
             ``,
             `## Arbeidsflyt`,
             ``,
@@ -78,7 +86,7 @@ const session = await joinSession({
             ``,
             `### 5. Validering`,
             `Kjør \`yarn run check\` for å verifisere at alt kompilerer.`,
-          ].join("\n"),
+          ].join('\n'),
 
           event: [
             `# Redaksjonell plan: Nytt arrangement`,
@@ -101,12 +109,12 @@ const session = await joinSession({
             ``,
             `### 4. Validering`,
             `Kjør \`yarn run check\` for type-sjekk.`,
-          ].join("\n"),
+          ].join('\n'),
 
-          "event-summary": [
+          'event-summary': [
             `# Redaksjonell plan: Oppsummering av arrangement`,
             `**Tema:** ${args.topic}`,
-            `**Språk:** ${lang === "no" ? "Norsk bokmål" : "English"}`,
+            `**Språk:** ${lang === 'no' ? 'Norsk bokmål' : 'English'}`,
             ``,
             `## Arbeidsflyt`,
             ``,
@@ -128,9 +136,9 @@ const session = await joinSession({
             ``,
             `### 4. Språkvask + publisering`,
             `Samme som for vanlig artikkel (plain-language-no / plain-language-en → yarn run check).`,
-          ].join("\n"),
+          ].join('\n'),
 
-          "member-update": [
+          'member-update': [
             `# Redaksjonell plan: Medlemsoppdatering`,
             `**Tema:** ${args.topic}`,
             ``,
@@ -147,9 +155,9 @@ const session = await joinSession({
             ``,
             `### 3. Validering`,
             `Kjør \`yarn run check\`.`,
-          ].join("\n"),
+          ].join('\n'),
 
-          "landing-page": [
+          'landing-page': [
             `# Redaksjonell plan: Landingsside / ny side`,
             `**Tema:** ${args.topic}`,
             ``,
@@ -172,7 +180,7 @@ const session = await joinSession({
             ``,
             `### 4. Validering`,
             `Kjør \`yarn run check\`.`,
-          ].join("\n"),
+          ].join('\n'),
 
           component: [
             `# Redaksjonell plan: Ny komponent`,
@@ -197,91 +205,105 @@ const session = await joinSession({
             ``,
             `### 4. Validering`,
             `Kjør \`yarn run check\`.`,
-          ].join("\n"),
-        };
+          ].join('\n'),
+        }
 
-        return plans[args.content_type] || `Ukjent innholdstype: ${args.content_type}`;
+        return (
+          plans[args.content_type] ||
+          `Ukjent innholdstype: ${args.content_type}`
+        )
       },
     },
 
     {
-      name: "site_overview",
+      name: 'site_overview',
       description:
         "Returns a map of the Offentlig PaaS website's content domains, available tools, " +
-        "and specialist agents. Use this to understand what the site contains and which " +
-        "tools to use for different tasks.",
-      parameters: { type: "object", properties: {} },
+        'and specialist agents. Use this to understand what the site contains and which ' +
+        'tools to use for different tasks.',
+      parameters: { type: 'object', properties: {} },
       handler: async () => {
         return [
-          "# Offentlig PaaS — Nettstedsoversikt",
-          "",
-          "## Innholdsdomener",
-          "",
-          "| Domene | Plassering | Verktøy |",
-          "|--------|-----------|---------|",
-          "| Artikler (MDX) | src/app/artikkel/[slug]/page.mdx | scaffold_article, article_guidelines |",
-          "| Arrangementer | src/data/events.ts | scaffold_event, event_checklist |",
-          "| Medlemmer | src/data/members.ts | (rediger direkte) |",
-          "| Komponenter | src/components/ | design_system_reference |",
-          "| Admin | src/app/admin/ | (tRPC-basert) |",
-          "",
-          "## Tilgjengelige verktøy",
-          "",
-          "### Artikkelverktøy (article-writer)",
-          "- `scaffold_article` — Opprett ny MDX-artikkel med riktig boilerplate",
-          "- `article_guidelines` — Retningslinjer for skriving, design, struktur, bilder, komponenter",
-          "",
-          "### Arrangementsverktøy (event-manager)",
-          "- `scaffold_event` — Opprett nytt arrangement med riktige TypeScript-typer",
-          "- `event_checklist` — Sjekkliste for arrangering (før/under/etter)",
-          "",
-          "### Designverktøy (designer)",
-          "- `design_system_reference` — Designtokens, fargeparett, typografi, komponentoversikt",
-          "",
-          "### Redaksjonelle verktøy (redaktør)",
-          "- `content_plan` — Lag redaksjonell plan for innhold",
-          "- `site_overview` — Denne oversikten",
-          "",
-          "## Spesialistagenter",
-          "",
-          "| Agent | Rolle |",
-          "|-------|-------|",
-          "| plain-language-no | Klarspråksjekk for norsk tekst — klarspråk, AI-markører, anglismer, lesbarhet |",
-          "| plain-language-en | Plain-language cleanup for English text — simplifies, strips AI patterns |",
-          "",
-          "## Publiseringsflyt",
-          "",
-          "```",
-          "Planlegg (content_plan) → Scaffold (article/event) → Skriv",
-          "→ Språkvask (plain-language-no / plain-language-en)",
-          "→ Design-sjekk (article_guidelines) → Valider (yarn run check)",
-          "```",
-          "",
-          "## Teknisk stack",
-          "- Next.js 16, React 19, TypeScript, Tailwind CSS 4",
-          "- MDX-artikler med @tailwindcss/typography (prose)",
-          "- Sanity CMS for registreringer, tilbakemeldinger, bilder",
-          "- Slack OAuth + Bot API for autentisering og kommunikasjon",
-          "- tRPC v11 for type-safe API",
-        ].join("\n");
+          '# Offentlig PaaS — Nettstedsoversikt',
+          '',
+          '## Innholdsdomener',
+          '',
+          '| Domene | Plassering | Verktøy |',
+          '|--------|-----------|---------|',
+          '| Artikler (MDX) | src/app/artikkel/[slug]/page.mdx | scaffold_article, article_guidelines |',
+          '| Arrangementer | src/data/events.ts | scaffold_event, event_checklist |',
+          '| Medlemmer | src/data/members.ts | (rediger direkte) |',
+          '| Komponenter | src/components/ | design_system_reference |',
+          '| Admin | src/app/admin/ | (tRPC-basert) |',
+          '',
+          '## Tilgjengelige verktøy',
+          '',
+          '### Artikkelverktøy (article-writer)',
+          '- `scaffold_article` — Opprett ny MDX-artikkel med riktig boilerplate',
+          '- `article_guidelines` — Retningslinjer for skriving, design, struktur, bilder, komponenter',
+          '',
+          '### Arrangementsverktøy (event-manager)',
+          '- `scaffold_event` — Opprett nytt arrangement med riktige TypeScript-typer',
+          '- `event_checklist` — Sjekkliste for arrangering (før/under/etter)',
+          '',
+          '### Designverktøy (designer)',
+          '- `design_system_reference` — Designtokens, fargeparett, typografi, komponentoversikt',
+          '',
+          '### Redaksjonelle verktøy (redaktør)',
+          '- `content_plan` — Lag redaksjonell plan for innhold',
+          '- `site_overview` — Denne oversikten',
+          '',
+          '## Spesialistagenter',
+          '',
+          '| Agent | Rolle |',
+          '|-------|-------|',
+          '| plain-language-no | Klarspråksjekk for norsk tekst — klarspråk, AI-markører, anglismer, lesbarhet |',
+          '| plain-language-en | Plain-language cleanup for English text — simplifies, strips AI patterns |',
+          '',
+          '## Publiseringsflyt',
+          '',
+          '```',
+          'Planlegg (content_plan) → Scaffold (article/event) → Skriv',
+          '→ Språkvask (plain-language-no / plain-language-en)',
+          '→ Design-sjekk (article_guidelines) → Valider (yarn run check)',
+          '```',
+          '',
+          '## Teknisk stack',
+          '- Next.js 16, React 19, TypeScript, Tailwind CSS 4',
+          '- MDX-artikler med @tailwindcss/typography (prose)',
+          '- Sanity CMS for registreringer, tilbakemeldinger, bilder',
+          '- Slack OAuth + Bot API for autentisering og kommunikasjon',
+          '- tRPC v11 for type-safe API',
+        ].join('\n')
       },
     },
   ],
 
   hooks: {
-    onUserPromptSubmitted: async (input) => {
-      const prompt = input.prompt.toLowerCase();
+    onUserPromptSubmitted: async input => {
+      const prompt = input.prompt.toLowerCase()
 
       const contentKeywords = [
-        "innhold", "content", "publiser", "publish",
-        "redaksjon", "editorial", "plan",
-        "skriv", "write", "tekst", "text",
-        "ny side", "new page", "landingsside",
-        "oppdater", "update",
-      ];
+        'innhold',
+        'content',
+        'publiser',
+        'publish',
+        'redaksjon',
+        'editorial',
+        'plan',
+        'skriv',
+        'write',
+        'tekst',
+        'text',
+        'ny side',
+        'new page',
+        'landingsside',
+        'oppdater',
+        'update',
+      ]
 
-      const isContentRelated = contentKeywords.some((kw) => prompt.includes(kw));
-      if (!isContentRelated) return;
+      const isContentRelated = contentKeywords.some(kw => prompt.includes(kw))
+      if (!isContentRelated) return
 
       return {
         additionalContext: `
@@ -307,9 +329,9 @@ Språkvask-agenter:
 Språk: Norsk bokmål som standard. Engelske fagtermer beholdes (deploy, pipeline, cluster).
 Tone: Profesjonell men tilgjengelig — skriv som til en kollega, ikke en pressemelding.
 `,
-      };
+      }
     },
   },
-});
+})
 
-await session.log("Redaktør ready — content_plan & site_overview available");
+await session.log('Redaktør ready — content_plan & site_overview available')
