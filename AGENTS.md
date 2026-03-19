@@ -142,6 +142,14 @@ Key terminology:
 
 When adding content, maintain the professional tone and focus on practical technology insights relevant to Norwegian public sector developers and platform teams.
 
+## Copilot Extensions
+
+Four extensions in `.github/extensions/` provide content and design tools: `scaffold_article`, `scaffold_event`, `article_guidelines`, `design_system_reference`, `content_plan`, `site_overview`, and `event_checklist`. They auto-inject context via hooks — just ask to write an article or create an event and the right tools activate.
+
+Language agents (`plain-language-no`, `plain-language-en`) complement the extensions for text quality review.
+
+See **[EDITOR.md](EDITOR.md)** for full documentation: architecture, tool reference, language agents, and workflows.
+
 ## Coding Style Guidelines
 
 - Prefer code examples over long explanations
