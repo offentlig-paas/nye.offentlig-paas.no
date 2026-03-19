@@ -1,0 +1,57 @@
+<svg width="800" height="500" xmlns="http://www.w3.org/2000/svg">
+<rect width="100%" height="100%" fill="white"/>
+<text x="400.0" y="30" font-family="Arial" font-size="18" font-weight="bold" text-anchor="middle">Figure 1: Strategic Motivations (2024 vs 2026)</text>
+<line x1="60" y1="420.0" x2="760" y2="420.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="424.0" font-family="Arial" font-size="11" text-anchor="end">0%</text>
+<line x1="60" y1="346.0" x2="760" y2="346.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="350.0" font-family="Arial" font-size="11" text-anchor="end">19%</text>
+<line x1="60" y1="272.0" x2="760" y2="272.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="276.0" font-family="Arial" font-size="11" text-anchor="end">37%</text>
+<line x1="60" y1="198.0" x2="760" y2="198.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="202.0" font-family="Arial" font-size="11" text-anchor="end">56%</text>
+<line x1="60" y1="124.0" x2="760" y2="124.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="128.0" font-family="Arial" font-size="11" text-anchor="end">75%</text>
+<line x1="60" y1="50.0" x2="760" y2="50.0" stroke="#e0e0e0" stroke-width="1"/>
+<text x="52" y="54.0" font-family="Arial" font-size="11" text-anchor="end">93%</text>
+<line x1="60" y1="420" x2="760" y2="420" stroke="black" stroke-width="2"/>
+<line x1="60" y1="50" x2="60" y2="420" stroke="black" stroke-width="2"/>
+<rect x="90" y="50.0" width="30" height="370.0" fill="#aec7e8" rx="2"/>
+<text x="105.0" y="46.0" font-family="Arial" font-size="10" text-anchor="middle">93%</text>
+<rect x="120" y="59.61038961038963" width="30" height="360.38961038961037" fill="#1f77b4" rx="2"/>
+<text x="135.0" y="55.61038961038963" font-family="Arial" font-size="10" text-anchor="middle">91%</text>
+<text x="120" y="436" font-family="Arial" font-size="11" text-anchor="middle">Agility</text>
+<rect x="170" y="129.28571428571428" width="30" height="290.7142857142857" fill="#aec7e8" rx="2"/>
+<text x="185.0" y="125.28571428571428" font-family="Arial" font-size="10" text-anchor="middle">73%</text>
+<rect x="200" y="95.6493506493506" width="30" height="324.3506493506494" fill="#1f77b4" rx="2"/>
+<text x="215.0" y="91.6493506493506" font-family="Arial" font-size="10" text-anchor="middle">82%</text>
+<text x="200" y="436" font-family="Arial" font-size="11" text-anchor="middle">Quality</text>
+<rect x="250" y="195.35714285714286" width="30" height="224.64285714285714" fill="#aec7e8" rx="2"/>
+<text x="265.0" y="191.35714285714286" font-family="Arial" font-size="10" text-anchor="middle">57%</text>
+<rect x="280" y="95.6493506493506" width="30" height="324.3506493506494" fill="#1f77b4" rx="2"/>
+<text x="295.0" y="91.6493506493506" font-family="Arial" font-size="10" text-anchor="middle">82%</text>
+<text x="280" y="436" font-family="Arial" font-size="11" text-anchor="middle">Security</text>
+<rect x="330" y="195.35714285714286" width="30" height="224.64285714285714" fill="#aec7e8" rx="2"/>
+<text x="345.0" y="191.35714285714286" font-family="Arial" font-size="10" text-anchor="middle">57%</text>
+<rect x="360" y="176.73701298701297" width="30" height="243.26298701298703" fill="#1f77b4" rx="2"/>
+<text x="375.0" y="172.73701298701297" font-family="Arial" font-size="10" text-anchor="middle">61%</text>
+<text x="360" y="436" font-family="Arial" font-size="11" text-anchor="middle">Resources</text>
+<rect x="410" y="274.6428571428571" width="30" height="145.35714285714286" fill="#aec7e8" rx="2"/>
+<text x="425.0" y="270.6428571428571" font-family="Arial" font-size="10" text-anchor="middle">37%</text>
+<rect x="440" y="212.77597402597402" width="30" height="207.22402597402598" fill="#1f77b4" rx="2"/>
+<text x="455.0" y="208.77597402597402" font-family="Arial" font-size="10" text-anchor="middle">52%</text>
+<text x="440" y="436" font-family="Arial" font-size="11" text-anchor="middle">Cost</text>
+<rect x="490" y="235.0" width="30" height="185.0" fill="#aec7e8" rx="2"/>
+<text x="505.0" y="231.0" font-family="Arial" font-size="10" text-anchor="middle">47%</text>
+<rect x="520" y="275.8441558441558" width="30" height="144.15584415584416" fill="#1f77b4" rx="2"/>
+<text x="535.0" y="271.8441558441558" font-family="Arial" font-size="10" text-anchor="middle">36%</text>
+<text x="520" y="436" font-family="Arial" font-size="11" text-anchor="middle">Recruiting</text>
+<rect x="570" y="353.92857142857144" width="30" height="66.07142857142857" fill="#aec7e8" rx="2"/>
+<text x="585.0" y="349.92857142857144" font-family="Arial" font-size="10" text-anchor="middle">17%</text>
+<rect x="600" y="329.9025974025974" width="30" height="90.09740259740259" fill="#1f77b4" rx="2"/>
+<text x="615.0" y="325.9025974025974" font-family="Arial" font-size="10" text-anchor="middle">23%</text>
+<text x="600" y="436" font-family="Arial" font-size="11" text-anchor="middle">Tech Div.</text>
+<rect x="660" y="45" width="16" height="16" fill="#aec7e8" rx="2"/>
+<text x="682" y="58" font-family="Arial" font-size="13">2024</text>
+<rect x="660" y="68" width="16" height="16" fill="#1f77b4" rx="2"/>
+<text x="682" y="81" font-family="Arial" font-size="13">2026</text>
+</svg>

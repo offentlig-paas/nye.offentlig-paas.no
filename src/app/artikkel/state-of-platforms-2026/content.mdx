@@ -1,0 +1,115 @@
+import { InfoCard } from '@/components/Stats'
+import { PaperPreview } from '@/components/PaperPreview'
+import maturityModel from '../state-of-platforms-2024/1-maturity-model.png'
+import motivations from './fig1_motivations.svg'
+import k8sDistributions from './fig3_distributions.svg'
+import operations from './fig4_operations_standalone.svg'
+import measurement from './fig5_measurement_standalone.svg'
+import Image from 'next/image'
+
+This is the follow-up to our [2024 State of Platforms](/artikkel/state-of-platforms-2024) report. We ran the same survey twice, in late 2023 and late 2025, to track how platform engineering is evolving across the Norwegian public sector. The 2026 wave captured 45 organizations representing approximately 240,000 public sector employees and organizational budgets totaling 2.5 trillion NOK.
+
+<div className="not-prose mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+  <InfoCard title="Organizations" number={45} />
+  <InfoCard title="Platform adoption" number="92%" />
+  <InfoCard title="Employees represented" number="~240K" />
+  <InfoCard title="Org. budgets" number="2.5T" label="NOK" />
+</div>
+
+## Platforms won
+
+The adoption question is settled. 92% of organizations now have an Internal Developer Platform, up from 86% in 2024. Kubernetes went from 66% to 83%. Tax authorities, healthcare systems, welfare agencies: platforms are now default infrastructure in Norwegian public sector IT.
+
+The toolchain converged too. 45 independent organizations, with independent budgets and procurement, landed on the same stack: managed Kubernetes (AKS, GKE, or OpenShift), ArgoCD for deployment (9→24 organizations), GitHub Actions for CI (11→25), and Terraform for infrastructure-as-code (24→37). Jenkins went from 8 to 4. Nobody coordinated this. But it did not happen by accident either. NAV and Skatteetaten adopted Kubernetes in 2016 and started sharing what they learned. That grew into the Offentlig PaaS community, now 2,000+ engineers across public sector. Ten years of open knowledge sharing across agency boundaries built the conditions for this convergence.
+
+<Image
+  src={k8sDistributions}
+  alt="Kubernetes distribution counts across organizations in 2024 and 2026, showing AKS and OpenShift as dominant providers"
+/>
+
+## The motivation shifted
+
+Agility remains the top motivation at 91%. But the secondary drivers changed between 2024 and 2026.
+
+<Image
+  src={motivations}
+  alt="Bar chart comparing platform motivations between 2024 and 2026. Security shows the largest increase at 25 percentage points."
+/>
+
+Security jumped from 57% to 82%, a 25 percentage point increase and the only statistically significant change in the dataset (p=0.034). Cost optimization rose from 37% to 52%. Recruiting dropped from 47% to 36%.
+
+Two years ago, organizations built platforms to move fast and attract engineers. Today, they build them to enforce security policy and manage cost.
+
+The tooling data backs up the shift: Cilium went from 3 to 13 organizations. Kyverno (the policy engine) went from 4 to 13. Trivy appeared for the first time. The timing aligns with NIS2, the EU cybersecurity directive that applies to public administration. Platforms became the enforcement layer for organizational security policy.
+
+## The maturity gap
+
+We used the [CNCF Platform Maturity Model](https://tag-app-delivery.cncf.io/whitepapers/platform-eng-maturity-model/) to assess how well these platforms are working. The model covers five dimensions (Investment, Adoption, Interfaces, Operations, and Measurement), each rated from Level 1 (provisional) to Level 4 (optimizing).
+
+<Image
+  src={maturityModel}
+  alt="CNCF Platform Maturity Model showing five aspects: Investment, Adoption, Interfaces, Operations, and Measurement across four levels"
+/>
+
+We asked every organization to self-assess across all five dimensions in both the 2024 and 2026 surveys. Four dimensions improved. One did not. Operations made the biggest jump. Measurement barely moved.
+
+### Operations reached Level 3
+
+The modal level for operations moved from Level 2 (centrally tracked) to Level 3 (centrally enabled). In 2024, 50% of organizations were at Level 2. By 2026, 47% had reached Level 3: automated lifecycles, GitOps, self-service provisioning. Teams solved the operations problem.
+
+<Image
+  src={operations}
+  alt="Operations maturity distribution showing the shift from Level 2 in 2024 to Level 3 in 2026"
+/>
+
+### Measurement stayed at Level 1
+
+Measurement is the outlier. 49% of organizations are still at Level 1: ad hoc, anecdotal. In 2024, it was 53%. Almost nothing changed. A small group (12%) reached Level 3 for measurement, up from zero. But most teams have not moved.
+
+<Image
+  src={measurement}
+  alt="Measurement maturity distribution showing 49% of organizations still at Level 1 in 2026"
+/>
+
+The remaining three dimensions all moved forward. No organization is at Level 1 for **investment** anymore — everyone has dedicated platform funding, with consolidation around dedicated teams. **Adoption** strengthened at Level 3, meaning teams increasingly choose the platform because they see a benefit, not because they are told to. However, Level 4 (where developers actively contribute back) dropped from 13% to 2%. **Interfaces** grew at Level 3 from 37% to 49%, with more organizations offering self-service.
+
+## Cost pressure meets measurement debt
+
+Cost optimization is now a top-three motivation, up 15 points to 52%. Leadership is asking: "What does this platform cost, and what do we get for it?"
+
+Most platform teams cannot answer that question. 49% are still at Level 1 for measurement — ad hoc, anecdotal, no systematic tracking. They automated operations but skipped the feedback loop that proves the automation is worth the investment.
+
+This is the biggest risk in our data. Budget holders want numbers. Platform teams do not have them. Without measurement, someone else will define what success looks like — and the platform team may not agree with the answer.
+
+## Why is measurement so hard?
+
+Our analysis points to three causes:
+
+1. **No consensus on what to measure.** DORA metrics? Cost per team? Developer satisfaction? The Goal-Question-Metric framework says you need explicit goals before you can define metrics. Most teams have not done that work.
+2. **A principal-agent problem.** Platform teams control the information. Mature measurement might reveal that ROI is lower than assumed. The incentive to build measurement is not always there when your budget is already secured.
+3. **Measurement trails operations.** You need operational stability before you can invest in metrics. The 12% who reached Level 3 measurement may be the leading edge, not the laggards.
+
+## What to do about it
+
+1. **Define platform goals before building dashboards.** Use GQM or a similar framework. What question are you trying to answer? Then pick the metric. Most teams start with dashboards and never connect them to organizational goals.
+2. **Start measuring, even simple things.** Deployment frequency across teams. Lead time from commit to production. Adoption rate of platform capabilities like secrets management, observability, or CI pipelines. You do not need Level 4 maturity. You need to leave Level 1.
+3. **Make security a first-class platform capability.** The data shows the sector already moved this direction. If you have not, you are behind. NIS2 compliance will demand it.
+
+## Limitations
+
+This data tells us what platform builders think. We surveyed platform teams, not the developers using those platforms. We do not know if the developers agree. The drop in Adoption Level 4 (from 13% to 2%), where developers actively contribute back, may be the most underreported finding in the study. We also rely on self-reported maturity levels with small sample sizes. Developer experience surveys and independent validation are the next phase of this research.
+
+## Conclusion
+
+The Norwegian public sector went from two engineers at KubeCon Berlin in 2017 to 92% platform adoption across 45 organizations in 2026. The stack converged. The mandate shifted from agility to security and cost. Operations reached Level 3 on the CNCF maturity model.
+
+But measurement stayed at Level 1. Nearly half of platform teams cannot prove their platforms are working — and the pressure to do so is growing. Invest in measurement before someone else defines what success looks like for you.
+
+<PaperPreview
+  title="Platform Engineering in the Norwegian Public Sector: A Longitudinal Study of Adoption, Maturity, and Toolchain Convergence (2024–2026)"
+  authors={[{ name: 'Hans Kristian Flaatten', affiliation: 'NAV' }]}
+  venue="KubeCon + CloudNativeCon Europe 2026, Amsterdam"
+  venueDate="April 2026"
+  abstract="We present a longitudinal survey of Internal Developer Platform adoption across 45 Norwegian public sector organizations representing approximately 240,000 employees and 2.5 trillion NOK in organizational budgets. Between 2024 and 2026, Kubernetes adoption rose from 66% to 83%, the toolchain converged around a common stack, and security motivation surged 25 percentage points to 82%. Platform operations maturity advanced to Level 3 on the CNCF model, while measurement remained at Level 1 for 49% of organizations — creating a widening gap as cost optimization pressure grows."
+  href="/papers/flaatten-platform-engineering-public-sector-2026-abstract.pdf"
+/>

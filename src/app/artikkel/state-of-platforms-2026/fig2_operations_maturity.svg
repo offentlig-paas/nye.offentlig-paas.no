@@ -1,0 +1,98 @@
+<svg width="900" height="840" xmlns="http://www.w3.org/2000/svg">
+<rect width="100%" height="100%" fill="white"/>
+<text x="450.0" y="30" font-family="Arial" font-size="18" font-weight="bold" text-anchor="middle">Figure 2: CNCF Platform Maturity by Aspect (2024 vs 2026)</text>
+<rect x="120" y="50" width="16" height="16" fill="#d62728" rx="2"/>
+<text x="142" y="63" font-family="Arial" font-size="12">L1: Provisional</text>
+<rect x="260" y="50" width="16" height="16" fill="#ff7f0e" rx="2"/>
+<text x="282" y="63" font-family="Arial" font-size="12">L2: Operationalized</text>
+<rect x="400" y="50" width="16" height="16" fill="#2ca02c" rx="2"/>
+<text x="422" y="63" font-family="Arial" font-size="12">L3: Scalable</text>
+<rect x="540" y="50" width="16" height="16" fill="#1f77b4" rx="2"/>
+<text x="562" y="63" font-family="Arial" font-size="12">L4: Optimizing</text>
+<text x="112" y="105.0" font-family="Arial" font-size="11" text-anchor="end" fill="#666">Investment '24</text>
+<rect x="120" y="90" width="98.66666666666667" height="22" fill="#ffcccc" stroke="white" stroke-width="1" rx="2"/>
+<text x="169.33333333333334" y="105.0" font-family="Arial" font-size="10" text-anchor="middle" fill="#333">13%</text>
+<rect x="218.66666666666669" y="90" width="419.3333333333333" height="22" fill="#ffe0b2" stroke="white" stroke-width="1" rx="2"/>
+<text x="428.33333333333337" y="105.0" font-family="Arial" font-size="10" text-anchor="middle" fill="#333">57%</text>
+<rect x="638.0" y="90" width="148.0" height="22" fill="#c8e6c9" stroke="white" stroke-width="1" rx="2"/>
+<text x="712.0" y="105.0" font-family="Arial" font-size="10" text-anchor="middle" fill="#333">20%</text>
+<rect x="786.0" y="90" width="74.0" height="22" fill="#bbdefb" stroke="white" stroke-width="1" rx="2"/>
+<text x="823.0" y="105.0" font-family="Arial" font-size="10" text-anchor="middle" fill="#333">10%</text>
+<text x="112" y="131.0" font-family="Arial" font-size="11" text-anchor="end" fill="#333" font-weight="bold">Investment '26</text>
+<rect x="120" y="116" width="499.06976744186045" height="22" fill="#ff7f0e" stroke="white" stroke-width="1" rx="2"/>
+<text x="369.5348837209302" y="131.0" font-family="Arial" font-size="10" text-anchor="middle" fill="white" font-weight="bold">67%</text>
+<rect x="619.0697674418604" y="116" width="206.51162790697674" height="22" fill="#2ca02c" stroke="white" stroke-width="1" rx="2"/>
+<text x="722.3255813953488" y="131.0" font-family="Arial" font-size="10" text-anchor="middle" fill="white" font-weight="bold">28%</text>
+<rect x="825.5813953488372" y="116" width="34.41860465116279" height="22" fill="#1f77b4" stroke="white" stroke-width="1" rx="2"/>
+<line x1="120" y1="214" x2="880" y2="214" stroke="#e0e0e0" stroke-width="1"/>
+<text x="112" y="245.0" font-family="Arial" font-size="11" text-anchor="end" fill="#666">Adoption '24</text>
+<rect x="120" y="230" width="74.0" height="22" fill="#ffcccc" stroke="white" stroke-width="1" rx="2"/>
+<text x="157.0" y="245.0" font-family="Arial" font-size="10" text-anchor="middle" fill="#333">10%</text>
+<rect x="194.0" y="230" width="246.6666666666666" height="22" fill="#ffe0b2" stroke="white" stroke-width="1" rx="2"/>
+<text x="317.3333333333333" y="245.0" font-family="Arial" font-size="10" text-anchor="middle" fill="#333">33%</text>
+<rect x="440.66666666666663" y="230" width="320.6666666666667" height="22" fill="#c8e6c9" stroke="white" stroke-width="1" rx="2"/>
+<text x="601.0" y="245.0" font-family="Arial" font-size="10" text-anchor="middle" fill="#333">43%</text>
+<rect x="761.3333333333333" y="230" width="98.66666666666667" height="22" fill="#bbdefb" stroke="white" stroke-width="1" rx="2"/>
+<text x="810.6666666666666" y="245.0" font-family="Arial" font-size="10" text-anchor="middle" fill="#333">13%</text>
+<text x="112" y="271.0" font-family="Arial" font-size="11" text-anchor="end" fill="#333" font-weight="bold">Adoption '26</text>
+<rect x="120" y="256" width="105.71428571428571" height="22" fill="#d62728" stroke="white" stroke-width="1" rx="2"/>
+<text x="172.85714285714286" y="271.0" font-family="Arial" font-size="10" text-anchor="middle" fill="white" font-weight="bold">14%</text>
+<rect x="225.71428571428572" y="256" width="229.04761904761907" height="22" fill="#ff7f0e" stroke="white" stroke-width="1" rx="2"/>
+<text x="340.23809523809524" y="271.0" font-family="Arial" font-size="10" text-anchor="middle" fill="white" font-weight="bold">31%</text>
+<rect x="454.7619047619048" y="256" width="387.61904761904765" height="22" fill="#2ca02c" stroke="white" stroke-width="1" rx="2"/>
+<text x="648.5714285714287" y="271.0" font-family="Arial" font-size="10" text-anchor="middle" fill="white" font-weight="bold">52%</text>
+<rect x="842.3809523809525" y="256" width="17.619047619047617" height="22" fill="#1f77b4" stroke="white" stroke-width="1" rx="2"/>
+<line x1="120" y1="354" x2="880" y2="354" stroke="#e0e0e0" stroke-width="1"/>
+<text x="112" y="385.0" font-family="Arial" font-size="11" text-anchor="end" fill="#666">Interfaces '24</text>
+<rect x="120" y="370" width="123.3333333333333" height="22" fill="#ffcccc" stroke="white" stroke-width="1" rx="2"/>
+<text x="181.66666666666666" y="385.0" font-family="Arial" font-size="10" text-anchor="middle" fill="#333">17%</text>
+<rect x="243.33333333333331" y="370" width="246.6666666666666" height="22" fill="#ffe0b2" stroke="white" stroke-width="1" rx="2"/>
+<text x="366.66666666666663" y="385.0" font-family="Arial" font-size="10" text-anchor="middle" fill="#333">33%</text>
+<rect x="489.9999999999999" y="370" width="271.3333333333333" height="22" fill="#c8e6c9" stroke="white" stroke-width="1" rx="2"/>
+<text x="625.6666666666665" y="385.0" font-family="Arial" font-size="10" text-anchor="middle" fill="#333">37%</text>
+<rect x="761.3333333333333" y="370" width="98.66666666666667" height="22" fill="#bbdefb" stroke="white" stroke-width="1" rx="2"/>
+<text x="810.6666666666666" y="385.0" font-family="Arial" font-size="10" text-anchor="middle" fill="#333">13%</text>
+<text x="112" y="411.0" font-family="Arial" font-size="11" text-anchor="end" fill="#333" font-weight="bold">Interfaces '26</text>
+<rect x="120" y="396" width="86.04651162790698" height="22" fill="#d62728" stroke="white" stroke-width="1" rx="2"/>
+<text x="163.02325581395348" y="411.0" font-family="Arial" font-size="10" text-anchor="middle" fill="white" font-weight="bold">12%</text>
+<rect x="206.04651162790697" y="396" width="223.72093023255812" height="22" fill="#ff7f0e" stroke="white" stroke-width="1" rx="2"/>
+<text x="317.906976744186" y="411.0" font-family="Arial" font-size="10" text-anchor="middle" fill="white" font-weight="bold">30%</text>
+<rect x="429.76744186046506" y="396" width="361.39534883720927" height="22" fill="#2ca02c" stroke="white" stroke-width="1" rx="2"/>
+<text x="610.4651162790697" y="411.0" font-family="Arial" font-size="10" text-anchor="middle" fill="white" font-weight="bold">49%</text>
+<rect x="791.1627906976744" y="396" width="68.83720930232558" height="22" fill="#1f77b4" stroke="white" stroke-width="1" rx="2"/>
+<text x="825.5813953488372" y="411.0" font-family="Arial" font-size="10" text-anchor="middle" fill="white" font-weight="bold">9%</text>
+<line x1="120" y1="494" x2="880" y2="494" stroke="#e0e0e0" stroke-width="1"/>
+<text x="112" y="525.0" font-family="Arial" font-size="11" text-anchor="end" fill="#666">Operations '24</text>
+<rect x="120" y="510" width="98.66666666666667" height="22" fill="#ffcccc" stroke="white" stroke-width="1" rx="2"/>
+<text x="169.33333333333334" y="525.0" font-family="Arial" font-size="10" text-anchor="middle" fill="#333">13%</text>
+<rect x="218.66666666666669" y="510" width="370.0" height="22" fill="#ffe0b2" stroke="white" stroke-width="1" rx="2"/>
+<text x="403.6666666666667" y="525.0" font-family="Arial" font-size="10" text-anchor="middle" fill="#333">50%</text>
+<rect x="588.6666666666667" y="510" width="172.66666666666666" height="22" fill="#c8e6c9" stroke="white" stroke-width="1" rx="2"/>
+<text x="675.0000000000001" y="525.0" font-family="Arial" font-size="10" text-anchor="middle" fill="#333">23%</text>
+<rect x="761.3333333333334" y="510" width="98.66666666666667" height="22" fill="#bbdefb" stroke="white" stroke-width="1" rx="2"/>
+<text x="810.6666666666667" y="525.0" font-family="Arial" font-size="10" text-anchor="middle" fill="#333">13%</text>
+<text x="112" y="551.0" font-family="Arial" font-size="11" text-anchor="end" fill="#333" font-weight="bold">Operations '26</text>
+<rect x="120" y="536" width="137.67441860465115" height="22" fill="#d62728" stroke="white" stroke-width="1" rx="2"/>
+<text x="188.83720930232556" y="551.0" font-family="Arial" font-size="10" text-anchor="middle" fill="white" font-weight="bold">19%</text>
+<rect x="257.6744186046511" y="536" width="172.09302325581396" height="22" fill="#ff7f0e" stroke="white" stroke-width="1" rx="2"/>
+<text x="343.7209302325581" y="551.0" font-family="Arial" font-size="10" text-anchor="middle" fill="white" font-weight="bold">23%</text>
+<rect x="429.76744186046506" y="536" width="344.1860465116279" height="22" fill="#2ca02c" stroke="white" stroke-width="1" rx="2"/>
+<text x="601.860465116279" y="551.0" font-family="Arial" font-size="10" text-anchor="middle" fill="white" font-weight="bold">47%</text>
+<rect x="773.953488372093" y="536" width="86.04651162790698" height="22" fill="#1f77b4" stroke="white" stroke-width="1" rx="2"/>
+<text x="816.9767441860465" y="551.0" font-family="Arial" font-size="10" text-anchor="middle" fill="white" font-weight="bold">12%</text>
+<line x1="120" y1="634" x2="880" y2="634" stroke="#e0e0e0" stroke-width="1"/>
+<text x="112" y="665.0" font-family="Arial" font-size="11" text-anchor="end" fill="#666">Measurement '24</text>
+<rect x="120" y="650" width="394.6666666666667" height="22" fill="#ffcccc" stroke="white" stroke-width="1" rx="2"/>
+<text x="317.33333333333337" y="665.0" font-family="Arial" font-size="10" text-anchor="middle" fill="#333">53%</text>
+<rect x="514.6666666666667" y="650" width="320.6666666666667" height="22" fill="#ffe0b2" stroke="white" stroke-width="1" rx="2"/>
+<text x="675.0000000000001" y="665.0" font-family="Arial" font-size="10" text-anchor="middle" fill="#333">43%</text>
+<rect x="835.3333333333335" y="650" width="24.666666666666668" height="22" fill="#bbdefb" stroke="white" stroke-width="1" rx="2"/>
+<text x="112" y="691.0" font-family="Arial" font-size="11" text-anchor="end" fill="#333" font-weight="bold">Measurement '26</text>
+<rect x="120" y="676" width="361.39534883720927" height="22" fill="#d62728" stroke="white" stroke-width="1" rx="2"/>
+<text x="300.6976744186046" y="691.0" font-family="Arial" font-size="10" text-anchor="middle" fill="white" font-weight="bold">49%</text>
+<rect x="481.39534883720927" y="676" width="275.3488372093023" height="22" fill="#ff7f0e" stroke="white" stroke-width="1" rx="2"/>
+<text x="619.0697674418604" y="691.0" font-family="Arial" font-size="10" text-anchor="middle" fill="white" font-weight="bold">37%</text>
+<rect x="756.7441860465116" y="676" width="86.04651162790698" height="22" fill="#2ca02c" stroke="white" stroke-width="1" rx="2"/>
+<text x="799.767441860465" y="691.0" font-family="Arial" font-size="10" text-anchor="middle" fill="white" font-weight="bold">12%</text>
+<rect x="842.7906976744185" y="676" width="17.209302325581394" height="22" fill="#1f77b4" stroke="white" stroke-width="1" rx="2"/>
+</svg>
