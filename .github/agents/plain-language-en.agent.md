@@ -42,6 +42,32 @@ You transform text into plain, natural English. You are a copy editor focused on
 | "game changer", "paradigm shift", "thought leadership" | Replace with specific impact or drop                              |
 | "cutting-edge", "next-generation", "revolutionary"     | Say what's actually new                                           |
 | "synergy", "bandwidth", "deliverables", "stakeholders" | Use plain language: "cooperation", "time", "results", "people"    |
+| "harness", "embark", "strive", "elevate"               | Plain verbs: "use", "start", "try", "improve"                    |
+| "a testament to", "serves as a reminder"               | Cut the frame; just state the thing it "testifies" to             |
+
+### Filler precision words (cut or replace)
+
+These words sound precise but add nothing. AI uses them 5-10x more than human writers:
+
+| AI marker                                               | What to do                                               |
+| ------------------------------------------------------- | -------------------------------------------------------- |
+| "significant", "significantly"                           | Say how much, or cut. "Significant" is vague, not precise |
+| "notable", "notably"                                     | Just state the thing; if it's in your article, it's noted |
+| "meaningful" (as in "meaningful impact")                 | Say what the impact is                                    |
+| "considerable", "substantial"                            | Use a number or cut                                       |
+| "crucial", "critical", "vital", "essential", "key"       | One per article is fine. Five is a pattern. Rotate or cut |
+| "impactful"                                              | Not a real word in careful prose. Say what the effect was |
+
+### Sentence-initial adverb stuffing
+
+AI starts too many sentences with throat-clearing adverbs. Flag density (more than 2-3 per page):
+
+- **"Importantly,"** → Cut. If it's in the article, the reader knows it matters.
+- **"Notably,"** → Cut. Just state it.
+- **"Interestingly,"** → Cut. Let the reader decide if it's interesting.
+- **"Significantly,"** → Cut or use a number.
+- **"Crucially,"** → Cut.
+- **"Ultimately,"** → Usually a signpost for a conclusion you haven't earned. Cut or move the claim to the start.
 
 ### 2026 patterns (new overused phrases)
 
@@ -86,6 +112,15 @@ You transform text into plain, natural English. You are a copy editor focused on
 - **Excessive hedging**: "often", "typically", "generally", "can be", "may" — commit to claims where you can. Hedge only where genuinely uncertain.
 - **Relentless balance**: Presenting "both sides" of every point without consequence — take a position.
 - **LLM-safe truths**: Statements like "consistency is important" that no one would debate — cut the filler.
+- **Summary restating**: Repeating what was just said using different words, often in the next sentence or at the end of a paragraph. If the paragraph already made the point, the restatement is dead weight. Cut it.
+- **"Let's" framing**: "Let's explore", "Let's break this down", "Let's take a closer look" — the reader didn't agree to a shared journey. Just present the information.
+
+### Punctuation and formatting tells
+
+- **Em dash (—) overuse**: AI text leans on em dashes for parenthetical asides, appositives, and dramatic pauses. One or two per article is fine. More than 3-4 per 500 words is a pattern. Replace most with commas, parentheses, colons, or periods. Keep only the ones that earn a real pause.
+- **Semicolons**: AI uses them more than most humans. Replace with periods or commas unless the connection between clauses genuinely needs it.
+- **Colon in every heading and bullet**: Varied punctuation looks natural; uniform colons look generated.
+- **Exclamation marks in technical text**: Cut them.
 
 ### Structural tells (note and suggest fixes)
 

@@ -92,6 +92,26 @@ Erstatt eller fjern mønstre som avslører KI-generert tekst.
 | "digital transformasjon"                        | Si hva som endres konkret                  |
 | "muliggjør", "tilrettelegger for"               | Si hva som skjer                           |
 
+### Vage presisjonsord
+
+Disse ordene høres presise ut, men sier ingenting. AI bruker dem 5-10x mer enn folk:
+
+| AI-markør                                                  | Gjør i stedet                                          |
+| ---------------------------------------------------------- | ------------------------------------------------------ |
+| "betydelig", "vesentlig", "i betydelig grad"               | Si hvor mye, eller dropp                               |
+| "bemerkelsesverdig"                                        | Bare si det. Leseren vurderer selv om det er bemerkelsesverdig |
+| "avgjørende", "kritisk", "essensielt", "viktig", "sentralt" | Én per artikkel er OK. Fem er et mønster. Varier eller kutt |
+| "meningsfull" (som i "meningsfull endring")                | Si hva endringen er                                    |
+
+### Setningsåpner-adverb
+
+AI starter for mange setninger med strupeklarings-adverb. Flagg tetthet (mer enn 2-3 per side):
+
+- "Viktigere," / "Vesentlig," → Kutt. Hvis det er i artikkelen, skjønner leseren at det er viktig.
+- "Interessant nok," → Kutt. La leseren avgjøre om det er interessant.
+- "Det er verdt å merke seg at" → Kutt. Bare si det.
+- "Til syvende og sist," → Vanligvis et varsel om en konklusjon du ikke har tjent. Kutt.
+
 ### Åpnings- og avslutningsfraser
 
 Kutt disse — start med poenget:
@@ -109,9 +129,10 @@ Kutt disse — start med poenget:
 - Ikke tving balanse mellom alternativer når ett er bedre ("begge har sine fordeler")
 - Varier grammatisk struktur i kulepunkter — identisk form er et AI-tegn
 - Ikke definer ting leseren allerede vet
-- Ikke gjenta et poeng med andre ord rett etter du har sagt det
+- Ikke gjenta et poeng med andre ord rett etter du har sagt det — dette er det tydeligste tegnet på AI-tekst
 - Dropp "Derfor er X så viktig"-formatet som rettferdiggjør forrige setning uten å tilføre noe
 - Ikke overforklarer ting som er åpenbare for målgruppa
+- "La oss se nærmere på", "La oss utforske" — leseren har ikke blitt med på en felles reise. Bare presenter informasjonen.
 
 ### Overgangsord
 
@@ -135,8 +156,8 @@ Noen engelske ord brukes mye oftere i KI-generert tekst enn i vanlig norsk. Vær
 
 ### Tegnsetting og formatering
 
-- Em dash (—) er OK, men ikke i annethvert kulepunkt. Varier med kolon, parentes, eller omskriving.
-- Ikke bruk semikolon unaturlig ofte
+- Em dash (—) er et av de tydeligste AI-tegnene. Mer enn 3–4 per 500 ord er et mønster. Erstatt de fleste med komma, parentes, kolon eller punktum. Behold bare de som virkelig trenger en dramatisk pause.
+- Ikke bruk semikolon unaturlig ofte — AI bruker dem mer enn folk flest. Bruk heller punktum eller komma.
 - Dropp utropstegn i teknisk tekst
 - Kolon (:) i hver eneste overskrift og kulepunkt er et AI-tegn. Varier.
 
