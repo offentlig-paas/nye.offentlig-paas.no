@@ -18,7 +18,12 @@ export function AuthButton({
 }: AuthButtonProps = {}) {
   const { data: session, status } = useSession()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -36,7 +41,8 @@ export function AuthButton({
     }
   }, [])
 
-  if (status === 'loading') {
+  // Prevent hydration mismatch by not rendering session-dependent UI until mounted
+  if (!mounted || status === 'loading') {
     return (
       <Button variant="primary" disabled>
         Laster...

@@ -53,7 +53,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <AppContext.Provider value={{ previousPathname }}>
-      <ThemeProvider attribute="class" disableTransitionOnChange>
+      <ThemeProvider
+        attribute="class"
+        disableTransitionOnChange
+        enableSystem={true}
+        storageKey="theme"
+        defaultTheme="system"
+      >
         <ThemeWatcher />
         <TRPCProvider>
           <ToastProvider>{children}</ToastProvider>

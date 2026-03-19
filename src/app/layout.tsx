@@ -1,5 +1,6 @@
 import React from 'react'
 import { type Metadata } from 'next'
+import Script from 'next/script'
 
 import { Providers } from '@/app/providers'
 import { Layout } from '@/components/Layout'
@@ -41,6 +42,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full antialiased" suppressHydrationWarning>
+      <head>
+        <Script id="theme-script" strategy="beforeInteractive">
+          {`
+            try {
+              const theme = localStorage.getItem('theme') || 'system'
+              if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+              }
+            } catch {}
+          `}
+        </Script>
+      </head>
       <body className="flex h-full bg-zinc-50 dark:bg-black">
         <AuthSessionProvider>
           <Providers>
