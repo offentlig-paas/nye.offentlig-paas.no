@@ -7,29 +7,14 @@
     "src/app/**/loading.{ts,tsx}",
     "src/app/**/*.mdx",
     "src/auth.ts",
-    "src/server/root.ts",
-    "sanity.cli.ts",
-    "sanity.config.ts"
+    "src/server/root.ts"
   ],
   "project": [
     "src/**/*.{ts,tsx,js,jsx}",
     "!src/**/*.test.{ts,tsx}",
     "!src/**/__tests__/**"
   ],
-  "ignore": [
-    "src/__mocks__/**",
-    "coverage/**",
-    "**/*.test.{ts,tsx}",
-    "**/__tests__/**",
-    "jest.setup.cjs",
-    "jest.config.cjs"
-  ],
-  "ignoreDependencies": [
-    "@types/webpack-env",
-    "@types/mdx",
-    "postcss",
-    "remark-gfm"
-  ],
+  "ignoreDependencies": ["@types/webpack-env", "@types/mdx", "postcss"],
   "next": {
     "entry": [
       "src/app/**/page.{ts,tsx}",
