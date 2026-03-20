@@ -16,6 +16,7 @@ import {
   SocialLink,
   YouTubeIcon,
 } from '@/components/SocialIcons'
+import { SlackUsers } from '@/components/SlackUsers'
 import bluesky from '@/images/bluesky.png'
 import image1 from '@/images/photos/image-1.jpg'
 import image2 from '@/images/photos/image-2.jpg'
@@ -26,8 +27,6 @@ import { type ArticleWithSlug, getAllArticles } from '@/lib/articles'
 import { formatDate } from '@/lib/formatDate'
 import { metadata as globalMetadata } from './layout'
 import { getUpcomingEvents } from '@/lib/events/helpers'
-import { InfoCard } from '@/components/Stats'
-import { createCaller } from '@/server/root'
 
 export const revalidate = 3600
 
@@ -104,19 +103,6 @@ function Bluesky() {
   )
 }
 
-async function SlackUsers() {
-  const caller = await createCaller()
-  const { userCount } = await caller.slack.userCount()
-
-  return (
-    <InfoCard
-      title="Antall brukere på Slack"
-      number={userCount}
-      label="kontoer"
-    />
-  )
-}
-
 function SlackJoin() {
   const slackUrl = `${globalMetadata.other?.joinSlackUrl || '#'}`
 
@@ -155,7 +141,7 @@ function Photos() {
           <div
             key={image.src}
             className={clsx(
-              'relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl dark:bg-zinc-800',
+              'relative aspect-9/10 w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 sm:w-72 sm:rounded-2xl dark:bg-zinc-800',
               rotations[imageIndex % rotations.length]
             )}
           >

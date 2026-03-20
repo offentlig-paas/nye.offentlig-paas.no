@@ -1,6 +1,6 @@
 import { router, adminProcedure, publicProcedure } from '../trpc'
 import { z } from 'zod'
-import { WebClient } from '@slack/web-api'
+import { WebClient, LogLevel } from '@slack/web-api'
 import { TRPCError } from '@trpc/server'
 
 const SLACK_BOT_TOKEN = process.env.SLACK_BOT_TOKEN
@@ -28,7 +28,9 @@ export const slackRouter = router({
     }
 
     try {
-      const slack = new WebClient(SLACK_BOT_TOKEN)
+      const slack = new WebClient(SLACK_BOT_TOKEN, {
+        logLevel: LogLevel.ERROR, // Suppress INFO and WARN logs for rate limiting
+      })
       let totalUsers = 0
       let cursor = ''
 
@@ -75,7 +77,9 @@ export const slackRouter = router({
 
       const query = input.query.toLowerCase()
 
-      const slack = new WebClient(SLACK_BOT_TOKEN)
+      const slack = new WebClient(SLACK_BOT_TOKEN, {
+        logLevel: LogLevel.ERROR, // Suppress INFO and WARN logs for rate limiting
+      })
       let allUsers: SlackUser[] = []
       let cursor = ''
 

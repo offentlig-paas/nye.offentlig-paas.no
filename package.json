@@ -44,7 +44,6 @@
     "@vercel/speed-insights": "^2.0.0",
     "cheerio": "^1.2.0",
     "clsx": "^2.1.1",
-    "fast-glob": "^3.3.3",
     "feed": "^5.2.0",
     "groq": "^5.17.1",
     "next": "^16.2.0",

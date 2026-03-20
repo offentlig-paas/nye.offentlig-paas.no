@@ -1,4 +1,10 @@
-import glob from 'fast-glob'
+// Import all articles statically to ensure they're bundled in production
+import { article as arsberetning2024 } from '@/app/artikkel/arsberetning-2024/article'
+import { article as fagdagDataplattform } from '@/app/artikkel/fagdag-dataplattform-mai-2024/article'
+import { article as plattformmodenhet2024 } from '@/app/artikkel/plattformmodenhet-2024/article'
+import { article as plattformmodenhetUndersokelse2025 } from '@/app/artikkel/plattformmodenhet-undersokelse-2025/article'
+import { article as stateOfPlatforms2024 } from '@/app/artikkel/state-of-platforms-2024/article'
+import { article as stateOfPlatforms2026 } from '@/app/artikkel/state-of-platforms-2026/article'
 
 interface Article {
   title: string
@@ -11,27 +17,18 @@ export interface ArticleWithSlug extends Article {
   slug: string
 }
 
-async function importArticle(
-  articleFilename: string
-): Promise<ArticleWithSlug> {
-  const { article } = (await import(
-    `../app/artikkel/${articleFilename.replace('/article.ts', '')}/article`
-  )) as {
-    article: Article
-  }
-
-  return {
-    slug: articleFilename.replace(/\/article\.ts$/, ''),
-    ...article,
-  }
-}
+const allArticles: ArticleWithSlug[] = [
+  { ...arsberetning2024, slug: 'arsberetning-2024' },
+  { ...fagdagDataplattform, slug: 'fagdag-dataplattform-mai-2024' },
+  { ...plattformmodenhet2024, slug: 'plattformmodenhet-2024' },
+  {
+    ...plattformmodenhetUndersokelse2025,
+    slug: 'plattformmodenhet-undersokelse-2025',
+  },
+  { ...stateOfPlatforms2024, slug: 'state-of-platforms-2024' },
+  { ...stateOfPlatforms2026, slug: 'state-of-platforms-2026' },
+]
 
 export async function getAllArticles() {
-  const articleFilenames = await glob('*/article.ts', {
-    cwd: `${process.cwd()}/src/app/artikkel`,
-  })
-
-  const artikkel = await Promise.all(articleFilenames.map(importArticle))
-
-  return artikkel.sort((a, z) => +new Date(z.date) - +new Date(a.date))
+  return allArticles.sort((a, z) => +new Date(z.date) - +new Date(a.date))
 }

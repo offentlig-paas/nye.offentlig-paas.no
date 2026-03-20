@@ -1,4 +1,9 @@
-import { WebClient, type Block, type KnownBlock } from '@slack/web-api'
+import {
+  WebClient,
+  LogLevel,
+  type Block,
+  type KnownBlock,
+} from '@slack/web-api'
 
 let slackClient: WebClient | null = null
 
@@ -8,7 +13,9 @@ function getSlackClient(): WebClient | null {
   }
 
   if (!slackClient) {
-    slackClient = new WebClient(process.env.SLACK_BOT_TOKEN)
+    slackClient = new WebClient(process.env.SLACK_BOT_TOKEN, {
+      logLevel: LogLevel.ERROR,
+    })
   }
 
   return slackClient

@@ -1,4 +1,4 @@
-import { WebClient } from '@slack/web-api'
+import { WebClient, LogLevel } from '@slack/web-api'
 
 interface SlackUserInfo {
   id: string
@@ -29,7 +29,9 @@ function getSlackClient(): WebClient | null {
   }
 
   if (!slackClient) {
-    slackClient = new WebClient(process.env.SLACK_BOT_TOKEN)
+    slackClient = new WebClient(process.env.SLACK_BOT_TOKEN, {
+      logLevel: LogLevel.ERROR,
+    })
   }
 
   return slackClient
