@@ -63,7 +63,7 @@
     "@sanity/vision": "^5.17.1",
     "@types/jest": "^30.0.0",
     "@types/mdx": "^2.0.13",
-    "eslint": "^9.39.4",
+    "eslint": "^10.0.3",
     "eslint-config-next": "^16.2.0",
     "globals": "^17.4.0",
     "jest": "^30.3.0",
