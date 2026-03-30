@@ -32,6 +32,11 @@ const config = [
       ecmaVersion: 'latest',
       sourceType: 'module',
     },
+    settings: {
+      react: {
+        version: '19',
+      },
+    },
     plugins: {
       '@typescript-eslint': typescriptEslint.plugin,
     },
