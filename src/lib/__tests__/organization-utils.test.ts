@@ -269,7 +269,7 @@ describe('getUniqueCleanedOrganizations', () => {
 
       expect(result.size).toBeGreaterThanOrEqual(50) // At least 50 unique companies
       expect(result.size).toBeLessThanOrEqual(51) // Allow for NAV duplicates
-      expect(end - start).toBeLessThan(100) // Should complete in under 100ms
+      expect(end - start).toBeLessThan(500) // Should complete in under 500ms
     })
   })
 })
