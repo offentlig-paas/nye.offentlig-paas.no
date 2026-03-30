@@ -17,11 +17,7 @@ import {
   DocumentChartBarIcon,
 } from '@heroicons/react/20/solid'
 
-const TALK_TYPES = [
-  ItemType.Talk,
-  ItemType.Panel,
-  ItemType.Workshop,
-] as const
+const TALK_TYPES = [ItemType.Talk, ItemType.Panel, ItemType.Workshop] as const
 
 export function isTalkType(
   type: ItemType
