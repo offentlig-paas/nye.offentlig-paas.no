@@ -1,9 +1,10 @@
+import { vi, type Mocked } from 'vitest'
 import { EventRegistrationService } from '../service'
 import { EventRegistrationRepository } from '../repository'
 import { AttendanceType } from '@/lib/events/types'
 import type { EventRegistration, CreateEventRegistrationInput } from '../types'
 
-jest.mock('../repository')
+vi.mock('../repository')
 
 /**
  * E2E tests for waitlist functionality
@@ -11,7 +12,7 @@ jest.mock('../repository')
  */
 describe('Waitlist E2E Tests', () => {
   let service: EventRegistrationService
-  let mockRepository: jest.Mocked<EventRegistrationRepository>
+  let mockRepository: Mocked<EventRegistrationRepository>
 
   const mockEvent = {
     maxCapacity: 2,
@@ -19,10 +20,10 @@ describe('Waitlist E2E Tests', () => {
   }
 
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     service = new EventRegistrationService()
     mockRepository =
-      EventRegistrationRepository.prototype as jest.Mocked<EventRegistrationRepository>
+      EventRegistrationRepository.prototype as Mocked<EventRegistrationRepository>
   })
 
   describe('Registration with capacity management', () => {

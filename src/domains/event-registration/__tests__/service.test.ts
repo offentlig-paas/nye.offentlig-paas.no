@@ -1,3 +1,4 @@
+import { vi, type Mocked } from 'vitest'
 import { EventRegistrationService } from '../service'
 import { EventRegistrationRepository } from '../repository'
 import { AttendanceType } from '@/lib/events/types'
@@ -7,11 +8,11 @@ import type {
   RegistrationStatus,
 } from '../types'
 
-jest.mock('../repository')
+vi.mock('../repository')
 
 describe('EventRegistrationService', () => {
   let service: EventRegistrationService
-  let mockRepository: jest.Mocked<EventRegistrationRepository>
+  let mockRepository: Mocked<EventRegistrationRepository>
 
   const mockRegistration: EventRegistration = {
     _id: 'reg-123',
@@ -39,10 +40,10 @@ describe('EventRegistrationService', () => {
   }
 
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     service = new EventRegistrationService()
     mockRepository =
-      EventRegistrationRepository.prototype as jest.Mocked<EventRegistrationRepository>
+      EventRegistrationRepository.prototype as Mocked<EventRegistrationRepository>
   })
 
   describe('registerForEvent', () => {

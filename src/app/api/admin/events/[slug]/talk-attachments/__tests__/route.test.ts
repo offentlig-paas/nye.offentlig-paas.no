@@ -1,11 +1,12 @@
+import { vi, type MockedFunction } from 'vitest'
 import { NextRequest, NextResponse } from 'next/server'
 import { Audience, AttendanceType, AttachmentType } from '@/lib/events/types'
 import type { EventAuthContext } from '@/lib/api/auth-middleware'
 import type { Session } from 'next-auth'
 
-jest.mock('@/auth')
-jest.mock('@/lib/api/auth-middleware')
-jest.mock('@/lib/sanity/talk-attachments')
+vi.mock('@/auth')
+vi.mock('@/lib/api/auth-middleware')
+vi.mock('@/lib/sanity/talk-attachments')
 
 import { GET, POST, DELETE } from '../route'
 import { authorizeEventAccess } from '@/lib/api/auth-middleware'
@@ -18,23 +19,24 @@ import {
 } from '@/lib/sanity/talk-attachments'
 
 describe('Admin Talk Attachments API', () => {
-  const mockAuthorizeEventAccess = authorizeEventAccess as jest.MockedFunction<
+  const mockAuthorizeEventAccess = authorizeEventAccess as MockedFunction<
     typeof authorizeEventAccess
   >
-  const mockGetTalkAttachments = getTalkAttachments as jest.MockedFunction<
+  const mockGetTalkAttachments = getTalkAttachments as MockedFunction<
     typeof getTalkAttachments
   >
-  const mockGetEventAttachments = getEventAttachments as jest.MockedFunction<
+  const mockGetEventAttachments = getEventAttachments as MockedFunction<
     typeof getEventAttachments
   >
-  const mockCreateTalkAttachment = createTalkAttachment as jest.MockedFunction<
+  const mockCreateTalkAttachment = createTalkAttachment as MockedFunction<
     typeof createTalkAttachment
   >
-  const mockDeleteTalkAttachment = deleteTalkAttachment as jest.MockedFunction<
+  const mockDeleteTalkAttachment = deleteTalkAttachment as MockedFunction<
     typeof deleteTalkAttachment
   >
-  const mockGetTalkAttachmentById =
-    getTalkAttachmentById as jest.MockedFunction<typeof getTalkAttachmentById>
+  const mockGetTalkAttachmentById = getTalkAttachmentById as MockedFunction<
+    typeof getTalkAttachmentById
+  >
 
   const mockAuthResult: { success: true; auth: EventAuthContext } = {
     success: true as const,
@@ -89,7 +91,7 @@ describe('Admin Talk Attachments API', () => {
   }
 
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('GET /api/admin/events/[slug]/talk-attachments', () => {
@@ -148,7 +150,9 @@ describe('Admin Talk Attachments API', () => {
     })
 
     it('should handle errors gracefully', async () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
+      const consoleErrorSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {})
 
       mockAuthorizeEventAccess.mockResolvedValue(mockAuthResult)
       mockGetEventAttachments.mockRejectedValue(new Error('Database error'))

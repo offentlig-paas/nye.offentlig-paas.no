@@ -51,11 +51,19 @@ export async function GET(req: Request) {
 }
 
 const addAllArticlesTo = async (feed: Feed, baseURL: URL) => {
-  const articleIds = require
-    .context('../artikkel', true, /\/page\.mdx$/)
+  const ctx = (
+    require as NodeRequire & {
+      context: (
+        dir: string,
+        deep: boolean,
+        filter: RegExp
+      ) => { keys: () => string[] }
+    }
+  ).context('../artikkel', true, /\/page\.mdx$/)
+  const articleIds = ctx
     .keys()
-    .filter(key => key.startsWith('./'))
-    .map(key => key.slice(2).replace(/\/page\.mdx$/, ''))
+    .filter((key: string) => key.startsWith('./'))
+    .map((key: string) => key.slice(2).replace(/\/page\.mdx$/, ''))
 
   for (const id of articleIds) {
     const url = String(new URL(`/artikkel/${id}`, baseURL))

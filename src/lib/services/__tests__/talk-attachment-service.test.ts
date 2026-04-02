@@ -1,3 +1,4 @@
+import { vi, type MockedFunction } from 'vitest'
 import { AttachmentType } from '@/lib/events/types'
 import {
   handleFileUpload,
@@ -6,7 +7,7 @@ import {
   type UrlAttachmentData,
 } from '../talk-attachment-service'
 
-jest.mock('@/lib/sanity/talk-attachments')
+vi.mock('@/lib/sanity/talk-attachments')
 
 import {
   uploadTalkAttachmentFile,
@@ -16,19 +17,17 @@ import {
 
 describe('Talk Attachment Service', () => {
   const mockUploadTalkAttachmentFile =
-    uploadTalkAttachmentFile as jest.MockedFunction<
-      typeof uploadTalkAttachmentFile
-    >
+    uploadTalkAttachmentFile as MockedFunction<typeof uploadTalkAttachmentFile>
   const mockCreateTalkAttachmentWithFile =
-    createTalkAttachmentWithFile as jest.MockedFunction<
+    createTalkAttachmentWithFile as MockedFunction<
       typeof createTalkAttachmentWithFile
     >
-  const mockCreateTalkAttachment = createTalkAttachment as jest.MockedFunction<
+  const mockCreateTalkAttachment = createTalkAttachment as MockedFunction<
     typeof createTalkAttachment
   >
 
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('handleFileUpload', () => {

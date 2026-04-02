@@ -1,17 +1,15 @@
-import { WebClient } from '@slack/web-api'
+import { vi } from 'vitest'
 
-jest.mock('@slack/web-api')
+const { mockPostMessage } = vi.hoisted(() => ({
+  mockPostMessage: vi.fn(),
+}))
 
-const mockPostMessage = jest.fn()
-
-;(WebClient as jest.MockedClass<typeof WebClient>).mockImplementation(
-  () =>
-    ({
-      chat: {
-        postMessage: mockPostMessage,
-      },
-    }) as unknown as WebClient
-)
+vi.mock('@slack/web-api', () => ({
+  WebClient: vi.fn().mockImplementation(function () {
+    return { chat: { postMessage: mockPostMessage } }
+  }),
+  LogLevel: { ERROR: 'error' },
+}))
 
 // Import after mocking
 import {
@@ -22,7 +20,7 @@ import {
 
 describe('Slack Messaging', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     process.env.SLACK_BOT_TOKEN = 'test-token'
   })
 
@@ -186,7 +184,7 @@ describe('Slack Messaging', () => {
     })
 
     it('should process in batches with delays', async () => {
-      jest.useFakeTimers()
+      vi.useFakeTimers()
       mockPostMessage.mockResolvedValue({
         ok: true,
         ts: '1234567890.123456',
@@ -200,14 +198,14 @@ describe('Slack Messaging', () => {
       })
 
       // Fast-forward time
-      await jest.runAllTimersAsync()
+      await vi.runAllTimersAsync()
 
       const result = await promise
 
       expect(result.sent).toBe(100)
       expect(mockPostMessage).toHaveBeenCalledTimes(100)
 
-      jest.useRealTimers()
+      vi.useRealTimers()
     })
 
     it('should use default options when not provided', async () => {

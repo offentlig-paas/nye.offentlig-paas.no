@@ -7,6 +7,7 @@
  * 3. Edge cases are handled correctly (missing titles, no attachments, etc.)
  */
 
+import { vi, type MockedFunction } from 'vitest'
 import { getAllEventAttachments } from '@/lib/events/attachment-helpers'
 import {
   AttachmentType,
@@ -15,20 +16,21 @@ import {
   type ItemType,
 } from '@/lib/events/types'
 
-jest.mock('@/lib/events/attachment-helpers')
-jest.mock('@/lib/slack/messaging', () => ({
-  sendBulkDirectMessages: jest.fn().mockResolvedValue({
+vi.mock('@/lib/events/attachment-helpers')
+vi.mock('@/lib/slack/messaging', () => ({
+  sendBulkDirectMessages: vi.fn().mockResolvedValue({
     sent: 0,
     failed: 0,
     results: [],
   }),
 }))
-jest.mock('@/lib/formatDate', () => ({
-  formatDateLong: jest.fn().mockReturnValue('1. januar 2025'),
+vi.mock('@/lib/formatDate', () => ({
+  formatDateLong: vi.fn().mockReturnValue('1. januar 2025'),
 }))
 
-const mockGetAllEventAttachments =
-  getAllEventAttachments as jest.MockedFunction<typeof getAllEventAttachments>
+const mockGetAllEventAttachments = getAllEventAttachments as MockedFunction<
+  typeof getAllEventAttachments
+>
 
 // Helper to create mock event with schedule
 const createMockEvent = (scheduleItems: Partial<Item>[]) => ({
@@ -57,7 +59,7 @@ const createMockEvent = (scheduleItems: Partial<Item>[]) => ({
 
 describe('Slide Detection E2E Tests', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('Consistent slide detection between UI and bulk nudge', () => {

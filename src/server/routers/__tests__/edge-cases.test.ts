@@ -5,6 +5,7 @@
  * They test the business logic and validation without mocking the entire tRPC stack.
  */
 
+import { vi, type Mocked, type MockedFunction } from 'vitest'
 import { eventRegistrationService } from '@/domains/event-registration'
 import { eventFeedbackService } from '@/domains/event-feedback/service'
 import { getEvent } from '@/lib/events/helpers'
@@ -12,24 +13,24 @@ import { AttendanceType } from '@/lib/events/types'
 import type { EventRegistration } from '@/domains/event-registration/types'
 import type { EventFeedback } from '@/domains/event-feedback/types'
 
-jest.mock('@/domains/event-registration')
-jest.mock('@/domains/event-feedback/service')
-jest.mock('@/lib/events/helpers')
-jest.mock('next/cache', () => ({
-  revalidatePath: jest.fn(),
+vi.mock('@/domains/event-registration')
+vi.mock('@/domains/event-feedback/service')
+vi.mock('@/lib/events/helpers')
+vi.mock('next/cache', () => ({
+  revalidatePath: vi.fn(),
 }))
 
-const mockRegistrationService = eventRegistrationService as jest.Mocked<
+const mockRegistrationService = eventRegistrationService as Mocked<
   typeof eventRegistrationService
 >
-const mockFeedbackService = eventFeedbackService as jest.Mocked<
+const mockFeedbackService = eventFeedbackService as Mocked<
   typeof eventFeedbackService
 >
-const mockGetEvent = getEvent as jest.MockedFunction<typeof getEvent>
+const mockGetEvent = getEvent as MockedFunction<typeof getEvent>
 
 describe('tRPC Routers - Edge Cases', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('Event Registration Edge Cases', () => {

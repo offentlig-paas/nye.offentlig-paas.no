@@ -1,22 +1,23 @@
+import { vi, type Mock } from 'vitest'
 import { getEventParticipantInfo } from '../event-participant-info'
 import { sanityClient } from '../config'
 
-jest.mock('../config', () => ({
+vi.mock('../config', () => ({
   sanityClient: {
-    fetch: jest.fn(),
-    patch: jest.fn(),
-    create: jest.fn(),
+    fetch: vi.fn(),
+    patch: vi.fn(),
+    create: vi.fn(),
   },
 }))
 
 describe('getEventParticipantInfo', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
-    jest.spyOn(console, 'error').mockImplementation(() => {})
+    vi.clearAllMocks()
+    vi.spyOn(console, 'error').mockImplementation(() => {})
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should return participant info when found', async () => {
@@ -28,9 +29,7 @@ describe('getEventParticipantInfo', () => {
       notes: 'Test notes',
     }
 
-    ;(sanityClient.fetch as jest.Mock).mockResolvedValueOnce(
-      mockParticipantInfo
-    )
+    ;(sanityClient.fetch as Mock).mockResolvedValueOnce(mockParticipantInfo)
 
     const result = await getEventParticipantInfo(
       '2025-10-15-selvbetjening-fagdag'
@@ -43,7 +42,7 @@ describe('getEventParticipantInfo', () => {
   })
 
   it('should return null when no participant info found', async () => {
-    ;(sanityClient.fetch as jest.Mock).mockResolvedValueOnce(null)
+    ;(sanityClient.fetch as Mock).mockResolvedValueOnce(null)
 
     const result = await getEventParticipantInfo('non-existent-event')
 
@@ -51,7 +50,7 @@ describe('getEventParticipantInfo', () => {
   })
 
   it('should return null on error', async () => {
-    ;(sanityClient.fetch as jest.Mock).mockRejectedValueOnce(
+    ;(sanityClient.fetch as Mock).mockRejectedValueOnce(
       new Error('Network error')
     )
 
@@ -68,9 +67,7 @@ describe('getEventParticipantInfo', () => {
       streamingUrl: 'https://example.com/stream',
     }
 
-    ;(sanityClient.fetch as jest.Mock).mockResolvedValueOnce(
-      mockParticipantInfo
-    )
+    ;(sanityClient.fetch as Mock).mockResolvedValueOnce(mockParticipantInfo)
 
     const result = await getEventParticipantInfo(
       '2025-10-15-selvbetjening-fagdag'

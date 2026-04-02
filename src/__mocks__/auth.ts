@@ -1,7 +1,9 @@
-export const auth = jest.fn()
-export const signIn = jest.fn()
-export const signOut = jest.fn()
+import { vi } from 'vitest'
+
+export const auth = vi.fn()
+export const signIn = vi.fn()
+export const signOut = vi.fn()
 export const handlers = {
-  GET: jest.fn(),
-  POST: jest.fn(),
+  GET: vi.fn(),
+  POST: vi.fn(),
 }
