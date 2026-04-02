@@ -15,7 +15,7 @@ export default async function AuthErrorPage({
       case 'Configuration':
         return 'Det oppstod en konfigureringsfeil. Kontakt administrator.'
       case 'AccessDenied':
-        return 'Tilgang nektet. Du har ikke tilgang til denne tjenesten.'
+        return 'Tilgang nektet. Du må være medlem av Offentlig PaaS sitt Slack-workspace for å logge inn.'
       case 'Verification':
         return 'Verifiseringsfeil. Prøv å logge inn på nytt.'
       default:

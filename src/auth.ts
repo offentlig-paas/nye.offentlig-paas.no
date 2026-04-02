@@ -10,6 +10,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       authorization: {
         params: {
           scope: 'openid email profile',
+          team: process.env.SLACK_TEAM_ID,
         },
       },
     }),
