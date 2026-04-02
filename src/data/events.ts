@@ -8,6 +8,46 @@ import {
 
 export const events: Event[] = [
   {
+    slug: '2026-05-12-ki-kodeagenter',
+    title: 'Erfaringsdeling: KI-kodeagenter',
+    ingress:
+      'Erfaringsdeling om KI-kodeagenter tirsdag 12. mai kl. 09:00–12:30 hos SPK på Skøyen. Begrenset antall plasser.',
+    description:
+      'Hvordan bruker organisasjonen din KI-kodeagenter? Kom og del erfaringer om innføring, styring og praktisk bruk. Vi snakker blant annet om formell vs. uformell innføring, retningslinjer for KI-generert kode, sikkerhetsvurderinger og hvordan dere måler effekten. Offentlig PaaS kjører også en undersøkelse om KI-kodeverktøy i offentlig sektor — vi diskuterer funn derfra. Detaljert agenda kommer.',
+    start: new Date('2026-05-12T09:00+02:00'),
+    end: new Date('2026-05-12T12:30+02:00'),
+    audience: Audience.PublicSector,
+    location: 'SPK, Verkstedveien 1, Skøyen / Teams',
+    registration: {
+      attendanceTypes: [AttendanceType.Physical, AttendanceType.Digital],
+    },
+    organizers: [
+      {
+        name: 'Hans Kristian Flaatten',
+        org: 'Nav',
+        url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+      },
+      {
+        name: 'Anders Olsen Sandvik',
+        org: 'SPK',
+        url: 'https://offentlig-paas-no.slack.com/team/U071L6QLNAZ',
+      },
+    ],
+    schedule: [
+      {
+        time: '09:00 - 12:30',
+        title: 'Program kommer',
+        description:
+          'Vi planlegger agendaen. Forvent diskusjon og erfaringsdeling, ikke bare foredrag.',
+        type: ItemType.Info,
+      },
+    ],
+    participantInfo: {
+      notes:
+        'SPK holder til på Skøyen, Verkstedveien 1. Tre minutters gange fra Skøyen stasjon. Nærmeste trikke- og bussholdeplass er Thune.',
+    },
+  },
+  {
     slug: '2026-02-23-fagdag',
     title: 'Offentlig PaaS Fagdag',
     ingress:
