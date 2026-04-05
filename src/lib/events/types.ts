@@ -14,6 +14,11 @@ interface SlackChannel {
   name: string
 }
 
+export interface BannerImage {
+  src: string
+  alt: string
+}
+
 export interface Event {
   slug: string
   title: string
@@ -36,6 +41,7 @@ export interface Event {
   participantInfo?: EventParticipantInfo
   slackChannel?: SlackChannel
   maxCapacity?: number // Maximum physical attendees allowed
+  bannerImage?: BannerImage
 }
 
 interface RegistrationSettings {

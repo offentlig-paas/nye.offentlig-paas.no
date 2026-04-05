@@ -93,6 +93,17 @@ export async function generateMetadata({
   const photos = await getEventPhotos(slug)
   const firstPhoto = photos[0]
 
+  let ogImage: string | undefined
+  let ogAlt: string = event.title
+
+  if (event.bannerImage) {
+    ogImage = event.bannerImage.src
+    ogAlt = event.bannerImage.alt
+  } else if (firstPhoto) {
+    ogImage = urlForImage(firstPhoto.image).width(1200).height(630).url()
+    ogAlt = firstPhoto.caption || event.title
+  }
+
   const descriptionParts = [
     event.ingress,
     '',
@@ -121,10 +132,6 @@ export async function generateMetadata({
 
   const enhancedDescription = descriptionParts.filter(Boolean).join('\n')
 
-  const ogImage = firstPhoto
-    ? urlForImage(firstPhoto.image).width(1200).height(630).url()
-    : undefined
-
   return {
     title: event.title,
     description: event.ingress,
@@ -140,7 +147,7 @@ export async function generateMetadata({
             url: ogImage,
             width: 1200,
             height: 630,
-            alt: firstPhoto?.caption || event.title,
+            alt: ogAlt,
           },
         ],
       }),

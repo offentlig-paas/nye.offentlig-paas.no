@@ -112,6 +112,32 @@ These are persona agents (not extensions) that handle text quality. Use them _af
 3. Use event_checklist for operational tasks (Slack channel, reminders, etc.)
 ```
 
+### Add a promo banner image to an event
+
+Events support an optional `bannerImage` field for social media sharing (OG/Twitter cards) and event list cards. This is useful for upcoming events that don't have photos yet.
+
+**Image requirements:**
+
+- Recommended size: **1200×630px** (standard OG image ratio)
+- Format: PNG, JPG, or WebP
+- Place the file in `public/images/events/`
+
+**Usage in `src/data/events.ts`:**
+
+```typescript
+{
+  slug: '2026-05-12-ki-kodeagenter',
+  title: 'Erfaringsdeling: KI-kodeagenter',
+  bannerImage: {
+    src: '/images/events/2026-05-12-ki-agenter.png',
+    alt: 'KI-kodeagenter fagdag banner',
+  },
+  // ... rest of event
+}
+```
+
+**OG image priority:** `bannerImage` → first Sanity event photo → no image. Once an event has photos uploaded via the admin panel, those take precedence on the event list cards.
+
 ### Plan any content
 
 ```plain

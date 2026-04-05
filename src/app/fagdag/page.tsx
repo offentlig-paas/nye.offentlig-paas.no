@@ -35,6 +35,7 @@ interface EventCardProps {
   cta: string
   href: string
   thumbnailUrls?: string[]
+  bannerUrl?: string
 }
 
 function EventCard({
@@ -44,10 +45,24 @@ function EventCard({
   cta,
   href,
   thumbnailUrls,
+  bannerUrl,
 }: EventCardProps) {
   return (
     <Card as="article">
-      <EventThumbnailGallery photos={thumbnailUrls ?? []} title={title} />
+      {thumbnailUrls && thumbnailUrls.length > 0 ? (
+        <EventThumbnailGallery photos={thumbnailUrls} title={title} />
+      ) : bannerUrl ? (
+        <div className="relative z-10 mb-4 w-full">
+          <Image
+            src={bannerUrl}
+            alt={title}
+            width={800}
+            height={420}
+            unoptimized
+            className="aspect-[40/21] w-full rounded-lg object-cover"
+          />
+        </div>
+      ) : null}
       <Card.Title as="h3" href={href}>
         {title}
       </Card.Title>
@@ -96,6 +111,7 @@ export default async function Fagdager() {
               date={formatDate(event.start)}
               cta="Mer informasjon"
               thumbnailUrls={thumbnailUrls}
+              bannerUrl={event.bannerImage?.src}
             />
           ))}
         </SpeakingSection>

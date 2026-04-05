@@ -10,6 +10,10 @@ export const events: Event[] = [
   {
     slug: '2026-05-12-ki-kodeagenter',
     title: 'Erfaringsdeling: KI-kodeagenter',
+    bannerImage: {
+      src: '/images/events/2026-05-12-ki-agenter.png',
+      alt: 'Et banner med mørkeblå bakgrunn og abstrakte nettverkslinjer. Øverst står teksten "Erfaringsdeling: KI-kodeagenter" i stor hvit skrift. I midten er det en fargerik logo med en mekanisk klo som holder en glødende AI-gnist. Under logoen står det "Praktiske erfaringer fra bruk av KI i kodehverdagen." og "Tirsdag 12. mai 2026". Nede i høyre hjørne er det en liten "Offentlig PaaS"-logo.',
+    },
     ingress:
       'Erfaringsdeling om KI-kodeagenter tirsdag 12. mai kl. 09:00–12:30 hos SPK på Skøyen. Begrenset antall plasser.',
     description:
