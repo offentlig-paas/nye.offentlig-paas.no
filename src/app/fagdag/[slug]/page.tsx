@@ -174,6 +174,28 @@ async function EventPhotos({ slug }: { slug: string }) {
   return <EventHeroGallery photos={heroPhotos} />
 }
 
+async function EventBannerFallback({
+  slug,
+  bannerImage,
+}: {
+  slug: string
+  bannerImage: { src: string; alt: string }
+}) {
+  const photos = await getEventPhotos(slug)
+  if (photos.length > 0) return null
+
+  return (
+    <div className="overflow-hidden rounded-2xl">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={bannerImage.src}
+        alt={bannerImage.alt}
+        className="h-auto w-full"
+      />
+    </div>
+  )
+}
+
 async function AdditionalPhotos({ slug }: { slug: string }) {
   const photos = await getEventPhotos(slug)
 
@@ -297,6 +319,14 @@ export default async function Fagdag({ params }: { params: Params }) {
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             {/* Left Column: Description + Agenda (2/3 width) */}
             <div className="space-y-6 lg:col-span-2">
+              {event.bannerImage && (
+                <Suspense>
+                  <EventBannerFallback
+                    slug={slug}
+                    bannerImage={event.bannerImage}
+                  />
+                </Suspense>
+              )}
               {/* Summary (mobile only) */}
               <EventSummary
                 event={event}

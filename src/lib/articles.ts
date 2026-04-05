@@ -1,4 +1,5 @@
 // Import all articles statically to ensure they're bundled in production
+import { article as aiKodeagenterUndersokelse2026 } from '@/app/artikkel/ai-kodeagenter-undersokelse-2026/article'
 import { article as arsberetning2024 } from '@/app/artikkel/arsberetning-2024/article'
 import { article as fagdagDataplattform } from '@/app/artikkel/fagdag-dataplattform-mai-2024/article'
 import { article as plattformmodenhet2024 } from '@/app/artikkel/plattformmodenhet-2024/article'
@@ -11,6 +12,7 @@ interface Article {
   description: string
   author: string
   date: string
+  tags?: string[]
 }
 
 export interface ArticleWithSlug extends Article {
@@ -18,6 +20,10 @@ export interface ArticleWithSlug extends Article {
 }
 
 const allArticles: ArticleWithSlug[] = [
+  {
+    ...aiKodeagenterUndersokelse2026,
+    slug: 'ai-kodeagenter-undersokelse-2026',
+  },
   { ...arsberetning2024, slug: 'arsberetning-2024' },
   { ...fagdagDataplattform, slug: 'fagdag-dataplattform-mai-2024' },
   { ...plattformmodenhet2024, slug: 'plattformmodenhet-2024' },
@@ -31,4 +37,9 @@ const allArticles: ArticleWithSlug[] = [
 
 export async function getAllArticles() {
   return allArticles.sort((a, z) => +new Date(z.date) - +new Date(a.date))
+}
+
+export async function getArticlesByTag(tag: string) {
+  const articles = await getAllArticles()
+  return articles.filter(a => a.tags?.includes(tag))
 }

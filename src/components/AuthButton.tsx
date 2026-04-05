@@ -178,7 +178,7 @@ export function AuthButton({
           signIn('slack', { callbackUrl })
         }
       }}
-      className={`flex h-10 items-center gap-2 ${className || ''}`}
+      className={`flex h-10 items-center gap-2 whitespace-nowrap ${className || ''}`}
     >
       <svg
         className="h-6 w-6"

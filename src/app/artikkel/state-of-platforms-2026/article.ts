@@ -4,4 +4,5 @@ export const article = {
   title: 'State of Platforms 2026: From Adoption to Accountability',
   description:
     'Two survey waves, 45 organizations, and one clear finding: Norwegian public sector platforms matured operationally but nearly half still cannot measure if they work.',
+  tags: ['state-of-platforms'],
 }
