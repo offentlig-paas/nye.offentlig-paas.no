@@ -513,10 +513,161 @@ const eventPhotoSchema = defineType({
   ],
 })
 
+const talkSubmissionStatusDisplay: Record<string, string> = {
+  submitted: 'Innsendt',
+  accepted: 'Godkjent',
+  rejected: 'Avslått',
+  withdrawn: 'Trukket',
+}
+
+const talkSubmissionSchema = defineType({
+  name: 'talkSubmission',
+  title: 'Talk Submission',
+  type: 'document',
+  fields: [
+    {
+      name: 'eventSlug',
+      title: 'Event Slug',
+      type: 'string',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'title',
+      title: 'Talk Title',
+      type: 'string',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'abstract',
+      title: 'Abstract',
+      type: 'text',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'format',
+      title: 'Format',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Presentasjon', value: 'Presentation' },
+          { title: 'Workshop', value: 'Workshop' },
+          { title: 'Panel', value: 'Panel' },
+          { title: 'Lyntale', value: 'Lightning talk' },
+        ],
+        layout: 'dropdown',
+      },
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'duration',
+      title: 'Preferred Duration',
+      type: 'string',
+      options: {
+        list: [
+          { title: '15 min', value: '15 min' },
+          { title: '20 min', value: '20 min' },
+          { title: '30 min', value: '30 min' },
+          { title: '45 min', value: '45 min' },
+          { title: '60 min', value: '60 min' },
+        ],
+        layout: 'dropdown',
+      },
+    },
+    {
+      name: 'speakerName',
+      title: 'Speaker Name',
+      type: 'string',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'speakerEmail',
+      title: 'Speaker Email',
+      type: 'string',
+      validation: Rule => Rule.required().email(),
+    },
+    {
+      name: 'speakerSlackId',
+      title: 'Speaker Slack ID',
+      type: 'string',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'speakerOrganisation',
+      title: 'Speaker Organisation',
+      type: 'string',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'speakerBio',
+      title: 'Speaker Bio',
+      type: 'text',
+    },
+    {
+      name: 'notes',
+      title: 'Additional Notes',
+      type: 'text',
+    },
+    {
+      name: 'status',
+      title: 'Status',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Innsendt', value: 'submitted' },
+          { title: 'Godkjent', value: 'accepted' },
+          { title: 'Avslått', value: 'rejected' },
+          { title: 'Trukket', value: 'withdrawn' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'submitted',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'submittedAt',
+      title: 'Submitted At',
+      type: 'datetime',
+      validation: Rule => Rule.required(),
+    },
+  ],
+  preview: {
+    select: {
+      title: 'title',
+      speakerName: 'speakerName',
+      format: 'format',
+      status: 'status',
+      eventSlug: 'eventSlug',
+    },
+    prepare(selection) {
+      const { title, speakerName, format, status, eventSlug } = selection
+      const statusDisplay = status
+        ? talkSubmissionStatusDisplay[status] || status
+        : ''
+      return {
+        title: title,
+        subtitle: `${speakerName} · ${format} · ${statusDisplay} · ${eventSlug}`,
+      }
+    },
+  },
+  orderings: [
+    {
+      title: 'Submitted Date (Newest First)',
+      name: 'submittedAtDesc',
+      by: [{ field: 'submittedAt', direction: 'desc' }],
+    },
+    {
+      title: 'Speaker Name (A-Z)',
+      name: 'speakerNameAsc',
+      by: [{ field: 'speakerName', direction: 'asc' }],
+    },
+  ],
+})
+
 export const schemas = [
   eventRegistrationSchema,
   eventParticipantInfoSchema,
   talkAttachmentSchema,
   eventFeedbackSchema,
   eventPhotoSchema,
+  talkSubmissionSchema,
 ]

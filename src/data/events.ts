@@ -22,6 +22,7 @@ export const events: Event[] = [
     end: new Date('2026-05-12T12:30+02:00'),
     audience: Audience.PublicSector,
     location: 'SPK, Verkstedveien 1, Skøyen / Teams',
+    callForPapersEnabled: true,
     registration: {
       attendanceTypes: [AttendanceType.Physical, AttendanceType.Digital],
     },
@@ -62,6 +63,7 @@ export const events: Event[] = [
     end: new Date('2026-05-25T16:00+01:00'),
     audience: Audience.PublicSector,
     location: 'Forskningsparken, Oslo',
+    callForPapersEnabled: true,
     registration: {
       attendanceTypes: [AttendanceType.Physical],
     },

@@ -33,6 +33,7 @@ export interface Event {
   registrationUrl?: string // legacy registration from before we had a registration system
   callForPapersUrl?: string
   callForPapersClosedDate?: Date
+  callForPapersEnabled?: boolean
   recordingUrl?: string
   organizers: SlackUser[]
   schedule: Item[]

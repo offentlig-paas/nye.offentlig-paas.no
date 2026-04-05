@@ -6,6 +6,7 @@ import {
 import { z } from 'zod'
 import { eventRegistrationService } from '@/domains/event-registration'
 import { eventFeedbackService } from '@/domains/event-feedback/service'
+import { talkSubmissionService } from '@/domains/talk-submission'
 import { TRPCError } from '@trpc/server'
 import {
   archiveChannel,
@@ -892,6 +893,51 @@ Mvh ${organizerNames}`
       .mutation(async ({ input }) => {
         await reorderEventPhotos(input.photoIds)
         return { success: true }
+      }),
+  }),
+
+  talkSubmissions: router({
+    list: adminEventProcedure
+      .input(z.object({ slug: z.string() }))
+      .query(async ({ input }) => {
+        return await talkSubmissionService.getEventSubmissions(input.slug)
+      }),
+
+    getCount: adminEventProcedure
+      .input(z.object({ slug: z.string() }))
+      .query(async ({ input }) => {
+        return await talkSubmissionService.getSubmissionCount(input.slug)
+      }),
+
+    updateStatus: adminEventProcedure
+      .input(
+        z.object({
+          slug: z.string(),
+          submissionId: z.string(),
+          status: z.enum([
+            'submitted',
+            'accepted',
+            'rejected',
+            'withdrawn',
+          ] as const),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const updated = await talkSubmissionService.updateStatus(
+          input.submissionId,
+          input.status
+        )
+        return {
+          submission: updated,
+          message: 'Status oppdatert',
+        }
+      }),
+
+    delete: adminEventProcedure
+      .input(z.object({ slug: z.string(), submissionId: z.string() }))
+      .mutation(async ({ input }) => {
+        await talkSubmissionService.deleteSubmission(input.submissionId)
+        return { message: 'Forslag slettet' }
       }),
   }),
 })

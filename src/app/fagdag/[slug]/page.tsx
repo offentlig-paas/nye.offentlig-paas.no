@@ -19,6 +19,7 @@ import {
   getStatus,
   isAcceptingRegistrations,
   isCallForPapersOpen,
+  hasInternalCallForPapers,
   canUserAccessEvent,
 } from '@/lib/events/helpers'
 import { getAllEventAttachments } from '@/lib/events/attachment-helpers'
@@ -358,27 +359,39 @@ export default async function Fagdag({ params }: { params: Params }) {
 
                   {isCallForPapersOpen(event) && (
                     <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950/20">
-                      <div className="flex items-start">
-                        <PresentationChartLineIcon
-                          className="mt-1 mr-3 h-6 w-6 shrink-0 text-blue-600 dark:text-blue-400"
-                          aria-hidden="true"
-                        />
-                        <div>
-                          <h3 className="text-base font-semibold text-blue-900 dark:text-blue-100">
-                            Call for Papers er åpen
-                          </h3>
-                          <p className="mt-1 text-sm text-blue-700 dark:text-blue-200">
-                            Vi tar imot forslag til presentasjoner for denne
-                            fagdagen. Del din kunnskap og erfaring med
-                            fellesskapet!
-                          </p>
-                          {event.callForPapersClosedDate && (
-                            <p className="mt-2 text-sm font-medium text-blue-800 dark:text-blue-300">
-                              Frist:{' '}
-                              {formatDateTime(event.callForPapersClosedDate)}
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-start">
+                          <PresentationChartLineIcon
+                            className="mt-1 mr-3 h-6 w-6 shrink-0 text-blue-600 dark:text-blue-400"
+                            aria-hidden="true"
+                          />
+                          <div>
+                            <h3 className="text-base font-semibold text-blue-900 dark:text-blue-100">
+                              Call for Papers er åpen
+                            </h3>
+                            <p className="mt-1 text-sm text-blue-700 dark:text-blue-200">
+                              Vi tar imot forslag til presentasjoner for denne
+                              fagdagen. Del din kunnskap og erfaring med
+                              fellesskapet!
                             </p>
-                          )}
+                            {event.callForPapersClosedDate && (
+                              <p className="mt-2 text-sm font-medium text-blue-800 dark:text-blue-300">
+                                Frist:{' '}
+                                {formatDateTime(event.callForPapersClosedDate)}
+                              </p>
+                            )}
+                          </div>
                         </div>
+                        <Button
+                          href={
+                            hasInternalCallForPapers(event)
+                              ? `/fagdag/${slug}/cfp`
+                              : event.callForPapersUrl
+                          }
+                          className="shrink-0"
+                        >
+                          Foreslå foredrag
+                        </Button>
                       </div>
                     </div>
                   )}
@@ -450,7 +463,6 @@ export default async function Fagdag({ params }: { params: Params }) {
                   eventSlug={slug}
                   eventUrl={url}
                   isAcceptingRegistrations={isAcceptingRegistrations(event)}
-                  isCallForPapersOpen={isCallForPapersOpen(event)}
                 />
               )}
 

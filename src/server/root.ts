@@ -6,12 +6,14 @@ import { adminRouter } from './routers/admin'
 import { slackRouter } from './routers/slack'
 import { userRouter } from './routers/user'
 import { photosRouter } from './routers/photos'
+import { talkSubmissionRouter } from './routers/talkSubmission'
 import { headers } from 'next/headers'
 
 export const appRouter = router({
   event: eventRouter,
   eventRegistration: eventRegistrationRouter,
   eventFeedback: eventFeedbackRouter,
+  talkSubmission: talkSubmissionRouter,
   admin: adminRouter,
   slack: slackRouter,
   user: userRouter,

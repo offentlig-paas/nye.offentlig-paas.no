@@ -58,7 +58,7 @@ export function isAcceptingRegistrations(event: Event) {
 }
 
 export function isCallForPapersOpen(event: Event) {
-  if (!event.callForPapersUrl) {
+  if (!event.callForPapersUrl && !event.callForPapersEnabled) {
     return false
   }
 
@@ -69,6 +69,10 @@ export function isCallForPapersOpen(event: Event) {
   }
 
   return isAcceptingRegistrations(event)
+}
+
+export function hasInternalCallForPapers(event: Event) {
+  return !!event.callForPapersEnabled && !event.callForPapersUrl
 }
 
 /**

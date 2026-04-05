@@ -59,6 +59,16 @@ export default defineConfig({
                     { field: 'submittedAt', direction: 'desc' },
                   ])
               ),
+            S.listItem()
+              .title('Talk Submissions')
+              .child(
+                S.documentTypeList('talkSubmission')
+                  .title('Talk Submissions')
+                  .filter('_type == "talkSubmission"')
+                  .defaultOrdering([
+                    { field: 'submittedAt', direction: 'desc' },
+                  ])
+              ),
           ]),
     }),
     visionTool({

@@ -32,7 +32,8 @@
 
 - `getStatus()` - Event status (upcoming/current/past)
 - `isAcceptingRegistrations()` - Registration check
-- `isCallForPapersOpen()` - CFP status
+- `isCallForPapersOpen()` - CFP status (external URL or internal `callForPapersEnabled`)
+- `hasInternalCallForPapers()` - True when using in-app CFP (not external URL)
 - `getAllEvents()` - Fetch all events
 - `getUniqueSpeakers()` - Extract unique speakers from schedule
 
@@ -91,7 +92,9 @@
 
 **Members:** Class instances in `src/data/members.ts` with name, type, logo, and optional GitHub/LinkedIn links.
 
-**Events:** Static data in `src/data/events.ts` with Sanity storage for registrations and feedback.
+**Events:** Static data in `src/data/events.ts` with Sanity storage for registrations, feedback, and talk submissions. Set `callForPapersEnabled: true` on an event to enable in-app talk submissions (as opposed to `callForPapersUrl` for external forms).
+
+**Talk Submissions:** Domain in `src/domains/talk-submission/` (types, repository, service). Sanity document type `talkSubmission`. Public tRPC router `talkSubmission` (submit, getUserSubmissions, withdraw). Admin sub-router `admin.talkSubmissions` (list, getCount, updateStatus, delete). Admin UI at `/admin/events/[slug]/submissions`.
 
 ### Component Strategy
 

@@ -29,9 +29,10 @@ export default async function AdminEventLayout({
 
   // Fetch data once for all child pages
   const caller = await createCaller()
-  const [eventDetails, photos] = await Promise.all([
+  const [eventDetails, photos, submissionsCount] = await Promise.all([
     caller.admin.events.getDetails({ slug }),
     caller.admin.photos.list({ slug }),
+    caller.admin.talkSubmissions.getCount({ slug }),
   ])
 
   const photosCount = photos.length
@@ -63,6 +64,8 @@ export default async function AdminEventLayout({
             photosCount={photosCount}
             feedbackCount={feedbackCount}
             showFeedback={feedbackCount > 0}
+            submissionsCount={submissionsCount}
+            showSubmissions={!!event.callForPapersEnabled}
           />
           {children}
         </div>
