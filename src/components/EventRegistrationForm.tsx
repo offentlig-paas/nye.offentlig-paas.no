@@ -125,7 +125,7 @@ const RegistrationForm = memo(function RegistrationForm({
       <div>
         <label
           htmlFor="organisation"
-          className="block text-sm/6 font-medium text-zinc-900 dark:text-zinc-100"
+          className="block text-sm/6 font-medium text-zinc-900 dark:text-white"
         >
           Organisasjon *
         </label>
@@ -134,7 +134,7 @@ const RegistrationForm = memo(function RegistrationForm({
             type="text"
             id="organisation"
             required
-            className="block w-full rounded-md bg-zinc-50/50 px-3 py-1.5 text-base text-zinc-900 outline-1 -outline-offset-1 outline-zinc-300 placeholder:text-zinc-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6 dark:bg-zinc-800/50 dark:text-zinc-100 dark:outline-zinc-600 dark:placeholder:text-zinc-400"
+            className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-zinc-900 outline-1 -outline-offset-1 outline-zinc-300 placeholder:text-zinc-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-zinc-500"
             placeholder="F.eks. NAV, Skatteetaten, Kommune"
             value={registrationData.organisation}
             onChange={e =>
@@ -149,14 +149,14 @@ const RegistrationForm = memo(function RegistrationForm({
 
       {attendanceTypes.length > 0 && (
         <div>
-          <label className="block text-sm/6 font-medium text-zinc-900 dark:text-zinc-100">
+          <label className="block text-sm/6 font-medium text-zinc-900 dark:text-white">
             Deltakelse *
           </label>
-          <div className="mt-2 space-y-2">
+          <div className="mt-2 space-y-6">
             {attendanceTypes.map(type => (
               <label
                 key={type}
-                className={`flex items-center gap-2 text-sm text-zinc-900 dark:text-zinc-100 ${attendanceTypes.length === 1 ? 'opacity-75' : 'cursor-pointer'}`}
+                className={`flex items-center gap-x-3 ${attendanceTypes.length === 1 ? 'opacity-75' : 'cursor-pointer'}`}
               >
                 <input
                   type="radio"
@@ -170,10 +170,10 @@ const RegistrationForm = memo(function RegistrationForm({
                       attendanceType: e.target.value as AttendanceType,
                     }))
                   }
-                  className="h-4 w-4 border-zinc-300 text-blue-600 focus:ring-blue-500 disabled:opacity-75 dark:border-zinc-600"
+                  className="relative size-4 appearance-none rounded-full border border-zinc-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-blue-600 checked:bg-blue-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:border-zinc-200 disabled:bg-zinc-100 disabled:before:bg-zinc-400 dark:border-white/10 dark:bg-white/5 dark:before:bg-white dark:checked:border-blue-500 dark:checked:bg-blue-500 dark:focus-visible:outline-blue-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden"
                 />
                 <span
-                  className={attendanceTypes.length === 1 ? 'font-medium' : ''}
+                  className={`block text-sm/6 font-medium text-zinc-900 dark:text-white ${attendanceTypes.length === 1 ? 'font-medium' : ''}`}
                 >
                   {AttendanceTypeDisplay[type]}
                 </span>
@@ -191,7 +191,7 @@ const RegistrationForm = memo(function RegistrationForm({
       <div>
         <label
           htmlFor="comments"
-          className="block text-sm/6 font-medium text-zinc-900 dark:text-zinc-100"
+          className="block text-sm/6 font-medium text-zinc-900 dark:text-white"
         >
           Kommentarer (valgfritt)
         </label>
@@ -199,7 +199,7 @@ const RegistrationForm = memo(function RegistrationForm({
           <textarea
             id="comments"
             rows={3}
-            className="block w-full rounded-md bg-zinc-50/50 px-3 py-1.5 text-base text-zinc-900 outline-1 -outline-offset-1 outline-zinc-300 placeholder:text-zinc-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6 dark:bg-zinc-800/50 dark:text-zinc-100 dark:outline-zinc-600 dark:placeholder:text-zinc-400"
+            className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-zinc-900 outline-1 -outline-offset-1 outline-zinc-300 placeholder:text-zinc-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-zinc-500"
             placeholder="Har du noen spørsmål eller kommentarer?"
             value={registrationData.comments}
             onChange={e =>
@@ -215,7 +215,7 @@ const RegistrationForm = memo(function RegistrationForm({
       <div>
         <label
           htmlFor="dietary"
-          className="block text-sm/6 font-medium text-zinc-900 dark:text-zinc-100"
+          className="block text-sm/6 font-medium text-zinc-900 dark:text-white"
         >
           Allergier/kostholdsbehov (valgfritt)
         </label>
@@ -223,7 +223,7 @@ const RegistrationForm = memo(function RegistrationForm({
           <input
             type="text"
             id="dietary"
-            className="block w-full rounded-md bg-zinc-50/50 px-3 py-1.5 text-base text-zinc-900 outline-1 -outline-offset-1 outline-zinc-300 placeholder:text-zinc-500 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6 dark:bg-zinc-800/50 dark:text-zinc-100 dark:outline-zinc-600 dark:placeholder:text-zinc-400"
+            className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-zinc-900 outline-1 -outline-offset-1 outline-zinc-300 placeholder:text-zinc-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-zinc-500"
             placeholder="F.eks. vegetar, glutenfri, nøtteallergi"
             value={registrationData.dietary}
             onChange={e =>
@@ -264,7 +264,7 @@ const RegistrationForm = memo(function RegistrationForm({
                   attendingSocialEvent: e.target.checked,
                 }))
               }
-              className="h-4 w-4 rounded border-teal-300 text-teal-600 focus:ring-teal-500 dark:border-teal-600"
+              className="size-4 rounded-sm border border-teal-300 bg-white checked:border-teal-600 checked:bg-teal-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 dark:border-teal-600 dark:bg-white/5 dark:checked:border-teal-500 dark:checked:bg-teal-500 forced-colors:appearance-auto"
             />
             <span className="font-medium">
               Ja, jeg ønsker å delta på det sosiale arrangementet

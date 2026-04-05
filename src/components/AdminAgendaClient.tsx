@@ -234,7 +234,7 @@ export function AdminAgendaClient() {
               onChange={e =>
                 setTalkTypeFilter(e.target.value as TalkTypeFilter)
               }
-              className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+              className="rounded-md bg-white px-3 py-1.5 text-base text-zinc-900 outline-1 -outline-offset-1 outline-zinc-300 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10"
             >
               <option value="all">Alle typer</option>
               <option value={ItemType.Talk}>Presentasjoner</option>
@@ -247,7 +247,7 @@ export function AdminAgendaClient() {
               onChange={e =>
                 setAttachmentFilter(e.target.value as AttachmentFilter)
               }
-              className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+              className="rounded-md bg-white px-3 py-1.5 text-base text-zinc-900 outline-1 -outline-offset-1 outline-zinc-300 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10"
             >
               <option value="all">Alle slides-status</option>
               <option value="with-slides">Med slides</option>

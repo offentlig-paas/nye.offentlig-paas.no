@@ -698,7 +698,7 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
                         caption: e.target.value,
                       })
                     }
-                    className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                    className="w-full rounded-md bg-white px-3 py-1.5 text-base text-zinc-900 outline-1 -outline-offset-1 outline-zinc-300 placeholder:text-zinc-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-zinc-500"
                     placeholder="Legg til bildetekst..."
                   />
                 </div>
@@ -715,7 +715,7 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
                       value={speakerSearch}
                       onChange={e => setSpeakerSearch(e.target.value)}
                       placeholder="Søk etter foredragsholder..."
-                      className="w-full rounded-md border border-gray-300 bg-white py-2 pr-3 pl-9 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                      className="w-full rounded-md bg-white py-2 pr-3 pl-9 text-base text-zinc-900 outline-1 -outline-offset-1 outline-zinc-300 placeholder:text-zinc-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-zinc-500"
                     />
                   </div>
 
@@ -776,7 +776,7 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
                           featured: e.target.checked,
                         })
                       }
-                      className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:focus:ring-blue-400"
+                      className="size-4 rounded-sm border border-zinc-300 bg-white checked:border-blue-600 checked:bg-blue-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:border-white/10 dark:bg-white/5 dark:checked:border-blue-500 dark:checked:bg-blue-500 forced-colors:appearance-auto"
                     />
                     <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       Bruk som cover-bilde

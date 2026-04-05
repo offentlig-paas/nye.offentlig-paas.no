@@ -212,7 +212,7 @@ export function EventFeedbackForm({
                   onChange={e =>
                     updateTalkRating(talk.title, 'comment', e.target.value)
                   }
-                  className="block w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder:text-zinc-500"
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-zinc-900 outline-1 -outline-offset-1 outline-zinc-300 placeholder:text-zinc-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-zinc-500"
                   placeholder="Tilbakemelding om foredraget..."
                 />
               </div>
@@ -266,7 +266,7 @@ export function EventFeedbackForm({
             onChange={e =>
               setState(prev => ({ ...prev, eventComment: e.target.value }))
             }
-            className="block w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder:text-zinc-500"
+            className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-zinc-900 outline-1 -outline-offset-1 outline-zinc-300 placeholder:text-zinc-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-zinc-500"
             placeholder="Hva synes du om arrangementet?"
           />
           {isUpgrade && existingFeedback?.eventComment && (
@@ -295,7 +295,7 @@ export function EventFeedbackForm({
                 onChange={e =>
                   updateTopicSuggestion(index, 'topic', e.target.value)
                 }
-                className="block w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder:text-zinc-500"
+                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-zinc-900 outline-1 -outline-offset-1 outline-zinc-300 placeholder:text-zinc-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-zinc-500"
                 placeholder="F.eks. Kubernetes sikkerhet, CI/CD best practices..."
               />
               <label className="flex items-center gap-2">
@@ -309,7 +309,7 @@ export function EventFeedbackForm({
                       e.target.checked
                     )
                   }
-                  className="rounded border-zinc-300 text-blue-600 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+                  className="size-4 rounded-sm border border-zinc-300 bg-white checked:border-blue-600 checked:bg-blue-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:border-white/10 dark:bg-white/5 dark:checked:border-blue-500 dark:checked:bg-blue-500 forced-colors:appearance-auto"
                 />
                 <span className="text-sm text-zinc-700 dark:text-zinc-300">
                   Jeg kan tenke meg å presentere om dette
@@ -346,7 +346,7 @@ export function EventFeedbackForm({
             onChange={e =>
               setState(prev => ({ ...prev, isPublic: e.target.checked }))
             }
-            className="mt-0.5 rounded border-zinc-300 text-blue-600 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-700"
+            className="mt-0.5 size-4 rounded-sm border border-zinc-300 bg-white checked:border-blue-600 checked:bg-blue-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:border-white/10 dark:bg-white/5 dark:checked:border-blue-500 dark:checked:bg-blue-500 forced-colors:appearance-auto"
           />
           <div className="flex-1">
             <span className="block text-sm font-medium text-zinc-900 dark:text-zinc-100">

@@ -543,7 +543,7 @@ export function SpeakerMatcher({ eventSlug, speakers }: SpeakerMatcherProps) {
                       placeholder="Søk på navn..."
                       value={searchQuery}
                       onChange={e => setSearchQuery(e.target.value)}
-                      className="block w-full rounded-lg border border-gray-300 bg-white py-2 pr-3 pl-10 text-sm text-gray-900 placeholder-gray-400 transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                      className="block w-full rounded-md bg-white py-2 pr-3 pl-10 text-base text-zinc-900 outline-1 -outline-offset-1 outline-zinc-300 placeholder:text-zinc-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-zinc-500"
                       autoFocus
                     />
                   </div>

@@ -8,6 +8,7 @@ import {
   CalendarDaysIcon,
   PhotoIcon,
   ChatBubbleLeftRightIcon,
+  LightBulbIcon,
 } from '@heroicons/react/24/outline'
 import { getEventState } from '@/lib/events/state-machine'
 
@@ -19,6 +20,8 @@ interface AdminEventNavProps {
   photosCount?: number
   feedbackCount?: number
   showFeedback?: boolean
+  submissionsCount?: number
+  showSubmissions?: boolean
 }
 
 export function AdminEventNav({
@@ -29,6 +32,8 @@ export function AdminEventNav({
   photosCount,
   feedbackCount,
   showFeedback,
+  submissionsCount,
+  showSubmissions,
 }: AdminEventNavProps) {
   const pathname = usePathname()
   const state = getEventState(eventStartTime)
@@ -57,14 +62,28 @@ export function AdminEventNav({
       current: pathname === `/admin/events/${eventSlug}/agenda`,
       badge: talksCount,
     },
-    {
-      name: 'Bilder',
-      href: `/admin/events/${eventSlug}/photos`,
-      icon: PhotoIcon,
-      current: pathname === `/admin/events/${eventSlug}/photos`,
-      badge: photosCount,
-    },
   ]
+
+  if (
+    showSubmissions ||
+    (submissionsCount !== undefined && submissionsCount > 0)
+  ) {
+    tabs.push({
+      name: 'Foredragsforslag',
+      href: `/admin/events/${eventSlug}/submissions`,
+      icon: LightBulbIcon,
+      current: pathname === `/admin/events/${eventSlug}/submissions`,
+      badge: submissionsCount,
+    })
+  }
+
+  tabs.push({
+    name: 'Bilder',
+    href: `/admin/events/${eventSlug}/photos`,
+    icon: PhotoIcon,
+    current: pathname === `/admin/events/${eventSlug}/photos`,
+    badge: photosCount,
+  })
 
   if (displayFeedback) {
     tabs.push({

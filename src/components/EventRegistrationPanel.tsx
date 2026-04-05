@@ -2,10 +2,7 @@ import { Button } from './Button'
 import { EventRegistrationForm } from './EventRegistrationForm'
 import { EventParticipantInfo } from './EventParticipantInfo'
 import { EventCalendarDownload } from './EventCalendarDownload'
-import {
-  PresentationChartLineIcon,
-  VideoCameraIcon,
-} from '@heroicons/react/20/solid'
+import { VideoCameraIcon } from '@heroicons/react/20/solid'
 import type { Event } from '@/lib/events/types'
 
 interface EventRegistrationPanelProps {
@@ -13,7 +10,6 @@ interface EventRegistrationPanelProps {
   eventSlug: string
   eventUrl: string
   isAcceptingRegistrations: boolean
-  isCallForPapersOpen: boolean
 }
 
 /**
@@ -30,7 +26,6 @@ export function EventRegistrationPanel({
   eventSlug,
   eventUrl,
   isAcceptingRegistrations,
-  isCallForPapersOpen,
 }: EventRegistrationPanelProps) {
   return (
     <div className="space-y-4">
@@ -58,23 +53,6 @@ export function EventRegistrationPanel({
             className="w-full"
           >
             Ekstern registrering
-          </Button>
-        </div>
-      )}
-
-      {/* Call for Papers */}
-      {isAcceptingRegistrations && isCallForPapersOpen && (
-        <div className="overflow-hidden rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-gray-400/5">
-          <Button
-            href={event.callForPapersUrl}
-            variant="secondary"
-            className="group w-full"
-          >
-            <PresentationChartLineIcon
-              className="mr-1 h-4 w-4"
-              aria-hidden="true"
-            />
-            Send inn forslag
           </Button>
         </div>
       )}
