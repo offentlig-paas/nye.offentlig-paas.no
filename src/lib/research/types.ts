@@ -63,6 +63,10 @@ export interface ResearchProject {
   slug: string
   title: string
   description: string
+  longDescription?: string
+  researchQuestions?: string[]
+  methodology?: string
+  keyFindings?: string[]
   status: ResearchStatus
   tags: string[]
   lead: string

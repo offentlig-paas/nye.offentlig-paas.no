@@ -1,0 +1,439 @@
+import { type Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import Link from 'next/link'
+import clsx from 'clsx'
+import {
+  ArrowLeftIcon,
+  ArrowTopRightOnSquareIcon,
+  DocumentTextIcon,
+  CircleStackIcon,
+  ClipboardDocumentListIcon,
+  CalendarDaysIcon,
+  UserIcon,
+} from '@heroicons/react/20/solid'
+import { Container } from '@/components/Container'
+import { getProject, getAllProjects } from '@/lib/research/helpers'
+import { getArticlesByTag } from '@/lib/articles'
+import { formatDate } from '@/lib/formatDate'
+import {
+  ResearchStatus,
+  PaperStatus,
+  SurveyStatus,
+  type ResearchProject,
+} from '@/lib/research/types'
+
+type Params = Promise<{ slug: string }>
+
+export async function generateStaticParams() {
+  return getAllProjects().map(p => ({ slug: p.slug }))
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Params
+}): Promise<Metadata> {
+  const { slug } = await params
+  const project = getProject(slug)
+  if (!project) return {}
+
+  return {
+    title: project.title,
+    description: project.description,
+  }
+}
+
+const statusColors: Record<ResearchStatus, string> = {
+  [ResearchStatus.Planning]:
+    'bg-amber-50 text-amber-700 ring-amber-600/20 dark:bg-amber-400/10 dark:text-amber-400 dark:ring-amber-400/20',
+  [ResearchStatus.DataCollection]:
+    'bg-blue-50 text-blue-700 ring-blue-600/20 dark:bg-blue-400/10 dark:text-blue-400 dark:ring-blue-400/20',
+  [ResearchStatus.Analysis]:
+    'bg-purple-50 text-purple-700 ring-purple-600/20 dark:bg-purple-400/10 dark:text-purple-400 dark:ring-purple-400/20',
+  [ResearchStatus.Writing]:
+    'bg-indigo-50 text-indigo-700 ring-indigo-600/20 dark:bg-indigo-400/10 dark:text-indigo-400 dark:ring-indigo-400/20',
+  [ResearchStatus.UnderReview]:
+    'bg-orange-50 text-orange-700 ring-orange-600/20 dark:bg-orange-400/10 dark:text-orange-400 dark:ring-orange-400/20',
+  [ResearchStatus.Published]:
+    'bg-green-50 text-green-700 ring-green-600/20 dark:bg-green-400/10 dark:text-green-400 dark:ring-green-400/20',
+  [ResearchStatus.Ongoing]:
+    'bg-teal-50 text-teal-700 ring-teal-600/20 dark:bg-teal-400/10 dark:text-teal-400 dark:ring-teal-400/20',
+}
+
+const paperStatusLabel: Record<PaperStatus, string> = {
+  [PaperStatus.Draft]: 'Utkast',
+  [PaperStatus.UnderReview]: 'Under fagfellevurdering',
+  [PaperStatus.Accepted]: 'Akseptert',
+  [PaperStatus.Published]: 'Publisert',
+}
+
+export default async function ResearchProjectPage({
+  params,
+}: {
+  params: Params
+}) {
+  const { slug } = await params
+  const project = getProject(slug)
+
+  if (!project) {
+    notFound()
+  }
+
+  const articles = (
+    await Promise.all(project.tags.map(tag => getArticlesByTag(tag)))
+  ).flat()
+
+  const openSurveys = (project.surveys ?? []).filter(
+    s => s.status === SurveyStatus.Open
+  )
+
+  return (
+    <Container className="mt-16 lg:mt-32">
+      <div className="xl:relative">
+        <div className="mx-auto max-w-2xl">
+          <Link
+            href="/forskning"
+            className="group mb-8 inline-flex items-center gap-2 text-sm text-zinc-500 transition hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300"
+          >
+            <ArrowLeftIcon className="h-4 w-4 transition group-hover:-translate-x-0.5" />
+            Forskning
+          </Link>
+
+          <div className="flex items-start justify-between gap-4">
+            <h1 className="text-3xl font-bold tracking-tight text-zinc-800 sm:text-4xl dark:text-zinc-100">
+              {project.title}
+            </h1>
+            <span
+              className={clsx(
+                'mt-1 inline-flex shrink-0 items-center rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset',
+                statusColors[project.status]
+              )}
+            >
+              {project.status}
+            </span>
+          </div>
+
+          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-zinc-500 dark:text-zinc-400">
+            <span className="flex items-center gap-1.5">
+              <UserIcon className="h-4 w-4" />
+              {project.lead}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CalendarDaysIcon className="h-4 w-4" />
+              Startet {formatDate(project.startDate)}
+            </span>
+            <span>Oppdatert {formatDate(project.lastUpdated)}</span>
+          </div>
+
+          <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
+            {project.description}
+          </p>
+
+          {project.longDescription && (
+            <p className="mt-4 text-base text-zinc-600 dark:text-zinc-400">
+              {project.longDescription}
+            </p>
+          )}
+
+          {/* Open survey CTA */}
+          {openSurveys.length > 0 && (
+            <div className="mt-8">
+              {openSurveys.map(survey => (
+                <div
+                  key={survey.title}
+                  className="rounded-lg border border-teal-200 bg-teal-50 p-4 dark:border-teal-800 dark:bg-teal-950/20"
+                >
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <p className="font-medium text-teal-900 dark:text-teal-100">
+                        {survey.title}
+                      </p>
+                      {survey.description && (
+                        <p className="mt-1 text-sm text-teal-700 dark:text-teal-300">
+                          {survey.description}
+                        </p>
+                      )}
+                    </div>
+                    <Link
+                      href={`/forskning/${slug}/undersokelse`}
+                      className="shrink-0 rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-700 dark:bg-teal-500 dark:hover:bg-teal-600"
+                    >
+                      Delta
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Research questions */}
+          {project.researchQuestions &&
+            project.researchQuestions.length > 0 && (
+              <section className="mt-12 border-t border-zinc-100 pt-8 dark:border-zinc-800">
+                <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                  Forskningsspørsmål
+                </h2>
+                <ol className="mt-4 list-outside list-decimal space-y-2 pl-5 text-sm text-zinc-600 marker:text-zinc-400 dark:text-zinc-400 dark:marker:text-zinc-500">
+                  {project.researchQuestions.map(q => (
+                    <li key={q}>{q}</li>
+                  ))}
+                </ol>
+              </section>
+            )}
+
+          {/* Methodology */}
+          {project.methodology && (
+            <section className="mt-12 border-t border-zinc-100 pt-8 dark:border-zinc-800">
+              <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                Metode
+              </h2>
+              <p className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">
+                {project.methodology}
+              </p>
+            </section>
+          )}
+
+          {/* Key findings */}
+          {project.keyFindings && project.keyFindings.length > 0 && (
+            <section className="mt-12 border-t border-zinc-100 pt-8 dark:border-zinc-800">
+              <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                Hovedfunn
+              </h2>
+              <ul className="mt-4 list-outside list-disc space-y-2 pl-5 text-sm text-zinc-600 marker:text-zinc-400 dark:text-zinc-400 dark:marker:text-zinc-500">
+                {project.keyFindings.map(finding => (
+                  <li key={finding}>{finding}</li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {/* Waves */}
+          <WaveTimeline project={project} />
+
+          {/* Papers */}
+          <PapersSection papers={project.papers} />
+
+          {/* Surveys */}
+          <SurveysSection
+            surveys={project.surveys}
+            projectSlug={project.slug}
+          />
+
+          {/* Datasets */}
+          <DatasetsSection datasets={project.datasets} />
+
+          {/* Related articles */}
+          {articles.length > 0 && (
+            <section className="mt-12 border-t border-zinc-100 pt-8 dark:border-zinc-800">
+              <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                Relaterte artikler
+              </h2>
+              <ul className="mt-4 space-y-3">
+                {articles.map(article => (
+                  <li key={article.slug}>
+                    <Link
+                      href={`/artikkel/${article.slug}`}
+                      className="group flex items-baseline gap-3 text-sm"
+                    >
+                      <time
+                        dateTime={article.date}
+                        className="shrink-0 text-xs text-zinc-400 dark:text-zinc-500"
+                      >
+                        {formatDate(article.date)}
+                      </time>
+                      <span className="text-teal-500 group-hover:text-teal-600 dark:text-teal-400 dark:group-hover:text-teal-300">
+                        {article.title}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </div>
+      </div>
+    </Container>
+  )
+}
+
+function WaveTimeline({ project }: { project: ResearchProject }) {
+  if (!project.waves?.length) return null
+  return (
+    <section className="mt-12 border-t border-zinc-100 pt-8 dark:border-zinc-800">
+      <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+        Bølger
+      </h2>
+      <ol className="mt-4 space-y-4">
+        {project.waves.map(wave => (
+          <li key={wave.name} className="flex items-start gap-4">
+            <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-teal-500/10 text-sm font-medium text-teal-600 ring-1 ring-teal-500/20 dark:text-teal-400 dark:ring-teal-400/20">
+              {wave.year.toString().slice(-2)}
+            </span>
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                {wave.name} ({wave.year})
+              </p>
+              {wave.organizations && (
+                <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                  {wave.organizations} organisasjoner
+                </p>
+              )}
+              {wave.description && (
+                <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+                  {wave.description}
+                </p>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}
+
+function PapersSection({ papers }: { papers: ResearchProject['papers'] }) {
+  if (!papers?.length) return null
+  return (
+    <section className="mt-12 border-t border-zinc-100 pt-8 dark:border-zinc-800">
+      <h2 className="flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+        <DocumentTextIcon className="h-5 w-5 text-zinc-400" />
+        Publikasjoner
+      </h2>
+      <div className="mt-4 space-y-6">
+        {papers.map(paper => (
+          <div key={paper.title}>
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                {paper.url ? (
+                  <a
+                    href={paper.url}
+                    className="text-sm font-medium text-teal-500 hover:text-teal-600 dark:text-teal-400 dark:hover:text-teal-300"
+                  >
+                    {paper.title}
+                    <ArrowTopRightOnSquareIcon className="ml-1 inline h-3 w-3" />
+                  </a>
+                ) : (
+                  <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                    {paper.title}
+                  </p>
+                )}
+              </div>
+              <span className="shrink-0 text-xs text-zinc-500">
+                {paperStatusLabel[paper.status]}
+              </span>
+            </div>
+            {paper.authors && paper.authors.length > 0 && (
+              <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                {paper.authors
+                  .map(
+                    a =>
+                      `${a.name}${a.affiliation ? ` (${a.affiliation})` : ''}`
+                  )
+                  .join(', ')}
+              </p>
+            )}
+            {paper.venue && (
+              <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                {paper.venue}
+                {paper.venueDate && ` · ${paper.venueDate}`}
+              </p>
+            )}
+            {paper.abstract && (
+              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+                {paper.abstract}
+              </p>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function SurveysSection({
+  surveys,
+  projectSlug,
+}: {
+  surveys: ResearchProject['surveys']
+  projectSlug: string
+}) {
+  if (!surveys?.length) return null
+  return (
+    <section className="mt-12 border-t border-zinc-100 pt-8 dark:border-zinc-800">
+      <h2 className="flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+        <ClipboardDocumentListIcon className="h-5 w-5 text-zinc-400" />
+        Undersøkelser
+      </h2>
+      <ul className="mt-4 space-y-3">
+        {surveys.map(survey => (
+          <li
+            key={survey.title}
+            className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400"
+          >
+            <span
+              className={clsx(
+                'inline-block h-2 w-2 shrink-0 rounded-full',
+                survey.status === SurveyStatus.Open
+                  ? 'bg-green-500'
+                  : 'bg-zinc-400 dark:bg-zinc-500'
+              )}
+            />
+            {survey.url ? (
+              <Link
+                href={`/forskning/${projectSlug}/undersokelse`}
+                className="text-teal-500 hover:text-teal-600 dark:text-teal-400 dark:hover:text-teal-300"
+              >
+                {survey.title}
+              </Link>
+            ) : (
+              <span>{survey.title}</span>
+            )}
+            <span className="text-xs text-zinc-400">({survey.status})</span>
+            {survey.description && (
+              <span className="text-xs text-zinc-400">
+                — {survey.description}
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+function DatasetsSection({
+  datasets,
+}: {
+  datasets: ResearchProject['datasets']
+}) {
+  if (!datasets?.length) return null
+  return (
+    <section className="mt-12 border-t border-zinc-100 pt-8 dark:border-zinc-800">
+      <h2 className="flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+        <CircleStackIcon className="h-5 w-5 text-zinc-400" />
+        Åpne datasett
+      </h2>
+      <ul className="mt-4 space-y-3">
+        {datasets.map(dataset => (
+          <li key={dataset.title} className="text-sm">
+            <a
+              href={dataset.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-teal-500 hover:text-teal-600 dark:text-teal-400 dark:hover:text-teal-300"
+            >
+              {dataset.title}
+              <ArrowTopRightOnSquareIcon className="ml-1 inline h-3 w-3" />
+            </a>
+            <span className="ml-2 text-xs text-zinc-400">{dataset.format}</span>
+            {dataset.description && (
+              <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
+                {dataset.description}
+              </p>
+            )}
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}

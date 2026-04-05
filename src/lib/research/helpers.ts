@@ -11,6 +11,10 @@ export function getAllProjects(): ResearchProject[] {
   )
 }
 
+export function getProject(slug: string): ResearchProject | undefined {
+  return researchProjects.find(p => p.slug === slug)
+}
+
 export function getOpenSurveys(): Array<{
   survey: ResearchSurvey
   project: ResearchProject

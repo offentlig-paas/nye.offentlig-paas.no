@@ -5,7 +5,6 @@ import { SimpleLayout } from '@/components/SimpleLayout'
 import { ResearchProjectCard } from '@/components/ResearchProjectCard'
 import { SurveyCallToAction } from '@/components/SurveyCallToAction'
 import { getAllProjects, getOpenSurveys } from '@/lib/research/helpers'
-import { getArticlesByTag } from '@/lib/articles'
 
 export const metadata: Metadata = {
   title: 'Forskning',
@@ -16,15 +15,6 @@ export const metadata: Metadata = {
 export default async function ResearchPage() {
   const projects = getAllProjects()
   const openSurveys = getOpenSurveys()
-
-  const projectsWithArticles = await Promise.all(
-    projects.map(async project => {
-      const articles = (
-        await Promise.all(project.tags.map(tag => getArticlesByTag(tag)))
-      ).flat()
-      return { project, articles }
-    })
-  )
 
   return (
     <SimpleLayout
@@ -51,12 +41,8 @@ export default async function ResearchPage() {
       </div>
 
       <div className="mt-16 space-y-12 sm:mt-20">
-        {projectsWithArticles.map(({ project, articles }) => (
-          <ResearchProjectCard
-            key={project.slug}
-            project={project}
-            articles={articles}
-          />
+        {projects.map(project => (
+          <ResearchProjectCard key={project.slug} project={project} />
         ))}
       </div>
     </SimpleLayout>
