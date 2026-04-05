@@ -275,7 +275,7 @@ export default async function Fagdag({ params }: { params: Params }) {
               <div className="flex items-center gap-4">
                 <Link
                   href="/fagdag"
-                  className="group flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-white shadow-md ring-1 shadow-zinc-800/5 ring-zinc-900/5 transition dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0 dark:ring-white/10 dark:hover:border-zinc-700 dark:hover:ring-white/20"
+                  className="group flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white shadow-md ring-1 shadow-zinc-800/5 ring-zinc-900/5 transition dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0 dark:ring-white/10 dark:hover:border-zinc-700 dark:hover:ring-white/20"
                   aria-label="Tilbake til fagdager"
                 >
                   <ArrowLeftIcon className="h-4 w-4 stroke-zinc-500 transition group-hover:stroke-zinc-700 dark:stroke-zinc-500 dark:group-hover:stroke-zinc-400" />
@@ -284,7 +284,7 @@ export default async function Fagdag({ params }: { params: Params }) {
                   {event.title}
                 </h1>
               </div>
-              <div className="flex flex-shrink-0 items-center gap-2">
+              <div className="flex shrink-0 items-center gap-2">
                 <Button
                   href="https://github.com/offentlig-paas/nye.offentlig-paas.no/edit/main/src/data/events.ts"
                   target="_blank"
@@ -360,7 +360,7 @@ export default async function Fagdag({ params }: { params: Params }) {
                     <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950/20">
                       <div className="flex items-start">
                         <PresentationChartLineIcon
-                          className="mt-1 mr-3 h-6 w-6 flex-shrink-0 text-blue-600 dark:text-blue-400"
+                          className="mt-1 mr-3 h-6 w-6 shrink-0 text-blue-600 dark:text-blue-400"
                           aria-hidden="true"
                         />
                         <div>
@@ -396,11 +396,11 @@ export default async function Fagdag({ params }: { params: Params }) {
                       </p>
                       <div className="space-y-1 text-sm text-teal-600 dark:text-teal-400">
                         <div className="flex items-center gap-2">
-                          <MapPinIcon className="h-4 w-4 flex-shrink-0" />
+                          <MapPinIcon className="h-4 w-4 shrink-0" />
                           <span>{event.socialEvent.location}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <CalendarDaysIcon className="h-4 w-4 flex-shrink-0" />
+                          <CalendarDaysIcon className="h-4 w-4 shrink-0" />
                           <span>
                             {formatDateLong(event.socialEvent.start)} kl.{' '}
                             {formatTime(event.socialEvent.start)}

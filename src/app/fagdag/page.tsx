@@ -59,7 +59,7 @@ function EventCard({
             width={800}
             height={420}
             unoptimized
-            className="aspect-[40/21] w-full rounded-lg object-cover"
+            className="aspect-40/21 w-full rounded-lg object-cover"
           />
         </div>
       ) : null}
