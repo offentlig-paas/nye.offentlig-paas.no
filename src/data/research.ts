@@ -82,6 +82,13 @@ export const researchProjects: ResearchProject[] = [
     lead: 'Hans Kristian Flaatten',
     startDate: '2026-01-01',
     lastUpdated: '2026-04-05',
+    callout: {
+      headline: 'Kartlegging: AI-kodeagenter i offentlig sektor',
+      subtitle:
+        'Hvordan brukes og styres verktøy som Copilot og Cursor hos dere?',
+      linkText: 'Ta undersøkelsen',
+      linkHref: '/forskning/state-of-ai-agents/undersokelse',
+    },
     surveys: [
       {
         title: 'AI-kodeagenter i offentlig sektor 2026',

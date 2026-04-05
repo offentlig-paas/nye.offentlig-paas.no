@@ -68,6 +68,12 @@ export interface ResearchProject {
   lead: string
   startDate: string
   lastUpdated: string
+  callout?: {
+    headline: string
+    subtitle: string
+    linkText: string
+    linkHref: string
+  }
   waves?: ResearchWave[]
   papers?: ResearchPaper[]
   surveys?: ResearchSurvey[]

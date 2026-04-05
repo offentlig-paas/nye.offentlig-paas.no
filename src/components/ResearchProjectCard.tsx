@@ -250,29 +250,52 @@ export function ResearchProjectCard({
   articles: ArticleWithSlug[]
 }) {
   return (
-    <article className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-            {project.title}
-          </h3>
-          <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-            {project.lead}
+    <article className="overflow-hidden rounded-2xl border border-zinc-100 dark:border-zinc-700/40">
+      <div className={project.callout ? 'flex' : ''}>
+        <div className="flex-1 p-6">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                {project.title}
+              </h3>
+              <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                {project.lead}
+              </p>
+            </div>
+            <StatusBadge
+              status={project.status}
+              colorClass={statusColors[project.status]}
+            />
+          </div>
+          <p className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">
+            {project.description}
           </p>
+          <WaveTimeline project={project} />
+          <PapersList papers={project.papers} />
+          <SurveysList surveys={project.surveys} projectSlug={project.slug} />
+          <DatasetsList datasets={project.datasets} />
+          <RelatedArticles articles={articles} />
         </div>
-        <StatusBadge
-          status={project.status}
-          colorClass={statusColors[project.status]}
-        />
+        {project.callout && (
+          <Link
+            href={project.callout.linkHref}
+            className="hidden w-1/3 flex-col justify-between bg-linear-to-br from-sky-900 to-blue-950 p-6 transition hover:from-sky-800 hover:to-blue-900 md:flex"
+          >
+            <div>
+              <p className="text-xl font-bold text-white">
+                {project.callout.headline}
+              </p>
+              <p className="mt-2 text-base text-sky-200">
+                {project.callout.subtitle}
+              </p>
+            </div>
+            <span className="mt-4 inline-flex items-center self-start rounded-lg bg-teal-500 px-4 py-2 text-base font-semibold text-white">
+              {project.callout.linkText}
+              <ArrowTopRightOnSquareIcon className="ml-1.5 h-4 w-4" />
+            </span>
+          </Link>
+        )}
       </div>
-      <p className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">
-        {project.description}
-      </p>
-      <WaveTimeline project={project} />
-      <PapersList papers={project.papers} />
-      <SurveysList surveys={project.surveys} projectSlug={project.slug} />
-      <DatasetsList datasets={project.datasets} />
-      <RelatedArticles articles={articles} />
     </article>
   )
 }
