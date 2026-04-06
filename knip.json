@@ -7,7 +7,10 @@
     "src/app/**/loading.{ts,tsx}",
     "src/app/**/*.mdx",
     "src/auth.ts",
-    "src/server/root.ts"
+    "src/server/root.ts",
+    "src/data/surveys/index.ts",
+    "src/lib/surveys/helpers.ts",
+    "src/lib/surveys/types.ts"
   ],
   "project": [
     "src/**/*.{ts,tsx,js,jsx}",

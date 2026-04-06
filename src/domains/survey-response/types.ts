@@ -1,0 +1,28 @@
+export interface SurveyResponse {
+  _id: string
+  surveySlug: string
+  surveyVersion: number
+  answers: SurveyResponseAnswer[]
+  submittedAt: string
+  metadata?: SurveyResponseMetadata
+}
+
+export interface SurveyResponseAnswer {
+  questionId: string
+  value: string
+  otherText?: string
+}
+
+export interface SurveyResponseMetadata {
+  userAgent?: string
+  submissionSource?: string
+  consentVersion?: number
+  durationSeconds?: number
+}
+
+export interface CreateSurveyResponseInput {
+  surveySlug: string
+  surveyVersion: number
+  answers: SurveyResponseAnswer[]
+  metadata?: SurveyResponseMetadata
+}

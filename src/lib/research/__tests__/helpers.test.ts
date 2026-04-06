@@ -7,13 +7,15 @@ import {
   getWaveResponseRate,
   getSurveyResponseRate,
   findWaveForSurvey,
+  getSurveyStatus,
+  isSurveyLinkable,
 } from '../helpers'
 import { researchProjects } from '@/data/research'
 import {
   SurveyStatus,
   ResearchStatus,
   type ResearchWave,
-  type ResearchSurvey,
+  type ExternalSurvey,
 } from '../types'
 
 describe('Research Helpers', () => {
@@ -49,11 +51,11 @@ describe('Research Helpers', () => {
   })
 
   describe('getOpenSurveys', () => {
-    it('returns only open surveys with a url', () => {
+    it('returns only open and linkable surveys', () => {
       const open = getOpenSurveys()
       for (const { survey } of open) {
-        expect(survey.status).toBe(SurveyStatus.Open)
-        expect(survey.url).toBeDefined()
+        expect(getSurveyStatus(survey)).toBe(SurveyStatus.Open)
+        expect(isSurveyLinkable(survey)).toBe(true)
       }
     })
 
@@ -120,7 +122,7 @@ describe('Research Helpers', () => {
 
   describe('getSurveyResponseRate', () => {
     it('returns responses, total, and rate', () => {
-      const survey: ResearchSurvey = {
+      const survey: ExternalSurvey = {
         title: 'Test',
         status: SurveyStatus.Open,
         responses: 10,
@@ -132,7 +134,7 @@ describe('Research Helpers', () => {
     })
 
     it('defaults to 0 responses when undefined', () => {
-      const survey: ResearchSurvey = {
+      const survey: ExternalSurvey = {
         title: 'Test',
         status: SurveyStatus.Open,
       }
@@ -149,7 +151,7 @@ describe('Research Helpers', () => {
     ]
 
     it('finds matching wave by waveName', () => {
-      const survey: ResearchSurvey = {
+      const survey: ExternalSurvey = {
         title: 'Survey',
         status: SurveyStatus.Closed,
         waveName: 'Wave 2',
@@ -158,7 +160,7 @@ describe('Research Helpers', () => {
     })
 
     it('returns undefined when waveName does not match', () => {
-      const survey: ResearchSurvey = {
+      const survey: ExternalSurvey = {
         title: 'Survey',
         status: SurveyStatus.Closed,
         waveName: 'Wave 99',
@@ -167,7 +169,7 @@ describe('Research Helpers', () => {
     })
 
     it('returns undefined when waveName is not set', () => {
-      const survey: ResearchSurvey = {
+      const survey: ExternalSurvey = {
         title: 'Survey',
         status: SurveyStatus.Open,
       }
@@ -175,7 +177,7 @@ describe('Research Helpers', () => {
     })
 
     it('returns undefined when waves is undefined', () => {
-      const survey: ResearchSurvey = {
+      const survey: ExternalSurvey = {
         title: 'Survey',
         status: SurveyStatus.Closed,
         waveName: 'Wave 1',
@@ -206,7 +208,7 @@ describe('Research Data Invariants', () => {
         if (survey.waveName) {
           expect(
             waveNames.has(survey.waveName),
-            `Survey "${survey.title}" references wave "${survey.waveName}" which does not exist in project "${project.slug}"`
+            `Survey in project "${project.slug}" references wave "${survey.waveName}" which does not exist`
           ).toBe(true)
         }
       }

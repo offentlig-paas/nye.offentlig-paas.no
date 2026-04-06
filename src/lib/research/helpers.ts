@@ -5,8 +5,53 @@ import {
   SurveyStatus,
   type ResearchProject,
   type ResearchSurvey,
+  type InternalSurvey,
   type ResearchWave,
 } from '@/lib/research/types'
+import { getSurvey } from '@/lib/surveys/helpers'
+import { estimateCompletionMinutes } from '@/lib/surveys/helpers'
+
+export const surveyStatusLabel: Record<SurveyStatus, string> = {
+  [SurveyStatus.Draft]: 'Utkast',
+  [SurveyStatus.Open]: 'Åpen',
+  [SurveyStatus.Closed]: 'Avsluttet',
+}
+
+function isInternalSurvey(survey: ResearchSurvey): survey is InternalSurvey {
+  return 'surveySlug' in survey
+}
+
+export function getSurveyTitle(survey: ResearchSurvey): string {
+  if (isInternalSurvey(survey)) {
+    return getSurvey(survey.surveySlug)?.title ?? survey.surveySlug
+  }
+  return survey.title
+}
+
+export function getSurveyStatus(survey: ResearchSurvey): SurveyStatus {
+  if (isInternalSurvey(survey)) {
+    return getSurvey(survey.surveySlug)?.status ?? SurveyStatus.Closed
+  }
+  return survey.status
+}
+
+export function isSurveyLinkable(survey: ResearchSurvey): boolean {
+  if (isInternalSurvey(survey)) return true
+  return !!survey.url
+}
+
+export function getSurveyDescription(
+  survey: ResearchSurvey
+): string | undefined {
+  if (isInternalSurvey(survey)) {
+    const def = getSurvey(survey.surveySlug)
+    if (def) {
+      const minutes = estimateCompletionMinutes(def)
+      return survey.description ?? `Tar ca. ${minutes} minutter å svare`
+    }
+  }
+  return survey.description
+}
 
 export function getAllProjects(): ResearchProject[] {
   return [...researchProjects].sort(
@@ -24,7 +69,9 @@ export function getOpenSurveys(): Array<{
 }> {
   return researchProjects.flatMap(project =>
     (project.surveys ?? [])
-      .filter(s => s.status === SurveyStatus.Open && s.url)
+      .filter(
+        s => getSurveyStatus(s) === SurveyStatus.Open && isSurveyLinkable(s)
+      )
       .map(survey => ({ survey, project }))
   )
 }

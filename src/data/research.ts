@@ -2,9 +2,10 @@ import {
   type ResearchProject,
   ResearchStatus,
   PaperStatus,
-  SurveyStatus,
 } from '@/lib/research/types'
+import { SurveyStatus } from '@/lib/surveys/types'
 import { type ResearchEthics } from '@/lib/research/types'
+import { aiAgents2026 } from '@/data/surveys/ai-agents-2026'
 
 const sharedEthics = {
   dataController: 'Hans Kristian Flaatten (styreleder, Offentlig PaaS)',
@@ -124,7 +125,7 @@ export const researchProjects: ResearchProject[] = [
       'Hva hindrer videre bruk — sikkerhet, personvern, kostnader eller andre barrierer?',
     ],
     methodology:
-      'Anonym nettbasert spørreundersøkelse åpen for alle som jobber med utvikling eller teknisk ledelse i offentlig sektor — ikke bare de som bruker AI-verktøy i dag. Distribuert gjennom Offentlig PaaS Slack, LinkedIn og arrangementer. Undersøkelsen tar 10–12 minutter.',
+      'Anonym nettbasert spørreundersøkelse åpen for alle som jobber med utvikling eller teknisk ledelse i offentlig sektor — ikke bare de som bruker AI-verktøy i dag. Distribuert gjennom Offentlig PaaS Slack, LinkedIn og arrangementer.',
     status: ResearchStatus.DataCollection,
     tags: ['state-of-ai-agents'],
     lead: 'Hans Kristian Flaatten',
@@ -139,11 +140,7 @@ export const researchProjects: ResearchProject[] = [
     },
     surveys: [
       {
-        title: 'AI-kodeagenter i offentlig sektor 2026',
-        url: 'https://docs.google.com/forms/d/e/1FAIpQLSc-Np-V-lZwFbG8XpjJt4C8wVUGQnrR_wDuArB_ZPzbdW94GQ/viewform?usp=header',
-        status: SurveyStatus.Open,
-        responses: 10,
-        description: 'Tar 10–12 minutter å svare',
+        surveySlug: aiAgents2026.slug,
       },
     ],
     ethics: {

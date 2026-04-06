@@ -6,11 +6,11 @@ import {
   ResearchStatus,
   SurveyStatus,
 } from '@/lib/research/types'
-import { statusColors } from '@/lib/research/helpers'
+import { statusColors, getSurveyStatus } from '@/lib/research/helpers'
 
 export function ResearchProjectCard({ project }: { project: ResearchProject }) {
   const openSurveys = (project.surveys ?? []).filter(
-    s => s.status === SurveyStatus.Open
+    s => getSurveyStatus(s) === SurveyStatus.Open
   ).length
 
   return (

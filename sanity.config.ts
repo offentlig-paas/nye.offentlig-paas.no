@@ -69,6 +69,16 @@ export default defineConfig({
                     { field: 'submittedAt', direction: 'desc' },
                   ])
               ),
+            S.listItem()
+              .title('Survey Responses')
+              .child(
+                S.documentTypeList('surveyResponse')
+                  .title('Survey Responses')
+                  .filter('_type == "surveyResponse"')
+                  .defaultOrdering([
+                    { field: 'submittedAt', direction: 'desc' },
+                  ])
+              ),
           ]),
     }),
     visionTool({
