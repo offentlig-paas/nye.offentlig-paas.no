@@ -4,6 +4,12 @@ import {
   PaperStatus,
   SurveyStatus,
 } from '@/lib/research/types'
+import { type ResearchEthics } from '@/lib/research/types'
+
+const sharedEthics = {
+  dataController: 'Hans Kristian Flaatten (styreleder, Offentlig PaaS)',
+  contactEmail: 'kontakt@offentlig-paas.no',
+} satisfies Partial<ResearchEthics>
 
 export const researchProjects: ResearchProject[] = [
   {
@@ -12,7 +18,7 @@ export const researchProjects: ResearchProject[] = [
     description:
       'Undersøkelse over tid som kartlegger utbredelsen av interne utviklerplattformer i offentlig sektor \u2014 modenhet etter CNCF-modellen, motivasjon og teknologivalg.',
     longDescription:
-      'State of the Platforms er en longitudinell studie som følger utviklingen av interne utviklerplattformer i norsk offentlig sektor over tid. Studien bruker CNCF Platform Maturity Model til å måle modenhet på tvers av fem dimensjoner: investering, adopsjon, grensesnitt, drift og måling. Ved å gjenta den samme undersøkelsen med jevne mellomrom kan vi identifisere trender, teknologikonvergens og modenhetsutvikling på tvers av organisasjoner. Studien dekker organisasjoner som til sammen representerer omtrent 240 000 ansatte og organisasjonsbudsjetter på 2,5 billioner kroner.',
+      'State of the Platforms er en undersøkelse som følger utviklingen av interne utviklerplattformer i norsk offentlig sektor over tid. Vi bruker CNCFs modenhetsmodell til å måle modenhet på tvers av fem dimensjoner: investering, adopsjon, grensesnitt, drift og måling. Ved å gjenta undersøkelsen med jevne mellomrom kan vi se trender, hvilke teknologivalg som går igjen, og hvordan modenheten utvikler seg. Studien dekker organisasjoner som til sammen representerer omtrent 240 000 ansatte og organisasjonsbudsjetter på 2,5 billioner kroner.',
     researchQuestions: [
       'Hvordan har adopsjonen og organisatorisk omfang av interne utviklerplattformer utviklet seg over toårsperioden?',
       'Hva er de viktigste organisatoriske driverne for å bygge interne utviklerplattformer, og hvordan har disse endret seg over tid?',
@@ -20,7 +26,7 @@ export const researchProjects: ResearchProject[] = [
       'Hvilke teknologivalg og verktøykjeder dominerer moderne plattformstakker, og hvordan konsoliderer de seg?',
     ],
     methodology:
-      'Gjentatt tverrsnittsundersøkelse med paneloverlapp (longitudinell). Populasjon: IT-organisasjoner i norsk offentlig sektor (statlige virksomheter, statsforetak, kommuner). Distribuert via Offentlig PaaS Slack og LinkedIn. Gjennomført i Google Forms på norsk (bokmål). 31 spørsmål fordelt på tre kategorier: plattform, Kubernetes og sky. Analyseenhet er organisasjonen (ett svar per plattforminitiativ). Modenhet selvrapportert etter CNCFs modenhetsmodell (5 aspekter × 4 nivåer). Duplikater filtreres på organisasjonsnivå.',
+      'Gjentatt spørreundersøkelse der mange organisasjoner deltar i flere runder. Populasjon: IT-organisasjoner i norsk offentlig sektor (statlige virksomheter, statsforetak, kommuner). Distribuert via Offentlig PaaS Slack og LinkedIn. Gjennomført i Google Forms på norsk (bokmål). 31 spørsmål fordelt på tre kategorier: plattform, Kubernetes og sky. Analyseenhet er organisasjonen (ett svar per plattforminitiativ). Modenhet selvrapportert etter CNCFs modenhetsmodell (5 aspekter × 4 nivåer). Duplikater filtrert på organisasjonsnivå.',
     keyFindings: [
       'Kubernetes-adopsjon økte fra 66 % til 83 % mellom 2024 og 2026',
       '92 % av organisasjonene har nå en intern utviklerplattform',
@@ -51,7 +57,7 @@ export const researchProjects: ResearchProject[] = [
         organizations: 45,
         invited: 80,
         description:
-          'Gjentakelse av samme undersøkelse (Q4 2025 – Q1 2026) med 45 organisasjoner (~240 000 ansatte), hvorav 27 (60 %) også deltok i Wave 1. Plattformadopsjon opp til 92 %, Kubernetes til 83 %. Sikkerhet som motivasjon økte 25 prosentpoeng til 82 %. Driftsmodenhet nådde nivå 3, men måling forble på nivå 1 for halvparten av organisasjonene.',
+          'Undersøkelsen gjentatt i Q4 2025 – Q1 2026 med 45 organisasjoner (~240 000 ansatte). 27 av dem (60 %) deltok også i bølge 1. Plattformadopsjon opp til 92 %, Kubernetes til 83 %. Sikkerhet som motivasjon økte 25 prosentpoeng til 82 %. Driftsmodenhet nådde nivå 3, men måling var fortsatt på nivå 1 for halvparten.',
       },
     ],
     papers: [
@@ -94,6 +100,16 @@ export const researchProjects: ResearchProject[] = [
         description: '45 organisasjoner, anonymiserte svar',
       },
     ],
+    ethics: {
+      ...sharedEthics,
+      legalBasis: 'Samtykke (GDPR art. 6 nr. 1 bokstav a)',
+      siktAssessment:
+        'Gjennomført (intern) — sannsynligvis ikke meldepliktig, men grensetilfelle. Undersøkelsen samler fakta om organisasjoner, ikke om enkeltpersoner. Frivillig kontaktinfo (~20 %) kobler noen svar til enkeltpersoner og slettes etter oppfølging.',
+      consentStatus:
+        'Samtykketekst bølge 1–2 var mangelfull. Ny dekkende samtykketekst er utformet for bølge 3+.',
+      anonymization:
+        'Organisasjonsnavn fjernes. Re-identifiseringsrisiko vurderes for kombinasjoner av sektor, størrelse og teknologivalg (n=35–48 fra kjent populasjon).',
+    },
   },
   {
     slug: 'state-of-ai-agents',
@@ -101,7 +117,7 @@ export const researchProjects: ResearchProject[] = [
     description:
       'Studie av hvordan offentlig sektor tar i bruk AI-kodeagenter som GitHub Copilot, Claude Code og Cursor. Undersøker bruk, styring og om organisasjonene har retningslinjer som holder tritt.',
     longDescription:
-      'AI-kodeagenter har gått fra nyhet til hverdag på kort tid, men det finnes lite data om hvordan offentlig sektor faktisk tar dem i bruk. Denne studien kartlegger bruken av verktøy som GitHub Copilot, Claude Code, Cursor og Amazon Q i norske offentlige virksomheter. Vi undersøker ikke bare hvem som bruker hva, men om organisasjonene har retningslinjer som holder tritt med utviklingen — og hva som hindrer videre bruk. Studien bruker samme tilnærming som State of Platforms-undersøkelsene og følger opp funnene derfra om at sikkerhet ble den nest viktigste motivasjonen for plattformarbeid.',
+      'AI-kodeagenter har gått fra nyhet til hverdag på kort tid, men det finnes lite data om hvordan offentlig sektor faktisk tar dem i bruk. Denne studien kartlegger bruken av verktøy som GitHub Copilot, Claude Code, Cursor og Amazon Q i norske offentlige virksomheter. Vi undersøker hvem som bruker hva, om organisasjonene har retningslinjer som holder tritt, og hva som hindrer videre bruk. Studien bygger på samme tilnærming som State of Platforms-undersøkelsene, og følger opp funnet derfra om at sikkerhet ble den nest viktigste motivasjonen for plattformarbeid.',
     researchQuestions: [
       'Hvilke AI-kodeagenter brukes i offentlig sektor, og er bruken formell eller uformell?',
       'Har organisasjonene retningslinjer for AI-generert kode, og hvem har ansvar for sikkerhetsvurderinger og kvalitetskontroll?',
@@ -130,5 +146,15 @@ export const researchProjects: ResearchProject[] = [
         description: 'Tar 10–12 minutter å svare',
       },
     ],
+    ethics: {
+      ...sharedEthics,
+      legalBasis: 'Samtykke (GDPR art. 6 nr. 1 bokstav a)',
+      siktAssessment:
+        'Gjennomført (intern) — sannsynligvis ikke meldepliktig for anonym versjon. Organisasjonsdata, ikke persondata. E-post for intervju samles i separat seksjon.',
+      consentStatus: 'Dekkende samtykketekst dokumentert i instrumentet.',
+      anonymization:
+        'Organisasjonsnavn fjernes. E-post for intervju separeres fra surveysvar og slettes etter intervjuene.',
+      retentionPeriod: 'To år etter studiens avslutning',
+    },
   },
 ]

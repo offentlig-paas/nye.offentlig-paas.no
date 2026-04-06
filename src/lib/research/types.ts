@@ -62,6 +62,16 @@ export interface ResearchDataset {
   description?: string
 }
 
+export interface ResearchEthics {
+  dataController: string
+  contactEmail: string
+  legalBasis: string
+  siktAssessment: string
+  consentStatus: string
+  anonymization: string
+  retentionPeriod?: string
+}
+
 export interface ResearchProject {
   slug: string
   title: string
@@ -85,4 +95,5 @@ export interface ResearchProject {
   papers?: ResearchPaper[]
   surveys?: ResearchSurvey[]
   datasets?: ResearchDataset[]
+  ethics?: ResearchEthics
 }

@@ -10,6 +10,7 @@ import {
   ClipboardDocumentListIcon,
   CalendarDaysIcon,
   UserIcon,
+  ShieldCheckIcon,
 } from '@heroicons/react/20/solid'
 import { Container } from '@/components/Container'
 import {
@@ -26,6 +27,7 @@ import {
   PaperStatus,
   SurveyStatus,
   type ResearchProject,
+  type ResearchEthics,
 } from '@/lib/research/types'
 
 type Params = Promise<{ slug: string }>
@@ -155,6 +157,23 @@ export default async function ResearchProjectPage({
             </div>
           )}
 
+          {/* Key findings */}
+          {project.keyFindings && project.keyFindings.length > 0 && (
+            <section className="mt-12 border-t border-zinc-100 pt-8 dark:border-zinc-800">
+              <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                Hovedfunn
+              </h2>
+              <ul className="mt-4 list-outside list-disc space-y-2 pl-5 text-sm text-zinc-600 marker:text-zinc-400 dark:text-zinc-400 dark:marker:text-zinc-500">
+                {project.keyFindings.map(finding => (
+                  <li key={finding}>{finding}</li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {/* Waves */}
+          <WaveTimeline project={project} />
+
           {/* Research questions */}
           {project.researchQuestions &&
             project.researchQuestions.length > 0 && (
@@ -182,23 +201,6 @@ export default async function ResearchProjectPage({
             </section>
           )}
 
-          {/* Key findings */}
-          {project.keyFindings && project.keyFindings.length > 0 && (
-            <section className="mt-12 border-t border-zinc-100 pt-8 dark:border-zinc-800">
-              <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-                Hovedfunn
-              </h2>
-              <ul className="mt-4 list-outside list-disc space-y-2 pl-5 text-sm text-zinc-600 marker:text-zinc-400 dark:text-zinc-400 dark:marker:text-zinc-500">
-                {project.keyFindings.map(finding => (
-                  <li key={finding}>{finding}</li>
-                ))}
-              </ul>
-            </section>
-          )}
-
-          {/* Waves */}
-          <WaveTimeline project={project} />
-
           {/* Papers */}
           <PapersSection papers={project.papers} />
 
@@ -211,6 +213,9 @@ export default async function ResearchProjectPage({
 
           {/* Datasets */}
           <DatasetsSection datasets={project.datasets} />
+
+          {/* Ethics */}
+          <EthicsSection ethics={project.ethics} />
 
           {/* Related articles */}
           {articles.length > 0 && (
@@ -457,6 +462,70 @@ function DatasetsSection({
           </li>
         ))}
       </ul>
+    </section>
+  )
+}
+
+const ethicsLabels: Record<
+  keyof Omit<ResearchEthics, 'dataController' | 'contactEmail'>,
+  string
+> = {
+  legalBasis: 'Behandlingsgrunnlag',
+  siktAssessment: 'SIKT-vurdering',
+  consentStatus: 'Samtykke',
+  anonymization: 'Anonymisering',
+  retentionPeriod: 'Slettefrist',
+}
+
+function EthicsSection({ ethics }: { ethics: ResearchProject['ethics'] }) {
+  if (!ethics) return null
+  return (
+    <section className="mt-12 border-t border-zinc-100 pt-8 dark:border-zinc-800">
+      <h2 className="flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+        <ShieldCheckIcon className="h-5 w-5 text-zinc-400" />
+        Forskningsetikk
+      </h2>
+      <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+        Behandlingsansvarlig: {ethics.dataController} (
+        <a
+          href={`mailto:${ethics.contactEmail}`}
+          className="text-teal-500 hover:text-teal-600 dark:text-teal-400 dark:hover:text-teal-300"
+        >
+          {ethics.contactEmail}
+        </a>
+        )
+      </p>
+      <dl className="mt-4 space-y-3">
+        {(
+          Object.entries(ethicsLabels) as [keyof typeof ethicsLabels, string][]
+        ).map(([key, label]) => {
+          const value = ethics[key]
+          if (!value) return null
+          return (
+            <div key={key}>
+              <dt className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                {label}
+              </dt>
+              <dd className="mt-0.5 text-sm text-zinc-600 dark:text-zinc-400">
+                {value}
+              </dd>
+            </div>
+          )
+        })}
+      </dl>
+      <p className="mt-4 text-xs text-zinc-500 dark:text-zinc-400">
+        Forskningen følger{' '}
+        <a
+          href="https://github.com/offentlig-paas/forskning/blob/main/ETHICS.md"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-teal-500 hover:text-teal-600 dark:text-teal-400 dark:hover:text-teal-300"
+        >
+          Offentlig PaaS sine forskningsetiske retningslinjer
+          <ArrowTopRightOnSquareIcon className="ml-0.5 inline h-3 w-3" />
+        </a>
+        , basert på NESHs retningslinjer, GDPR og Forskningsetikkloven.
+      </p>
     </section>
   )
 }

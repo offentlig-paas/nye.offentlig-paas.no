@@ -4,6 +4,7 @@ import { requireAdmin } from '@/lib/auth-guards'
 import { AdminLayout } from '@/components/AdminLayout'
 import { AdminEventNav } from '@/components/AdminEventNav'
 import { getEvent, getTalksCount } from '@/lib/events/helpers'
+import { formatDateTime } from '@/lib/formatDate'
 import { createCaller } from '@/server/root'
 import { AdminEventProvider } from '@/contexts/AdminEventContext'
 
@@ -14,42 +15,35 @@ interface AdminEventLayoutProps {
   }>
 }
 
-function AdminEventLayoutSkeleton() {
+function NavSkeleton() {
+  const shimmer = 'animate-pulse rounded bg-gray-200 dark:bg-gray-700' as const
+
   return (
-    <div className="space-y-4">
-      <div className="border-b border-gray-200 dark:border-gray-700">
-        <nav className="-mb-px flex space-x-8">
-          {[...Array(4)].map((_, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-2 border-b-2 border-transparent px-1 py-4"
-            >
-              <div className="h-5 w-5 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-              <div className="h-4 w-16 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-            </div>
-          ))}
-        </nav>
-      </div>
-      <div className="h-64 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-700" />
+    <div className="border-b border-gray-200 dark:border-gray-700">
+      <nav className="-mb-px flex space-x-8">
+        {[...Array(5)].map((_, i) => (
+          <div
+            key={i}
+            className="flex items-center gap-2 border-b-2 border-transparent px-1 py-4"
+          >
+            <div className={`h-5 w-5 ${shimmer}`} />
+            <div className={`h-4 w-16 ${shimmer}`} />
+          </div>
+        ))}
+      </nav>
     </div>
   )
 }
 
-async function AdminEventLayoutContent({
-  params,
+async function AdminEventContent({
+  slug,
+  event,
   children,
 }: {
-  params: Promise<{ slug: string }>
+  slug: string
+  event: ReturnType<typeof getEvent> & {}
   children: React.ReactNode
 }) {
-  const { slug } = await params
-  await requireAdmin()
-
-  const event = getEvent(slug)
-  if (!event) {
-    notFound()
-  }
-
   const caller = await createCaller()
   const [eventDetails, photos, submissionsCount] = await Promise.all([
     caller.admin.events.getDetails({ slug }),
@@ -62,49 +56,57 @@ async function AdminEventLayoutContent({
   const talksCount = getTalksCount(eventDetails.schedule)
 
   return (
+    <AdminEventProvider
+      value={{
+        slug,
+        eventDetails,
+        photosCount,
+      }}
+    >
+      <div className="space-y-4">
+        <AdminEventNav
+          eventSlug={slug}
+          eventStartTime={eventDetails.startTime}
+          attendeesCount={eventDetails.stats.activeRegistrations}
+          talksCount={talksCount}
+          photosCount={photosCount}
+          feedbackCount={feedbackCount}
+          showFeedback={feedbackCount > 0}
+          submissionsCount={submissionsCount}
+          showSubmissions={!!event.callForPapersEnabled}
+        />
+        {children}
+      </div>
+    </AdminEventProvider>
+  )
+}
+
+export default async function AdminEventLayout({
+  children,
+  params,
+}: AdminEventLayoutProps) {
+  const { slug } = await params
+  await requireAdmin()
+
+  const event = getEvent(slug)
+  if (!event) {
+    notFound()
+  }
+
+  return (
     <AdminLayout
-      title={eventDetails.title}
-      intro={`${eventDetails.date} · ${eventDetails.location}`}
+      title={event.title}
+      intro={`${formatDateTime(event.start.toISOString())} · ${event.location}`}
       backButton={{
         href: '/admin/events',
         label: 'Tilbake til fagdager',
       }}
     >
-      <AdminEventProvider
-        value={{
-          slug,
-          eventDetails,
-          photosCount,
-        }}
-      >
-        <div className="space-y-4">
-          <AdminEventNav
-            eventSlug={slug}
-            eventStartTime={eventDetails.startTime}
-            attendeesCount={eventDetails.stats.activeRegistrations}
-            talksCount={talksCount}
-            photosCount={photosCount}
-            feedbackCount={feedbackCount}
-            showFeedback={feedbackCount > 0}
-            submissionsCount={submissionsCount}
-            showSubmissions={!!event.callForPapersEnabled}
-          />
+      <Suspense fallback={<NavSkeleton />}>
+        <AdminEventContent slug={slug} event={event}>
           {children}
-        </div>
-      </AdminEventProvider>
+        </AdminEventContent>
+      </Suspense>
     </AdminLayout>
-  )
-}
-
-export default function AdminEventLayout({
-  children,
-  params,
-}: AdminEventLayoutProps) {
-  return (
-    <Suspense fallback={<AdminEventLayoutSkeleton />}>
-      <AdminEventLayoutContent params={params}>
-        {children}
-      </AdminEventLayoutContent>
-    </Suspense>
   )
 }

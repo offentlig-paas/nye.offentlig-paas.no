@@ -65,7 +65,7 @@ export function AdminEventChecklist({
   )
 
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+    <div className="h-full overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
       <div className="border-b border-gray-200 px-4 py-4 dark:border-gray-700">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
