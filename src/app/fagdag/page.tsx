@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { type Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -13,6 +13,7 @@ import {
   prepareEventThumbnailUrls,
 } from '@/lib/sanity/event-photos'
 import { formatDate } from '@/lib/formatDate'
+import { type Event } from '@/lib/events/types'
 
 import rssLogo from '@/images/rss.svg'
 import calendarIcon from '@/images/calendar.png'
@@ -28,41 +29,24 @@ function SpeakingSection({
   )
 }
 
-interface EventCardProps {
-  title: string
-  description: string
-  date: string
-  cta: string
-  href: string
-  thumbnailUrls?: string[]
-  bannerUrl?: string
-}
-
-function EventCard({
+function EventCardShell({
   title,
   description,
   date,
   cta,
   href,
-  thumbnailUrls,
-  bannerUrl,
-}: EventCardProps) {
+  children,
+}: {
+  title: string
+  description: string
+  date: string
+  cta: string
+  href: string
+  children?: React.ReactNode
+}) {
   return (
     <Card as="article">
-      {thumbnailUrls && thumbnailUrls.length > 0 ? (
-        <EventThumbnailGallery photos={thumbnailUrls} title={title} />
-      ) : bannerUrl ? (
-        <div className="relative z-10 mb-4 w-full">
-          <Image
-            src={bannerUrl}
-            alt={title}
-            width={800}
-            height={420}
-            unoptimized
-            className="aspect-40/21 w-full rounded-lg object-cover"
-          />
-        </div>
-      ) : null}
+      {children}
       <Card.Title as="h3" href={href}>
         {title}
       </Card.Title>
@@ -73,27 +57,59 @@ function EventCard({
   )
 }
 
+async function EventCardPhotos({ event }: { event: Event }) {
+  const photos = await getEventPhotos(event.slug)
+  const thumbnailUrls =
+    photos.length > 0 ? prepareEventThumbnailUrls(photos) : undefined
+
+  if (thumbnailUrls && thumbnailUrls.length > 0) {
+    return <EventThumbnailGallery photos={thumbnailUrls} title={event.title} />
+  }
+
+  if (event.bannerImage) {
+    return (
+      <div className="relative z-10 mb-4 w-full">
+        <Image
+          src={event.bannerImage.src}
+          alt={event.title}
+          width={800}
+          height={420}
+          unoptimized
+          className="aspect-40/21 w-full rounded-lg object-cover"
+        />
+      </div>
+    )
+  }
+
+  return null
+}
+
+function EventCardPhotosFallback({ event }: { event: Event }) {
+  if (event.bannerImage) {
+    return (
+      <div className="relative z-10 mb-4 w-full">
+        <Image
+          src={event.bannerImage.src}
+          alt={event.title}
+          width={800}
+          height={420}
+          unoptimized
+          className="aspect-40/21 w-full rounded-lg object-cover"
+        />
+      </div>
+    )
+  }
+  return null
+}
+
 export const metadata: Metadata = {
   title: 'Fagdager',
   description:
     'Fagdager er Offentlig PaaS nettverket sin helt egen dag hvor vi inviterer til faglig påfyll, erfaringsdeling og nettverksbygging.',
 }
 
-export default async function Fagdager() {
+export default function Fagdager() {
   const events = getAllEvents()
-
-  const eventsWithPhotos = await Promise.all(
-    events.map(async event => {
-      const photos = await getEventPhotos(event.slug)
-      const thumbnailUrls =
-        photos.length > 0 ? prepareEventThumbnailUrls(photos) : undefined
-
-      return {
-        event,
-        thumbnailUrls,
-      }
-    })
-  )
 
   return (
     <SimpleLayout
@@ -102,17 +118,19 @@ export default async function Fagdager() {
     >
       <div className="space-y-20">
         <SpeakingSection title="Fagdager">
-          {eventsWithPhotos.map(({ event, thumbnailUrls }) => (
-            <EventCard
+          {events.map(event => (
+            <EventCardShell
               key={event.slug}
               href={`/fagdag/${event.slug}`}
               title={event.title}
               description={event.ingress}
               date={formatDate(event.start)}
               cta="Mer informasjon"
-              thumbnailUrls={thumbnailUrls}
-              bannerUrl={event.bannerImage?.src}
-            />
+            >
+              <Suspense fallback={<EventCardPhotosFallback event={event} />}>
+                <EventCardPhotos event={event} />
+              </Suspense>
+            </EventCardShell>
           ))}
         </SpeakingSection>
       </div>

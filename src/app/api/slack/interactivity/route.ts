@@ -12,9 +12,6 @@ import {
 } from '@/lib/slack/modals'
 import { getAppUrl } from '@/server/lib/environment'
 
-// Disable Next.js body parsing to preserve raw body for signature verification
-export const runtime = 'nodejs'
-
 const SLACK_BOT_TOKEN = process.env.SLACK_BOT_TOKEN
 const SLACK_SIGNING_SECRET = process.env.SLACK_SIGNING_SECRET
 

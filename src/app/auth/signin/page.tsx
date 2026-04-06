@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { auth, signIn } from '@/auth'
 import { Container } from '@/components/Container'
 import { SimpleLayout } from '@/components/SimpleLayout'
@@ -5,7 +6,7 @@ import { Button } from '@/components/Button'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 
-export default async function SignInPage({
+async function SignInContent({
   searchParams,
 }: {
   searchParams: Promise<{ callbackUrl?: string }>
@@ -93,5 +94,17 @@ export default async function SignInPage({
         </div>
       </Container>
     </SimpleLayout>
+  )
+}
+
+export default function SignInPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ callbackUrl?: string }>
+}) {
+  return (
+    <Suspense>
+      <SignInContent searchParams={searchParams} />
+    </Suspense>
   )
 }

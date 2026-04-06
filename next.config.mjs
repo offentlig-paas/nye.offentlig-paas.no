@@ -2,6 +2,7 @@ import nextMDX from '@next/mdx'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  cacheComponents: true,
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'mdx'],
   images: {
     remotePatterns: [

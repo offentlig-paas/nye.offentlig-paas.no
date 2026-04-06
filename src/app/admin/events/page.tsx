@@ -1,10 +1,33 @@
+import { Suspense } from 'react'
 import { redirect } from 'next/navigation'
 import { auth } from '@/auth'
 import { AdminLayout } from '@/components/AdminLayout'
 import { AdminEventsClient } from '@/components/AdminEventsClient'
 import { createCaller } from '@/server/root'
 
-export default async function AdminEventsPage() {
+function AdminEventsListSkeleton() {
+  return (
+    <AdminLayout
+      title="Admin - Fagdager"
+      intro="Oversikt over alle fagdager og påmeldinger."
+      backButton={{
+        href: '/',
+        label: 'Tilbake til forsiden',
+      }}
+    >
+      <div className="space-y-4">
+        {[...Array(3)].map((_, i) => (
+          <div
+            key={i}
+            className="h-24 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-700"
+          />
+        ))}
+      </div>
+    </AdminLayout>
+  )
+}
+
+async function AdminEventsContent() {
   const session = await auth()
 
   if (!session?.user) {
@@ -29,5 +52,13 @@ export default async function AdminEventsPage() {
     >
       <AdminEventsClient eventsData={eventsData} />
     </AdminLayout>
+  )
+}
+
+export default function AdminEventsPage() {
+  return (
+    <Suspense fallback={<AdminEventsListSkeleton />}>
+      <AdminEventsContent />
+    </Suspense>
   )
 }

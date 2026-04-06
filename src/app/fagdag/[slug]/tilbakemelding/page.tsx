@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { notFound, redirect } from 'next/navigation'
 import { getEvent, getStatus, isTalkType } from '@/lib/events/helpers'
 import { Container } from '@/components/Container'
@@ -16,8 +17,7 @@ interface FeedbackPageProps {
   }>
 }
 
-export default async function FeedbackPage({ params }: FeedbackPageProps) {
-  const { slug } = await params
+async function FeedbackContent({ slug }: { slug: string }) {
   const session = await auth()
 
   const event = getEvent(slug)
@@ -28,12 +28,10 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
 
   const eventStatus = getStatus(event)
 
-  // Redirect if event is not past
   if (eventStatus !== Status.Past) {
     redirect(`/fagdag/${slug}`)
   }
 
-  // Redirect if not authenticated
   if (!session?.user?.slackId) {
     redirect(
       `/auth/signin?callbackUrl=${encodeURIComponent(`/fagdag/${slug}/tilbakemelding`)}`
@@ -209,5 +207,15 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
         </div>
       </div>
     </Container>
+  )
+}
+
+export default async function FeedbackPage({ params }: FeedbackPageProps) {
+  const { slug } = await params
+
+  return (
+    <Suspense>
+      <FeedbackContent slug={slug} />
+    </Suspense>
   )
 }

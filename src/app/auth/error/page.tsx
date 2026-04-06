@@ -1,8 +1,9 @@
+import { Suspense } from 'react'
 import { Container } from '@/components/Container'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { Button } from '@/components/Button'
 
-export default async function AuthErrorPage({
+async function AuthErrorContent({
   searchParams,
 }: {
   searchParams: Promise<{ error?: string }>
@@ -51,5 +52,17 @@ export default async function AuthErrorPage({
         </div>
       </Container>
     </SimpleLayout>
+  )
+}
+
+export default function AuthErrorPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>
+}) {
+  return (
+    <Suspense>
+      <AuthErrorContent searchParams={searchParams} />
+    </Suspense>
   )
 }

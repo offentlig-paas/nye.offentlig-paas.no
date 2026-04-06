@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { type Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import {
@@ -33,7 +34,7 @@ export async function generateMetadata({
   }
 }
 
-export default async function CfpPage({ params }: CfpPageProps) {
+async function CfpContent({ params }: CfpPageProps) {
   const { slug } = await params
   const event = getEvent(slug)
 
@@ -83,5 +84,13 @@ export default async function CfpPage({ params }: CfpPageProps) {
         </div>
       </div>
     </Container>
+  )
+}
+
+export default function CfpPage({ params }: CfpPageProps) {
+  return (
+    <Suspense>
+      <CfpContent params={params} />
+    </Suspense>
   )
 }

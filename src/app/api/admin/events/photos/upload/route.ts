@@ -3,8 +3,6 @@ import { auth } from '@/auth'
 import { sanityClient } from '@/lib/sanity/config'
 import { canUserAccessEvent, getEvent } from '@/lib/events/helpers'
 
-export const runtime = 'nodejs'
-
 export async function POST(request: NextRequest) {
   try {
     const session = await auth()

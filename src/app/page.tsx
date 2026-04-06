@@ -27,8 +27,8 @@ import { type ArticleWithSlug, getAllArticles } from '@/lib/articles'
 import { formatDate } from '@/lib/formatDate'
 import { metadata as globalMetadata } from './layout'
 import { getUpcomingEvents } from '@/lib/events/helpers'
-
-export const revalidate = 3600
+import { Suspense } from 'react'
+import { connection } from 'next/server'
 
 function Article({ article }: { article: ArticleWithSlug }) {
   return (
@@ -45,7 +45,8 @@ function Article({ article }: { article: ArticleWithSlug }) {
   )
 }
 
-function UpcomingEvents({ className }: { className?: string }) {
+async function UpcomingEvents({ className }: { className?: string }) {
+  await connection()
   const events = getUpcomingEvents()
 
   return (
@@ -197,14 +198,18 @@ export default async function Home() {
       <Photos />
       <Container className="mt-24 md:mt-28">
         <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2">
-          <UpcomingEvents className="lg:hidden" />
+          <Suspense>
+            <UpcomingEvents className="lg:hidden" />
+          </Suspense>
           <div className="flex flex-col gap-16">
             {artikkel.map(article => (
               <Article key={article.slug} article={article} />
             ))}
           </div>
           <div className="space-y-10 lg:pl-16 xl:pl-24">
-            <UpcomingEvents className="hidden lg:block" />
+            <Suspense>
+              <UpcomingEvents className="hidden lg:block" />
+            </Suspense>
             <Bluesky />
             <SlackUsers />
             <SlackJoin />

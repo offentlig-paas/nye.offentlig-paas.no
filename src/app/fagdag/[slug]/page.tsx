@@ -40,7 +40,7 @@ import {
   formatTime,
 } from '@/lib/formatDate'
 import { auth } from '@/auth'
-import { ItemType, Status } from '@/lib/events/types'
+import { ItemType, Status, type Event } from '@/lib/events/types'
 import {
   CalendarDaysIcon,
   MapPinIcon,
@@ -213,12 +213,10 @@ async function EventAgendaSection({
   slug,
   hasAdminAccess,
 }: {
-  event: ReturnType<typeof getEvent>
+  event: Event
   slug: string
   hasAdminAccess: boolean
 }) {
-  if (!event) return null
-
   const [attachments, slackUserData] = await Promise.all([
     getAllEventAttachments(slug),
     batchFetchSlackUsers(extractEventUserIds(event)),
@@ -235,7 +233,15 @@ async function EventAgendaSection({
   )
 }
 
-export default async function Fagdag({ params }: { params: Params }) {
+export default function Fagdag({ params }: { params: Params }) {
+  return (
+    <Suspense>
+      <FagdagContent params={params} />
+    </Suspense>
+  )
+}
+
+async function FagdagContent({ params }: { params: Params }) {
   const { slug } = await params
   const event = getEvent(slug)
   if (!event) {
@@ -264,8 +270,9 @@ export default async function Fagdag({ params }: { params: Params }) {
   const headersList = await headers()
   const protocol = headersList.get('x-forwarded-proto') || 'http'
   const host = headersList.get('host')
-
   const url = `${protocol}://${host}/fagdag/${slug}`
+
+  const status = getStatus(event)
 
   return (
     <EventRegistrationProvider eventSlug={slug}>
@@ -331,7 +338,7 @@ export default async function Fagdag({ params }: { params: Params }) {
               {/* Summary (mobile only) */}
               <EventSummary
                 event={event}
-                status={getStatus(event)}
+                status={status}
                 className="lg:hidden"
               />
 
@@ -452,12 +459,12 @@ export default async function Fagdag({ params }: { params: Params }) {
               <h2 className="sr-only">Oppsummering</h2>
               <EventSummary
                 event={event}
-                status={getStatus(event)}
+                status={status}
                 className="hidden lg:block"
               />
 
               {/* Registration */}
-              {getStatus(event) !== Status.Past && (
+              {status !== Status.Past && (
                 <EventRegistrationPanel
                   event={event}
                   eventSlug={slug}
@@ -473,10 +480,7 @@ export default async function Fagdag({ params }: { params: Params }) {
                   variant="reviews"
                 />
               ) : (
-                <EventFeedbackPrompt
-                  event={event}
-                  eventStatus={getStatus(event)}
-                />
+                <EventFeedbackPrompt event={event} eventStatus={status} />
               )}
 
               {/* Organizers */}

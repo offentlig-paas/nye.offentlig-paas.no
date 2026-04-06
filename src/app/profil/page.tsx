@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { auth } from '@/auth'
 import { Container } from '@/components/Container'
 import { redirect } from 'next/navigation'
@@ -18,7 +19,23 @@ import { UserTalksSection } from '@/components/profile/UserTalksSection'
 import { PastRegistrationsSection } from '@/components/profile/PastRegistrationsSection'
 import { ProfileSidebar } from '@/components/profile/ProfileSidebar'
 
-export default async function ProfilePage() {
+function ProfileSkeleton() {
+  return (
+    <Container className="mt-16 sm:mt-24">
+      <div className="max-w-7xl">
+        <div className="h-20 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-700" />
+        <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
+          <div className="space-y-12 lg:col-span-2">
+            <div className="h-48 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-700" />
+          </div>
+          <div className="h-64 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-700" />
+        </div>
+      </div>
+    </Container>
+  )
+}
+
+async function ProfileContent() {
   const session = await auth()
 
   if (!session || !session.user) {
@@ -122,5 +139,13 @@ export default async function ProfilePage() {
         </div>
       </div>
     </Container>
+  )
+}
+
+export default function ProfilePage() {
+  return (
+    <Suspense fallback={<ProfileSkeleton />}>
+      <ProfileContent />
+    </Suspense>
   )
 }

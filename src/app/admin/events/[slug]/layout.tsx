@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { requireAdmin } from '@/lib/auth-guards'
 import { AdminLayout } from '@/components/AdminLayout'
@@ -13,21 +14,42 @@ interface AdminEventLayoutProps {
   }>
 }
 
-export default async function AdminEventLayout({
-  children,
+function AdminEventLayoutSkeleton() {
+  return (
+    <div className="space-y-4">
+      <div className="border-b border-gray-200 dark:border-gray-700">
+        <nav className="-mb-px flex space-x-8">
+          {[...Array(4)].map((_, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-2 border-b-2 border-transparent px-1 py-4"
+            >
+              <div className="h-5 w-5 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+              <div className="h-4 w-16 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+            </div>
+          ))}
+        </nav>
+      </div>
+      <div className="h-64 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-700" />
+    </div>
+  )
+}
+
+async function AdminEventLayoutContent({
   params,
-}: AdminEventLayoutProps) {
+  children,
+}: {
+  params: Promise<{ slug: string }>
+  children: React.ReactNode
+}) {
+  const { slug } = await params
   await requireAdmin()
 
-  const { slug } = await params
-
-  // Verify event exists
   const event = getEvent(slug)
   if (!event) {
     notFound()
   }
 
-  // Fetch data once for all child pages
   const caller = await createCaller()
   const [eventDetails, photos, submissionsCount] = await Promise.all([
     caller.admin.events.getDetails({ slug }),
@@ -71,5 +93,18 @@ export default async function AdminEventLayout({
         </div>
       </AdminEventProvider>
     </AdminLayout>
+  )
+}
+
+export default function AdminEventLayout({
+  children,
+  params,
+}: AdminEventLayoutProps) {
+  return (
+    <Suspense fallback={<AdminEventLayoutSkeleton />}>
+      <AdminEventLayoutContent params={params}>
+        {children}
+      </AdminEventLayoutContent>
+    </Suspense>
   )
 }

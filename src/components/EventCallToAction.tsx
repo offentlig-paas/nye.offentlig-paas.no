@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import { CalendarIcon, MapPinIcon, ClockIcon } from '@heroicons/react/20/solid'
 import { events } from '@/data/events'

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { type Metadata } from 'next'
 import Script from 'next/script'
 
@@ -55,13 +55,15 @@ export default function RootLayout({
         </Script>
       </head>
       <body className="flex h-full bg-zinc-50 dark:bg-black">
-        <AuthSessionProvider>
-          <Providers>
-            <div className="flex w-full">
-              <Layout>{children}</Layout>
-            </div>
-          </Providers>
-        </AuthSessionProvider>
+        <Suspense>
+          <AuthSessionProvider>
+            <Providers>
+              <div className="flex w-full">
+                <Layout>{children}</Layout>
+              </div>
+            </Providers>
+          </AuthSessionProvider>
+        </Suspense>
         <Analytics />
         <SpeedInsights />
       </body>
