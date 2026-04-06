@@ -9,12 +9,13 @@ export interface SurveyResponse {
 
 export interface SurveyResponseAnswer {
   questionId: string
-  value: string
+  value?: string
+  arrayValue?: string[]
   otherText?: string
 }
 
 export interface SurveyResponseMetadata {
-  userAgent?: string
+  deviceCategory?: string
   submissionSource?: string
   consentVersion?: number
   durationSeconds?: number

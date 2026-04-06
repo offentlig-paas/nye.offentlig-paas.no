@@ -8,6 +8,14 @@ const rateLimit = new Map<string, number[]>()
 const RATE_LIMIT_WINDOW_MS = 60_000
 const RATE_LIMIT_MAX = 5
 
+function categorizeDevice(userAgent?: string): string {
+  if (!userAgent) return 'unknown'
+  const ua = userAgent.toLowerCase()
+  if (/tablet|ipad/i.test(ua)) return 'tablet'
+  if (/mobile|android|iphone/i.test(ua)) return 'mobile'
+  return 'desktop'
+}
+
 class SurveyResponseService {
   private repository: SurveyResponseRepository
 
@@ -35,11 +43,13 @@ class SurveyResponseService {
       surveyVersion: survey.version,
       answers: result.sanitizedAnswers.map(a => ({
         questionId: a.questionId,
-        value: Array.isArray(a.value) ? JSON.stringify(a.value) : a.value,
+        ...(Array.isArray(a.value)
+          ? { arrayValue: a.value }
+          : { value: a.value }),
         ...(a.otherText ? { otherText: a.otherText } : {}),
       })),
       metadata: {
-        userAgent: metadata.userAgent,
+        deviceCategory: categorizeDevice(metadata.userAgent),
         submissionSource: 'web',
         consentVersion: survey.version,
         durationSeconds: metadata.durationSeconds,

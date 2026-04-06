@@ -698,8 +698,14 @@ const surveyResponseSchema = defineType({
               name: 'value',
               title: 'Value',
               type: 'string',
-              description:
-                'Single value for text/radio; JSON-encoded array for checkbox',
+              description: 'Single value for text/radio questions',
+            },
+            {
+              name: 'arrayValue',
+              title: 'Array Value',
+              type: 'array',
+              of: [{ type: 'string' }],
+              description: 'Multiple values for checkbox questions',
             },
             {
               name: 'otherText',
@@ -723,9 +729,11 @@ const surveyResponseSchema = defineType({
       type: 'object',
       fields: [
         {
-          name: 'userAgent',
-          title: 'User Agent',
+          name: 'deviceCategory',
+          title: 'Device Category',
           type: 'string',
+          description:
+            'Broad device category (e.g. "desktop", "mobile", "tablet")',
         },
         {
           name: 'submissionSource',
