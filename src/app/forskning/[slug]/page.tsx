@@ -12,11 +12,17 @@ import {
   UserIcon,
 } from '@heroicons/react/20/solid'
 import { Container } from '@/components/Container'
-import { getProject, getAllProjects } from '@/lib/research/helpers'
+import {
+  getProject,
+  getAllProjects,
+  statusColors,
+  getWaveResponseRate,
+  getSurveyResponseRate,
+  findWaveForSurvey,
+} from '@/lib/research/helpers'
 import { getArticlesByTag } from '@/lib/articles'
 import { formatDate } from '@/lib/formatDate'
 import {
-  ResearchStatus,
   PaperStatus,
   SurveyStatus,
   type ResearchProject,
@@ -41,23 +47,6 @@ export async function generateMetadata({
     title: project.title,
     description: project.description,
   }
-}
-
-const statusColors: Record<ResearchStatus, string> = {
-  [ResearchStatus.Planning]:
-    'bg-amber-50 text-amber-700 ring-amber-600/20 dark:bg-amber-400/10 dark:text-amber-400 dark:ring-amber-400/20',
-  [ResearchStatus.DataCollection]:
-    'bg-blue-50 text-blue-700 ring-blue-600/20 dark:bg-blue-400/10 dark:text-blue-400 dark:ring-blue-400/20',
-  [ResearchStatus.Analysis]:
-    'bg-purple-50 text-purple-700 ring-purple-600/20 dark:bg-purple-400/10 dark:text-purple-400 dark:ring-purple-400/20',
-  [ResearchStatus.Writing]:
-    'bg-indigo-50 text-indigo-700 ring-indigo-600/20 dark:bg-indigo-400/10 dark:text-indigo-400 dark:ring-indigo-400/20',
-  [ResearchStatus.UnderReview]:
-    'bg-orange-50 text-orange-700 ring-orange-600/20 dark:bg-orange-400/10 dark:text-orange-400 dark:ring-orange-400/20',
-  [ResearchStatus.Published]:
-    'bg-green-50 text-green-700 ring-green-600/20 dark:bg-green-400/10 dark:text-green-400 dark:ring-green-400/20',
-  [ResearchStatus.Ongoing]:
-    'bg-teal-50 text-teal-700 ring-teal-600/20 dark:bg-teal-400/10 dark:text-teal-400 dark:ring-teal-400/20',
 }
 
 const paperStatusLabel: Record<PaperStatus, string> = {
@@ -216,6 +205,7 @@ export default async function ResearchProjectPage({
           {/* Surveys */}
           <SurveysSection
             surveys={project.surveys}
+            waves={project.waves}
             projectSlug={project.slug}
           />
 
@@ -264,28 +254,33 @@ function WaveTimeline({ project }: { project: ResearchProject }) {
         Bølger
       </h2>
       <ol className="mt-4 space-y-4">
-        {project.waves.map(wave => (
-          <li key={wave.name} className="flex items-start gap-4">
-            <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-teal-500/10 text-sm font-medium text-teal-600 ring-1 ring-teal-500/20 dark:text-teal-400 dark:ring-teal-400/20">
-              {wave.year.toString().slice(-2)}
-            </span>
-            <div className="min-w-0">
-              <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                {wave.name} ({wave.year})
-              </p>
-              {wave.organizations && (
-                <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                  {wave.organizations} organisasjoner
+        {project.waves.map(wave => {
+          const rate = getWaveResponseRate(wave)
+          return (
+            <li key={wave.name} className="flex items-start gap-4">
+              <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-teal-500/10 text-sm font-medium text-teal-600 ring-1 ring-teal-500/20 dark:text-teal-400 dark:ring-teal-400/20">
+                {wave.year.toString().slice(-2)}
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                  {wave.name} ({wave.year})
                 </p>
-              )}
-              {wave.description && (
-                <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-                  {wave.description}
-                </p>
-              )}
-            </div>
-          </li>
-        ))}
+                {wave.organizations && (
+                  <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                    {rate != null
+                      ? `${wave.organizations} av ${wave.invited} organisasjoner (${rate} %)`
+                      : `${wave.organizations} organisasjoner`}
+                  </p>
+                )}
+                {wave.description && (
+                  <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+                    {wave.description}
+                  </p>
+                )}
+              </div>
+            </li>
+          )
+        })}
       </ol>
     </section>
   )
@@ -352,9 +347,11 @@ function PapersSection({ papers }: { papers: ResearchProject['papers'] }) {
 
 function SurveysSection({
   surveys,
+  waves,
   projectSlug,
 }: {
   surveys: ResearchProject['surveys']
+  waves: ResearchProject['waves']
   projectSlug: string
 }) {
   if (!surveys?.length) return null
@@ -365,37 +362,63 @@ function SurveysSection({
         Undersøkelser
       </h2>
       <ul className="mt-4 space-y-3">
-        {surveys.map(survey => (
-          <li
-            key={survey.title}
-            className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400"
-          >
-            <span
-              className={clsx(
-                'inline-block h-2 w-2 shrink-0 rounded-full',
-                survey.status === SurveyStatus.Open
-                  ? 'bg-green-500'
-                  : 'bg-zinc-400 dark:bg-zinc-500'
+        {surveys.map(survey => {
+          const wave = findWaveForSurvey(survey, waves)
+          const isOpen = survey.status === SurveyStatus.Open
+          const waveRate = wave ? getWaveResponseRate(wave) : null
+          const { responses, total, rate } = getSurveyResponseRate(survey)
+          return (
+            <li
+              key={survey.title}
+              className="text-sm text-zinc-600 dark:text-zinc-400"
+            >
+              <div className="flex items-center gap-3">
+                <span
+                  className={clsx(
+                    'inline-block h-2 w-2 shrink-0 rounded-full',
+                    isOpen ? 'bg-green-500' : 'bg-zinc-400 dark:bg-zinc-500'
+                  )}
+                />
+                {survey.url ? (
+                  <Link
+                    href={`/forskning/${projectSlug}/undersokelse`}
+                    className="text-teal-500 hover:text-teal-600 dark:text-teal-400 dark:hover:text-teal-300"
+                  >
+                    {survey.title}
+                  </Link>
+                ) : (
+                  <span>{survey.title}</span>
+                )}
+                <span className="text-xs text-zinc-400">({survey.status})</span>
+                {!isOpen && waveRate != null && (
+                  <span className="text-xs text-zinc-400">
+                    · {waveRate} % svarprosent
+                  </span>
+                )}
+                {survey.description && (
+                  <span className="text-xs text-zinc-400">
+                    — {survey.description}
+                  </span>
+                )}
+              </div>
+              {isOpen && responses > 0 && (
+                <div className="mt-2 ml-5">
+                  <div className="flex items-baseline justify-between text-xs text-zinc-500 dark:text-zinc-400">
+                    <span>
+                      {responses} av {total} organisasjoner har svart ({rate} %)
+                    </span>
+                  </div>
+                  <div className="mt-1 h-1.5 w-48 overflow-hidden rounded-full bg-teal-100 dark:bg-teal-900/30">
+                    <div
+                      className="h-full rounded-full bg-teal-500 transition-all dark:bg-teal-400"
+                      style={{ width: `${Math.min(rate, 100)}%` }}
+                    />
+                  </div>
+                </div>
               )}
-            />
-            {survey.url ? (
-              <Link
-                href={`/forskning/${projectSlug}/undersokelse`}
-                className="text-teal-500 hover:text-teal-600 dark:text-teal-400 dark:hover:text-teal-300"
-              >
-                {survey.title}
-              </Link>
-            ) : (
-              <span>{survey.title}</span>
-            )}
-            <span className="text-xs text-zinc-400">({survey.status})</span>
-            {survey.description && (
-              <span className="text-xs text-zinc-400">
-                — {survey.description}
-              </span>
-            )}
-          </li>
-        ))}
+            </li>
+          )
+        })}
       </ul>
     </section>
   )

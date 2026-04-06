@@ -1,6 +1,7 @@
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid'
 import { researchProjects } from '@/data/research'
 import { SurveyStatus } from '@/lib/research/types'
+import { getSurveyResponseRate } from '@/lib/research/helpers'
 
 export function SurveyCallToAction({
   projectSlug,
@@ -15,6 +16,7 @@ export function SurveyCallToAction({
   if (!survey?.url || survey.status !== SurveyStatus.Open) return null
 
   const surveyUrl = `/forskning/${projectSlug}/undersokelse`
+  const { responses, total, rate } = getSurveyResponseRate(survey)
 
   return (
     <div className="not-prose my-10">
@@ -44,6 +46,21 @@ export function SurveyCallToAction({
           <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
             {survey.description}
           </p>
+        )}
+        {responses > 0 && (
+          <div className="mt-4">
+            <div className="flex items-baseline justify-between text-xs text-zinc-500 dark:text-zinc-400">
+              <span>
+                {responses} av {total} organisasjoner har svart ({rate} %)
+              </span>
+            </div>
+            <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-teal-100 dark:bg-teal-900/30">
+              <div
+                className="h-full rounded-full bg-teal-500 transition-all dark:bg-teal-400"
+                style={{ width: `${Math.min(rate, 100)}%` }}
+              />
+            </div>
+          </div>
         )}
         <span className="mt-3 inline-flex items-center text-sm font-medium text-teal-600 dark:text-teal-400">
           Svar på undersøkelsen

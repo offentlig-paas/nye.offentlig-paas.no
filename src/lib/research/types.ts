@@ -25,6 +25,7 @@ export interface ResearchWave {
   year: number
   status: ResearchStatus
   organizations?: number
+  invited?: number
   description?: string
 }
 
@@ -49,6 +50,8 @@ export interface ResearchSurvey {
   title: string
   url?: string
   status: SurveyStatus
+  responses?: number
+  waveName?: string
   description?: string
 }
 

@@ -40,6 +40,7 @@ export const researchProjects: ResearchProject[] = [
         year: 2024,
         status: ResearchStatus.Published,
         organizations: 35,
+        invited: 65,
         description:
           'Første kartlegging av plattformmodenhet (Q4 2023). 35 organisasjoner som representerer omtrent 177 000 ansatte. 86 % hadde en intern utviklerplattform, 66 % brukte Kubernetes. Måling var den minst modne dimensjonen med ingen organisasjoner over nivå 2.',
       },
@@ -48,6 +49,7 @@ export const researchProjects: ResearchProject[] = [
         year: 2026,
         status: ResearchStatus.Published,
         organizations: 45,
+        invited: 80,
         description:
           'Gjentakelse av samme undersøkelse (Q4 2025 – Q1 2026) med 45 organisasjoner (~240 000 ansatte), hvorav 27 (60 %) også deltok i Wave 1. Plattformadopsjon opp til 92 %, Kubernetes til 83 %. Sikkerhet som motivasjon økte 25 prosentpoeng til 82 %. Driftsmodenhet nådde nivå 3, men måling forble på nivå 1 for halvparten av organisasjonene.',
       },
@@ -70,10 +72,12 @@ export const researchProjects: ResearchProject[] = [
       {
         title: 'Plattformmodenhet Wave 1 (2024)',
         status: SurveyStatus.Closed,
+        waveName: 'Wave 1',
       },
       {
         title: 'Plattformmodenhet Wave 2 (2026)',
         status: SurveyStatus.Closed,
+        waveName: 'Wave 2',
       },
     ],
     datasets: [
@@ -122,6 +126,7 @@ export const researchProjects: ResearchProject[] = [
         title: 'AI-kodeagenter i offentlig sektor 2026',
         url: 'https://docs.google.com/forms/d/e/1FAIpQLSc-Np-V-lZwFbG8XpjJt4C8wVUGQnrR_wDuArB_ZPzbdW94GQ/viewform?usp=header',
         status: SurveyStatus.Open,
+        responses: 10,
         description: 'Tar 10–12 minutter å svare',
       },
     ],
