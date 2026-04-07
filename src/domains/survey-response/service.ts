@@ -26,10 +26,9 @@ class SurveyResponseService {
   async submitResponse(
     survey: SurveyDefinition,
     answers: SurveyAnswer[],
-    metadata: { userAgent?: string; ip?: string; durationSeconds?: number }
+    metadata: { userAgent?: string; ip?: string; durationSeconds?: number },
+    submissionId: string
   ) {
-    this.checkRateLimit(metadata.ip)
-
     const result = validateAnswers(survey, answers)
     if (!result.valid) {
       throw new TRPCError({
@@ -37,6 +36,8 @@ class SurveyResponseService {
         message: result.errors.join('; '),
       })
     }
+
+    this.checkRateLimit(metadata.ip)
 
     const input: CreateSurveyResponseInput = {
       surveySlug: survey.slug,
@@ -57,7 +58,7 @@ class SurveyResponseService {
       },
     }
 
-    return await this.repository.create(input)
+    return await this.repository.create(input, submissionId)
   }
 
   async getResponseCount(surveySlug: string): Promise<number> {

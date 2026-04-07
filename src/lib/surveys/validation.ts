@@ -1,6 +1,8 @@
 import type { SurveyDefinition, SurveyAnswer, SurveyQuestion } from './types'
 import { getVisibleSectionIds } from './helpers'
 
+const MAX_TEXT_LENGTH = 10_000
+
 interface ValidationResult {
   valid: boolean
   errors: string[]
@@ -32,6 +34,9 @@ export function validateQuestion(
     case 'text':
     case 'typeahead': {
       if (typeof answer.value !== 'string') return 'Forventet tekst'
+      if (answer.value.length > MAX_TEXT_LENGTH) {
+        return `Maks ${MAX_TEXT_LENGTH} tegn`
+      }
       if (
         question.type === 'text' &&
         question.format === 'email' &&
@@ -145,10 +150,32 @@ export function validateAnswers(
     }
   }
 
-  const sanitizedAnswers = Array.from(answerMap.values()).filter(a => {
-    const sectionId = questionSectionMap.get(a.questionId)
-    return sectionId && visibleSectionIds.has(sectionId)
-  })
+  const questionMap = new Map<string, SurveyQuestion>()
+  for (const section of survey.sections) {
+    for (const question of section.questions) {
+      questionMap.set(question.id, question)
+    }
+  }
+
+  const sanitizedAnswers = Array.from(answerMap.values())
+    .filter(a => {
+      const sectionId = questionSectionMap.get(a.questionId)
+      return sectionId && visibleSectionIds.has(sectionId)
+    })
+    .map(a => {
+      const question = questionMap.get(a.questionId)
+      if (!question) return a
+
+      const allowsOther =
+        (question.type === 'radio' || question.type === 'checkbox') &&
+        question.options.some(o => o.allowOtherText)
+
+      if (!allowsOther && a.otherText) {
+        const { otherText: _, ...rest } = a
+        return rest as SurveyAnswer
+      }
+      return a
+    })
 
   return {
     valid: errors.length === 0,

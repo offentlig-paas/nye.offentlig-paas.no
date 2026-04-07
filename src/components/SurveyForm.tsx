@@ -55,6 +55,8 @@ export function SurveyForm({ survey, contact }: SurveyFormProps) {
   const formTopRef = useRef<HTMLDivElement>(null)
   const sectionHeadingRef = useRef<HTMLHeadingElement>(null)
   const honeypotRef = useRef<HTMLInputElement>(null)
+  const submittingRef = useRef(false)
+  const submissionIdRef = useRef(draft?.submissionId ?? crypto.randomUUID())
   const startTimeRef = useRef<number | null>(draft?.startTime ?? null)
   const sessionSeed = useMemo(() => Math.floor(Math.random() * 2147483647), [])
   const [stepAnnouncement, setStepAnnouncement] = useState('')
@@ -93,7 +95,8 @@ export function SurveyForm({ survey, contact }: SurveyFormProps) {
     consentAccepted,
     showConsent,
     startTimeRef.current,
-    isSuccess
+    isSuccess,
+    submissionIdRef.current
   )
 
   const submitMutation = trpc.survey.submit.useMutation()
@@ -192,6 +195,8 @@ export function SurveyForm({ survey, contact }: SurveyFormProps) {
 
   const handleSubmit = useCallback(async () => {
     if (!validateCurrentSection()) return
+    if (submittingRef.current) return
+    submittingRef.current = true
 
     setIsSubmitting(true)
     setSubmitError(null)
@@ -201,15 +206,21 @@ export function SurveyForm({ survey, contact }: SurveyFormProps) {
       const durationSeconds = startTimeRef.current
         ? Math.round((Date.now() - startTimeRef.current) / 1000)
         : undefined
-      await submitMutation.mutateAsync({
+      const result = await submitMutation.mutateAsync({
         surveySlug: survey.slug,
+        surveyVersion: survey.version,
+        submissionId: submissionIdRef.current,
         answers: answerArray,
         honeypot: honeypotRef.current?.value ?? '',
         durationSeconds,
       })
+      if ('honeypot' in result && result.honeypot) {
+        return
+      }
       setIsSuccess(true)
       clearDraft(survey.slug, survey.version)
     } catch (error) {
+      submittingRef.current = false
       setSubmitError(
         error instanceof Error ? error.message : 'Noe gikk galt. Prøv igjen.'
       )

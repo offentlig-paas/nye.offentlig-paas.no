@@ -385,3 +385,122 @@ describe('exclusive options', () => {
     ).toBeNull()
   })
 })
+
+describe('robustness', () => {
+  it('rejects string value for checkbox question', () => {
+    const q: SurveyQuestion = {
+      id: 'q1',
+      type: 'checkbox',
+      title: 'Pick',
+      required: true,
+      options: [{ label: 'A', value: 'a' }],
+    }
+    expect(
+      validateQuestion(q, {
+        questionId: 'q1',
+        value: 'a' as unknown as string[],
+      })
+    ).toBe('Forventet liste med valg')
+  })
+
+  it('rejects array value for radio question', () => {
+    const q: SurveyQuestion = {
+      id: 'q1',
+      type: 'radio',
+      title: 'Pick',
+      required: true,
+      options: [{ label: 'A', value: 'a' }],
+    }
+    expect(
+      validateQuestion(q, {
+        questionId: 'q1',
+        value: ['a'] as unknown as string,
+      })
+    ).toBe('Forventet ett valg')
+  })
+
+  it('rejects array value for text question', () => {
+    const q: SurveyQuestion = {
+      id: 'q1',
+      type: 'text',
+      title: 'Name',
+      required: false,
+    }
+    expect(
+      validateQuestion(q, {
+        questionId: 'q1',
+        value: ['a'] as unknown as string,
+      })
+    ).toBe('Forventet tekst')
+  })
+
+  it('enforces max text length on text questions', () => {
+    const q: SurveyQuestion = {
+      id: 'q1',
+      type: 'text',
+      title: 'Name',
+      required: false,
+    }
+    expect(
+      validateQuestion(q, { questionId: 'q1', value: 'x'.repeat(10_001) })
+    ).toMatch(/Maks 10000/)
+    expect(
+      validateQuestion(q, { questionId: 'q1', value: 'x'.repeat(10_000) })
+    ).toBeNull()
+  })
+
+  it('enforces max text length on typeahead questions', () => {
+    const q: SurveyQuestion = {
+      id: 'q1',
+      type: 'typeahead',
+      title: 'Org',
+      required: false,
+      suggestions: [],
+    }
+    expect(
+      validateQuestion(q, { questionId: 'q1', value: 'x'.repeat(10_001) })
+    ).toMatch(/Maks 10000/)
+  })
+
+  it('strips orphan answers for non-existent question IDs', () => {
+    const answers: SurveyAnswer[] = [
+      { questionId: 'name', value: 'Test' },
+      { questionId: 'role', value: 'dev' },
+      { questionId: 'tools', value: ['a'] },
+      { questionId: 'nonexistent', value: 'injected' },
+    ]
+    const result = validateAnswers(testSurvey, answers)
+    expect(result.valid).toBe(true)
+    expect(
+      result.sanitizedAnswers.find(a => a.questionId === 'nonexistent')
+    ).toBeUndefined()
+  })
+
+  it('strips otherText when question does not allow it', () => {
+    const answers: SurveyAnswer[] = [
+      { questionId: 'name', value: 'Test', otherText: 'injected' },
+      { questionId: 'role', value: 'dev' },
+      { questionId: 'tools', value: ['a'] },
+    ]
+    const result = validateAnswers(testSurvey, answers)
+    expect(result.valid).toBe(true)
+    const nameAnswer = result.sanitizedAnswers.find(
+      a => a.questionId === 'name'
+    )
+    expect(nameAnswer?.otherText).toBeUndefined()
+  })
+
+  it('accepts empty survey with no answers', () => {
+    const empty: SurveyDefinition = {
+      slug: 'empty',
+      version: 1,
+      title: 'Empty',
+      consent: { dataCollectionText: '' },
+      status: SurveyStatus.Open,
+      sections: [],
+    }
+    const result = validateAnswers(empty, [])
+    expect(result.valid).toBe(true)
+    expect(result.sanitizedAnswers).toEqual([])
+  })
+})

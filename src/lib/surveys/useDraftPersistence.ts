@@ -9,6 +9,7 @@ interface DraftState {
   consentAccepted: boolean
   showConsent: boolean
   startTime: number | null
+  submissionId: string
 }
 
 function storageKey(slug: string, version: number): string {
@@ -22,8 +23,27 @@ export function loadDraft(
   try {
     const raw = sessionStorage.getItem(storageKey(slug, version))
     if (!raw) return undefined
-    return JSON.parse(raw) as DraftState
+    const parsed = JSON.parse(raw) as DraftState
+    if (
+      !parsed ||
+      !Array.isArray(parsed.answers) ||
+      typeof parsed.currentSectionIndex !== 'number' ||
+      typeof parsed.consentAccepted !== 'boolean' ||
+      typeof parsed.showConsent !== 'boolean'
+    ) {
+      sessionStorage.removeItem(storageKey(slug, version))
+      return undefined
+    }
+    if (parsed.currentSectionIndex < 0) {
+      parsed.currentSectionIndex = 0
+    }
+    return parsed
   } catch {
+    try {
+      sessionStorage.removeItem(storageKey(slug, version))
+    } catch {
+      // ignore
+    }
     return undefined
   }
 }
@@ -44,7 +64,8 @@ export function useDraftPersistence(
   consentAccepted: boolean,
   showConsent: boolean,
   startTime: number | null,
-  isSuccess: boolean
+  isSuccess: boolean,
+  submissionId: string
 ) {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -57,6 +78,7 @@ export function useDraftPersistence(
         consentAccepted,
         showConsent,
         startTime,
+        submissionId,
       }
       sessionStorage.setItem(storageKey(slug, version), JSON.stringify(state))
     } catch {
@@ -71,6 +93,7 @@ export function useDraftPersistence(
     showConsent,
     startTime,
     isSuccess,
+    submissionId,
   ])
 
   useEffect(() => {

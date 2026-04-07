@@ -5,17 +5,27 @@ import { SurveyStatus } from '@/lib/surveys/types'
 import { surveyResponseService } from '@/domains/survey-response/service'
 import { TRPCError } from '@trpc/server'
 
+const MAX_STRING_LENGTH = 10_000
+const MAX_OTHER_TEXT_LENGTH = 500
+const MAX_ANSWERS = 200
+const MAX_ID_LENGTH = 200
+
 const surveyAnswerSchema = z.object({
-  questionId: z.string(),
-  value: z.union([z.string(), z.array(z.string())]),
-  otherText: z.string().optional(),
+  questionId: z.string().min(1).max(MAX_ID_LENGTH),
+  value: z.union([
+    z.string().max(MAX_STRING_LENGTH),
+    z.array(z.string().max(MAX_STRING_LENGTH)).max(MAX_ANSWERS),
+  ]),
+  otherText: z.string().max(MAX_OTHER_TEXT_LENGTH).optional(),
 })
 
 const submitSurveySchema = z.object({
-  surveySlug: z.string(),
-  answers: z.array(surveyAnswerSchema),
+  surveySlug: z.string().min(1).max(MAX_ID_LENGTH),
+  surveyVersion: z.number().int().min(1),
+  submissionId: z.string().uuid(),
+  answers: z.array(surveyAnswerSchema).max(MAX_ANSWERS),
   honeypot: z.string().optional(),
-  durationSeconds: z.number().int().min(0).optional(),
+  durationSeconds: z.number().int().min(0).max(86_400).optional(),
 })
 
 export const surveyRouter = router({
@@ -23,7 +33,7 @@ export const surveyRouter = router({
     .input(submitSurveySchema)
     .mutation(async ({ input, ctx }) => {
       if (input.honeypot) {
-        return { success: true }
+        return { success: true, honeypot: true }
       }
 
       const survey = getSurvey(input.surveySlug)
@@ -41,17 +51,29 @@ export const surveyRouter = router({
         })
       }
 
+      if (input.surveyVersion !== survey.version) {
+        throw new TRPCError({
+          code: 'PRECONDITION_FAILED',
+          message: 'Undersøkelsen har blitt oppdatert. Last inn siden på nytt.',
+        })
+      }
+
       const userAgent = ctx.headers.get('user-agent') ?? undefined
       const ip =
         ctx.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
         ctx.headers.get('x-real-ip') ??
         undefined
 
-      await surveyResponseService.submitResponse(survey, input.answers, {
-        userAgent,
-        ip,
-        durationSeconds: input.durationSeconds,
-      })
+      await surveyResponseService.submitResponse(
+        survey,
+        input.answers,
+        {
+          userAgent,
+          ip,
+          durationSeconds: input.durationSeconds,
+        },
+        input.submissionId
+      )
 
       return { success: true }
     }),

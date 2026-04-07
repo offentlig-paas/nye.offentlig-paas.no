@@ -266,6 +266,10 @@ describe('SurveyForm', () => {
       expect(mockMutateAsync).toHaveBeenCalledWith(
         expect.objectContaining({
           surveySlug: 'test-survey',
+          surveyVersion: 1,
+          submissionId: expect.stringMatching(
+            /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
+          ),
           answers: expect.arrayContaining([
             expect.objectContaining({ questionId: 'q1', value: 'Alice' }),
             expect.objectContaining({ questionId: 'q2', value: 'dev' }),
@@ -318,6 +322,72 @@ describe('SurveyForm', () => {
 
       // Should show "Tool details"
       expect(screen.getByText('Tool details')).toBeInTheDocument()
+    })
+  })
+
+  describe('robustness', () => {
+    it('does not show success when honeypot triggers', async () => {
+      mockMutateAsync.mockResolvedValueOnce({ success: true, honeypot: true })
+      const user = userEvent.setup()
+      render(<SurveyForm survey={simpleSurvey} contact={contact} />)
+      await acceptConsentAndStart(user)
+
+      await user.type(screen.getByLabelText(/Your name/), 'Alice')
+      await user.click(screen.getByRole('button', { name: /neste/i }))
+      await user.click(screen.getByLabelText('Developer'))
+      await user.click(screen.getByRole('button', { name: /send inn/i }))
+
+      expect(screen.queryByText(/takk for ditt svar/i)).not.toBeInTheDocument()
+    })
+
+    it('sends consistent submissionId on retry after failure', async () => {
+      mockMutateAsync
+        .mockRejectedValueOnce(new Error('Network error'))
+        .mockResolvedValueOnce({ success: true })
+      const user = userEvent.setup()
+      render(<SurveyForm survey={simpleSurvey} contact={contact} />)
+      await acceptConsentAndStart(user)
+
+      await user.type(screen.getByLabelText(/Your name/), 'Alice')
+      await user.click(screen.getByRole('button', { name: /neste/i }))
+      await user.click(screen.getByLabelText('Developer'))
+
+      await user.click(screen.getByRole('button', { name: /send inn/i }))
+      expect(screen.getByRole('alert')).toHaveTextContent('Network error')
+
+      await user.click(screen.getByRole('button', { name: /send inn/i }))
+
+      const firstId = mockMutateAsync.mock.calls[0]![0].submissionId
+      const secondId = mockMutateAsync.mock.calls[1]![0].submissionId
+      expect(firstId).toBe(secondId)
+      expect(firstId).toMatch(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
+      )
+    })
+
+    it('has hidden honeypot field', async () => {
+      const user = userEvent.setup()
+      render(<SurveyForm survey={simpleSurvey} contact={contact} />)
+      await acceptConsentAndStart(user)
+
+      const honeypot = document.querySelector('input[name="website"]')
+      expect(honeypot).toBeInTheDocument()
+      expect(honeypot).toHaveAttribute('tabindex', '-1')
+    })
+
+    it('includes surveyVersion in submission payload', async () => {
+      const user = userEvent.setup()
+      render(<SurveyForm survey={simpleSurvey} contact={contact} />)
+      await acceptConsentAndStart(user)
+
+      await user.type(screen.getByLabelText(/Your name/), 'Alice')
+      await user.click(screen.getByRole('button', { name: /neste/i }))
+      await user.click(screen.getByLabelText('Developer'))
+      await user.click(screen.getByRole('button', { name: /send inn/i }))
+
+      expect(mockMutateAsync).toHaveBeenCalledWith(
+        expect.objectContaining({ surveyVersion: 1 })
+      )
     })
   })
 
