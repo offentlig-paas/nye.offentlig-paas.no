@@ -53,6 +53,7 @@ class SurveyResponseService {
         submissionSource: 'web',
         consentVersion: survey.version,
         durationSeconds: metadata.durationSeconds,
+        environment: process.env.NODE_ENV ?? 'unknown',
       },
     }
 

@@ -751,6 +751,12 @@ const surveyResponseSchema = defineType({
           type: 'number',
           description: 'Time the respondent spent on the survey',
         },
+        {
+          name: 'environment',
+          title: 'Environment',
+          type: 'string',
+          description: 'Runtime environment (e.g. development, production)',
+        },
       ],
     },
   ],

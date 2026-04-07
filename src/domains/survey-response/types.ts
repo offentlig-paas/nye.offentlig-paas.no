@@ -19,6 +19,7 @@ export interface SurveyResponseMetadata {
   submissionSource?: string
   consentVersion?: number
   durationSeconds?: number
+  environment?: string
 }
 
 export interface CreateSurveyResponseInput {
