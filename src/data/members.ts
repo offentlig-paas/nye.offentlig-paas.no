@@ -9,6 +9,7 @@ import logoSykehusapotekene from '@/images/logos/sykehusapotekene.svg'
 import logoUdi from '@/images/logos/udi.svg'
 import logoHKDir from '@/images/logos/hkdir.svg'
 import logoEnova from '@/images/logos/enova.svg'
+import logoLyse from '@/images/logos/lyse.svg'
 
 const logoSkagerakEnergi = logoStatkraft
 
@@ -594,5 +595,13 @@ export const members: Member[] = [
     github: 'skagerakenergi',
     homepage: 'https://www.skagerakenergi.no',
     linkedinUrl: 'https://www.linkedin.com/company/skagerak-energi/',
+  }),
+  new Member({
+    name: 'Lyse',
+    logo: logoLyse,
+    type: MemberType.MUNICIPAL_COMPANY,
+    homepage: 'https://www.lyse.no',
+    linkedinUrl: 'https://no.linkedin.com/company/lyse-as',
+    logoBackgroundColor: '#FFFFFF',
   }),
 ]
