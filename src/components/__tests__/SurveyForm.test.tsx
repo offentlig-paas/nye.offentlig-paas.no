@@ -20,10 +20,13 @@ vi.mock('@/lib/trpc/client', () => ({
   },
 }))
 
+const mockLoadDraft = vi.fn().mockReturnValue(null)
+const mockClearDraft = vi.fn()
+
 vi.mock('@/lib/surveys/useDraftPersistence', () => ({
   useDraftPersistence: vi.fn(),
-  loadDraft: () => null,
-  clearDraft: vi.fn(),
+  loadDraft: (...args: unknown[]) => mockLoadDraft(...args),
+  clearDraft: (...args: unknown[]) => mockClearDraft(...args),
 }))
 
 const contact: ConsentContact = {
@@ -126,7 +129,9 @@ const branchingSurvey: SurveyDefinition = {
 }
 
 beforeEach(() => {
-  mockMutateAsync.mockClear()
+  mockMutateAsync.mockClear().mockResolvedValue({ success: true })
+  mockLoadDraft.mockClear().mockReturnValue(null)
+  mockClearDraft.mockClear()
   sessionStorage.clear()
 })
 
@@ -388,6 +393,88 @@ describe('SurveyForm', () => {
       expect(mockMutateAsync).toHaveBeenCalledWith(
         expect.objectContaining({ surveyVersion: 1 })
       )
+    })
+
+    it('prevents double submit while request is pending', async () => {
+      let resolveSubmit!: (v: { success: boolean }) => void
+      mockMutateAsync.mockImplementationOnce(
+        () =>
+          new Promise(resolve => {
+            resolveSubmit = resolve
+          })
+      )
+      const user = userEvent.setup()
+      const { unmount } = render(
+        <SurveyForm survey={simpleSurvey} contact={contact} />
+      )
+      await acceptConsentAndStart(user)
+
+      await user.type(screen.getByLabelText(/Your name/), 'Alice')
+      await user.click(screen.getByRole('button', { name: /neste/i }))
+      await user.click(screen.getByLabelText('Developer'))
+
+      await user.click(screen.getByRole('button', { name: /send inn/i }))
+      await user.click(screen.getByRole('button', { name: /sender/i }))
+
+      expect(mockMutateAsync).toHaveBeenCalledTimes(1)
+
+      unmount()
+      resolveSubmit({ success: true })
+    })
+
+    it('restores form state from draft', async () => {
+      mockLoadDraft.mockReturnValue({
+        answers: [['q1', { questionId: 'q1', value: 'Draft Name' }]],
+        currentSectionIndex: 0,
+        consentAccepted: true,
+        showConsent: false,
+        startTime: Date.now() - 60_000,
+        submissionId: '00000000-0000-0000-0000-000000000001',
+      })
+
+      const user = userEvent.setup()
+      render(<SurveyForm survey={simpleSurvey} contact={contact} />)
+
+      expect(screen.queryByLabelText(/samtykker/i)).not.toBeInTheDocument()
+      expect(screen.getByText('About you')).toBeInTheDocument()
+      const input = screen.getByLabelText(/Your name/) as HTMLInputElement
+      expect(input.value).toBe('Draft Name')
+
+      await user.click(screen.getByRole('button', { name: /neste/i }))
+      await user.click(screen.getByLabelText('Developer'))
+      await user.click(screen.getByRole('button', { name: /send inn/i }))
+
+      expect(mockMutateAsync).toHaveBeenCalledWith(
+        expect.objectContaining({
+          submissionId: '00000000-0000-0000-0000-000000000001',
+        })
+      )
+    })
+
+    it('blocks submit on last section when required field is empty', async () => {
+      const user = userEvent.setup()
+      render(<SurveyForm survey={simpleSurvey} contact={contact} />)
+      await acceptConsentAndStart(user)
+
+      await user.type(screen.getByLabelText(/Your name/), 'Alice')
+      await user.click(screen.getByRole('button', { name: /neste/i }))
+
+      await user.click(screen.getByRole('button', { name: /send inn/i }))
+
+      expect(mockMutateAsync).not.toHaveBeenCalled()
+      expect(screen.getByRole('alert')).toBeInTheDocument()
+    })
+
+    it('clears validation error after fixing answer', async () => {
+      const user = userEvent.setup()
+      render(<SurveyForm survey={simpleSurvey} contact={contact} />)
+      await acceptConsentAndStart(user)
+
+      await user.click(screen.getByRole('button', { name: /neste/i }))
+      expect(screen.getByRole('alert')).toBeInTheDocument()
+
+      await user.type(screen.getByLabelText(/Your name/), 'Alice')
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument()
     })
   })
 

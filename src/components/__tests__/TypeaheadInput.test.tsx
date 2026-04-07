@@ -22,15 +22,33 @@ describe('TypeaheadInput', () => {
     expect(screen.getByLabelText('Organization')).toBe(input)
   })
 
-  it('shows filtered suggestions when typing', async () => {
-    const user = userEvent.setup()
-    const onChange = vi.fn()
+  it('filters suggestions to show only matches', () => {
     render(
-      <TypeaheadInput question={baseQuestion} value="" onChange={onChange} />
+      <TypeaheadInput question={baseQuestion} value="S" onChange={vi.fn()} />
     )
-    await user.type(screen.getByRole('combobox'), 'S')
-    // onChange fires — the parent re-renders with value="S"
-    expect(onChange).toHaveBeenCalledWith('S')
+    fireEvent.focus(screen.getByRole('combobox'))
+    const options = screen.getAllByRole('option')
+    const names = options.map(o => o.textContent)
+    expect(names).toEqual(['SSB', 'Skatteetaten', 'Sikt'])
+    expect(
+      screen.queryByRole('option', { name: 'Nav' })
+    ).not.toBeInTheDocument()
+  })
+
+  it('filters case-insensitively', () => {
+    render(
+      <TypeaheadInput question={baseQuestion} value="nav" onChange={vi.fn()} />
+    )
+    fireEvent.focus(screen.getByRole('combobox'))
+    expect(screen.getByRole('option', { name: 'Nav' })).toBeInTheDocument()
+  })
+
+  it('shows no listbox when nothing matches', () => {
+    render(
+      <TypeaheadInput question={baseQuestion} value="zzz" onChange={vi.fn()} />
+    )
+    fireEvent.focus(screen.getByRole('combobox'))
+    expect(screen.queryByRole('listbox')).not.toBeInTheDocument()
   })
 
   it('displays matching suggestions as listbox', () => {
