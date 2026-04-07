@@ -2,7 +2,7 @@
 
 > **Note:** These extensions use the Copilot CLI SDK (`@github/copilot-sdk/extension`) and only work in [GitHub Copilot CLI](https://docs.github.com/copilot/concepts/agents/about-copilot-cli). They do not work in VS Code Copilot Chat. The knowledge in `AGENTS.md` and `.github/instructions/` files is shared with VS Code, but the tools and hooks below require the CLI.
 
-This project ships four Copilot CLI extensions that provide domain-specific tools for managing articles, events, and design on the Offentlig PaaS website.
+This project ships five Copilot CLI extensions that provide domain-specific tools for managing articles, events, design, and surveys on the Offentlig PaaS website.
 
 ## Why extensions instead of agents?
 
@@ -33,8 +33,10 @@ Plan (extension) → Scaffold (extension) → Write → Language cleanup (agent)
 │   └── extension.mjs  Tools: scaffold_article, article_guidelines
 ├── event-manager/     Fagdag/event specialist
 │   └── extension.mjs  Tools: scaffold_event, event_checklist
-└── designer/          Tailwind/component specialist
-    └── extension.mjs  Tools: design_system_reference
+├── designer/          Tailwind/component specialist
+│   └── extension.mjs  Tools: design_system_reference
+└── survey-builder/    Survey-as-code specialist
+    └── extension.mjs  Tools: scaffold_survey, survey_type_reference
 ```
 
 Each extension registers:
@@ -76,6 +78,13 @@ Example: typing "write an article about observability" triggers the article-writ
 | Tool                      | Parameters | What it does                                                                                                                  |
 | ------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | `design_system_reference` | `section?` | Returns the design system reference. Sections: `colors`, `typography`, `components`, `layout`, `dark-mode`, `icons`, or `all` |
+
+### Survey Builder
+
+| Tool                    | Parameters                                                 | What it does                                                                                                                                  |
+| ----------------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `scaffold_survey`       | `slug`, `title`, `description`, `status?`, `num_sections?` | Generates a TypeScript survey definition skeleton with correct types ready to save to `src/data/surveys/`                                     |
+| `survey_type_reference` | `section?`                                                 | Returns the complete type reference and best practices. Sections: `types`, `questions`, `branching`, `validation`, `best-practices`, or `all` |
 
 ## Language agents
 
@@ -145,6 +154,20 @@ Events support an optional `bannerImage` field for social media sharing (OG/Twit
    → redaktor hook auto-injects context
    → LLM calls content_plan with the right content_type
    → Returns step-by-step workflow with tool recommendations
+```
+
+### Create a new survey
+
+```plain
+1. Ask Copilot to create a survey about [topic]
+   → survey-builder hook auto-injects context
+   → LLM calls scaffold_survey to generate the TypeScript skeleton
+   → LLM uses survey_type_reference for question types and best practices
+
+2. Save the definition to src/data/surveys/[slug].ts
+3. Register the survey in src/data/surveys/index.ts
+4. Link it to a research project in src/data/research.ts (InternalSurvey with surveySlug)
+5. Run: yarn run check
 ```
 
 ## Development

@@ -663,6 +663,124 @@ const talkSubmissionSchema = defineType({
   ],
 })
 
+const surveyResponseSchema = defineType({
+  name: 'surveyResponse',
+  title: 'Survey Response',
+  type: 'document',
+  fields: [
+    {
+      name: 'surveySlug',
+      title: 'Survey Slug',
+      type: 'string',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'surveyVersion',
+      title: 'Survey Version',
+      type: 'number',
+      validation: Rule => Rule.required().integer().min(1),
+    },
+    {
+      name: 'answers',
+      title: 'Answers',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            {
+              name: 'questionId',
+              title: 'Question ID',
+              type: 'string',
+              validation: Rule => Rule.required(),
+            },
+            {
+              name: 'value',
+              title: 'Value',
+              type: 'string',
+              description: 'Single value for text/radio questions',
+            },
+            {
+              name: 'arrayValue',
+              title: 'Array Value',
+              type: 'array',
+              of: [{ type: 'string' }],
+              description: 'Multiple values for checkbox questions',
+            },
+            {
+              name: 'otherText',
+              title: 'Other Text',
+              type: 'string',
+            },
+          ],
+        },
+      ],
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'submittedAt',
+      title: 'Submitted At',
+      type: 'datetime',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'metadata',
+      title: 'Metadata',
+      type: 'object',
+      fields: [
+        {
+          name: 'deviceCategory',
+          title: 'Device Category',
+          type: 'string',
+          description:
+            'Broad device category (e.g. "desktop", "mobile", "tablet")',
+        },
+        {
+          name: 'submissionSource',
+          title: 'Submission Source',
+          type: 'string',
+        },
+        {
+          name: 'consentVersion',
+          title: 'Consent Version',
+          type: 'number',
+        },
+        {
+          name: 'durationSeconds',
+          title: 'Duration (seconds)',
+          type: 'number',
+          description: 'Time the respondent spent on the survey',
+        },
+        {
+          name: 'environment',
+          title: 'Environment',
+          type: 'string',
+          description: 'Runtime environment (e.g. development, production)',
+        },
+      ],
+    },
+  ],
+  preview: {
+    select: {
+      surveySlug: 'surveySlug',
+      submittedAt: 'submittedAt',
+    },
+    prepare(selection: Record<string, string>) {
+      return {
+        title: selection.surveySlug,
+        subtitle: selection.submittedAt,
+      }
+    },
+  },
+  orderings: [
+    {
+      title: 'Submitted Date (Newest First)',
+      name: 'submittedAtDesc',
+      by: [{ field: 'submittedAt', direction: 'desc' as const }],
+    },
+  ],
+})
+
 export const schemas = [
   eventRegistrationSchema,
   eventParticipantInfoSchema,
@@ -670,4 +788,5 @@ export const schemas = [
   eventFeedbackSchema,
   eventPhotoSchema,
   talkSubmissionSchema,
+  surveyResponseSchema,
 ]

@@ -1,9 +1,16 @@
-import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid'
+import Link from 'next/link'
 import { researchProjects } from '@/data/research'
+import { members } from '@/data/members'
 import { SurveyStatus } from '@/lib/research/types'
-import { getSurveyResponseRate } from '@/lib/research/helpers'
+import {
+  isSurveyLinkable,
+  getSurveyTitle,
+  getSurveyStatus,
+  getSurveyDescription,
+} from '@/lib/research/helpers'
+import { surveyResponseService } from '@/domains/survey-response/service'
 
-export function SurveyCallToAction({
+export async function SurveyCallToAction({
   projectSlug,
   surveyIndex = 0,
 }: {
@@ -13,17 +20,30 @@ export function SurveyCallToAction({
   const project = researchProjects.find(p => p.slug === projectSlug)
   if (!project) return null
   const survey = project.surveys?.[surveyIndex]
-  if (!survey?.url || survey.status !== SurveyStatus.Open) return null
+  if (
+    !survey ||
+    !isSurveyLinkable(survey) ||
+    getSurveyStatus(survey) !== SurveyStatus.Open
+  )
+    return null
 
   const surveyUrl = `/forskning/${projectSlug}/undersokelse`
-  const { responses, total, rate } = getSurveyResponseRate(survey)
+  const title = getSurveyTitle(survey)
+  const description = getSurveyDescription(survey)
+
+  const responses =
+    'surveySlug' in survey
+      ? await surveyResponseService.getUniqueOrganizationCount(
+          survey.surveySlug
+        )
+      : 0
+  const total = members.length
+  const rate = total > 0 ? Math.round((responses / total) * 100) : 0
 
   return (
     <div className="not-prose my-10">
-      <a
+      <Link
         href={surveyUrl}
-        target="_blank"
-        rel="noopener noreferrer"
         className="group block rounded-2xl border-2 border-teal-500/30 bg-teal-50/50 p-6 transition hover:border-teal-500/50 hover:bg-teal-50 dark:border-teal-400/20 dark:bg-teal-400/5 dark:hover:border-teal-400/40 dark:hover:bg-teal-400/10"
       >
         <div className="flex items-center gap-2">
@@ -36,15 +56,14 @@ export function SurveyCallToAction({
           </span>
         </div>
         <h3 className="mt-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-          {survey.title}
-          <ArrowTopRightOnSquareIcon className="ml-2 inline h-4 w-4 text-zinc-400 transition group-hover:text-teal-500" />
+          {title}
         </h3>
         <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
           {project.description}
         </p>
-        {survey.description && (
+        {description && (
           <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
-            {survey.description}
+            {description}
           </p>
         )}
         {responses > 0 && (
@@ -63,10 +82,9 @@ export function SurveyCallToAction({
           </div>
         )}
         <span className="mt-3 inline-flex items-center text-sm font-medium text-teal-600 dark:text-teal-400">
-          Svar på undersøkelsen
-          <ArrowTopRightOnSquareIcon className="ml-1 h-4 w-4" />
+          Svar på undersøkelsen →
         </span>
-      </a>
+      </Link>
     </div>
   )
 }

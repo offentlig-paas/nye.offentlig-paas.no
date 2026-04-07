@@ -8,10 +8,8 @@ export enum ResearchStatus {
   Ongoing = 'Pågående',
 }
 
-export enum SurveyStatus {
-  Open = 'Åpen',
-  Closed = 'Avsluttet',
-}
+import { SurveyStatus } from '@/lib/surveys/types'
+export { SurveyStatus }
 
 export enum PaperStatus {
   Draft = 'Utkast',
@@ -46,13 +44,22 @@ export interface ResearchPaper {
   label?: string
 }
 
-export interface ResearchSurvey {
-  title: string
-  url?: string
-  status: SurveyStatus
+export type ResearchSurvey = InternalSurvey | ExternalSurvey
+
+interface ResearchSurveyBase {
   responses?: number
   waveName?: string
   description?: string
+}
+
+export interface InternalSurvey extends ResearchSurveyBase {
+  surveySlug: string
+}
+
+export interface ExternalSurvey extends ResearchSurveyBase {
+  title: string
+  url?: string
+  status: SurveyStatus
 }
 
 export interface ResearchDataset {

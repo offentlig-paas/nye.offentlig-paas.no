@@ -21,6 +21,8 @@ export const sanityClient = createClient({
   useCdn: false,
 })
 
-if (!process.env.SANITY_API_TOKEN && process.env.NODE_ENV !== 'development') {
-  console.warn('Missing SANITY_API_TOKEN - write operations will fail')
+if (!process.env.SANITY_API_TOKEN && process.env.NODE_ENV === 'production') {
+  throw new Error(
+    'Missing SANITY_API_TOKEN in production — survey submissions will fail'
+  )
 }

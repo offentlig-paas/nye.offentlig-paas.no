@@ -96,6 +96,46 @@
 
 **Talk Submissions:** Domain in `src/domains/talk-submission/` (types, repository, service). Sanity document type `talkSubmission`. Public tRPC router `talkSubmission` (submit, getUserSubmissions, withdraw). Admin sub-router `admin.talkSubmissions` (list, getCount, updateStatus, delete). Admin UI at `/admin/events/[slug]/submissions`.
 
+**Surveys (survey-as-code):** Survey definitions are TypeScript files in `src/data/surveys/`. Types in `src/lib/surveys/types.ts`. Responses stored in Sanity via `src/domains/survey-response/` (types, service, repository). Public tRPC router `survey` (submit, getResponseCount). Rendered by `src/components/SurveyForm.tsx` (multi-step wizard with consent, progress bar, client/server validation). Question components in `src/components/survey/` (TextInput, TextareaInput, RadioGroup, CheckboxGroup, TypeaheadInput, Markdown).
+
+Key survey features:
+
+- Five question types: `text`, `textarea`, `radio`, `checkbox`, `typeahead`
+- Section-level branching via `skipToSection` on options (max one branch per section)
+- Option randomization with pinning (`randomizeOptions`, `pinPosition: 'first' | 'last'`)
+- Exclusive checkbox options (`exclusive: true` — selecting deselects all others)
+- Shared validation via `validateQuestion()` in `src/lib/surveys/validation.ts` (used by both client and server)
+- Auto-generated consent text from structured `SurveyConsent` + `ConsentContact` (from research project ethics)
+- Time estimation from question complexity (`estimateCompletionMinutes()`)
+- Elapsed time tracking (client timer → `durationSeconds` in Sanity metadata)
+- Draft persistence via `sessionStorage` (`useDraftPersistence` hook — survives page reloads, cleared on submit/tab close)
+- WCAG 2.2 AA accessibility: fieldset/legend, aria-required/invalid/describedby, role="progressbar", aria-live announcements, focus management
+- Honeypot anti-spam + server-side rate limiting
+
+**Survey utilities** - `src/lib/surveys/helpers.ts`:
+
+- `getSurvey()` - Find survey by slug
+- `getSurveyForProject()` - Find survey linked to a research project
+- `getProjectForSurvey()` - Reverse lookup: survey slug → research project
+- `getConsentContact()` - Extract consent contact from linked research project
+- `getActiveSurveys()` - All open surveys
+- `getVisibleSectionIds()` - Evaluate branching for a respondent
+- `estimateCompletionMinutes()` - Time estimate from question types
+- `shuffleOptions()` - Seeded shuffle with pin support
+- `buildConsentText()` - Auto-generate consent markdown from structured data
+- `buildThankYouMessage()` - Auto-generate thank-you message
+
+**Survey validation** - `src/lib/surveys/validation.ts`:
+
+- `validateQuestion()` - Per-question validation (shared client/server)
+- `validateAnswers()` - Full survey validation with deduplication and section stripping
+
+**Survey draft persistence** - `src/lib/surveys/useDraftPersistence.ts`:
+
+- `useDraftPersistence()` - Hook that debounces writes to sessionStorage (answers, section, consent, timer)
+- `loadDraft()` - Hydrate state on mount
+- `clearDraft()` - Remove draft (called on successful submit)
+
 ### Component Strategy
 
 **Avoid unnecessary wrapper components**. Before creating a new component:
@@ -147,7 +187,7 @@ When adding content, maintain the professional tone and focus on practical techn
 
 ## Copilot Extensions
 
-Four extensions in `.github/extensions/` provide content and design tools: `scaffold_article`, `scaffold_event`, `article_guidelines`, `design_system_reference`, `content_plan`, `site_overview`, and `event_checklist`. They auto-inject context via hooks — just ask to write an article or create an event and the right tools activate.
+Five extensions in `.github/extensions/` provide content, design, and domain tools: `scaffold_article`, `scaffold_event`, `article_guidelines`, `design_system_reference`, `content_plan`, `site_overview`, `event_checklist`, `scaffold_survey`, and `survey_type_reference`. They auto-inject context via hooks — just ask to write an article, create an event, or build a survey and the right tools activate.
 
 Language agents (`plain-language-no`, `plain-language-en`) complement the extensions for text quality review.
 

@@ -1,5 +1,5 @@
 import { defineConfig } from 'sanity'
-import { structureTool } from 'sanity/structure'
+import { type StructureBuilder, structureTool } from 'sanity/structure'
 import { visionTool } from '@sanity/vision'
 
 import { schemas } from './src/lib/sanity/schemas'
@@ -20,7 +20,7 @@ export default defineConfig({
 
   plugins: [
     structureTool({
-      structure: S =>
+      structure: (S: StructureBuilder) =>
         S.list()
           .title('Content')
           .items([
@@ -65,6 +65,16 @@ export default defineConfig({
                 S.documentTypeList('talkSubmission')
                   .title('Talk Submissions')
                   .filter('_type == "talkSubmission"')
+                  .defaultOrdering([
+                    { field: 'submittedAt', direction: 'desc' },
+                  ])
+              ),
+            S.listItem()
+              .title('Survey Responses')
+              .child(
+                S.documentTypeList('surveyResponse')
+                  .title('Survey Responses')
+                  .filter('_type == "surveyResponse"')
                   .defaultOrdering([
                     { field: 'submittedAt', direction: 'desc' },
                   ])

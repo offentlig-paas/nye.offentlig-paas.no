@@ -18,11 +18,17 @@ import {
   getAllProjects,
   statusColors,
   getWaveResponseRate,
-  getSurveyResponseRate,
   findWaveForSurvey,
+  surveyStatusLabel,
+  isSurveyLinkable,
+  getSurveyTitle,
+  getSurveyStatus,
+  getSurveyDescription,
 } from '@/lib/research/helpers'
 import { getArticlesByTag } from '@/lib/articles'
 import { formatDate } from '@/lib/formatDate'
+import { members } from '@/data/members'
+import { surveyResponseService } from '@/domains/survey-response/service'
 import {
   PaperStatus,
   SurveyStatus,
@@ -75,7 +81,7 @@ export default async function ResearchProjectPage({
   ).flat()
 
   const openSurveys = (project.surveys ?? []).filter(
-    s => s.status === SurveyStatus.Open
+    s => getSurveyStatus(s) === SurveyStatus.Open
   )
 
   return (
@@ -129,31 +135,34 @@ export default async function ResearchProjectPage({
           {/* Open survey CTA */}
           {openSurveys.length > 0 && (
             <div className="mt-8">
-              {openSurveys.map(survey => (
-                <div
-                  key={survey.title}
-                  className="rounded-lg border border-teal-200 bg-teal-50 p-4 dark:border-teal-800 dark:bg-teal-950/20"
-                >
-                  <div className="flex items-center justify-between gap-4">
-                    <div>
-                      <p className="font-medium text-teal-900 dark:text-teal-100">
-                        {survey.title}
-                      </p>
-                      {survey.description && (
-                        <p className="mt-1 text-sm text-teal-700 dark:text-teal-300">
-                          {survey.description}
+              {openSurveys.map(survey => {
+                const description = getSurveyDescription(survey)
+                return (
+                  <div
+                    key={getSurveyTitle(survey)}
+                    className="rounded-lg border border-teal-200 bg-teal-50 p-4 dark:border-teal-800 dark:bg-teal-950/20"
+                  >
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <p className="font-medium text-teal-900 dark:text-teal-100">
+                          {getSurveyTitle(survey)}
                         </p>
-                      )}
+                        {description && (
+                          <p className="mt-1 text-sm text-teal-700 dark:text-teal-300">
+                            {description}
+                          </p>
+                        )}
+                      </div>
+                      <Link
+                        href={`/forskning/${slug}/undersokelse`}
+                        className="shrink-0 rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-700 dark:bg-teal-500 dark:hover:bg-teal-600"
+                      >
+                        Delta
+                      </Link>
                     </div>
-                    <Link
-                      href={`/forskning/${slug}/undersokelse`}
-                      className="shrink-0 rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-700 dark:bg-teal-500 dark:hover:bg-teal-600"
-                    >
-                      Delta
-                    </Link>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
 
@@ -350,7 +359,7 @@ function PapersSection({ papers }: { papers: ResearchProject['papers'] }) {
   )
 }
 
-function SurveysSection({
+async function SurveysSection({
   surveys,
   waves,
   projectSlug,
@@ -360,6 +369,23 @@ function SurveysSection({
   projectSlug: string
 }) {
   if (!surveys?.length) return null
+
+  const orgCounts = new Map<string, number>()
+  for (const survey of surveys) {
+    if (
+      'surveySlug' in survey &&
+      getSurveyStatus(survey) === SurveyStatus.Open
+    ) {
+      orgCounts.set(
+        survey.surveySlug,
+        await surveyResponseService.getUniqueOrganizationCount(
+          survey.surveySlug
+        )
+      )
+    }
+  }
+  const total = members.length
+
   return (
     <section className="mt-12 border-t border-zinc-100 pt-8 dark:border-zinc-800">
       <h2 className="flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
@@ -369,12 +395,17 @@ function SurveysSection({
       <ul className="mt-4 space-y-3">
         {surveys.map(survey => {
           const wave = findWaveForSurvey(survey, waves)
-          const isOpen = survey.status === SurveyStatus.Open
+          const title = getSurveyTitle(survey)
+          const status = getSurveyStatus(survey)
+          const description = getSurveyDescription(survey)
+          const isOpen = status === SurveyStatus.Open
           const waveRate = wave ? getWaveResponseRate(wave) : null
-          const { responses, total, rate } = getSurveyResponseRate(survey)
+          const responses =
+            'surveySlug' in survey ? (orgCounts.get(survey.surveySlug) ?? 0) : 0
+          const rate = total > 0 ? Math.round((responses / total) * 100) : 0
           return (
             <li
-              key={survey.title}
+              key={title}
               className="text-sm text-zinc-600 dark:text-zinc-400"
             >
               <div className="flex items-center gap-3">
@@ -384,26 +415,26 @@ function SurveysSection({
                     isOpen ? 'bg-green-500' : 'bg-zinc-400 dark:bg-zinc-500'
                   )}
                 />
-                {survey.url ? (
+                {isSurveyLinkable(survey) ? (
                   <Link
                     href={`/forskning/${projectSlug}/undersokelse`}
                     className="text-teal-500 hover:text-teal-600 dark:text-teal-400 dark:hover:text-teal-300"
                   >
-                    {survey.title}
+                    {title}
                   </Link>
                 ) : (
-                  <span>{survey.title}</span>
+                  <span>{title}</span>
                 )}
-                <span className="text-xs text-zinc-400">({survey.status})</span>
+                <span className="text-xs text-zinc-400">
+                  ({surveyStatusLabel[status]})
+                </span>
                 {!isOpen && waveRate != null && (
                   <span className="text-xs text-zinc-400">
                     · {waveRate} % svarprosent
                   </span>
                 )}
-                {survey.description && (
-                  <span className="text-xs text-zinc-400">
-                    — {survey.description}
-                  </span>
+                {description && (
+                  <span className="text-xs text-zinc-400">— {description}</span>
                 )}
               </div>
               {isOpen && responses > 0 && (
