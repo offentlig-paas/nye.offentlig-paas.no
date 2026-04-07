@@ -18,7 +18,6 @@ import {
   getAllProjects,
   statusColors,
   getWaveResponseRate,
-  getSurveyResponseRate,
   findWaveForSurvey,
   surveyStatusLabel,
   isSurveyLinkable,
@@ -28,6 +27,8 @@ import {
 } from '@/lib/research/helpers'
 import { getArticlesByTag } from '@/lib/articles'
 import { formatDate } from '@/lib/formatDate'
+import { members } from '@/data/members'
+import { surveyResponseService } from '@/domains/survey-response/service'
 import {
   PaperStatus,
   SurveyStatus,
@@ -358,7 +359,7 @@ function PapersSection({ papers }: { papers: ResearchProject['papers'] }) {
   )
 }
 
-function SurveysSection({
+async function SurveysSection({
   surveys,
   waves,
   projectSlug,
@@ -368,6 +369,23 @@ function SurveysSection({
   projectSlug: string
 }) {
   if (!surveys?.length) return null
+
+  const orgCounts = new Map<string, number>()
+  for (const survey of surveys) {
+    if (
+      'surveySlug' in survey &&
+      getSurveyStatus(survey) === SurveyStatus.Open
+    ) {
+      orgCounts.set(
+        survey.surveySlug,
+        await surveyResponseService.getUniqueOrganizationCount(
+          survey.surveySlug
+        )
+      )
+    }
+  }
+  const total = members.length
+
   return (
     <section className="mt-12 border-t border-zinc-100 pt-8 dark:border-zinc-800">
       <h2 className="flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
@@ -382,7 +400,9 @@ function SurveysSection({
           const description = getSurveyDescription(survey)
           const isOpen = status === SurveyStatus.Open
           const waveRate = wave ? getWaveResponseRate(wave) : null
-          const { responses, total, rate } = getSurveyResponseRate(survey)
+          const responses =
+            'surveySlug' in survey ? (orgCounts.get(survey.surveySlug) ?? 0) : 0
+          const rate = total > 0 ? Math.round((responses / total) * 100) : 0
           return (
             <li
               key={title}

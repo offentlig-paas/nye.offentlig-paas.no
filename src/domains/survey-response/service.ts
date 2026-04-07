@@ -64,6 +64,10 @@ class SurveyResponseService {
     return await this.repository.countBySurvey(surveySlug)
   }
 
+  async getUniqueOrganizationCount(surveySlug: string): Promise<number> {
+    return await this.repository.countUniqueOrganizations(surveySlug)
+  }
+
   private checkRateLimit(ip?: string) {
     if (!ip) return
 

@@ -1,15 +1,16 @@
 import Link from 'next/link'
 import { researchProjects } from '@/data/research'
+import { members } from '@/data/members'
 import { SurveyStatus } from '@/lib/research/types'
 import {
-  getSurveyResponseRate,
   isSurveyLinkable,
   getSurveyTitle,
   getSurveyStatus,
   getSurveyDescription,
 } from '@/lib/research/helpers'
+import { surveyResponseService } from '@/domains/survey-response/service'
 
-export function SurveyCallToAction({
+export async function SurveyCallToAction({
   projectSlug,
   surveyIndex = 0,
 }: {
@@ -27,9 +28,17 @@ export function SurveyCallToAction({
     return null
 
   const surveyUrl = `/forskning/${projectSlug}/undersokelse`
-  const { responses, total, rate } = getSurveyResponseRate(survey)
   const title = getSurveyTitle(survey)
   const description = getSurveyDescription(survey)
+
+  const responses =
+    'surveySlug' in survey
+      ? await surveyResponseService.getUniqueOrganizationCount(
+          survey.surveySlug
+        )
+      : 0
+  const total = members.length
+  const rate = total > 0 ? Math.round((responses / total) * 100) : 0
 
   return (
     <div className="not-prose my-10">
