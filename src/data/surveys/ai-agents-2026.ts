@@ -1,8 +1,8 @@
 import type { SurveyDefinition } from '@/lib/surveys/types'
 import { SurveyStatus } from '@/lib/surveys/types'
-import { members } from '@/data/members'
+import { memberNames } from '@/data/member-names'
 
-const orgSuggestions = members.map(m => m.name).sort()
+const orgSuggestions = [...memberNames].sort()
 
 export const aiAgents2026: SurveyDefinition = {
   slug: 'ai-agents-2026',

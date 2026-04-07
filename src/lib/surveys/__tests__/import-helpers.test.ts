@@ -16,7 +16,7 @@ import {
 } from '../import-helpers'
 
 import { aiAgents2026 } from '@/data/surveys/ai-agents-2026'
-import { members } from '@/data/members'
+import { memberNames } from '@/data/member-names'
 
 const csvPath = resolve(
   __dirname,
@@ -58,8 +58,8 @@ describe('parseCSVLine', () => {
 
 describe('parseCSV', () => {
   it('parses all rows from the real CSV', () => {
-    expect(allRows.length).toBe(35) // 1 header + 34 data rows
-    expect(dataRows.length).toBe(34)
+    expect(allRows.length).toBe(36) // 1 header + 35 data rows
+    expect(dataRows.length).toBe(35)
   })
 
   it('parses the header with correct column count', () => {
@@ -168,7 +168,7 @@ describe('normalizeOrganization', () => {
   })
 
   it('produces member-registry names where possible', () => {
-    const memberNameSet = new Set(members.map(m => m.name))
+    const memberNameSet = new Set(memberNames)
     const orgs = dataRows.map(row => normalizeOrganization(row[1]!))
     const knownNonMembers = new Set([
       'Tet Digital',
@@ -337,6 +337,7 @@ describe('convertRow', () => {
 
     expect(result.surveySlug).toBe('ai-agents-2026')
     expect(result.surveyVersion).toBe(1)
+    expect(result._id).toMatch(/^import-ai-agents-2026-[a-f0-9]{12}$/)
     expect(result.submittedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/)
     expect(result.metadata.submissionSource).toBe('google-forms-import')
     expect(result.metadata.deviceCategory).toBe('unknown')
@@ -356,7 +357,7 @@ describe('convertRow', () => {
       )
       results.push(result)
     }
-    expect(results.length).toBe(34)
+    expect(results.length).toBe(35)
   })
 
   it('every response has at least the required fields', () => {
@@ -391,8 +392,8 @@ describe('data completeness', () => {
     )
   })
 
-  it('produces exactly 34 responses', () => {
-    expect(allResults.length).toBe(34)
+  it('produces exactly 35 responses', () => {
+    expect(allResults.length).toBe(35)
   })
 
   it('every non-empty CSV cell produces a corresponding answer', () => {
@@ -492,18 +493,17 @@ describe('data completeness', () => {
     }
   })
 
-  it('has no unmapped-label warnings (all labels resolve)', () => {
-    const unmappedWarnings = allWarnings.filter(
-      w =>
-        w.message === 'Unmapped radio label' ||
-        w.message === 'Unmapped checkbox label'
+  it('has no unmapped-label errors (all labels resolve or map to other)', () => {
+    // If any label was unmapped, convertRow would have thrown during beforeAll
+    // This test verifies that the conversion completed without errors
+    expect(allResults.length).toBe(35)
+  })
+
+  it('includes Q24 email for respondents who provided one', () => {
+    const withEmail = allResults.filter(r =>
+      r.answers.some(a => a.questionId === 'q24-email')
     )
-    if (unmappedWarnings.length > 0) {
-      const details = unmappedWarnings
-        .map(w => `  Row ${w.row}, ${w.questionId}: "${w.label}"`)
-        .join('\n')
-      expect.fail(`Found unmapped labels:\n${details}`)
-    }
+    expect(withEmail.length).toBeGreaterThan(0)
   })
 
   it('every organization is normalized', () => {
@@ -520,6 +520,21 @@ describe('data completeness', () => {
     for (let col = 1; col < header.length; col++) {
       expect(mappedColumns).toContain(col)
     }
+  })
+
+  it('deterministic IDs are stable across runs', () => {
+    const warnings2: MappingWarning[] = []
+    const results2 = dataRows.map((row, i) =>
+      convertRow(aiAgents2026, row, i + 1, labelMaps, warnings2)
+    )
+    for (let i = 0; i < allResults.length; i++) {
+      expect(results2[i]!._id).toBe(allResults[i]!._id)
+    }
+  })
+
+  it('all IDs are unique', () => {
+    const ids = allResults.map(r => r._id)
+    expect(new Set(ids).size).toBe(ids.length)
   })
 })
 

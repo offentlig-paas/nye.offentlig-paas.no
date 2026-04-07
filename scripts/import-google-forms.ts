@@ -15,6 +15,7 @@ import {
   buildAllLabelMaps,
   convertRow,
   type ImportedResponse,
+  type MappingWarning,
 } from '../src/lib/surveys/import-helpers'
 
 async function main() {
@@ -33,12 +34,7 @@ async function main() {
   console.log(`CSV: ${header.length} columns, ${dataRows.length} data rows\n`)
 
   const labelMaps = buildAllLabelMaps(aiAgents2026)
-  const warnings: {
-    row: number
-    questionId: string
-    label: string
-    message: string
-  }[] = []
+  const warnings: MappingWarning[] = []
   const responses: ImportedResponse[] = []
 
   for (let i = 0; i < dataRows.length; i++) {
@@ -55,9 +51,7 @@ async function main() {
   if (warnings.length > 0) {
     console.log(`⚠️  ${warnings.length} warnings:`)
     for (const w of warnings) {
-      console.log(
-        `  Row ${w.row}, ${w.questionId}: ${w.message} — "${w.label}"`
-      )
+      console.log(`  Row ${w.row}, ${w.questionId}: ${w.message}`)
     }
     console.log()
   }
@@ -86,12 +80,29 @@ async function main() {
   const { sanityClient } = await import('../src/lib/sanity/config')
   const { prepareSanityDocument } = await import('../src/lib/sanity/utils')
 
-  let imported = 0
+  // Pre-check: abort if imported docs already exist
+  const existingCount = await sanityClient.fetch<number>(
+    `count(*[_type == "surveyResponse" && metadata.submissionSource == "google-forms-import" && surveySlug == $slug])`,
+    { slug: aiAgents2026.slug }
+  )
+  if (existingCount > 0) {
+    console.log(
+      `\n❌ Aborted: ${existingCount} imported responses already exist in Sanity.`
+    )
+    console.log(
+      '   The import uses createIfNotExists (idempotent), but this check prevents accidental re-runs.'
+    )
+    console.log('   Delete existing imports first if you need to re-import.')
+    process.exit(1)
+  }
+
+  let created = 0
   let failed = 0
 
   for (const response of responses) {
     try {
       const doc = prepareSanityDocument({
+        _id: response._id,
         _type: 'surveyResponse' as const,
         surveySlug: response.surveySlug,
         surveyVersion: response.surveyVersion,
@@ -99,16 +110,16 @@ async function main() {
         submittedAt: response.submittedAt,
         metadata: response.metadata,
       })
-      await sanityClient.create(doc)
-      imported++
-      process.stdout.write(`\r   Imported ${imported}/${responses.length}`)
+      await sanityClient.createIfNotExists(doc)
+      created++
+      process.stdout.write(`\r   Imported ${created}/${responses.length}`)
     } catch (err) {
       failed++
       console.error(`\n❌ Failed to import row: ${err}`)
     }
   }
 
-  console.log(`\n\n✅ Import complete: ${imported} imported, ${failed} failed`)
+  console.log(`\n\n✅ Import complete: ${created} created, ${failed} failed`)
 }
 
 main().catch(err => {

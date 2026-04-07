@@ -1,5 +1,7 @@
-import { members } from '@/data/members'
+import { createHash } from 'node:crypto'
+
 import { cleanOrganizationName } from '@/lib/organization-utils'
+import { memberNames } from '@/data/member-names'
 import type { SurveyResponseAnswer } from '@/domains/survey-response/types'
 import type { SurveyDefinition, SurveyQuestion } from '@/lib/surveys/types'
 
@@ -55,7 +57,6 @@ const ORG_ALIASES: Record<string, string> = {
   'meteorologisk institutt': 'MET',
 }
 
-const memberNames = members.map(m => m.name)
 const memberNamesLower = new Map(memberNames.map(n => [n.toLowerCase(), n]))
 
 export function normalizeOrganization(raw: string): string {
@@ -284,13 +285,9 @@ export function mapAnswer(
       return { questionId, value: otherOption.value, otherText: cellValue }
     }
 
-    warnings.push({
-      row: rowIndex,
-      questionId,
-      label: cellValue,
-      message: 'Unmapped radio label',
-    })
-    return { questionId, value: cellValue }
+    throw new Error(
+      `Row ${rowIndex}, ${questionId}: unmapped radio label "${cellValue}"`
+    )
   }
 
   if (question.type === 'checkbox') {
@@ -313,13 +310,9 @@ export function mapAnswer(
           }
           otherText = otherText ? `${otherText}; ${part}` : part
         } else {
-          warnings.push({
-            row: rowIndex,
-            questionId,
-            label: part,
-            message: 'Unmapped checkbox label',
-          })
-          values.push(part)
+          throw new Error(
+            `Row ${rowIndex}, ${questionId}: unmapped checkbox label "${part}"`
+          )
         }
       }
     }
@@ -337,6 +330,7 @@ export function mapAnswer(
 // ---------------------------------------------------------------------------
 
 export interface ImportedResponse {
+  _id: string
   surveySlug: string
   surveyVersion: number
   answers: SurveyResponseAnswer[]
@@ -374,7 +368,14 @@ export function convertRow(
     }
   }
 
+  const hash = createHash('sha256')
+    .update(`${survey.slug}:${submittedAt}:${fields.join(',')}`)
+    .digest('hex')
+    .slice(0, 12)
+  const _id = `import-${survey.slug}-${hash}`
+
   return {
+    _id,
     surveySlug: survey.slug,
     surveyVersion: survey.version,
     answers,
