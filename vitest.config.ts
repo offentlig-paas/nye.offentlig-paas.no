@@ -21,7 +21,7 @@ export default defineConfig({
         statements: 80,
       },
     },
-    setupFiles: [],
+    setupFiles: ['./test-setup.ts'],
   },
   resolve: {
     alias: {
