@@ -27,7 +27,9 @@ export type RegistrationStatus =
 interface RegistrationMetadata {
   source?: string
   experience?: 'beginner' | 'intermediate' | 'advanced'
-  [key: string]: unknown
+  reregisteredAt?: string
+  anonymized?: boolean
+  anonymizedAt?: string
 }
 
 // Input type for creating new registrations
