@@ -81,7 +81,7 @@ export function AdminEventDetailsClient({
         </div>
 
         {/* Stats Grid - 1/3 width */}
-        <div className="grid auto-rows-fr grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 content-start gap-4">
           <StatCard
             label="Påmeldte"
             value={eventDetails.stats.activeRegistrations}

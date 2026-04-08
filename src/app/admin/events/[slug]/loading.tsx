@@ -69,7 +69,7 @@ export default function Loading() {
         </div>
 
         {/* Stats grid skeleton */}
-        <div className="grid auto-rows-fr grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 content-start gap-4">
           <StatCardSkeleton />
           <StatCardSkeleton />
           <StatCardSkeleton />
