@@ -84,6 +84,11 @@
 
 - `requireAdmin()` - Server-side admin authentication guard (redirects if not authenticated/admin)
 
+**Survey aggregation** - `src/lib/surveys/aggregation.ts`:
+
+- `aggregateSurveyResults()` - Aggregate all responses into per-question breakdowns
+- Supports `excludeQuestionIds` option to omit sensitive questions from public output
+
 ## Key Patterns & Conventions
 
 ### Key Patterns
@@ -96,7 +101,7 @@
 
 **Talk Submissions:** Domain in `src/domains/talk-submission/` (types, repository, service). Sanity document type `talkSubmission`. Public tRPC router `talkSubmission` (submit, getUserSubmissions, withdraw). Admin sub-router `admin.talkSubmissions` (list, getCount, updateStatus, delete). Admin UI at `/admin/events/[slug]/submissions`.
 
-**Surveys (survey-as-code):** Survey definitions are TypeScript files in `src/data/surveys/`. Types in `src/lib/surveys/types.ts`. Responses stored in Sanity via `src/domains/survey-response/` (types, service, repository). Public tRPC router `survey` (submit, getResponseCount). Rendered by `src/components/SurveyForm.tsx` (multi-step wizard with consent, progress bar, client/server validation). Question components in `src/components/survey/` (TextInput, TextareaInput, RadioGroup, CheckboxGroup, TypeaheadInput, Markdown).
+**Surveys (survey-as-code):** Survey definitions are TypeScript files in `src/data/surveys/`. Types in `src/lib/surveys/types.ts`. Responses stored in Sanity via `src/domains/survey-response/` (types, service, repository). Sensitive answers (e.g., email) stored separately in `surveyContactInfo` Sanity documents. Public tRPC router `survey` (submit, getResponseCount, getAggregatedResults). Admin tRPC router `admin.surveys` (list, getOverview, getOrganizations, getResponses, exportCsv). Rendered by `src/components/SurveyForm.tsx` (multi-step wizard with consent, progress bar, client/server validation). Question components in `src/components/survey/` (TextInput, TextareaInput, RadioGroup, CheckboxGroup, TypeaheadInput, Markdown).
 
 Key survey features:
 
@@ -111,6 +116,17 @@ Key survey features:
 - Draft persistence via `sessionStorage` (`useDraftPersistence` hook — survives page reloads, cleared on submit/tab close)
 - WCAG 2.2 AA accessibility: fieldset/legend, aria-required/invalid/describedby, role="progressbar", aria-live announcements, focus management
 - Honeypot anti-spam + server-side rate limiting
+- PII separation: `sensitiveQuestionIds` splits answers into a separate `surveyContactInfo` document
+- Results engine: `resultsConfig` controls public results (published flag, `minResponses` for k-anonymity)
+- Aggregation engine in `src/lib/surveys/aggregation.ts` with per-question breakdown
+- Chart components: `HorizontalBarChart` and `DivergingBarChart` (Recharts-based)
+
+Admin dashboard (`/admin/forskning/[slug]/`):
+
+- **Oversikt** — stat cards, daily response chart, device breakdown, duration stats
+- **Organisasjoner** — sector breakdown with member response tracking, non-member indicators
+- **Resultater** — full aggregated results with chart visualizations
+- **Besvarelser** — individual response viewer with human-readable labels, section grouping
 
 **Survey utilities** - `src/lib/surveys/helpers.ts`:
 
@@ -160,6 +176,7 @@ Keep component hierarchy flat and maintainable.
 - `protectedProcedure` - Requires authenticated user
 - `adminProcedure` - Requires admin role
 - `adminEventProcedure` - Requires admin + event access
+- `adminSurveyProcedure` - Requires admin + survey access (via `createSurveyAccessMiddleware`)
 
 **REST endpoints preserved**:
 
