@@ -70,20 +70,19 @@ export const adminRouter = router({
         })
       )
       .mutation(async ({ input, ctx }) => {
-        const registration =
-          await eventRegistrationService.registerManually(
-            {
-              eventSlug: input.slug,
-              name: input.name,
-              email: input.email,
-              organisation: input.organisation,
-              attendanceType: input.attendanceType as AttendanceType,
-              attendingSocialEvent: input.attendingSocialEvent,
-              dietary: input.dietary,
-              comments: input.comments,
-            },
-            { maxCapacity: ctx.event.maxCapacity }
-          )
+        const registration = await eventRegistrationService.registerManually(
+          {
+            eventSlug: input.slug,
+            name: input.name,
+            email: input.email,
+            organisation: input.organisation,
+            attendanceType: input.attendanceType as AttendanceType,
+            attendingSocialEvent: input.attendingSocialEvent,
+            dietary: input.dietary,
+            comments: input.comments,
+          },
+          { maxCapacity: ctx.event.maxCapacity }
+        )
 
         return {
           registration,

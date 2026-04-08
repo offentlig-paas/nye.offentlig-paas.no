@@ -106,17 +106,17 @@ Vi gleder oss til å se deg der! 🎉`
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-gray-800">
+              <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-zinc-800">
                 <div className="flex items-start justify-between">
                   <Dialog.Title
                     as="h3"
-                    className="text-lg leading-6 font-semibold text-gray-900 dark:text-white"
+                    className="text-lg leading-6 font-semibold text-zinc-900 dark:text-white"
                   >
                     Send påminnelse til deltakere
                   </Dialog.Title>
                   <button
                     type="button"
-                    className="rounded-md text-gray-400 hover:text-gray-500 focus:outline-none dark:hover:text-gray-300"
+                    className="rounded-md text-zinc-400 hover:text-zinc-500 focus:outline-none dark:hover:text-zinc-300"
                     onClick={handleClose}
                     disabled={isSending}
                   >
@@ -188,7 +188,7 @@ Vi gleder oss til å se deg der! 🎉`
                     />
                     <label
                       htmlFor="testMode"
-                      className="ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                      className="ml-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
                     >
                       Testmodus (send kun til meg)
                     </label>
@@ -198,7 +198,7 @@ Vi gleder oss til å se deg der! 🎉`
                     <div>
                       <label
                         htmlFor="statusFilter"
-                        className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                        className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
                       >
                         Filtrer etter status
                       </label>
@@ -226,7 +226,7 @@ Vi gleder oss til å se deg der! 🎉`
                   <div>
                     <label
                       htmlFor="message"
-                      className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                      className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
                     >
                       Melding
                     </label>
@@ -240,12 +240,12 @@ Vi gleder oss til å se deg der! 🎉`
                       className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-zinc-900 outline-1 -outline-offset-1 outline-zinc-300 placeholder:text-zinc-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 disabled:opacity-50 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-zinc-500"
                     />
                     <div className="mt-2 space-y-1">
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                      <p className="text-xs text-zinc-500 dark:text-zinc-400">
                         Skriv en vennlig påminnelse til deltakerne. Meldingen
                         vil sendes som en formatert melding på Slack med
                         arrangement-detaljer.
                       </p>
-                      <p className="text-xs text-gray-600 dark:text-gray-300">
+                      <p className="text-xs text-zinc-600 dark:text-zinc-300">
                         <span className="font-medium">
                           Inkludert automatisk:
                         </span>{' '}
@@ -272,7 +272,7 @@ Vi gleder oss til å se deg der! 🎉`
                     type="button"
                     onClick={handleClose}
                     disabled={isSending}
-                    className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                    className="rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600"
                   >
                     Avbryt
                   </button>

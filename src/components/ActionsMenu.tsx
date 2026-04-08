@@ -46,7 +46,7 @@ const statusOptions: {
     value: 'no-show',
     label: 'Merk som ikke møtt',
     icon: UserMinusIcon,
-    color: 'text-gray-600 dark:text-gray-400',
+    color: 'text-zinc-600 dark:text-zinc-400',
   },
   {
     value: 'cancelled',
@@ -68,11 +68,11 @@ export function ActionsMenu({
     <Menu as="div" className="relative inline-block text-left">
       <MenuButton
         disabled={disabled || isDeleting || isUpdating}
-        className="inline-flex items-center rounded-full p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-gray-700 dark:hover:text-gray-300"
+        className="inline-flex items-center rounded-full p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-zinc-700 dark:hover:text-zinc-300"
       >
         <span className="sr-only">Åpne handlingsmeny</span>
         {isDeleting || isUpdating ? (
-          <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-gray-600 dark:border-gray-400"></div>
+          <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-zinc-600 dark:border-zinc-400"></div>
         ) : (
           <EllipsisVerticalIcon className="h-4 w-4" aria-hidden="true" />
         )}
@@ -81,11 +81,11 @@ export function ActionsMenu({
       <MenuItems
         transition
         anchor="bottom end"
-        className="ring-opacity-5 z-50 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black transition focus:outline-none data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:bg-gray-700"
+        className="ring-opacity-5 z-50 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black transition focus:outline-none data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:bg-zinc-700"
       >
         <div className="py-1">
           {/* Status change options */}
-          <div className="border-b border-gray-200 px-3 py-2 text-xs font-semibold tracking-wide text-gray-500 uppercase dark:border-gray-600 dark:text-gray-400">
+          <div className="border-b border-zinc-200 px-3 py-2 text-xs font-semibold tracking-wide text-zinc-500 uppercase dark:border-zinc-600 dark:text-zinc-400">
             Endre status
           </div>
           {statusOptions.map(option => (
@@ -94,7 +94,7 @@ export function ActionsMenu({
                 type="button"
                 onClick={() => onStatusChange(option.value)}
                 disabled={currentStatus === option.value || isUpdating}
-                className={`group flex w-full items-center px-4 py-2 text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 data-focus:bg-gray-100 data-focus:text-gray-900 dark:text-gray-200 dark:data-focus:bg-gray-600 dark:data-focus:text-white ${
+                className={`group flex w-full items-center px-4 py-2 text-sm text-zinc-700 disabled:cursor-not-allowed disabled:opacity-50 data-focus:bg-zinc-100 data-focus:text-zinc-900 dark:text-zinc-200 dark:data-focus:bg-zinc-600 dark:data-focus:text-white ${
                   currentStatus === option.value
                     ? 'bg-blue-50 dark:bg-blue-900/20'
                     : ''
@@ -116,7 +116,7 @@ export function ActionsMenu({
           ))}
 
           {/* Separator */}
-          <div className="my-1 border-t border-gray-200 dark:border-gray-600" />
+          <div className="my-1 border-t border-zinc-200 dark:border-zinc-600" />
 
           {/* Destructive actions */}
           <MenuItem>

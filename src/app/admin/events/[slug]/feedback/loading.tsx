@@ -1,4 +1,4 @@
-const shimmer = 'animate-pulse rounded bg-gray-200 dark:bg-gray-700' as const
+const shimmer = 'animate-pulse rounded bg-zinc-200 dark:bg-zinc-700' as const
 
 export default function Loading() {
   return (
@@ -8,21 +8,25 @@ export default function Loading() {
         {[...Array(4)].map((_, i) => (
           <div
             key={i}
-            className="flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800"
+            className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-700 dark:bg-zinc-800"
           >
-            <div className={`mb-2 h-9 w-9 rounded-lg ${shimmer}`} />
-            <div className={`h-8 w-10 ${shimmer}`} />
-            <div className={`mt-1 h-3 w-16 ${shimmer}`} />
+            <div className="flex items-start gap-3">
+              <div className={`h-10 w-10 shrink-0 rounded-lg ${shimmer}`} />
+              <div className="min-w-0">
+                <div className={`h-7 w-10 ${shimmer}`} />
+                <div className={`mt-1 h-3 w-16 ${shimmer}`} />
+              </div>
+            </div>
           </div>
         ))}
       </div>
 
       {/* Feedback list */}
-      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+      <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
         {[...Array(5)].map((_, i) => (
           <div
             key={i}
-            className="border-b border-gray-100 p-4 dark:border-gray-700/50"
+            className="border-b border-zinc-100 p-4 dark:border-zinc-700/50"
           >
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 space-y-2">

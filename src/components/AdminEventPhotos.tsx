@@ -341,7 +341,7 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
   if (isLoading) {
     return (
       <div className="flex justify-center py-8">
-        <div className="text-gray-500 dark:text-gray-400">Laster bilder...</div>
+        <div className="text-zinc-500 dark:text-zinc-400">Laster bilder...</div>
       </div>
     )
   }
@@ -350,27 +350,27 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
     <div className="space-y-4">
       {photos.length === 0 ? (
         <>
-          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+          <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
             <div className="mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+              <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
                 Last opp bilder
               </h3>
             </div>
 
             <div
-              className={`space-y-4 rounded-lg border-2 border-dashed p-8 transition-colors ${
+              className={`space-y-4 rounded-xl border-2 border-dashed p-8 transition-colors ${
                 isDragging
                   ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20'
-                  : 'border-gray-300 dark:border-gray-600'
+                  : 'border-zinc-300 dark:border-zinc-600'
               }`}
               onDrop={handleUploadDrop}
               onDragOver={handleUploadDragOver}
               onDragLeave={handleUploadDragLeave}
             >
               <div className="flex flex-col items-center justify-center gap-4">
-                <ArrowUpTrayIcon className="h-12 w-12 text-gray-400 dark:text-gray-500" />
+                <ArrowUpTrayIcon className="h-12 w-12 text-zinc-400 dark:text-zinc-500" />
                 <div className="text-center">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  <p className="text-sm font-medium text-zinc-900 dark:text-white">
                     Dra og slipp bilder her, eller
                   </p>
                   <input
@@ -389,24 +389,24 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
                     velg filer fra datamaskinen din
                   </label>
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">
                   Maks 10MB per fil. Støttede formater: JPG, PNG, GIF, WebP
                 </p>
               </div>
 
               {uploadProgress && (
-                <div className="mt-4 rounded-lg bg-gray-50 p-4 dark:bg-gray-900/50">
+                <div className="mt-4 rounded-xl bg-zinc-50 p-4 dark:bg-zinc-900/50">
                   {uploadProgress.uploading ? (
                     <div className="space-y-2">
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      <p className="text-sm font-medium text-zinc-900 dark:text-white">
                         Laster opp {uploadProgress.total} bilder...
                       </p>
-                      <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+                      <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
                         <div className="h-full animate-pulse bg-blue-600" />
                       </div>
                     </div>
                   ) : (
-                    <p className="text-sm text-gray-900 dark:text-white">
+                    <p className="text-sm text-zinc-900 dark:text-white">
                       ✓ Lastet opp {uploadProgress.completed} av{' '}
                       {uploadProgress.total} bilder
                       {uploadProgress.failed > 0 &&
@@ -424,8 +424,8 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
             </div>
           </div>
 
-          <div className="rounded-lg border border-gray-200 bg-white p-8 text-center shadow-sm dark:border-gray-700 dark:bg-gray-800">
-            <p className="text-gray-500 dark:text-gray-400">
+          <div className="rounded-xl border border-zinc-200 bg-white p-8 text-center shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
+            <p className="text-zinc-500 dark:text-zinc-400">
               Ingen bilder lastet opp ennå
             </p>
           </div>
@@ -433,7 +433,7 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
       ) : (
         <>
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
               Bilder
             </h3>
             <Button
@@ -458,19 +458,19 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {/* Upload box as first item in grid */}
             <div
-              className={`overflow-hidden rounded-lg border-2 border-dashed shadow-sm transition-colors ${
+              className={`overflow-hidden rounded-xl border-2 border-dashed shadow-sm transition-colors ${
                 isDragging
                   ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20'
-                  : 'border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-800'
+                  : 'border-zinc-300 bg-white dark:border-zinc-600 dark:bg-zinc-800'
               }`}
               onDrop={handleUploadDrop}
               onDragOver={handleUploadDragOver}
               onDragLeave={handleUploadDragLeave}
             >
               <div className="relative flex aspect-[4/3] flex-col items-center justify-center gap-3 p-6">
-                <ArrowUpTrayIcon className="h-10 w-10 text-gray-400 dark:text-gray-500" />
+                <ArrowUpTrayIcon className="h-10 w-10 text-zinc-400 dark:text-zinc-500" />
                 <div className="text-center">
-                  <p className="mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                  <p className="mb-1 text-sm font-medium text-zinc-900 dark:text-white">
                     Dra og slipp bilder her, eller
                   </p>
                   <input
@@ -489,24 +489,24 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
                     velg filer fra datamaskinen din
                   </label>
                 </div>
-                <p className="text-center text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-center text-xs text-zinc-500 dark:text-zinc-400">
                   Maks 10MB per fil
                 </p>
               </div>
 
               {uploadProgress && (
-                <div className="border-t border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900/50">
+                <div className="border-t border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-700 dark:bg-zinc-900/50">
                   {uploadProgress.uploading ? (
                     <div className="space-y-2">
-                      <p className="text-xs font-medium text-gray-900 dark:text-white">
+                      <p className="text-xs font-medium text-zinc-900 dark:text-white">
                         Laster opp {uploadProgress.total}...
                       </p>
-                      <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+                      <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
                         <div className="h-full animate-pulse bg-blue-600" />
                       </div>
                     </div>
                   ) : (
-                    <p className="text-xs text-gray-900 dark:text-white">
+                    <p className="text-xs text-zinc-900 dark:text-white">
                       ✓ Lastet opp {uploadProgress.completed}
                       {uploadProgress.failed > 0 &&
                         ` (${uploadProgress.failed} feilet)`}
@@ -516,7 +516,7 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
               )}
 
               {uploadError && (
-                <div className="border-t border-gray-200 bg-red-50 p-3 dark:border-gray-700 dark:bg-red-900/20">
+                <div className="border-t border-zinc-200 bg-red-50 p-3 dark:border-zinc-700 dark:bg-red-900/20">
                   <p className="text-xs text-red-600 dark:text-red-400">
                     {uploadError}
                   </p>
@@ -534,16 +534,16 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
                 onDragLeave={handlePhotoDragLeave}
                 onDrop={e => handlePhotoDrop(e, index)}
                 onDragEnd={handlePhotoDragEnd}
-                className={`group overflow-hidden rounded-lg border shadow-sm transition-all ${
+                className={`group overflow-hidden rounded-xl border shadow-sm transition-all ${
                   reorderMode ? 'cursor-move hover:shadow-lg' : ''
                 } ${draggedIndex === index ? 'opacity-50' : ''} ${
                   dragOverIndex === index && draggedIndex !== index
                     ? 'border-2 border-blue-500 dark:border-blue-400'
-                    : 'border-gray-200 dark:border-gray-700'
+                    : 'border-zinc-200 dark:border-zinc-700'
                 } ${
                   reorderMode
-                    ? 'bg-white dark:bg-gray-800'
-                    : 'bg-white dark:bg-gray-800'
+                    ? 'bg-white dark:bg-zinc-800'
+                    : 'bg-white dark:bg-zinc-800'
                 }`}
               >
                 <div className="relative aspect-[4/3]">
@@ -593,13 +593,13 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
                             {photo.speakers.slice(0, 2).map(speaker => (
                               <span
                                 key={speaker}
-                                className="rounded-full bg-white/90 px-2 py-0.5 text-xs font-medium text-gray-900 shadow-lg backdrop-blur-sm"
+                                className="rounded-full bg-white/90 px-2 py-0.5 text-xs font-medium text-zinc-900 shadow-lg backdrop-blur-sm"
                               >
                                 {speaker}
                               </span>
                             ))}
                             {photo.speakers.length > 2 && (
-                              <span className="rounded-full bg-white/90 px-2 py-0.5 text-xs font-medium text-gray-900 shadow-lg backdrop-blur-sm">
+                              <span className="rounded-full bg-white/90 px-2 py-0.5 text-xs font-medium text-zinc-900 shadow-lg backdrop-blur-sm">
                                 +{photo.speakers.length - 2}
                               </span>
                             )}
@@ -621,7 +621,7 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
                         </button>
                         <button
                           onClick={() => handleEdit(photo)}
-                          className="rounded-full bg-gray-500/70 p-2 text-white shadow-md backdrop-blur-sm transition-all hover:scale-110 hover:bg-gray-600/90"
+                          className="rounded-full bg-zinc-500/70 p-2 text-white shadow-md backdrop-blur-sm transition-all hover:scale-110 hover:bg-zinc-600/90"
                           title="Rediger"
                         >
                           <PencilIcon className="h-4 w-4" />
@@ -643,7 +643,7 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
           </div>
 
           {/* Info box at bottom when photos exist */}
-          <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
+          <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
             <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-blue-900 dark:text-blue-100">
               <PhotoIcon className="h-5 w-5" />
               Bildebruk
@@ -678,15 +678,15 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
       >
         <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
         <div className="fixed inset-0 flex items-center justify-center p-4">
-          <Dialog.Panel className="mx-auto w-full max-w-2xl rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800">
-            <Dialog.Title className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+          <Dialog.Panel className="mx-auto w-full max-w-2xl rounded-xl bg-white p-6 shadow-xl dark:bg-zinc-800">
+            <Dialog.Title className="mb-4 text-lg font-semibold text-zinc-900 dark:text-white">
               Rediger bilde
             </Dialog.Title>
 
             {editingPhoto && (
               <div className="space-y-4">
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
                     Bildetekst
                   </label>
                   <input
@@ -704,12 +704,12 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
                     Tagg foredragsholdere
                   </label>
 
                   <div className="relative mb-2">
-                    <MagnifyingGlassIcon className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                    <MagnifyingGlassIcon className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-zinc-400" />
                     <input
                       type="text"
                       value={speakerSearch}
@@ -738,16 +738,16 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
                     filteredSpeakers.filter(
                       s => !editingPhoto.speakers.includes(s)
                     ).length > 0 && (
-                      <div className="max-h-40 overflow-y-auto rounded-md border border-gray-200 bg-white dark:border-gray-600 dark:bg-gray-800">
+                      <div className="max-h-40 overflow-y-auto rounded-md border border-zinc-200 bg-white dark:border-zinc-600 dark:bg-zinc-800">
                         {filteredSpeakers
                           .filter(s => !editingPhoto.speakers.includes(s))
                           .map(speaker => (
                             <button
                               key={speaker}
                               onClick={() => toggleSpeaker(speaker)}
-                              className="flex w-full items-center px-3 py-2 text-left text-sm transition-colors hover:bg-gray-50 dark:hover:bg-gray-700"
+                              className="flex w-full items-center px-3 py-2 text-left text-sm transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-700"
                             >
-                              <span className="font-medium text-gray-900 dark:text-white">
+                              <span className="font-medium text-zinc-900 dark:text-white">
                                 {speaker}
                               </span>
                             </button>
@@ -759,7 +759,7 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
                     filteredSpeakers.filter(
                       s => !editingPhoto.speakers.includes(s)
                     ).length === 0 && (
-                      <p className="py-2 text-center text-sm text-gray-500 dark:text-gray-400">
+                      <p className="py-2 text-center text-sm text-zinc-500 dark:text-zinc-400">
                         Ingen treff
                       </p>
                     )}
@@ -778,11 +778,11 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
                       }
                       className="size-4 rounded-sm border border-zinc-300 bg-white checked:border-blue-600 checked:bg-blue-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:border-white/10 dark:bg-white/5 dark:checked:border-blue-500 dark:checked:bg-blue-500 forced-colors:appearance-auto"
                     />
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                       Bruk som cover-bilde
                     </span>
                   </label>
-                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
                     Cover-bildet vises i arrangementslistingen
                   </p>
                 </div>

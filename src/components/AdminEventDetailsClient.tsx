@@ -9,7 +9,7 @@ import { AdminSlackChannelManager } from '@/components/AdminSlackChannelManager'
 import { ParticipantInfoEditor } from '@/components/ParticipantInfoEditor'
 import { AdminEventChecklist } from '@/components/AdminEventChecklist'
 import { AdminEventActions } from '@/components/AdminEventActions'
-import { AdminEventStatCard } from '@/components/AdminEventStatCard'
+import { StatCard } from '@/components/StatCard'
 import { Avatar } from '@/components/Avatar'
 import { AddToSlackChannelButton } from '@/components/AddToSlackChannelButton'
 import { formatDateTime } from '@/lib/formatDate'
@@ -82,47 +82,41 @@ export function AdminEventDetailsClient({
 
         {/* Stats Grid - 1/3 width */}
         <div className="grid auto-rows-fr grid-cols-2 gap-4">
-          <AdminEventStatCard
+          <StatCard
             label="Påmeldte"
             value={eventDetails.stats.activeRegistrations}
             icon={UsersIcon}
-            color="blue"
           />
-          <AdminEventStatCard
+          <StatCard
             label="Organisasjoner"
             value={eventDetails.stats.uniqueOrganisations}
             icon={BuildingOfficeIcon}
-            color="purple"
           />
-          <AdminEventStatCard
+          <StatCard
             label="Foredrag"
             value={talksCount}
             icon={PresentationChartLineIcon}
-            color="green"
           />
           {isPostEvent && eventDetails.stats.feedbackSummary ? (
-            <AdminEventStatCard
+            <StatCard
               label={`${eventDetails.stats.feedbackSummary.totalResponses} svar`}
               value={eventDetails.stats.feedbackSummary.averageEventRating.toFixed(
                 1
               )}
               icon={StarIcon}
-              color="yellow"
             />
           ) : (
-            <AdminEventStatCard
+            <StatCard
               label="Foredragsholdere"
               value={speakers.length}
               icon={UserGroupIcon}
-              color="purple"
             />
           )}
           {isPostEvent && (
-            <AdminEventStatCard
+            <StatCard
               label="Sosialt"
               value={socialCount}
               icon={UserGroupIcon}
-              color="orange"
             />
           )}
         </div>
@@ -144,25 +138,25 @@ export function AdminEventDetailsClient({
       {/* Management Section - Masonry layout */}
       <div className="columns-1 gap-4 space-y-4 md:columns-2 lg:columns-3">
         {/* Basic Event Info */}
-        <div className="break-inside-avoid rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-          <h3 className="mb-3 text-base font-semibold text-gray-900 dark:text-white">
+        <div className="break-inside-avoid rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
+          <h3 className="mb-3 text-base font-semibold text-zinc-900 dark:text-white">
             Arrangement
           </h3>
           <div className="space-y-2">
             <div>
-              <dt className="text-xs text-gray-500 dark:text-gray-400">Tid</dt>
-              <dd className="text-sm text-gray-900 dark:text-white">
+              <dt className="text-xs text-zinc-500 dark:text-zinc-400">Tid</dt>
+              <dd className="text-sm text-zinc-900 dark:text-white">
                 {formatDateTime(eventDetails.startTime)}
               </dd>
             </div>
             <div>
-              <dt className="text-xs text-gray-500 dark:text-gray-400">Sted</dt>
-              <dd className="text-sm text-gray-900 dark:text-white">
+              <dt className="text-xs text-zinc-500 dark:text-zinc-400">Sted</dt>
+              <dd className="text-sm text-zinc-900 dark:text-white">
                 {eventDetails.location}
               </dd>
             </div>
             <div>
-              <dt className="text-xs text-gray-500 dark:text-gray-400">
+              <dt className="text-xs text-zinc-500 dark:text-zinc-400">
                 Påmelding
               </dt>
               <dd className="flex flex-wrap gap-1">
@@ -182,9 +176,9 @@ export function AdminEventDetailsClient({
 
         {/* Organizers */}
         {eventDetails.organizers.length > 0 && (
-          <div className="break-inside-avoid rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+          <div className="break-inside-avoid rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
             <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-base font-semibold text-gray-900 dark:text-white">
+              <h3 className="text-base font-semibold text-zinc-900 dark:text-white">
                 Arrangører
               </h3>
               {eventDetails.slackChannel && (
@@ -218,7 +212,7 @@ export function AdminEventDetailsClient({
                         {organizer.name}
                       </a>
                     ) : (
-                      <span className="font-medium text-gray-900 dark:text-white">
+                      <span className="font-medium text-zinc-900 dark:text-white">
                         {organizer.name}
                       </span>
                     )}
@@ -230,9 +224,9 @@ export function AdminEventDetailsClient({
         )}
 
         {/* Speakers */}
-        <div className="break-inside-avoid rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+        <div className="break-inside-avoid rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
           <div className="mb-3 flex items-center justify-between">
-            <h3 className="text-base font-semibold text-gray-900 dark:text-white">
+            <h3 className="text-base font-semibold text-zinc-900 dark:text-white">
               Foredragsholdere
             </h3>
             {eventDetails.slackChannel &&
@@ -273,8 +267,8 @@ export function AdminEventDetailsClient({
                 ))}
             </div>
           ) : (
-            <div className="rounded-lg bg-gray-50 p-3 dark:bg-gray-900/50">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+            <div className="rounded-xl bg-zinc-50 p-3 dark:bg-zinc-900/50">
+              <p className="text-sm text-zinc-600 dark:text-zinc-400">
                 Ingen foredragsholdere lagt til ennå. Gå til{' '}
                 <Link
                   href={`/admin/events/${slug}/agenda`}

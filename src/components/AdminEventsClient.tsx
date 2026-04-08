@@ -14,7 +14,7 @@ import {
   ArchiveBoxIcon,
   ChatBubbleLeftIcon,
 } from '@heroicons/react/24/outline'
-import { AdminEventStatCard } from '@/components/AdminEventStatCard'
+import { StatCard } from '@/components/StatCard'
 import type { inferRouterOutputs } from '@trpc/server'
 import type { AppRouter } from '@/server/root'
 
@@ -55,35 +55,32 @@ export function AdminEventsClient({ eventsData }: AdminEventsClientProps) {
     <>
       {/* Overall Stats */}
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <AdminEventStatCard
+        <StatCard
           label="Totalt fagdager"
           value={eventsData.totalStats.totalEvents}
           icon={CalendarIcon}
-          color="blue"
         />
-        <AdminEventStatCard
+        <StatCard
           label="Totalt påmeldinger"
           value={eventsData.totalStats.totalRegistrations}
           icon={UsersIcon}
-          color="green"
         />
-        <AdminEventStatCard
+        <StatCard
           label="Unike organisasjoner"
           value={eventsData.totalStats.uniqueOrganisations}
           icon={BuildingOfficeIcon}
-          color="purple"
         />
       </div>
 
       {/* View Toggle */}
       <div className="mb-4 flex items-center justify-between">
-        <div className="inline-flex rounded-lg border border-gray-200 bg-white p-1 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+        <div className="inline-flex rounded-xl border border-zinc-200 bg-white p-1 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
           <button
             onClick={() => setView('upcoming')}
             className={`inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
               view === 'upcoming'
                 ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700'
+                : 'text-zinc-700 hover:bg-zinc-50 dark:text-zinc-300 dark:hover:bg-zinc-700'
             }`}
           >
             <SparklesIcon className="h-4 w-4" />
@@ -94,7 +91,7 @@ export function AdminEventsClient({ eventsData }: AdminEventsClientProps) {
             className={`inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
               view === 'past'
                 ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700'
+                : 'text-zinc-700 hover:bg-zinc-50 dark:text-zinc-300 dark:hover:bg-zinc-700'
             }`}
           >
             <ArchiveBoxIcon className="h-4 w-4" />
@@ -102,21 +99,21 @@ export function AdminEventsClient({ eventsData }: AdminEventsClientProps) {
           </button>
         </div>
 
-        <div className="text-sm text-gray-600 dark:text-gray-400">
+        <div className="text-sm text-zinc-600 dark:text-zinc-400">
           {displayedEvents.length} fagdager
         </div>
       </div>
 
       {/* Events Grid */}
       {displayedEvents.length === 0 ? (
-        <div className="rounded-lg border border-gray-200 bg-white py-12 text-center shadow-sm dark:border-gray-700 dark:bg-gray-800">
-          <CalendarIcon className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
-          <h3 className="mt-2 text-sm font-semibold text-gray-900 dark:text-white">
+        <div className="rounded-xl border border-zinc-200 bg-white py-12 text-center shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
+          <CalendarIcon className="mx-auto h-12 w-12 text-zinc-400 dark:text-zinc-500" />
+          <h3 className="mt-2 text-sm font-semibold text-zinc-900 dark:text-white">
             {view === 'upcoming'
               ? 'Ingen kommende fagdager'
               : 'Ingen tidligere fagdager'}
           </h3>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
             {view === 'upcoming'
               ? 'Det er ingen planlagte fagdager.'
               : 'Det er ingen avholdte fagdager.'}
@@ -128,28 +125,28 @@ export function AdminEventsClient({ eventsData }: AdminEventsClientProps) {
             <Link
               key={event.slug}
               href={`/admin/events/${event.slug}`}
-              className="block overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all hover:border-blue-500 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:border-blue-500"
+              className="block overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm transition-all hover:border-blue-500 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-blue-500"
             >
               <div className="p-4">
                 {/* Header */}
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start gap-3">
-                      <div className="mt-1 rounded-lg bg-blue-100 p-2 dark:bg-blue-900/30">
-                        <CalendarIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                      <div className="mt-1 rounded-xl bg-teal-50 p-2 dark:bg-teal-900/30">
+                        <CalendarIcon className="h-6 w-6 text-teal-600 dark:text-teal-400" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                        <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
                           {event.title}
                         </h3>
-                        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-600 dark:text-gray-400">
+                        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-zinc-600 dark:text-zinc-400">
                           <div className="flex items-center gap-1.5">
                             <ClockIcon className="h-4 w-4" />
                             <span>{event.date}</span>
                           </div>
                           {event.location && (
                             <>
-                              <span className="text-gray-300 dark:text-gray-600">
+                              <span className="text-zinc-300 dark:text-zinc-600">
                                 •
                               </span>
                               <span>{event.location}</span>
@@ -168,7 +165,7 @@ export function AdminEventsClient({ eventsData }: AdminEventsClientProps) {
                         Kommende
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-800 dark:bg-zinc-700 dark:text-zinc-300">
                         <ArchiveBoxIcon className="h-3.5 w-3.5" />
                         Avholdt
                       </span>
@@ -185,25 +182,21 @@ export function AdminEventsClient({ eventsData }: AdminEventsClientProps) {
                         icon={UsersIcon}
                         label="Påmeldte"
                         value={event.totalRegistrations}
-                        color="blue"
                       />
                       <MetricCard
                         icon={BuildingOfficeIcon}
                         label="Organisasjoner"
                         value={event.uniqueOrganisations}
-                        color="purple"
                       />
                       <MetricCard
                         icon={ChatBubbleLeftIcon}
                         label="Programpunkter"
                         value={event.scheduleItemCount || 0}
-                        color="green"
                       />
                       <MetricCard
                         icon={UsersIcon}
                         label="Arrangører"
                         value={event.organizerCount}
-                        color="orange"
                       />
                     </>
                   )}
@@ -219,7 +212,6 @@ export function AdminEventsClient({ eventsData }: AdminEventsClientProps) {
                         value={
                           event.statsParticipants || event.totalRegistrations
                         }
-                        color="blue"
                       />
                       <MetricCard
                         icon={BuildingOfficeIcon}
@@ -227,14 +219,12 @@ export function AdminEventsClient({ eventsData }: AdminEventsClientProps) {
                         value={
                           event.statsOrganisations || event.uniqueOrganisations
                         }
-                        color="purple"
                       />
                       {event.feedbackRating ? (
                         <MetricCard
                           icon={StarIcon}
                           label="Vurdering"
                           value={`${event.feedbackRating.toFixed(1)}/5`}
-                          color="yellow"
                           subtitle={`${event.feedbackRespondents} svar`}
                         />
                       ) : (
@@ -242,7 +232,6 @@ export function AdminEventsClient({ eventsData }: AdminEventsClientProps) {
                           icon={StarIcon}
                           label="Tilbakemelding"
                           value="-"
-                          color="gray"
                         />
                       )}
                       {event.hasRecording ? (
@@ -250,14 +239,12 @@ export function AdminEventsClient({ eventsData }: AdminEventsClientProps) {
                           icon={VideoCameraIcon}
                           label="Opptak"
                           value="✓"
-                          color="green"
                         />
                       ) : (
                         <MetricCard
                           icon={ChatBubbleLeftIcon}
                           label="Program"
                           value={event.scheduleItemCount || 0}
-                          color="orange"
                         />
                       )}
                     </>
@@ -301,57 +288,24 @@ interface MetricCardProps {
   icon: React.ComponentType<{ className?: string }>
   label: string
   value: string | number
-  color: 'blue' | 'green' | 'orange' | 'yellow' | 'purple' | 'red' | 'gray'
   subtitle?: string
 }
 
-function MetricCard({
-  icon: Icon,
-  label,
-  value,
-  color,
-  subtitle,
-}: MetricCardProps) {
-  const colorClasses = {
-    blue: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20',
-    green:
-      'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20',
-    orange:
-      'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20',
-    yellow:
-      'text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20',
-    purple:
-      'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20',
-    red: 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20',
-    gray: 'text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/20',
-  }
-
-  const textColorClasses = {
-    blue: 'text-blue-600 dark:text-blue-400',
-    green: 'text-green-600 dark:text-green-400',
-    orange: 'text-orange-600 dark:text-orange-400',
-    yellow: 'text-yellow-600 dark:text-yellow-400',
-    purple: 'text-purple-600 dark:text-purple-400',
-    red: 'text-red-600 dark:text-red-400',
-    gray: 'text-gray-600 dark:text-gray-400',
-  }
-
+function MetricCard({ icon: Icon, label, value, subtitle }: MetricCardProps) {
   return (
-    <div
-      className={`rounded-lg border border-gray-200 p-2 dark:border-gray-700 ${colorClasses[color]}`}
-    >
+    <div className="rounded-xl border border-zinc-200 bg-teal-50 p-2 dark:border-zinc-700 dark:bg-teal-900/20">
       <div className="flex items-center justify-between">
-        <Icon className={`h-4 w-4 ${textColorClasses[color]}`} />
+        <Icon className="h-4 w-4 text-teal-600 dark:text-teal-400" />
       </div>
       <div className="mt-1.5">
-        <div className={`text-lg font-bold ${textColorClasses[color]}`}>
+        <div className="text-lg font-bold text-teal-600 dark:text-teal-400">
           {value}
         </div>
-        <div className="text-xs font-medium text-gray-600 dark:text-gray-400">
+        <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
           {label}
         </div>
         {subtitle && (
-          <div className="text-xs text-gray-500 dark:text-gray-500">
+          <div className="text-xs text-zinc-500 dark:text-zinc-500">
             {subtitle}
           </div>
         )}

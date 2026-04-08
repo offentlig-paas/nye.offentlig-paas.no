@@ -15,7 +15,7 @@ type SurveyListItem =
 const statusLabels: Record<string, { label: string; className: string }> = {
   draft: {
     label: 'Utkast',
-    className: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
+    className: 'bg-zinc-100 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300',
   },
   open: {
     label: 'Åpen',

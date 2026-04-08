@@ -27,7 +27,7 @@ export function AdminRegistrationFilters({
       <div className="relative flex-1 sm:min-w-[240px] lg:max-w-md">
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
           <MagnifyingGlassIcon
-            className="h-5 w-5 text-gray-400 dark:text-gray-500"
+            className="h-5 w-5 text-zinc-400 dark:text-zinc-500"
             aria-hidden="true"
           />
         </div>

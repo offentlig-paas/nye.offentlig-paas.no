@@ -36,13 +36,13 @@ export function StatusBadge({ status, className = '' }: StatusBadgeProps) {
         return {
           label: 'Ikke møtt',
           classes:
-            'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
+            'bg-zinc-100 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-300',
         }
       default:
         return {
           label: status,
           classes:
-            'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
+            'bg-zinc-100 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-300',
         }
     }
   }
@@ -51,7 +51,7 @@ export function StatusBadge({ status, className = '' }: StatusBadgeProps) {
 
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-gray-500/10 ring-inset ${config.classes} ${className}`}
+      className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-zinc-500/10 ring-inset ${config.classes} ${className}`}
     >
       {config.label}
     </span>

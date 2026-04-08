@@ -1,11 +1,15 @@
-const shimmer = 'animate-pulse rounded bg-gray-200 dark:bg-gray-700' as const
+const shimmer = 'animate-pulse rounded bg-zinc-200 dark:bg-zinc-700' as const
 
 function StatCardSkeleton() {
   return (
-    <div className="flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-      <div className={`mb-2 h-9 w-9 rounded-lg ${shimmer}`} />
-      <div className={`h-8 w-10 ${shimmer}`} />
-      <div className={`mt-1 h-3 w-16 ${shimmer}`} />
+    <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
+      <div className="flex items-start gap-3">
+        <div className={`h-10 w-10 shrink-0 rounded-lg ${shimmer}`} />
+        <div className="min-w-0">
+          <div className={`h-7 w-10 ${shimmer}`} />
+          <div className={`mt-1 h-3 w-16 ${shimmer}`} />
+        </div>
+      </div>
     </div>
   )
 }
@@ -40,23 +44,23 @@ export default function Loading() {
       </div>
 
       {/* Actions */}
-      <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+      <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
         <div className="flex gap-2">
-          <div className={`h-9 w-36 rounded-lg ${shimmer}`} />
-          <div className={`h-9 w-28 rounded-lg ${shimmer}`} />
+          <div className={`h-9 w-36 rounded-xl ${shimmer}`} />
+          <div className={`h-9 w-28 rounded-xl ${shimmer}`} />
         </div>
       </div>
 
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
-        <div className={`h-9 w-56 rounded-lg ${shimmer}`} />
-        <div className={`h-9 w-28 rounded-lg ${shimmer}`} />
-        <div className={`h-9 w-28 rounded-lg ${shimmer}`} />
+        <div className={`h-9 w-56 rounded-xl ${shimmer}`} />
+        <div className={`h-9 w-28 rounded-xl ${shimmer}`} />
+        <div className={`h-9 w-28 rounded-xl ${shimmer}`} />
       </div>
 
       {/* Registration list */}
-      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-        <div className="divide-y divide-gray-100 dark:divide-gray-700/50">
+      <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
+        <div className="divide-y divide-zinc-100 dark:divide-zinc-700/50">
           {[...Array(8)].map((_, i) => (
             <RegistrationRowSkeleton key={i} />
           ))}

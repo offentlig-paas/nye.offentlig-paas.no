@@ -44,7 +44,7 @@ export function AdminSurveyNav({ surveySlug }: AdminSurveyNavProps) {
   ]
 
   return (
-    <div className="border-b border-gray-200 dark:border-gray-700">
+    <div className="border-b border-zinc-200 dark:border-zinc-700">
       <nav className="-mb-px flex space-x-8 overflow-x-auto" aria-label="Tabs">
         {tabs.map(tab => {
           const Icon = tab.icon
@@ -55,14 +55,14 @@ export function AdminSurveyNav({ surveySlug }: AdminSurveyNavProps) {
               className={`group inline-flex items-center gap-2 border-b-2 px-1 py-4 text-sm font-medium whitespace-nowrap transition-colors ${
                 tab.current
                   ? 'border-blue-500 text-blue-600 dark:border-blue-400 dark:text-blue-400'
-                  : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-300'
+                  : 'border-transparent text-zinc-500 hover:border-zinc-300 hover:text-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-300'
               }`}
             >
               <Icon
                 className={`h-5 w-5 ${
                   tab.current
                     ? 'text-blue-500 dark:text-blue-400'
-                    : 'text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
+                    : 'text-zinc-400 group-hover:text-zinc-500 dark:text-zinc-500 dark:group-hover:text-zinc-400'
                 }`}
               />
               {tab.name}
