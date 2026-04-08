@@ -26,10 +26,11 @@ export function HorizontalBarChart({
   options,
   responseCount,
 }: HorizontalBarChartProps) {
-  const longestLabel = Math.max(...options.map(o => o.label.length))
+  const visibleOptions = options.filter(o => o.count > 0)
+  const longestLabel = Math.max(...visibleOptions.map(o => o.label.length), 0)
   const yAxisWidth = Math.min(Math.max(longestLabel * 6.5, 120), 280)
   const barHeight = 36
-  const chartHeight = Math.max(options.length * barHeight + 40, 120)
+  const chartHeight = Math.max(visibleOptions.length * barHeight + 40, 120)
 
   return (
     <div className="space-y-2">
@@ -50,7 +51,7 @@ export function HorizontalBarChart({
       </div>
       <ResponsiveContainer width="100%" height={chartHeight}>
         <BarChart
-          data={options}
+          data={visibleOptions}
           layout="vertical"
           margin={{ top: 0, right: 60, left: 0, bottom: 0 }}
         >
@@ -71,8 +72,8 @@ export function HorizontalBarChart({
               'Antall',
             ]}
             contentStyle={{
-              backgroundColor: 'var(--color-zinc-800, #27272a)',
-              border: 'none',
+              backgroundColor: '#27272a',
+              border: '1px solid #3f3f46',
               borderRadius: '8px',
               color: '#e4e4e7',
               fontSize: '12px',
@@ -84,7 +85,7 @@ export function HorizontalBarChart({
             barSize={20}
             label={<BarLabel />}
           >
-            {options.map((_, i) => (
+            {visibleOptions.map((_, i) => (
               <Cell
                 key={i}
                 className="fill-teal-500 dark:fill-teal-400"

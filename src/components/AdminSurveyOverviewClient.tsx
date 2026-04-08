@@ -124,8 +124,8 @@ export function AdminSurveyOverviewClient({
                   <Tooltip
                     cursor={{ fill: 'rgba(255,255,255,0.06)' }}
                     contentStyle={{
-                      backgroundColor: 'var(--color-zinc-800, #27272a)',
-                      border: 'none',
+                      backgroundColor: '#27272a',
+                      border: '1px solid #3f3f46',
                       borderRadius: '8px',
                       color: '#e4e4e7',
                       fontSize: '12px',
