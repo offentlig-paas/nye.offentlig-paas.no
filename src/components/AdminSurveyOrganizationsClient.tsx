@@ -17,7 +17,9 @@ type OrgData =
 
 export function AdminSurveyOrganizationsClient({ data }: { data: OrgData }) {
   const [expandedSectors, setExpandedSectors] = useState<Set<string>>(new Set())
-  const [filter, setFilter] = useState<'all' | 'responded' | 'missing'>('all')
+  const [filter, setFilter] = useState<
+    'all' | 'members' | 'non-members' | 'missing'
+  >('all')
 
   function toggleSector(type: string) {
     setExpandedSectors(prev => {
@@ -31,9 +33,16 @@ export function AdminSurveyOrganizationsClient({ data }: { data: OrgData }) {
   const filteredOrgBreakdown =
     filter === 'all'
       ? data.orgBreakdown
-      : filter === 'responded'
+      : filter === 'members'
         ? data.orgBreakdown.filter(o => o.isMember)
-        : data.orgBreakdown.filter(o => !o.isMember)
+        : filter === 'non-members'
+          ? data.orgBreakdown.filter(o => !o.isMember)
+          : []
+
+  const nonMemberCount = data.orgBreakdown.filter(o => !o.isMember).length
+  const missingMembers = data.sectorBreakdown
+    .flatMap(s => s.organizations)
+    .filter(m => !m.responded)
 
   return (
     <div className="space-y-8">
@@ -140,8 +149,15 @@ export function AdminSurveyOrganizationsClient({ data }: { data: OrgData }) {
             {(
               [
                 { key: 'all', label: 'Alle' },
-                { key: 'responded', label: 'Medlemmer' },
-                { key: 'missing', label: 'Ikke medlem' },
+                { key: 'members', label: 'Medlemmer' },
+                {
+                  key: 'non-members',
+                  label: `Ikke-medlemmer (${nonMemberCount})`,
+                },
+                {
+                  key: 'missing',
+                  label: `Mangler svar (${missingMembers.length})`,
+                },
               ] as const
             ).map(opt => (
               <button
@@ -158,64 +174,17 @@ export function AdminSurveyOrganizationsClient({ data }: { data: OrgData }) {
             ))}
           </div>
         </div>
-        <OrgTable
-          orgBreakdown={filteredOrgBreakdown}
-          filter={filter}
-          allMembers={data.sectorBreakdown.flatMap(s => s.organizations)}
-        />
+        {filter === 'missing' ? (
+          <MissingMembersTable members={missingMembers} />
+        ) : (
+          <OrgTable orgBreakdown={filteredOrgBreakdown} />
+        )}
       </section>
     </div>
   )
 }
 
-function OrgTable({
-  orgBreakdown,
-  filter,
-  allMembers,
-}: {
-  orgBreakdown: OrgData['orgBreakdown']
-  filter: 'all' | 'responded' | 'missing'
-  allMembers: { name: string; responded: boolean }[]
-}) {
-  if (filter === 'missing') {
-    const missing = allMembers.filter(m => !m.responded)
-    if (missing.length === 0) {
-      return (
-        <p className="py-8 text-center text-sm text-zinc-400">
-          Alle medlemmer har svart!
-        </p>
-      )
-    }
-    return (
-      <div className="overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700">
-        <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
-          <thead className="bg-zinc-50 dark:bg-zinc-800">
-            <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
-                Organisasjon
-              </th>
-              <th className="px-4 py-3 text-right text-xs font-medium tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
-                Status
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-900">
-            {missing.map(org => (
-              <tr key={org.name}>
-                <td className="px-4 py-2 text-sm text-zinc-400 dark:text-zinc-500">
-                  {org.name}
-                </td>
-                <td className="px-4 py-2 text-right">
-                  <XCircleIcon className="ml-auto h-4 w-4 text-zinc-300 dark:text-zinc-600" />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    )
-  }
-
+function OrgTable({ orgBreakdown }: { orgBreakdown: OrgData['orgBreakdown'] }) {
   if (orgBreakdown.length === 0) {
     return (
       <p className="py-8 text-center text-sm text-zinc-400">Ingen svar ennå</p>
@@ -250,6 +219,49 @@ function OrgTable({
               </td>
               <td className="px-4 py-2 text-right text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 {row.count}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function MissingMembersTable({
+  members,
+}: {
+  members: { name: string; responded: boolean }[]
+}) {
+  if (members.length === 0) {
+    return (
+      <p className="py-8 text-center text-sm text-zinc-400">
+        Alle medlemmer har svart!
+      </p>
+    )
+  }
+
+  return (
+    <div className="overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700">
+      <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
+        <thead className="bg-zinc-50 dark:bg-zinc-800">
+          <tr>
+            <th className="px-4 py-3 text-left text-xs font-medium tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
+              Medlem
+            </th>
+            <th className="px-4 py-3 text-right text-xs font-medium tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
+              Status
+            </th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-900">
+          {members.map(org => (
+            <tr key={org.name}>
+              <td className="px-4 py-2 text-sm text-zinc-400 dark:text-zinc-500">
+                {org.name}
+              </td>
+              <td className="px-4 py-2 text-right">
+                <XCircleIcon className="ml-auto h-4 w-4 text-zinc-300 dark:text-zinc-600" />
               </td>
             </tr>
           ))}
