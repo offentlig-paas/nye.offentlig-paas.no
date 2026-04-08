@@ -15,12 +15,34 @@ type ResponsesData =
   inferRouterOutputs<AppRouter>['admin']['surveys']['getResponses']
 type ResponseRow = ResponsesData['responses'][0]
 
+export interface QuestionMeta {
+  title: string
+  sectionTitle: string
+  optionLabels: Record<string, string>
+}
+
+function resolveValue(
+  value: string,
+  optionLabels: Record<string, string>
+): string {
+  return optionLabels[value] ?? value
+}
+
+function resolveValues(
+  values: string[],
+  optionLabels: Record<string, string>
+): string {
+  return values.map(v => resolveValue(v, optionLabels)).join(', ')
+}
+
 export function AdminSurveyResponsesClient({
   slug,
   initialData,
+  questionMeta,
 }: {
   slug: string
   initialData: ResponsesData
+  questionMeta: Record<string, QuestionMeta>
 }) {
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [isExporting, setIsExporting] = useState(false)
@@ -78,9 +100,10 @@ export function AdminSurveyResponsesClient({
           </thead>
           <tbody className="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-900">
             {initialData.responses.map(response => (
-              <ResponseRow
+              <ResponseRowView
                 key={response.id}
                 response={response}
+                questionMeta={questionMeta}
                 isExpanded={expandedId === response.id}
                 onToggle={() =>
                   setExpandedId(prev =>
@@ -96,12 +119,34 @@ export function AdminSurveyResponsesClient({
   )
 }
 
-function ResponseRow({
+function groupAnswersBySection(
+  answers: ResponseRow['answers'],
+  questionMeta: Record<string, QuestionMeta>
+): Map<string, { questionId: string; meta?: QuestionMeta }[]> {
+  const groups = new Map<
+    string,
+    { questionId: string; meta?: QuestionMeta }[]
+  >()
+
+  for (const answer of answers) {
+    const meta = questionMeta[answer.questionId]
+    const section = meta?.sectionTitle ?? 'Annet'
+    const group = groups.get(section) ?? []
+    group.push({ questionId: answer.questionId, meta })
+    groups.set(section, group)
+  }
+
+  return groups
+}
+
+function ResponseRowView({
   response,
+  questionMeta,
   isExpanded,
   onToggle,
 }: {
   response: ResponseRow
+  questionMeta: Record<string, QuestionMeta>
   isExpanded: boolean
   onToggle: () => void
 }) {
@@ -117,6 +162,9 @@ function ResponseRow({
     minute: '2-digit',
   })
 
+  const answerMap = new Map(response.answers.map(a => [a.questionId, a]))
+  const sections = groupAnswersBySection(response.answers, questionMeta)
+
   return (
     <>
       <tr
@@ -131,7 +179,14 @@ function ResponseRow({
           )}
         </td>
         <td className="px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100">
-          {response.organization}
+          <span className="inline-flex items-center gap-1.5">
+            {response.organization}
+            {!response.isMember && (
+              <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                Ikke medlem
+              </span>
+            )}
+          </span>
         </td>
         <td className="px-4 py-3 text-sm text-zinc-500 dark:text-zinc-400">
           {date}
@@ -146,22 +201,45 @@ function ResponseRow({
       {isExpanded && (
         <tr>
           <td colSpan={5} className="bg-zinc-50 px-4 py-4 dark:bg-zinc-800/50">
-            <div className="space-y-2">
-              {response.answers.map(answer => (
-                <div key={answer.questionId} className="text-sm">
-                  <span className="font-medium text-zinc-700 dark:text-zinc-300">
-                    {answer.questionId}:
-                  </span>{' '}
-                  <span className="text-zinc-600 dark:text-zinc-400">
-                    {answer.arrayValue
-                      ? answer.arrayValue.join(', ')
-                      : (answer.value ?? '–')}
-                    {answer.otherText && (
-                      <span className="italic"> ({answer.otherText})</span>
-                    )}
-                  </span>
-                </div>
-              ))}
+            <div className="space-y-5">
+              {Array.from(sections.entries()).map(
+                ([sectionTitle, questions]) => (
+                  <div key={sectionTitle}>
+                    <h4 className="mb-2 text-xs font-semibold tracking-wide text-zinc-400 uppercase dark:text-zinc-500">
+                      {sectionTitle}
+                    </h4>
+                    <div className="space-y-1.5">
+                      {questions.map(({ questionId, meta }) => {
+                        const answer = answerMap.get(questionId)
+                        if (!answer) return null
+                        const labels = meta?.optionLabels ?? {}
+                        const displayValue = answer.arrayValue
+                          ? resolveValues(answer.arrayValue, labels)
+                          : resolveValue(answer.value ?? '–', labels)
+
+                        return (
+                          <div
+                            key={questionId}
+                            className="grid grid-cols-[minmax(200px,1fr)_2fr] gap-2 text-sm"
+                          >
+                            <span className="text-zinc-500 dark:text-zinc-400">
+                              {meta?.title ?? questionId}
+                            </span>
+                            <span className="text-zinc-900 dark:text-zinc-100">
+                              {displayValue}
+                              {answer.otherText && (
+                                <span className="ml-1 text-zinc-500 italic dark:text-zinc-400">
+                                  ({answer.otherText})
+                                </span>
+                              )}
+                            </span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )
+              )}
             </div>
           </td>
         </tr>

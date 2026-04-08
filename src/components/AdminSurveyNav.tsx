@@ -2,7 +2,12 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { ChartBarIcon, TableCellsIcon } from '@heroicons/react/24/outline'
+import {
+  ChartBarIcon,
+  TableCellsIcon,
+  PresentationChartBarIcon,
+  BuildingOffice2Icon,
+} from '@heroicons/react/24/outline'
 
 interface AdminSurveyNavProps {
   surveySlug: string
@@ -17,6 +22,18 @@ export function AdminSurveyNav({ surveySlug }: AdminSurveyNavProps) {
       href: `/admin/forskning/${surveySlug}`,
       icon: ChartBarIcon,
       current: pathname === `/admin/forskning/${surveySlug}`,
+    },
+    {
+      name: 'Organisasjoner',
+      href: `/admin/forskning/${surveySlug}/organisasjoner`,
+      icon: BuildingOffice2Icon,
+      current: pathname === `/admin/forskning/${surveySlug}/organisasjoner`,
+    },
+    {
+      name: 'Resultater',
+      href: `/admin/forskning/${surveySlug}/resultater`,
+      icon: PresentationChartBarIcon,
+      current: pathname === `/admin/forskning/${surveySlug}/resultater`,
     },
     {
       name: 'Besvarelser',

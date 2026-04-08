@@ -3,21 +3,63 @@
 import {
   UsersIcon,
   BuildingOfficeIcon,
-  DocumentTextIcon,
+  ClockIcon,
+  DevicePhoneMobileIcon,
 } from '@heroicons/react/24/outline'
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts'
 import type { inferRouterOutputs } from '@trpc/server'
 import type { AppRouter } from '@/server/root'
 
 type Overview = inferRouterOutputs<AppRouter>['admin']['surveys']['getOverview']
+
+const DEVICE_LABELS: Record<string, string> = {
+  desktop: 'Desktop',
+  mobile: 'Mobil',
+  tablet: 'Nettbrett',
+  unknown: 'Ukjent',
+}
+
+function formatDuration(seconds: number): string {
+  const mins = Math.floor(seconds / 60)
+  const secs = seconds % 60
+  if (mins === 0) return `${secs}s`
+  return `${mins}m ${secs}s`
+}
+
+function formatRelativeTime(dateString: string): string {
+  const now = new Date()
+  const date = new Date(dateString)
+  const diffMs = now.getTime() - date.getTime()
+  const diffMins = Math.floor(diffMs / 60_000)
+  if (diffMins < 1) return 'Nå'
+  if (diffMins < 60) return `${diffMins} min siden`
+  const diffHours = Math.floor(diffMins / 60)
+  if (diffHours < 24) return `${diffHours} t siden`
+  const diffDays = Math.floor(diffHours / 24)
+  if (diffDays === 1) return 'I går'
+  return `${diffDays} dager siden`
+}
 
 export function AdminSurveyOverviewClient({
   overview,
 }: {
   overview: Overview
 }) {
+  const memberResponseRate =
+    overview.memberCount > 0
+      ? Math.round((overview.respondedMemberCount / overview.memberCount) * 100)
+      : 0
+
   return (
     <div className="space-y-8">
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           icon={UsersIcon}
           label="Totalt antall svar"
@@ -25,80 +67,138 @@ export function AdminSurveyOverviewClient({
         />
         <StatCard
           icon={BuildingOfficeIcon}
-          label="Unike organisasjoner"
-          value={overview.orgCount}
+          label="Medlemmer svart"
+          value={`${overview.respondedMemberCount} / ${overview.memberCount}`}
+          subtext={`${memberResponseRate}% svarprosent`}
         />
         <StatCard
-          icon={DocumentTextIcon}
-          label="Spørsmål"
-          value={overview.survey.questionCount}
+          icon={ClockIcon}
+          label="Siste svar"
+          value={
+            overview.latestResponse
+              ? formatRelativeTime(overview.latestResponse)
+              : '—'
+          }
+        />
+        <StatCard
+          icon={DevicePhoneMobileIcon}
+          label="Median tid"
+          value={
+            overview.durationStats.medianSeconds
+              ? formatDuration(overview.durationStats.medianSeconds)
+              : '—'
+          }
+          subtext={
+            overview.durationStats.avgSeconds
+              ? `Snitt: ${formatDuration(overview.durationStats.avgSeconds)}`
+              : undefined
+          }
         />
       </div>
 
-      {overview.orgBreakdown.length > 0 && (
-        <section>
-          <h3 className="mb-3 text-sm font-semibold tracking-wide text-zinc-500 uppercase dark:text-zinc-400">
-            Organisasjoner
-          </h3>
-          <div className="overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700">
-            <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
-              <thead className="bg-zinc-50 dark:bg-zinc-800">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
-                    Organisasjon
-                  </th>
-                  <th className="px-4 py-3 text-right text-xs font-medium tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
-                    Antall
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-900">
-                {overview.orgBreakdown.map(row => (
-                  <tr key={row.organization}>
-                    <td className="px-4 py-2 text-sm text-zinc-900 dark:text-zinc-100">
-                      {row.organization}
-                    </td>
-                    <td className="px-4 py-2 text-right text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                      {row.count}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      )}
+      <div className="grid gap-6 lg:grid-cols-2">
+        {overview.dailyCounts.length > 0 && (
+          <section>
+            <h3 className="mb-3 text-sm font-semibold tracking-wide text-zinc-500 uppercase dark:text-zinc-400">
+              Svar over tid
+            </h3>
+            <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={overview.dailyCounts}>
+                  <XAxis
+                    dataKey="date"
+                    tickFormatter={d => d.slice(5)}
+                    tick={{ fontSize: 11, fill: 'currentColor' }}
+                    tickLine={false}
+                    axisLine={false}
+                    className="text-zinc-400 dark:text-zinc-500"
+                  />
+                  <YAxis
+                    allowDecimals={false}
+                    tick={{ fontSize: 11, fill: 'currentColor' }}
+                    tickLine={false}
+                    axisLine={false}
+                    width={30}
+                    className="text-zinc-400 dark:text-zinc-500"
+                  />
+                  <Tooltip
+                    cursor={{ fill: 'rgba(255,255,255,0.06)' }}
+                    contentStyle={{
+                      backgroundColor: 'var(--color-zinc-800, #27272a)',
+                      border: 'none',
+                      borderRadius: '8px',
+                      color: '#e4e4e7',
+                      fontSize: '12px',
+                    }}
+                    formatter={value => [`${value} svar`, 'Antall']}
+                    labelFormatter={label => `Dato: ${label}`}
+                  />
+                  <Bar dataKey="count" fill="#14b8a6" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </section>
+        )}
 
-      {overview.dailyCounts.length > 0 && (
+        {overview.deviceBreakdown.length > 0 && (
+          <section>
+            <h3 className="mb-3 text-sm font-semibold tracking-wide text-zinc-500 uppercase dark:text-zinc-400">
+              Enheter
+            </h3>
+            <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
+              <div className="space-y-3">
+                {overview.deviceBreakdown.map(d => {
+                  const pct =
+                    overview.responseCount > 0
+                      ? Math.round((d.count / overview.responseCount) * 100)
+                      : 0
+                  return (
+                    <div key={d.device}>
+                      <div className="mb-1 flex items-center justify-between text-sm">
+                        <span className="text-zinc-700 dark:text-zinc-300">
+                          {DEVICE_LABELS[d.device] ?? d.device}
+                        </span>
+                        <span className="text-zinc-500 tabular-nums dark:text-zinc-400">
+                          {d.count} ({pct}%)
+                        </span>
+                      </div>
+                      <div className="h-2 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-700">
+                        <div
+                          className="h-full rounded-full bg-teal-500 transition-all dark:bg-teal-400"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </section>
+        )}
+      </div>
+
+      {overview.durationStats.count > 0 && (
         <section>
           <h3 className="mb-3 text-sm font-semibold tracking-wide text-zinc-500 uppercase dark:text-zinc-400">
-            Svar over tid
+            Tid brukt på undersøkelsen
           </h3>
-          <div className="overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700">
-            <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
-              <thead className="bg-zinc-50 dark:bg-zinc-800">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
-                    Dato
-                  </th>
-                  <th className="px-4 py-3 text-right text-xs font-medium tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
-                    Antall
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-900">
-                {overview.dailyCounts.map(row => (
-                  <tr key={row.date}>
-                    <td className="px-4 py-2 text-sm text-zinc-900 dark:text-zinc-100">
-                      {row.date}
-                    </td>
-                    <td className="px-4 py-2 text-right text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                      {row.count}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="grid gap-4 sm:grid-cols-4">
+            <DurationCard
+              label="Median"
+              seconds={overview.durationStats.medianSeconds}
+            />
+            <DurationCard
+              label="Gjennomsnitt"
+              seconds={overview.durationStats.avgSeconds}
+            />
+            <DurationCard
+              label="Raskest"
+              seconds={overview.durationStats.minSeconds}
+            />
+            <DurationCard
+              label="Lengst"
+              seconds={overview.durationStats.maxSeconds}
+            />
           </div>
         </section>
       )}
@@ -110,10 +210,12 @@ function StatCard({
   icon: Icon,
   label,
   value,
+  subtext,
 }: {
   icon: React.ComponentType<{ className?: string }>
   label: string
-  value: number
+  value: string | number
+  subtext?: string
 }) {
   return (
     <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
@@ -126,8 +228,30 @@ function StatCard({
             {value}
           </p>
           <p className="text-xs text-zinc-500 dark:text-zinc-400">{label}</p>
+          {subtext && (
+            <p className="text-xs text-teal-600 dark:text-teal-400">
+              {subtext}
+            </p>
+          )}
         </div>
       </div>
+    </div>
+  )
+}
+
+function DurationCard({
+  label,
+  seconds,
+}: {
+  label: string
+  seconds: number | null
+}) {
+  return (
+    <div className="rounded-xl border border-zinc-200 bg-white p-4 text-center shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
+      <p className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+        {seconds !== null ? formatDuration(seconds) : '—'}
+      </p>
+      <p className="text-xs text-zinc-500 dark:text-zinc-400">{label}</p>
     </div>
   )
 }

@@ -1,6 +1,8 @@
 import { Suspense } from 'react'
 import { AdminSurveyResponsesClient } from '@/components/AdminSurveyResponsesClient'
 import { createCaller } from '@/server/root'
+import { getSurvey } from '@/lib/surveys/helpers'
+import type { QuestionMeta } from '@/components/AdminSurveyResponsesClient'
 
 interface AdminSurveyResponsesPageProps {
   params: Promise<{ slug: string }>
@@ -19,10 +21,40 @@ function ResponsesSkeleton() {
   )
 }
 
+function buildQuestionMeta(slug: string): Map<string, QuestionMeta> {
+  const survey = getSurvey(slug)
+  if (!survey) return new Map()
+
+  const meta = new Map<string, QuestionMeta>()
+  for (const section of survey.sections) {
+    for (const q of section.questions) {
+      const optionLabels = new Map<string, string>()
+      if ('options' in q && Array.isArray(q.options)) {
+        for (const opt of q.options) {
+          optionLabels.set(opt.value, opt.label)
+        }
+      }
+      meta.set(q.id, {
+        title: q.title,
+        sectionTitle: section.title,
+        optionLabels: Object.fromEntries(optionLabels),
+      })
+    }
+  }
+  return meta
+}
+
 async function ResponsesContent({ slug }: { slug: string }) {
   const caller = await createCaller()
   const data = await caller.admin.surveys.getResponses({ slug })
-  return <AdminSurveyResponsesClient slug={slug} initialData={data} />
+  const questionMeta = buildQuestionMeta(slug)
+  return (
+    <AdminSurveyResponsesClient
+      slug={slug}
+      initialData={data}
+      questionMeta={Object.fromEntries(questionMeta)}
+    />
+  )
 }
 
 export default async function AdminSurveyResponsesPage({
