@@ -147,29 +147,34 @@ describe('AdminEmptyState', () => {
 })
 
 describe('StatusBadge', () => {
-  it('renders confirmed status', () => {
-    render(<StatusBadge status="confirmed" />)
+  it('renders confirmed status with green color', () => {
+    const { container } = render(<StatusBadge status="confirmed" />)
     expect(screen.getByText('Bekreftet')).toBeInTheDocument()
+    expect(container.firstChild).toHaveClass('bg-green-50')
   })
 
-  it('renders waitlist status', () => {
-    render(<StatusBadge status="waitlist" />)
+  it('renders waitlist status with yellow color', () => {
+    const { container } = render(<StatusBadge status="waitlist" />)
     expect(screen.getByText('Venteliste')).toBeInTheDocument()
+    expect(container.firstChild).toHaveClass('bg-yellow-50')
   })
 
-  it('renders cancelled status', () => {
-    render(<StatusBadge status="cancelled" />)
+  it('renders cancelled status with red color', () => {
+    const { container } = render(<StatusBadge status="cancelled" />)
     expect(screen.getByText('Avmeldt')).toBeInTheDocument()
+    expect(container.firstChild).toHaveClass('bg-red-50')
   })
 
-  it('renders attended status', () => {
-    render(<StatusBadge status="attended" />)
+  it('renders attended status with blue color', () => {
+    const { container } = render(<StatusBadge status="attended" />)
     expect(screen.getByText('Deltok')).toBeInTheDocument()
+    expect(container.firstChild).toHaveClass('bg-blue-50')
   })
 
-  it('renders no-show status', () => {
-    render(<StatusBadge status="no-show" />)
+  it('renders no-show status with zinc color', () => {
+    const { container } = render(<StatusBadge status="no-show" />)
     expect(screen.getByText('Ikke møtt')).toBeInTheDocument()
+    expect(container.firstChild).toHaveClass('bg-zinc-100')
   })
 
   it('applies custom className', () => {
