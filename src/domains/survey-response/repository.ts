@@ -78,7 +78,7 @@ export class SurveyResponseRepository {
     orgQuestionId = 'q1-org'
   ): Promise<{ organization: string; count: number }[]> {
     const query = `*[_type == "surveyResponse" && surveySlug == $surveySlug]{
-      "org": answers[questionId == $orgQuestionId].value[0]
+      "org": answers[questionId == $orgQuestionId][0].value
     }`
     const rows = await sanityClient.fetch<{ org: string | null }[]>(query, {
       surveySlug,
