@@ -117,7 +117,7 @@ export const members: Member[] = [
     linkedinUrl: 'https://www.linkedin.com/company/statens-vegvesen/',
   }),
   new Member({
-    name: 'Tolldirektoratet',
+    name: 'Tolletaten',
     type: MemberType.DIRECTORATE,
     github: 'toll',
     homepage: 'https://www.toll.no',
