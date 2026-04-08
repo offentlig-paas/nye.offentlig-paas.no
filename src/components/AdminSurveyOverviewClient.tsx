@@ -4,7 +4,7 @@ import {
   UsersIcon,
   BuildingOfficeIcon,
   ClockIcon,
-  DevicePhoneMobileIcon,
+  ChartBarIcon,
 } from '@heroicons/react/24/outline'
 import {
   BarChart,
@@ -72,26 +72,18 @@ export function AdminSurveyOverviewClient({
           subtext={`${memberResponseRate}% svarprosent`}
         />
         <StatCard
+          icon={ChartBarIcon}
+          label="Organisasjoner"
+          value={overview.orgCount}
+          subtext={`${overview.survey.sectionCount} seksjoner · ${overview.survey.questionCount} spørsmål`}
+        />
+        <StatCard
           icon={ClockIcon}
           label="Siste svar"
           value={
             overview.latestResponse
               ? formatRelativeTime(overview.latestResponse)
               : '—'
-          }
-        />
-        <StatCard
-          icon={DevicePhoneMobileIcon}
-          label="Median tid"
-          value={
-            overview.durationStats.medianSeconds
-              ? formatDuration(overview.durationStats.medianSeconds)
-              : '—'
-          }
-          subtext={
-            overview.durationStats.avgSeconds
-              ? `Snitt: ${formatDuration(overview.durationStats.avgSeconds)}`
-              : undefined
           }
         />
       </div>
@@ -140,68 +132,72 @@ export function AdminSurveyOverviewClient({
           </section>
         )}
 
-        {overview.deviceBreakdown.length > 0 && (
-          <section>
-            <h3 className="mb-3 text-sm font-semibold tracking-wide text-zinc-500 uppercase dark:text-zinc-400">
-              Enheter
-            </h3>
-            <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-              <div className="space-y-3">
-                {overview.deviceBreakdown.map(d => {
-                  const pct =
-                    overview.responseCount > 0
-                      ? Math.round((d.count / overview.responseCount) * 100)
-                      : 0
-                  return (
-                    <div key={d.device}>
-                      <div className="mb-1 flex items-center justify-between text-sm">
-                        <span className="text-zinc-700 dark:text-zinc-300">
-                          {DEVICE_LABELS[d.device] ?? d.device}
-                        </span>
-                        <span className="text-zinc-500 tabular-nums dark:text-zinc-400">
-                          {d.count} ({pct}%)
-                        </span>
-                      </div>
-                      <div className="h-2 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-700">
-                        <div
-                          className="h-full rounded-full bg-teal-500 transition-all dark:bg-teal-400"
-                          style={{ width: `${pct}%` }}
-                        />
-                      </div>
-                    </div>
-                  )
-                })}
+        <div className="space-y-6">
+          {overview.durationStats.count > 0 && (
+            <section>
+              <h3 className="mb-3 text-sm font-semibold tracking-wide text-zinc-500 uppercase dark:text-zinc-400">
+                Tid brukt
+              </h3>
+              <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
+                <div className="grid grid-cols-2 gap-4">
+                  <DurationStat
+                    label="Median"
+                    seconds={overview.durationStats.medianSeconds}
+                  />
+                  <DurationStat
+                    label="Gjennomsnitt"
+                    seconds={overview.durationStats.avgSeconds}
+                  />
+                  <DurationStat
+                    label="Raskest"
+                    seconds={overview.durationStats.minSeconds}
+                  />
+                  <DurationStat
+                    label="Lengst"
+                    seconds={overview.durationStats.maxSeconds}
+                  />
+                </div>
               </div>
-            </div>
-          </section>
-        )}
-      </div>
+            </section>
+          )}
 
-      {overview.durationStats.count > 0 && (
-        <section>
-          <h3 className="mb-3 text-sm font-semibold tracking-wide text-zinc-500 uppercase dark:text-zinc-400">
-            Tid brukt på undersøkelsen
-          </h3>
-          <div className="grid gap-4 sm:grid-cols-4">
-            <DurationCard
-              label="Median"
-              seconds={overview.durationStats.medianSeconds}
-            />
-            <DurationCard
-              label="Gjennomsnitt"
-              seconds={overview.durationStats.avgSeconds}
-            />
-            <DurationCard
-              label="Raskest"
-              seconds={overview.durationStats.minSeconds}
-            />
-            <DurationCard
-              label="Lengst"
-              seconds={overview.durationStats.maxSeconds}
-            />
-          </div>
-        </section>
-      )}
+          {overview.deviceBreakdown.length > 0 && (
+            <section>
+              <h3 className="mb-3 text-sm font-semibold tracking-wide text-zinc-500 uppercase dark:text-zinc-400">
+                Enheter
+              </h3>
+              <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
+                <div className="space-y-3">
+                  {overview.deviceBreakdown.map(d => {
+                    const pct =
+                      overview.responseCount > 0
+                        ? Math.round((d.count / overview.responseCount) * 100)
+                        : 0
+                    return (
+                      <div key={d.device}>
+                        <div className="mb-1 flex items-center justify-between text-sm">
+                          <span className="text-zinc-700 dark:text-zinc-300">
+                            {DEVICE_LABELS[d.device] ?? d.device}
+                          </span>
+                          <span className="text-zinc-500 tabular-nums dark:text-zinc-400">
+                            {d.count} ({pct}%)
+                          </span>
+                        </div>
+                        <div className="h-2 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-700">
+                          <div
+                            className="h-full rounded-full bg-teal-500 transition-all dark:bg-teal-400"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            </section>
+          )}
+        </div>
+      </div>
     </div>
   )
 }
@@ -219,12 +215,12 @@ function StatCard({
 }) {
   return (
     <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-50 text-teal-600 dark:bg-teal-900/30 dark:text-teal-400">
+      <div className="flex items-start gap-3">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-teal-50 text-teal-600 dark:bg-teal-900/30 dark:text-teal-400">
           <Icon className="h-5 w-5" />
         </div>
-        <div>
-          <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+        <div className="min-w-0">
+          <p className="text-2xl leading-tight font-bold text-zinc-900 dark:text-zinc-100">
             {value}
           </p>
           <p className="text-xs text-zinc-500 dark:text-zinc-400">{label}</p>
@@ -239,7 +235,7 @@ function StatCard({
   )
 }
 
-function DurationCard({
+function DurationStat({
   label,
   seconds,
 }: {
@@ -247,8 +243,8 @@ function DurationCard({
   seconds: number | null
 }) {
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-4 text-center shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
-      <p className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+    <div className="text-center">
+      <p className="text-lg font-bold text-zinc-900 tabular-nums dark:text-zinc-100">
         {seconds !== null ? formatDuration(seconds) : '—'}
       </p>
       <p className="text-xs text-zinc-500 dark:text-zinc-400">{label}</p>
