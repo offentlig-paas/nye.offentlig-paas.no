@@ -3,6 +3,8 @@ import { z } from 'zod'
 import { getSurvey } from '@/lib/surveys/helpers'
 import { SurveyStatus } from '@/lib/surveys/types'
 import { surveyResponseService } from '@/domains/survey-response/service'
+import { SurveyResponseRepository } from '@/domains/survey-response/repository'
+import { aggregateSurveyResults } from '@/lib/surveys/aggregation'
 import { TRPCError } from '@trpc/server'
 
 const MAX_STRING_LENGTH = 10_000
@@ -81,6 +83,67 @@ export const surveyRouter = router({
   getResponseCount: publicProcedure
     .input(z.object({ surveySlug: z.string() }))
     .query(async ({ input }) => {
-      return await surveyResponseService.getResponseCount(input.surveySlug)
+      const survey = getSurvey(input.surveySlug)
+      if (!survey || survey.status === SurveyStatus.Draft) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Undersøkelsen finnes ikke',
+        })
+      }
+      return await surveyResponseService.getResponseCount(survey.slug)
+    }),
+
+  getAggregatedResults: publicProcedure
+    .input(z.object({ surveySlug: z.string() }))
+    .query(async ({ input }) => {
+      const survey = getSurvey(input.surveySlug)
+      if (!survey) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Undersøkelsen finnes ikke',
+        })
+      }
+
+      if (!survey.resultsConfig?.published) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Resultater er ikke publisert',
+        })
+      }
+
+      const repository = new SurveyResponseRepository()
+      const orgQid = survey.organizationQuestionId ?? 'q1-org'
+
+      const [responses, uniqueOrgs] = await Promise.all([
+        repository.findBySurvey(survey.slug),
+        repository.countUniqueOrganizations(survey.slug, orgQid),
+      ])
+
+      const minResponses = survey.resultsConfig.minResponses ?? 10
+      if (responses.length < minResponses) {
+        throw new TRPCError({
+          code: 'PRECONDITION_FAILED',
+          message: `Ikke nok svar til å publisere resultater ennå (minimum ${minResponses})`,
+        })
+      }
+
+      const excludeFromPublic = new Set<string>()
+      excludeFromPublic.add(orgQid)
+      for (const section of survey.sections) {
+        for (const q of section.questions) {
+          if (q.type === 'typeahead') excludeFromPublic.add(q.id)
+        }
+      }
+
+      const aggregated = aggregateSurveyResults(survey, responses, {
+        excludeQuestionIds: excludeFromPublic,
+      })
+
+      return {
+        ...aggregated,
+        uniqueOrganizations: uniqueOrgs,
+        heroText: survey.resultsConfig.heroText,
+        methodologyNote: survey.resultsConfig.methodologyNote,
+      }
     }),
 })
