@@ -7,6 +7,7 @@ import type {
 import { HorizontalBarChart } from './charts/HorizontalBarChart'
 import { DivergingBarChart } from './charts/DivergingBarChart'
 import { UsersIcon, BuildingOfficeIcon } from '@heroicons/react/24/outline'
+import { StatCard } from '@/components/StatCard'
 
 interface SurveyResultsRendererProps {
   results: AggregatedSurveyResults
@@ -94,31 +95,5 @@ function QuestionChart({ question }: { question: AggregatedQuestion }) {
       options={question.options}
       responseCount={question.responseCount}
     />
-  )
-}
-
-function StatCard({
-  icon: Icon,
-  value,
-  label,
-}: {
-  icon: React.ComponentType<{ className?: string }>
-  value: number
-  label: string
-}) {
-  return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-50 text-teal-600 dark:bg-teal-900/30 dark:text-teal-400">
-          <Icon className="h-5 w-5" />
-        </div>
-        <div>
-          <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
-            {value}
-          </p>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">{label}</p>
-        </div>
-      </div>
-    </div>
   )
 }
