@@ -75,6 +75,9 @@ export function AdminRegistrationList({
               <th className="px-3 py-2 text-left text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-300">
                 Organisasjon
               </th>
+              <th className="w-24 px-3 py-2 text-left text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-300">
+                Deltakelse
+              </th>
               <th className="w-20 px-3 py-2 text-center text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-300">
                 Sosialt
               </th>
@@ -128,6 +131,21 @@ export function AdminRegistrationList({
                 </td>
                 <td className="px-3 py-2 text-sm text-gray-700 dark:text-gray-300">
                   {registration.organisation}
+                </td>
+                <td className="px-3 py-2 whitespace-nowrap">
+                  {registration.attendanceType === 'physical' ? (
+                    <span className="inline-flex items-center rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700 ring-1 ring-green-600/20 ring-inset dark:bg-green-500/10 dark:text-green-400 dark:ring-green-500/20">
+                      Fysisk
+                    </span>
+                  ) : registration.attendanceType === 'digital' ? (
+                    <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-blue-600/20 ring-inset dark:bg-blue-500/10 dark:text-blue-400 dark:ring-blue-500/20">
+                      Digitalt
+                    </span>
+                  ) : (
+                    <span className="text-xs text-gray-300 dark:text-gray-600">
+                      -
+                    </span>
+                  )}
                 </td>
                 <td className="px-3 py-2 text-center whitespace-nowrap">
                   {registration.attendingSocialEvent ? (
