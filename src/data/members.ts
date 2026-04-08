@@ -337,7 +337,7 @@ export const members: Member[] = [
     linkedinUrl: 'https://www.linkedin.com/company/kdd/',
   }),
   new Member({
-    name: 'DFO',
+    name: 'DFØ',
     type: MemberType.DIRECTORATE,
     github: 'dfo-no',
     homepage: 'https://www.dfo.no',
