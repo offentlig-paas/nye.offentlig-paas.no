@@ -695,4 +695,12 @@ export const members: Member[] = [
     linkedinUrl: 'https://no.linkedin.com/company/lyse-as',
     logoBackgroundColor: '#FFFFFF',
   }),
+  new Member({
+    name: 'Hemit HF',
+    type: MemberType.STATE_COMPANY,
+    slug: 'hemit',
+    homepage: 'https://www.hemit.no',
+    linkedinUrl: 'https://www.linkedin.com/company/hemit',
+    logoBackgroundColor: '#1a1a1a',
+  }),
 ]

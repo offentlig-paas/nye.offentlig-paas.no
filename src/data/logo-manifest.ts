@@ -3,276 +3,280 @@ export const logoManifest: Record<
   string,
   { ext: 'svg' | 'png'; hasMark: boolean }
 > = {
-  arbeidstilsynet: {
-    ext: 'svg',
-    hasMark: false,
-  },
-  avinor: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  baerum: {
-    ext: 'png',
-    hasMark: false,
-  },
-  banenor: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  bergen: {
-    ext: 'png',
-    hasMark: false,
-  },
-  bkk: {
-    ext: 'png',
-    hasMark: false,
-  },
-  bodo: {
-    ext: 'png',
-    hasMark: false,
-  },
-  brreg: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  dfo: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  domstolene: {
-    ext: 'png',
-    hasMark: false,
-  },
-  dsb: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  enova: {
-    ext: 'svg',
-    hasMark: false,
-  },
-  eviny: {
-    ext: 'png',
-    hasMark: false,
-  },
-  fhi: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  fiskeridirektoratet: {
-    ext: 'svg',
-    hasMark: false,
-  },
-  forsvarsbygg: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  hafslund: {
-    ext: 'png',
-    hasMark: false,
-  },
-  helsedirektoratet: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  hkdir: {
-    ext: 'svg',
-    hasMark: false,
-  },
-  husbanken: {
-    ext: 'png',
-    hasMark: false,
-  },
-  jernbanedirektoratet: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  kdd: {
-    ext: 'svg',
-    hasMark: false,
-  },
-  ks: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  kystverket: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  landbruksdirektoratet: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  lanekassen: {
-    ext: 'png',
-    hasMark: false,
-  },
-  lyse: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  mattilsynet: {
-    ext: 'png',
-    hasMark: false,
-  },
-  met: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  miljodirektoratet: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  moss: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  nbim: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  nhn: {
-    ext: 'png',
-    hasMark: false,
-  },
-  niva: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  nkom: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  nmbu: {
-    ext: 'png',
-    hasMark: false,
-  },
-  norad: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  norgesbank: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  norsktipping: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  nrk: {
-    ext: 'png',
-    hasMark: false,
-  },
-  nsm: {
-    ext: 'png',
-    hasMark: false,
-  },
-  ntnu: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  nyeveier: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  oslo: {
-    ext: 'png',
-    hasMark: false,
-  },
-  politiet: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  postenbring: {
-    ext: 'png',
-    hasMark: false,
-  },
-  riksrevisjonen: {
-    ext: 'png',
-    hasMark: false,
-  },
-  rodekors: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  rogaland: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  ruter: {
-    ext: 'svg',
-    hasMark: false,
-  },
-  sikt: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  spk: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  ssb: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  statkraft: {
-    ext: 'png',
-    hasMark: false,
-  },
-  statnett: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  statsbygg: {
-    ext: 'png',
-    hasMark: false,
-  },
-  statsforvalteren: {
-    ext: 'png',
-    hasMark: false,
-  },
-  stortinget: {
-    ext: 'png',
-    hasMark: false,
-  },
-  sykehusapotekene: {
-    ext: 'svg',
-    hasMark: false,
-  },
-  telenor: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  tolletaten: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  trondelag: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  trondheim: {
-    ext: 'png',
-    hasMark: false,
-  },
-  udi: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  uio: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  vegvesen: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  vestland: {
-    ext: 'svg',
-    hasMark: true,
-  },
-  vinmonopolet: {
-    ext: 'png',
-    hasMark: false,
-  },
+  "arbeidstilsynet": {
+    "ext": "svg",
+    "hasMark": false
+  },
+  "avinor": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "baerum": {
+    "ext": "png",
+    "hasMark": false
+  },
+  "banenor": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "bergen": {
+    "ext": "png",
+    "hasMark": false
+  },
+  "bkk": {
+    "ext": "png",
+    "hasMark": false
+  },
+  "bodo": {
+    "ext": "png",
+    "hasMark": false
+  },
+  "brreg": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "dfo": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "domstolene": {
+    "ext": "png",
+    "hasMark": false
+  },
+  "dsb": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "enova": {
+    "ext": "svg",
+    "hasMark": false
+  },
+  "eviny": {
+    "ext": "png",
+    "hasMark": false
+  },
+  "fhi": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "fiskeridirektoratet": {
+    "ext": "svg",
+    "hasMark": false
+  },
+  "forsvarsbygg": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "hafslund": {
+    "ext": "png",
+    "hasMark": false
+  },
+  "helsedirektoratet": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "hemit": {
+    "ext": "svg",
+    "hasMark": false
+  },
+  "hkdir": {
+    "ext": "svg",
+    "hasMark": false
+  },
+  "husbanken": {
+    "ext": "png",
+    "hasMark": false
+  },
+  "jernbanedirektoratet": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "kdd": {
+    "ext": "svg",
+    "hasMark": false
+  },
+  "ks": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "kystverket": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "landbruksdirektoratet": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "lanekassen": {
+    "ext": "png",
+    "hasMark": false
+  },
+  "lyse": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "mattilsynet": {
+    "ext": "png",
+    "hasMark": false
+  },
+  "met": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "miljodirektoratet": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "moss": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "nbim": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "nhn": {
+    "ext": "png",
+    "hasMark": false
+  },
+  "niva": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "nkom": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "nmbu": {
+    "ext": "png",
+    "hasMark": false
+  },
+  "norad": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "norgesbank": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "norsktipping": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "nrk": {
+    "ext": "png",
+    "hasMark": false
+  },
+  "nsm": {
+    "ext": "png",
+    "hasMark": false
+  },
+  "ntnu": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "nyeveier": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "oslo": {
+    "ext": "png",
+    "hasMark": false
+  },
+  "politiet": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "postenbring": {
+    "ext": "png",
+    "hasMark": false
+  },
+  "riksrevisjonen": {
+    "ext": "png",
+    "hasMark": false
+  },
+  "rodekors": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "rogaland": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "ruter": {
+    "ext": "svg",
+    "hasMark": false
+  },
+  "sikt": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "spk": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "ssb": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "statkraft": {
+    "ext": "png",
+    "hasMark": false
+  },
+  "statnett": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "statsbygg": {
+    "ext": "png",
+    "hasMark": false
+  },
+  "statsforvalteren": {
+    "ext": "png",
+    "hasMark": false
+  },
+  "stortinget": {
+    "ext": "png",
+    "hasMark": false
+  },
+  "sykehusapotekene": {
+    "ext": "svg",
+    "hasMark": false
+  },
+  "telenor": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "tolletaten": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "trondelag": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "trondheim": {
+    "ext": "png",
+    "hasMark": false
+  },
+  "udi": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "uio": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "vegvesen": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "vestland": {
+    "ext": "svg",
+    "hasMark": true
+  },
+  "vinmonopolet": {
+    "ext": "png",
+    "hasMark": false
+  }
 } as const
