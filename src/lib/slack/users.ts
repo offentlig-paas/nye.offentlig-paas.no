@@ -82,12 +82,15 @@ export async function aggregateSlackUsersByDomain(
   let totalUsers = 0
   let hasAnyEmail = false
   let cursor = ''
+  let pageCount = 0
+  const startMs = performance.now()
 
   do {
     const response = await slack.users.list({
       cursor: cursor || undefined,
       limit: 200,
     })
+    pageCount++
 
     if (!response.ok || !response.members) break
 
@@ -130,6 +133,11 @@ export async function aggregateSlackUsersByDomain(
 
     cursor = response.response_metadata?.next_cursor || ''
   } while (cursor)
+
+  const elapsedMs = Math.round(performance.now() - startMs)
+  console.log(
+    `[slack] users.list: ${totalUsers} users across ${pageCount} pages in ${elapsedMs}ms`
+  )
 
   const result: DomainAggregation = {
     domains,

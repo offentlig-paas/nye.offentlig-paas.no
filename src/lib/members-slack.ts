@@ -42,7 +42,7 @@ interface UnmatchedDomainDetail extends UnmatchedDomain {
   users: SlackUserSummary[]
 }
 
-export interface SlackRepresentationSummary {
+interface SlackRepresentationSummary {
   status: SlackFetchStatus
   totalSlackUsers: number
   matchedUsers: number

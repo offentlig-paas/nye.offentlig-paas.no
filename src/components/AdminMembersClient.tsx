@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import {
@@ -17,11 +17,7 @@ import {
   ChatBubbleLeftIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
-import type {
-  SlackRepresentationSummary,
-  MemberRepresentation,
-  UnmatchedDomain,
-} from '@/lib/members-slack'
+import type { MemberRepresentation, UnmatchedDomain } from '@/lib/members-slack'
 import type { ExternalDomainLabel } from '@/data/external-domains'
 import type { SlackUserSummary } from '@/lib/slack/users'
 import { trpc } from '@/lib/trpc/client'
@@ -277,15 +273,56 @@ function UnmatchedDomainRow({ entry }: { entry: UnmatchedDomain }) {
   )
 }
 
-export function AdminMembersClient({
-  summary,
-}: {
-  summary: SlackRepresentationSummary
-}) {
+const ESTIMATED_LOAD_MS = 70_000
+
+function LoadingBar() {
+  const [progress, setProgress] = useState(0)
+
+  useEffect(() => {
+    const start = Date.now()
+    const interval = setInterval(() => {
+      const elapsed = Date.now() - start
+      const pct = Math.min(95, (elapsed / ESTIMATED_LOAD_MS) * 90)
+      setProgress(pct)
+    }, 100)
+    return () => clearInterval(interval)
+  }, [])
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col items-center justify-center gap-4 py-16">
+        <div className="h-2 w-64 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
+          <div
+            className="h-full rounded-full bg-teal-500 transition-[width] duration-300 ease-out dark:bg-teal-400"
+            style={{ width: `${progress}%` }}
+            role="progressbar"
+            aria-valuenow={Math.round(progress)}
+            aria-valuemin={0}
+            aria-valuemax={100}
+          />
+        </div>
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          Henter brukere fra Slack ({Math.round(progress)}%)
+        </p>
+        <p className="text-xs text-zinc-400 dark:text-zinc-500">
+          Første innlasting tar ca. ett minutt
+        </p>
+      </div>
+    </div>
+  )
+}
+
+export function AdminMembersClient() {
   const searchParams = useSearchParams()
   const [search, setSearch] = useState(searchParams.get('search') ?? '')
   const [showUnmatched, setShowUnmatched] = useState(false)
   const [showDormant, setShowDormant] = useState(false)
+
+  const { data: summary, isLoading } = trpc.admin.members.getSummary.useQuery()
+
+  if (isLoading || !summary) {
+    return <LoadingBar />
+  }
 
   if (summary.status === 'no_token') {
     return (
