@@ -56,11 +56,7 @@ export function SurveyResultsRenderer({
           </div>
 
           {section.questions.map(question => (
-            <QuestionChart
-              key={question.id}
-              question={question}
-              totalResponses={results.totalResponses}
-            />
+            <QuestionChart key={question.id} question={question} />
           ))}
         </section>
       ))}
@@ -79,20 +75,12 @@ export function SurveyResultsRenderer({
   )
 }
 
-function QuestionChart({
-  question,
-  totalResponses,
-}: {
-  question: AggregatedQuestion
-  totalResponses: number
-}) {
-  const showN = question.responseCount !== totalResponses
-
+function QuestionChart({ question }: { question: AggregatedQuestion }) {
   if (question.visualization === 'diverging') {
     return (
       <DivergingBarChart
         title={question.title}
-        description={showN ? undefined : question.description}
+        description={question.description}
         options={question.options}
         responseCount={question.responseCount}
       />
@@ -102,7 +90,7 @@ function QuestionChart({
   return (
     <HorizontalBarChart
       title={question.title}
-      description={showN ? undefined : question.description}
+      description={question.description}
       options={question.options}
       responseCount={question.responseCount}
     />

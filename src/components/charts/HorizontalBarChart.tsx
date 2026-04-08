@@ -26,6 +26,8 @@ export function HorizontalBarChart({
   options,
   responseCount,
 }: HorizontalBarChartProps) {
+  const longestLabel = Math.max(...options.map(o => o.label.length))
+  const yAxisWidth = Math.min(Math.max(longestLabel * 6.5, 120), 280)
   const barHeight = 36
   const chartHeight = Math.max(options.length * barHeight + 40, 120)
 
@@ -56,7 +58,7 @@ export function HorizontalBarChart({
           <YAxis
             type="category"
             dataKey="label"
-            width={200}
+            width={yAxisWidth}
             tick={{ fontSize: 12, fill: 'currentColor' }}
             tickLine={false}
             axisLine={false}
@@ -97,14 +99,14 @@ export function HorizontalBarChart({
 }
 
 function BarLabel(props: Record<string, unknown>) {
-  const { x, y, width, value, height } = props as {
+  const { x, y, width, height } = props as {
     x: number
     y: number
     width: number
-    value: number
     height: number
   }
-  if (!value) return null
+  const payload = props.payload as AggregatedOption | undefined
+  if (!payload?.count) return null
 
   return (
     <text
@@ -114,7 +116,7 @@ function BarLabel(props: Record<string, unknown>) {
       className="fill-zinc-600 dark:fill-zinc-400"
       fontSize={12}
     >
-      {value}
+      {payload.count} ({payload.percentage}%)
     </text>
   )
 }
