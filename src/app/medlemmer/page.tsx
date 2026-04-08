@@ -3,15 +3,16 @@
 import Image from 'next/image'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { members } from '@/data/members'
-import { MemberType, type Member } from '@/lib/members'
+import { MemberType, Sector, type Member } from '@/lib/members'
 import { GitHubIcon, LinkedInIcon } from '@/components/SocialIcons'
 import {
   ArrowTopRightOnSquareIcon,
+  MagnifyingGlassIcon,
   ServerStackIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 import { getInitials, getBackgroundColor } from '@/lib/avatar-utils'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 const sections: { title: string; types: MemberType[] }[] = [
   {
@@ -92,8 +93,7 @@ function MemberPopover({
             className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-lg"
             style={{
               backgroundColor:
-                member.logoBackgroundColor ??
-                (logo ? '#ffffff' : undefined),
+                member.logoBackgroundColor ?? (logo ? '#ffffff' : undefined),
             }}
           >
             {logo ? (
@@ -193,8 +193,7 @@ function MemberCard({
         className="flex h-20 w-20 cursor-pointer items-center justify-center overflow-hidden rounded-xl ring-1 ring-gray-200 transition-all hover:shadow-md hover:ring-gray-400 dark:ring-gray-700 dark:hover:ring-gray-500"
         style={{
           backgroundColor:
-            member.logoBackgroundColor ??
-            (logo ? '#ffffff' : undefined),
+            member.logoBackgroundColor ?? (logo ? '#ffffff' : undefined),
         }}
       >
         {logo ? (
@@ -228,8 +227,101 @@ function MemberCard({
   )
 }
 
+const allSectors = Object.values(Sector)
+
+function SectorPill({
+  sector,
+  isActive,
+  count,
+  onToggle,
+}: {
+  sector: Sector
+  isActive: boolean
+  count: number
+  onToggle: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${
+        isActive
+          ? 'bg-teal-100 text-teal-800 dark:bg-teal-900/40 dark:text-teal-300'
+          : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700'
+      }`}
+    >
+      {sector}
+      <span
+        className={`text-[10px] ${isActive ? 'text-teal-600 dark:text-teal-400' : 'text-gray-400 dark:text-gray-500'}`}
+      >
+        {count}
+      </span>
+    </button>
+  )
+}
+
 export default function MedlemmerPage() {
   const [openMember, setOpenMember] = useState<string | null>(null)
+  const [search, setSearch] = useState('')
+  const [selectedSectors, setSelectedSectors] = useState<Set<Sector>>(new Set())
+  const searchRef = useRef<HTMLInputElement>(null)
+
+  const sectorCounts = useMemo(() => {
+    const counts = new Map<Sector, number>()
+    for (const sector of allSectors) {
+      counts.set(sector, members.filter(m => m.sectors.includes(sector)).length)
+    }
+    return counts
+  }, [])
+
+  const filteredMembers = useMemo(() => {
+    let result = members
+
+    if (search) {
+      const q = search.toLowerCase()
+      result = result.filter(m => m.name.toLowerCase().includes(q))
+    }
+
+    if (selectedSectors.size > 0) {
+      result = result.filter(m => m.sectors.some(s => selectedSectors.has(s)))
+    }
+
+    return result
+  }, [search, selectedSectors])
+
+  const isFiltered = search !== '' || selectedSectors.size > 0
+
+  const toggleSector = (sector: Sector) => {
+    setSelectedSectors(prev => {
+      const next = new Set(prev)
+      if (next.has(sector)) next.delete(sector)
+      else next.add(sector)
+      return next
+    })
+  }
+
+  const clearFilters = () => {
+    setSearch('')
+    setSelectedSectors(new Set())
+    searchRef.current?.focus()
+  }
+
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if (
+        e.key === '/' &&
+        !e.metaKey &&
+        !e.ctrlKey &&
+        !(e.target instanceof HTMLInputElement) &&
+        !(e.target instanceof HTMLTextAreaElement)
+      ) {
+        e.preventDefault()
+        searchRef.current?.focus()
+      }
+    }
+    document.addEventListener('keydown', handleKey)
+    return () => document.removeEventListener('keydown', handleKey)
+  }, [])
 
   return (
     <SimpleLayout
@@ -237,12 +329,65 @@ export default function MedlemmerPage() {
       intro="Offentlig PaaS er for alle offentlige virksomheter i stat og kommune, eller private virksomheter hvor offentligheten eier 50%, med interesse for plattformteknologi og kunnskapsdeling. Dette er en grasrotbevegelse for de som jobber med plattformer og det er ingen kostnad eller forpliktelser ved å være medlem."
       gitHubPage="src/data/members.ts"
     >
-      <div className="mx-auto max-w-7xl space-y-8">
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          {members.length} medlemmer
-        </p>
+      <div className="mx-auto max-w-7xl space-y-6">
+        <div className="space-y-3">
+          <div className="relative">
+            <MagnifyingGlassIcon className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <input
+              ref={searchRef}
+              type="text"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Søk etter medlemmer…"
+              className="w-full rounded-lg border border-gray-200 bg-white py-2 pr-8 pl-9 text-sm text-gray-900 placeholder:text-gray-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-teal-500 dark:focus:ring-teal-500"
+            />
+            {search && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearch('')
+                  searchRef.current?.focus()
+                }}
+                className="absolute top-1/2 right-2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                aria-label="Tøm søk"
+              >
+                <XMarkIcon className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-1.5">
+            {allSectors.map(sector => (
+              <SectorPill
+                key={sector}
+                sector={sector}
+                isActive={selectedSectors.has(sector)}
+                count={sectorCounts.get(sector) ?? 0}
+                onToggle={() => toggleSector(sector)}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+          <span>
+            {isFiltered
+              ? `${filteredMembers.length} av ${members.length} medlemmer`
+              : `${members.length} medlemmer`}
+          </span>
+          {isFiltered && (
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="text-xs text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300"
+            >
+              Nullstill
+            </button>
+          )}
+        </div>
+
         {sections.map(section => {
-          const sectionMembers = members
+          const sectionMembers = filteredMembers
             .filter(m => section.types.includes(m.type))
             .sort((a, b) => a.name.localeCompare(b.name, 'nb-NO'))
           if (sectionMembers.length === 0) return null
@@ -276,6 +421,19 @@ export default function MedlemmerPage() {
             </section>
           )
         })}
+
+        {isFiltered && filteredMembers.length === 0 && (
+          <p className="py-12 text-center text-sm text-gray-500 dark:text-gray-400">
+            Ingen medlemmer matcher søket.{' '}
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="text-teal-600 hover:underline dark:text-teal-400"
+            >
+              Nullstill filtre
+            </button>
+          </p>
+        )}
       </div>
     </SimpleLayout>
   )

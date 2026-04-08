@@ -1,9 +1,8 @@
 import { Suspense } from 'react'
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { AdminLayout } from '@/components/AdminLayout'
 import { AdminSurveyNav } from '@/components/AdminSurveyNav'
-import { getSurvey, canUserAccessSurvey } from '@/lib/surveys/helpers'
-import { auth } from '@/auth'
+import { getSurvey } from '@/lib/surveys/helpers'
 
 interface AdminSurveyLayoutProps {
   children: React.ReactNode
@@ -35,18 +34,9 @@ export default async function AdminSurveyLayout({
   params,
 }: AdminSurveyLayoutProps) {
   const { slug } = await params
-  const session = await auth()
-
-  if (!session?.user) {
-    redirect('/auth/signin')
-  }
 
   const survey = getSurvey(slug)
   if (!survey) {
-    notFound()
-  }
-
-  if (!canUserAccessSurvey(survey, session.user)) {
     notFound()
   }
 

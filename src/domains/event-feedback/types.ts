@@ -72,3 +72,9 @@ export interface EventFeedbackSummary {
   }>
   eventComments: string[]
 }
+
+export interface PublicEventReview {
+  eventRating: number
+  eventComment: string
+  submittedAt: Date
+}

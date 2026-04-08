@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { WebClient, LogLevel } from '@slack/web-api'
+import { auth } from '@/auth'
 
 interface SlackUser {
   profile?: {
@@ -37,6 +38,11 @@ export async function GET(
   { params }: { params: Promise<{ userId: string }> }
 ) {
   const { userId } = await params
+
+  const session = await auth()
+  if (!session?.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
 
   if (!userId) {
     return NextResponse.json({ error: 'User ID is required' }, { status: 400 })
@@ -87,9 +93,7 @@ export async function GET(
       {
         headers: {
           'Cache-Control':
-            'public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400',
-          'CDN-Cache-Control': 'max-age=3600',
-          'Vercel-CDN-Cache-Control': 'max-age=3600',
+            'private, max-age=3600, stale-while-revalidate=86400',
         },
       }
     )

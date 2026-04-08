@@ -65,6 +65,23 @@ export async function getPhotosByEventAndSpeaker(
   return sanityClient.fetch<EventPhoto[]>(query, { eventSlug, speakerName })
 }
 
+export async function getEventPhotoById(
+  photoId: string
+): Promise<EventPhoto | null> {
+  const query = `*[_type == "eventPhoto" && _id == $photoId][0] {
+    _id,
+    eventSlug,
+    image,
+    caption,
+    speakers,
+    uploadedAt,
+    uploadedBy,
+    order,
+    featured
+  }`
+  return sanityClient.fetch<EventPhoto | null>(query, { photoId })
+}
+
 export async function updateEventPhoto(
   photoId: string,
   input: {

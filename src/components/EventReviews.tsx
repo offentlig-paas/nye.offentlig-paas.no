@@ -2,10 +2,10 @@
 
 import { CheckIcon, StarIcon } from '@heroicons/react/20/solid'
 import { Button } from './Button'
-import type { EventFeedback } from '@/domains/event-feedback/types'
+import type { PublicEventReview } from '@/domains/event-feedback/types'
 
 interface EventReviewsProps {
-  reviews: EventFeedback[]
+  reviews: PublicEventReview[]
   eventSlug: string
   averageRating: number
   totalReviews: number
@@ -24,7 +24,7 @@ interface RatingCount {
   count: number
 }
 
-function getRatingCounts(reviews: EventFeedback[]): RatingCount[] {
+function getRatingCounts(reviews: PublicEventReview[]): RatingCount[] {
   const counts = [
     { rating: 5, count: 0 },
     { rating: 4, count: 0 },
@@ -53,11 +53,7 @@ export function EventReviews({
   needsLogin = false,
   ratingDistribution,
 }: EventReviewsProps) {
-  // Use provided distribution or calculate from all reviews if not provided
   const ratingCounts = ratingDistribution || getRatingCounts(reviews)
-  const publicReviews = reviews.filter(
-    review => review.isPublic && review.eventComment
-  )
 
   if (totalReviews === 0) {
     return null
@@ -192,32 +188,27 @@ export function EventReviews({
         </div>
 
         {/* Public Reviews */}
-        {publicReviews.length > 0 && (
+        {reviews.length > 0 && (
           <div className="mt-4">
             <h3 className="mb-3 text-sm font-medium text-gray-900 dark:text-gray-100">
               Nylige tilbakemeldinger
             </h3>
 
             <div className="space-y-3">
-              {publicReviews.slice(0, 3).map(review => (
+              {reviews.slice(0, 3).map((review, index) => (
                 <div
-                  key={review._id}
+                  key={index}
                   className="rounded-lg bg-white/50 p-3 dark:bg-gray-900/30"
                 >
                   <div className="flex items-start gap-3">
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-teal-500 text-xs font-semibold text-white">
-                      {review.name
-                        .split(' ')
-                        .map(n => n[0])
-                        .join('')
-                        .toUpperCase()
-                        .slice(0, 2)}
+                      <StarIcon className="h-4 w-4" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-2">
-                        <h4 className="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">
-                          {review.name}
-                        </h4>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                          Deltaker
+                        </span>
                         <div className="flex items-center gap-0.5">
                           {[0, 1, 2, 3, 4].map(rating => (
                             <StarIcon

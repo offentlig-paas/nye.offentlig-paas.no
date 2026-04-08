@@ -94,20 +94,12 @@ export async function checkUserAdminStatus(userId: string): Promise<{
       }
     }
 
-    // Find admin groups - specifically looking for Styret
+    // Find admin groups — explicit allowlist to prevent accidental privilege escalation
+    const ADMIN_GROUP_HANDLES = new Set(['styret'])
     const adminGroups = userGroupsResult.usergroups.filter(
-      (group: { handle?: string; name?: string }) => {
+      (group: { handle?: string }) => {
         const handle = group.handle?.toLowerCase() || ''
-        const name = group.name?.toLowerCase() || ''
-
-        return (
-          handle === 'styret' ||
-          handle === '@styret' ||
-          name === 'styret' ||
-          name === '@styret' ||
-          handle.includes('admin') ||
-          name.includes('admin')
-        )
+        return ADMIN_GROUP_HANDLES.has(handle)
       }
     )
 

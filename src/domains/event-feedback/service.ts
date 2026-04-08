@@ -2,6 +2,7 @@ import type {
   CreateEventFeedbackInput,
   EventFeedback,
   EventFeedbackSummary,
+  PublicEventReview,
   TalkFeedbackSummary,
 } from './types'
 import { EventFeedbackRepository } from './repository'
@@ -57,9 +58,19 @@ class EventFeedbackService {
     return await this.repository.findMany({ eventSlug })
   }
 
-  async getPublicFeedback(eventSlug: string): Promise<EventFeedback[]> {
+  async getFeedbackById(id: string): Promise<EventFeedback | null> {
+    return await this.repository.findById(id)
+  }
+
+  async getPublicFeedback(eventSlug: string): Promise<PublicEventReview[]> {
     const allFeedback = await this.repository.findMany({ eventSlug })
-    return allFeedback.filter(fb => fb.isPublic && fb.eventComment)
+    return allFeedback
+      .filter(fb => fb.isPublic && fb.eventComment)
+      .map(fb => ({
+        eventRating: fb.eventRating,
+        eventComment: fb.eventComment!,
+        submittedAt: fb.submittedAt,
+      }))
   }
 
   async getUserFeedback(
@@ -192,9 +203,9 @@ class EventFeedbackService {
       }))
       .sort((a, b) => b.count - a.count)
 
-    // Collect event comments
+    // Collect event comments (only from feedback marked as public)
     const eventComments = feedback
-      .filter(fb => fb.eventComment)
+      .filter(fb => fb.isPublic && fb.eventComment)
       .map(fb => fb.eventComment!)
 
     return {
