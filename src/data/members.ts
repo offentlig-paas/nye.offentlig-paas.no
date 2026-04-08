@@ -16,6 +16,7 @@ import logoNova from '@/images/platforms/nova.png'
 import logoRadix from '@/images/platforms/radix.svg'
 import logoEnova from '@/images/logos/enova.svg'
 import logoLyse from '@/images/logos/lyse.svg'
+import logoHemit from '@/images/logos/hemit.svg'
 
 const logoSkagerakEnergi = logoStatkraft
 
@@ -652,5 +653,13 @@ export const members: Member[] = [
     homepage: 'https://www.lyse.no',
     linkedinUrl: 'https://no.linkedin.com/company/lyse-as',
     logoBackgroundColor: '#FFFFFF',
+  }),
+  new Member({
+    name: 'Hemit HF',
+    type: MemberType.STATE_COMPANY,
+    homepage: 'https://www.hemit.no',
+    logo: logoHemit,
+    linkedinUrl: 'https://www.linkedin.com/company/hemit',
+    logoBackgroundColor: '#1a1a1a'
   }),
 ]
