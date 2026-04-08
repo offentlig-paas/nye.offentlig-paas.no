@@ -13,6 +13,7 @@ import {
   UsersIcon,
   ClipboardDocumentIcon,
   CheckIcon,
+  ChatBubbleLeftIcon,
 } from '@heroicons/react/24/outline'
 import type {
   SlackRepresentationSummary,
@@ -107,6 +108,8 @@ function CopyDomainsButton({
 }
 
 function UserList({ users }: { users: SlackUserSummary[] }) {
+  const teamId = process.env.NEXT_PUBLIC_SLACK_TEAM_ID
+
   return (
     <ul className="divide-y divide-zinc-100 dark:divide-zinc-700">
       {users.map(user => (
@@ -125,13 +128,34 @@ function UserList({ users }: { users: SlackUserSummary[] }) {
               {user.realName.charAt(0)}
             </div>
           )}
-          <span className="flex-1 truncate text-sm text-zinc-700 dark:text-zinc-300">
-            {user.realName}
-          </span>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5">
+              <span className="truncate text-sm text-zinc-700 dark:text-zinc-300">
+                {user.realName}
+              </span>
+              {user.statusEmoji && (
+                <span className="shrink-0 text-sm" title={user.statusText}>
+                  {user.statusEmoji}
+                </span>
+              )}
+            </div>
+            {user.title && (
+              <p className="truncate text-xs text-zinc-400">{user.title}</p>
+            )}
+          </div>
           {user.email && (
             <span className="hidden truncate text-xs text-zinc-400 sm:block">
               {user.email}
             </span>
+          )}
+          {teamId && (
+            <a
+              href={`slack://user?team=${teamId}&id=${user.id}`}
+              className="shrink-0 rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-zinc-300"
+              title="Åpne i Slack"
+            >
+              <ChatBubbleLeftIcon className="h-4 w-4" />
+            </a>
           )}
         </li>
       ))}

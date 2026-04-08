@@ -7,6 +7,9 @@ export interface SlackUserSummary {
   displayName: string
   email?: string
   avatar?: string
+  title?: string
+  statusText?: string
+  statusEmoji?: string
 }
 
 interface SlackApiUser {
@@ -21,6 +24,9 @@ interface SlackApiUser {
     display_name?: string
     email?: string
     image_512?: string
+    title?: string
+    status_text?: string
+    status_emoji?: string
   }
 }
 
@@ -116,6 +122,9 @@ export async function aggregateSlackUsersByDomain(
         displayName: raw.profile?.display_name || raw.real_name || raw.name,
         email,
         avatar: raw.profile?.image_512,
+        title: raw.profile?.title || undefined,
+        statusText: raw.profile?.status_text || undefined,
+        statusEmoji: raw.profile?.status_emoji || undefined,
       })
     }
 
