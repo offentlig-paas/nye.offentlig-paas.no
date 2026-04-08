@@ -314,9 +314,14 @@ function LoadingBar() {
 
 export function AdminMembersClient() {
   const searchParams = useSearchParams()
-  const [search, setSearch] = useState(searchParams.get('search') ?? '')
+  const urlSearch = searchParams.get('search') ?? ''
+  const [search, setSearch] = useState(urlSearch)
   const [showUnmatched, setShowUnmatched] = useState(false)
   const [showDormant, setShowDormant] = useState(false)
+
+  useEffect(() => {
+    setSearch(urlSearch)
+  }, [urlSearch])
 
   const { data: summary, isLoading } = trpc.admin.members.getSummary.useQuery()
 
