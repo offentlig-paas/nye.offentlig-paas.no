@@ -30,6 +30,7 @@ import {
 import { getUniqueCleanedOrganizations } from '@/lib/organization-utils'
 import {
   getEventPhotos,
+  getEventPhotoById,
   updateEventPhoto,
   deleteEventPhoto,
   reorderEventPhotos,
@@ -57,6 +58,16 @@ export const adminRouter = router({
     delete: adminEventProcedure
       .input(z.object({ slug: z.string(), id: z.string() }))
       .mutation(async ({ input }) => {
+        const registration = await eventRegistrationService.getRegistration(
+          input.id
+        )
+        if (!registration || registration.eventSlug !== input.slug) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Påmelding ikke funnet',
+          })
+        }
+
         await eventRegistrationService.deleteRegistration(input.id)
 
         return { message: 'Påmelding slettet' }
@@ -77,6 +88,16 @@ export const adminRouter = router({
         })
       )
       .mutation(async ({ input }) => {
+        const registration = await eventRegistrationService.getRegistration(
+          input.id
+        )
+        if (!registration || registration.eventSlug !== input.slug) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Påmelding ikke funnet',
+          })
+        }
+
         const updatedRegistration =
           await eventRegistrationService.updateRegistrationStatus(
             input.id,
@@ -111,6 +132,17 @@ export const adminRouter = router({
           })
         }
 
+        for (const id of input.ids) {
+          const registration =
+            await eventRegistrationService.getRegistration(id)
+          if (!registration || registration.eventSlug !== input.slug) {
+            throw new TRPCError({
+              code: 'NOT_FOUND',
+              message: `Påmelding ${id} tilhører ikke dette arrangementet`,
+            })
+          }
+        }
+
         const updatedRegistrations =
           await eventRegistrationService.bulkUpdateStatus(
             input.ids,
@@ -143,6 +175,16 @@ export const adminRouter = router({
     delete: adminEventProcedure
       .input(z.object({ slug: z.string(), feedbackId: z.string() }))
       .mutation(async ({ input }) => {
+        const feedback = await eventFeedbackService.getFeedbackById(
+          input.feedbackId
+        )
+        if (!feedback || feedback.eventSlug !== input.slug) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Feedback not found',
+          })
+        }
+
         const deleted = await eventFeedbackService.deleteFeedback(
           input.feedbackId
         )
@@ -873,6 +915,14 @@ Mvh ${organizerNames}`
         })
       )
       .mutation(async ({ input }) => {
+        const photo = await getEventPhotoById(input.photoId)
+        if (!photo || photo.eventSlug !== input.slug) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Bilde ikke funnet',
+          })
+        }
+
         const { photoId, caption, speakers, order, featured } = input
         const updated = await updateEventPhoto(photoId, {
           caption,
@@ -886,6 +936,14 @@ Mvh ${organizerNames}`
     delete: adminEventProcedure
       .input(z.object({ slug: z.string(), photoId: z.string() }))
       .mutation(async ({ input }) => {
+        const photo = await getEventPhotoById(input.photoId)
+        if (!photo || photo.eventSlug !== input.slug) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Bilde ikke funnet',
+          })
+        }
+
         await deleteEventPhoto(input.photoId)
         return { success: true }
       }),
@@ -893,6 +951,16 @@ Mvh ${organizerNames}`
     reorder: adminEventProcedure
       .input(z.object({ slug: z.string(), photoIds: z.array(z.string()) }))
       .mutation(async ({ input }) => {
+        for (const photoId of input.photoIds) {
+          const photo = await getEventPhotoById(photoId)
+          if (!photo || photo.eventSlug !== input.slug) {
+            throw new TRPCError({
+              code: 'NOT_FOUND',
+              message: `Bilde ${photoId} tilhører ikke dette arrangementet`,
+            })
+          }
+        }
+
         await reorderEventPhotos(input.photoIds)
         return { success: true }
       }),
@@ -925,6 +993,16 @@ Mvh ${organizerNames}`
         })
       )
       .mutation(async ({ input }) => {
+        const submission = await talkSubmissionService.getSubmission(
+          input.submissionId
+        )
+        if (!submission || submission.eventSlug !== input.slug) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Forslag ikke funnet',
+          })
+        }
+
         const updated = await talkSubmissionService.updateStatus(
           input.submissionId,
           input.status
@@ -938,6 +1016,16 @@ Mvh ${organizerNames}`
     delete: adminEventProcedure
       .input(z.object({ slug: z.string(), submissionId: z.string() }))
       .mutation(async ({ input }) => {
+        const submission = await talkSubmissionService.getSubmission(
+          input.submissionId
+        )
+        if (!submission || submission.eventSlug !== input.slug) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Forslag ikke funnet',
+          })
+        }
+
         await talkSubmissionService.deleteSubmission(input.submissionId)
         return { message: 'Forslag slettet' }
       }),

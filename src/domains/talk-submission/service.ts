@@ -27,6 +27,10 @@ class TalkSubmissionService {
     return await this.repository.findByEventAndUser(eventSlug, slackUserId)
   }
 
+  async getSubmission(id: string): Promise<TalkSubmission | null> {
+    return await this.repository.findById(id)
+  }
+
   async updateStatus(
     id: string,
     status: TalkSubmissionStatus

@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@/auth'
 import { getPhotosByEventAndSpeaker } from '@/lib/sanity/event-photos'
 
 export async function GET(request: NextRequest) {
+  const session = await auth()
+  if (!session?.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const searchParams = request.nextUrl.searchParams
   const eventSlug = searchParams.get('eventSlug')
   const speakerName = searchParams.get('speakerName')

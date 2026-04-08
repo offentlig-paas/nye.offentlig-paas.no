@@ -32,7 +32,7 @@ interface EventRegistrationFormProps {
 interface RegistrationCountsDisplay {
   persons: number
   organizations: number
-  participants: Array<{ name: string; slackUserId: string }>
+  participants: Array<{ name: string; slackUserId?: string }>
 }
 
 const RegistrationStatsDisplay = memo(function RegistrationStatsDisplay({

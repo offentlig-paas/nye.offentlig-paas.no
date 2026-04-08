@@ -1,6 +1,4 @@
 import { Suspense } from 'react'
-import { redirect } from 'next/navigation'
-import { auth } from '@/auth'
 import { AdminLayout } from '@/components/AdminLayout'
 import { AdminSurveyListClient } from '@/components/AdminSurveyListClient'
 import { createCaller } from '@/server/root'
@@ -25,12 +23,6 @@ function SurveyListSkeleton() {
 }
 
 async function SurveyListContent() {
-  const session = await auth()
-
-  if (!session?.user) {
-    redirect('/auth/signin')
-  }
-
   const caller = await createCaller()
   const surveys = await caller.admin.surveys.list()
 

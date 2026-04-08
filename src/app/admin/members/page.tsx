@@ -2,7 +2,6 @@ import { Suspense } from 'react'
 import { AdminLayout } from '@/components/AdminLayout'
 import { AdminMembersClient } from '@/components/AdminMembersClient'
 import { createCaller } from '@/server/root'
-import { requireAdmin } from '@/lib/auth-guards'
 
 function AdminMembersSkeleton() {
   return (
@@ -32,8 +31,6 @@ function AdminMembersSkeleton() {
 }
 
 async function AdminMembersContent() {
-  await requireAdmin()
-
   const caller = await createCaller()
   const summary = await caller.admin.members.getSummary()
 

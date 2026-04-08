@@ -58,13 +58,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.slackTeamId = account.team.id as string
         }
 
-        // Check admin status using bot token (with usergroups:read scope)
         if (slackUserId) {
           try {
             const adminStatus = await checkUserAdminStatus(slackUserId)
             token.isAdmin = adminStatus.isWorkspaceAdmin
             token.isGroupAdmin = adminStatus.isGroupAdmin
             token.adminGroups = adminStatus.adminGroups
+            token.adminCheckedAt = Date.now()
 
             if (adminStatus.userInfo) {
               token.title = adminStatus.userInfo.profile?.title
@@ -78,6 +78,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }
         }
       }
+
+      // Re-validate admin status every 15 minutes
+      const ADMIN_RECHECK_INTERVAL_MS = 15 * 60 * 1000
+      const lastChecked = (token.adminCheckedAt as number) || 0
+      if (
+        token.slackId &&
+        Date.now() - lastChecked > ADMIN_RECHECK_INTERVAL_MS
+      ) {
+        try {
+          const adminStatus = await checkUserAdminStatus(
+            token.slackId as string
+          )
+          token.isAdmin = adminStatus.isWorkspaceAdmin
+          token.isGroupAdmin = adminStatus.isGroupAdmin
+          token.adminGroups = adminStatus.adminGroups
+          token.adminCheckedAt = Date.now()
+        } catch {
+          // Keep existing admin status on recheck failure
+        }
+      }
+
       return token
     },
     async session({ session, token }) {

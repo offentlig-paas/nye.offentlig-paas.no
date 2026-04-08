@@ -1,7 +1,5 @@
 import { Suspense } from 'react'
-import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { auth } from '@/auth'
 import { AdminLayout } from '@/components/AdminLayout'
 import {
   CalendarDaysIcon,
@@ -46,16 +44,6 @@ function AdminLandingSkeleton() {
 }
 
 async function AdminLandingContent() {
-  const session = await auth()
-
-  if (!session?.user) {
-    redirect('/auth/signin')
-  }
-
-  if (!session.user.isAdmin) {
-    redirect('/')
-  }
-
   return (
     <AdminLayout title="Admin" intro="Administrasjonspanel for Offentlig PaaS.">
       <div className="grid gap-6 sm:grid-cols-2">

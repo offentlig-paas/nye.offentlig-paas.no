@@ -159,6 +159,5 @@ export interface EventWithDynamicData extends Event {
   participantInfo?: EventParticipantInfo
   participants?: Array<{
     name: string
-    slackUserId: string
   }>
 }

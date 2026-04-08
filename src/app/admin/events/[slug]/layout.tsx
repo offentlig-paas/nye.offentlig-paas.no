@@ -1,6 +1,5 @@
 import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
-import { requireAdmin } from '@/lib/auth-guards'
 import { AdminLayout } from '@/components/AdminLayout'
 import { AdminEventNav } from '@/components/AdminEventNav'
 import { getEvent, getTalksCount } from '@/lib/events/helpers'
@@ -86,7 +85,6 @@ export default async function AdminEventLayout({
   params,
 }: AdminEventLayoutProps) {
   const { slug } = await params
-  await requireAdmin()
 
   const event = getEvent(slug)
   if (!event) {

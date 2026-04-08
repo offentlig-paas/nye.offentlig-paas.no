@@ -84,15 +84,10 @@ export async function enrichEventWithDynamicData(
       .slice(0, 12)
       .map(registration => ({
         name: registration.name,
-        slackUserId: registration.slackUserId,
       }))
   }
 
-  if (
-    eventStatus === Status.Current ||
-    eventStatus === Status.Upcoming ||
-    isUserRegistered
-  ) {
+  if (isUserRegistered) {
     const participantInfo = await getEventParticipantInfo(eventSlug)
     if (participantInfo) {
       enrichedEvent.participantInfo = participantInfo
