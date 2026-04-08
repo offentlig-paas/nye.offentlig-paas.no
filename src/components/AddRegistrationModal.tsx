@@ -3,6 +3,7 @@
 import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon, UserPlusIcon } from '@heroicons/react/24/outline'
+import { OrganisationTypeahead } from '@/components/OrganisationTypeahead'
 
 interface AddRegistrationModalProps {
   isOpen: boolean
@@ -179,21 +180,16 @@ export function AddRegistrationModal({
                   </div>
 
                   <div>
-                    <label
-                      htmlFor="reg-organisation"
-                      className={labelClassName}
-                    >
-                      Organisasjon <span className="text-red-500">*</span>
-                    </label>
-                    <input
+                    <OrganisationTypeahead
                       id="reg-organisation"
-                      type="text"
-                      required
                       value={organisation}
-                      onChange={e => setOrganisation(e.target.value)}
+                      onChange={setOrganisation}
+                      label="Organisasjon"
+                      required
                       disabled={isSubmitting}
+                      placeholder="Søk etter organisasjon..."
                       className={inputClassName}
-                      placeholder="Digitaliseringsdirektoratet"
+                      labelClassName={labelClassName}
                     />
                   </div>
 
