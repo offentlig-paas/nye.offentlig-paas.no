@@ -1,6 +1,7 @@
 import { initTRPC, TRPCError } from '@trpc/server'
 import { auth } from '@/auth'
 import { getEventBySlug, canUserAccessEvent } from '@/lib/events/helpers'
+import { getSurvey, canUserAccessSurvey } from '@/lib/surveys/helpers'
 import type { Session } from 'next-auth'
 import type { Event } from '@/lib/events/types'
 import superjson from 'superjson'
@@ -115,6 +116,45 @@ export const createEventAccessMiddleware = (
         session: ctx.session,
         user: ctx.session.user,
         event,
+        slug,
+      },
+    })
+  })
+
+export const createSurveyAccessMiddleware = (
+  slugExtractor: (input: unknown) => string
+) =>
+  t.middleware(async ({ ctx, next, getRawInput }) => {
+    if (!ctx.session?.user) {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'Ikke autentisert',
+      })
+    }
+
+    const rawInput = await getRawInput()
+    const slug = slugExtractor(rawInput)
+
+    const survey = getSurvey(slug)
+    if (!survey) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Undersøkelsen finnes ikke',
+      })
+    }
+
+    if (!canUserAccessSurvey(survey, ctx.session.user)) {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: 'Ikke autorisert',
+      })
+    }
+
+    return next({
+      ctx: {
+        session: ctx.session,
+        user: ctx.session.user,
+        survey,
         slug,
       },
     })

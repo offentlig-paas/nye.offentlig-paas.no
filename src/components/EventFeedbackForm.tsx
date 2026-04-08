@@ -9,7 +9,8 @@ import type {
   TalkRating,
   TopicSuggestion,
 } from '@/domains/event-feedback/types'
-import type { Item, SlackUser } from '@/lib/events/types'
+import type { Item } from '@/lib/events/types'
+import type { SlackUser } from '@/lib/types'
 import { trpc } from '@/lib/trpc/client'
 
 interface EventFeedbackFormProps {

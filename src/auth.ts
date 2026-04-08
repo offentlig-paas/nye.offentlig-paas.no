@@ -37,7 +37,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           ] as string | undefined
         }
 
-        if (expectedTeamId && userTeamId && userTeamId !== expectedTeamId) {
+        if (expectedTeamId && userTeamId !== expectedTeamId) {
           return false
         }
       }

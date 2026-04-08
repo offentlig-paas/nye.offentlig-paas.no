@@ -1,5 +1,6 @@
 import { events } from '@/data/events'
-import type { Event, SlackUser, EventDynamicStats } from '@/lib/events/types'
+import type { Event, EventDynamicStats } from '@/lib/events/types'
+import type { SlackUser } from '@/lib/types'
 import { Status, AttachmentType, ItemType } from '@/lib/events/types'
 import { formatDateShort, formatDateTime } from '@/lib/formatDate'
 import type {

@@ -1,3 +1,5 @@
+import type { SlackUser } from '@/lib/types'
+
 export enum SurveyStatus {
   Draft = 'draft',
   Open = 'open',
@@ -26,6 +28,19 @@ export interface SurveyDefinition {
   thankYouMessage?: string
   status: SurveyStatus
   sections: SurveySection[]
+  owners?: SlackUser[]
+  organizationQuestionId?: string
+  sensitiveQuestionIds?: string[]
+  resultsConfig?: ResultsConfig
+}
+
+export interface ResultsConfig {
+  published: boolean
+  heroText?: string
+  methodologyNote?: string
+  typeaheadGroupingLimit?: number
+  minResponses?: number
+  minBucketSize?: number
 }
 
 export interface SurveySection {
@@ -47,6 +62,7 @@ interface QuestionBase {
   title: string
   description?: string
   required: boolean
+  visualization?: 'bar' | 'diverging' | 'hidden'
 }
 
 export interface TextQuestion extends QuestionBase {
