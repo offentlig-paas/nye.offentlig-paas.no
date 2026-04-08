@@ -39,16 +39,32 @@ class SurveyResponseService {
 
     this.checkRateLimit(metadata.ip)
 
-    const input: CreateSurveyResponseInput = {
-      surveySlug: survey.slug,
-      surveyVersion: survey.version,
-      answers: result.sanitizedAnswers.map(a => ({
+    const sensitiveIds = new Set(survey.sensitiveQuestionIds ?? [])
+
+    const regularAnswers = result.sanitizedAnswers
+      .filter(a => !sensitiveIds.has(a.questionId))
+      .map(a => ({
         questionId: a.questionId,
         ...(Array.isArray(a.value)
           ? { arrayValue: a.value }
           : { value: a.value }),
         ...(a.otherText ? { otherText: a.otherText } : {}),
-      })),
+      }))
+
+    const sensitiveAnswers = result.sanitizedAnswers
+      .filter(a => sensitiveIds.has(a.questionId))
+      .map(a => ({
+        questionId: a.questionId,
+        ...(Array.isArray(a.value)
+          ? { arrayValue: a.value }
+          : { value: a.value }),
+        ...(a.otherText ? { otherText: a.otherText } : {}),
+      }))
+
+    const input: CreateSurveyResponseInput = {
+      surveySlug: survey.slug,
+      surveyVersion: survey.version,
+      answers: regularAnswers,
       metadata: {
         deviceCategory: categorizeDevice(metadata.userAgent),
         submissionSource: 'web',
@@ -58,7 +74,17 @@ class SurveyResponseService {
       },
     }
 
-    return await this.repository.create(input, submissionId)
+    const response = await this.repository.create(input, submissionId)
+
+    if (sensitiveAnswers.length > 0) {
+      await this.repository.createContactInfo({
+        submissionId,
+        surveySlug: survey.slug,
+        answers: sensitiveAnswers,
+      })
+    }
+
+    return response
   }
 
   async getResponseCount(surveySlug: string): Promise<number> {

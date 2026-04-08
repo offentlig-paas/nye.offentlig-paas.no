@@ -28,3 +28,9 @@ export interface CreateSurveyResponseInput {
   answers: SurveyResponseAnswer[]
   metadata?: SurveyResponseMetadata
 }
+
+export interface CreateSurveyContactInput {
+  submissionId: string
+  surveySlug: string
+  answers: SurveyResponseAnswer[]
+}

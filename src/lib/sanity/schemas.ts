@@ -781,6 +781,79 @@ const surveyResponseSchema = defineType({
   ],
 })
 
+const surveyContactInfoSchema = defineType({
+  name: 'surveyContactInfo',
+  title: 'Survey Contact Info',
+  type: 'document',
+  fields: [
+    {
+      name: 'submissionId',
+      title: 'Submission ID',
+      type: 'string',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'surveySlug',
+      title: 'Survey Slug',
+      type: 'string',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'answers',
+      title: 'Sensitive Answers',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            {
+              name: 'questionId',
+              title: 'Question ID',
+              type: 'string',
+              validation: Rule => Rule.required(),
+            },
+            {
+              name: 'value',
+              title: 'Value',
+              type: 'string',
+            },
+            {
+              name: 'arrayValue',
+              title: 'Array Value',
+              type: 'array',
+              of: [{ type: 'string' }],
+            },
+            {
+              name: 'otherText',
+              title: 'Other Text',
+              type: 'string',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'createdAt',
+      title: 'Created At',
+      type: 'datetime',
+      validation: Rule => Rule.required(),
+    },
+  ],
+  preview: {
+    select: {
+      surveySlug: 'surveySlug',
+      submissionId: 'submissionId',
+      createdAt: 'createdAt',
+    },
+    prepare(selection: Record<string, string>) {
+      return {
+        title: `Contact: ${selection.surveySlug}`,
+        subtitle: selection.createdAt,
+      }
+    },
+  },
+})
+
 export const schemas = [
   eventRegistrationSchema,
   eventParticipantInfoSchema,
@@ -789,4 +862,5 @@ export const schemas = [
   eventPhotoSchema,
   talkSubmissionSchema,
   surveyResponseSchema,
+  surveyContactInfoSchema,
 ]

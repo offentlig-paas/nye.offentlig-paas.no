@@ -1,6 +1,10 @@
 import { sanityClient } from '@/lib/sanity/config'
 import { prepareSanityDocument } from '@/lib/sanity/utils'
-import type { SurveyResponse, CreateSurveyResponseInput } from './types'
+import type {
+  SurveyResponse,
+  CreateSurveyResponseInput,
+  CreateSurveyContactInput,
+} from './types'
 import { TRPCError } from '@trpc/server'
 
 export class SurveyResponseRepository {
@@ -9,7 +13,7 @@ export class SurveyResponseRepository {
     submissionId: string
   ): Promise<SurveyResponse> {
     const doc = prepareSanityDocument({
-      _id: `survey-response-${submissionId}`,
+      _id: `survey-response-${input.surveySlug}-${submissionId}`,
       _type: 'surveyResponse' as const,
       surveySlug: input.surveySlug,
       surveyVersion: input.surveyVersion,
@@ -37,6 +41,26 @@ export class SurveyResponseRepository {
     }
   }
 
+  async createContactInfo(input: CreateSurveyContactInput): Promise<void> {
+    const doc = prepareSanityDocument({
+      _id: `survey-contact-${input.surveySlug}-${input.submissionId}`,
+      _type: 'surveyContactInfo' as const,
+      submissionId: input.submissionId,
+      surveySlug: input.surveySlug,
+      answers: input.answers,
+      createdAt: new Date().toISOString(),
+    })
+
+    try {
+      await sanityClient.createIfNotExists(doc)
+    } catch (error) {
+      console.error('Failed to store survey contact info:', {
+        submissionId: input.submissionId,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      })
+    }
+  }
+
   async countBySurvey(surveySlug: string): Promise<number> {
     const query = `count(*[_type == "surveyResponse" && surveySlug == $surveySlug])`
     return await sanityClient.fetch<number>(query, { surveySlug })
@@ -56,6 +80,14 @@ export class SurveyResponseRepository {
   async findBySurvey(surveySlug: string): Promise<SurveyResponse[]> {
     const query = `*[_type == "surveyResponse" && surveySlug == $surveySlug] | order(submittedAt desc)`
     return await sanityClient.fetch<SurveyResponse[]>(query, { surveySlug })
+  }
+
+  async getLatestResponseDate(surveySlug: string): Promise<string | null> {
+    const result = await sanityClient.fetch<{ submittedAt: string } | null>(
+      `*[_type == "surveyResponse" && surveySlug == $surveySlug] | order(submittedAt desc) [0] { submittedAt }`,
+      { surveySlug }
+    )
+    return result?.submittedAt ?? null
   }
 
   async findBySurveyPaginated(
