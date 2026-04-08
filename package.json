@@ -4,7 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --experimental-https --webpack",
+    "prebuild": "tsx scripts/generate-logo-manifest.ts",
     "build": "next build",
+    "generate:logos": "tsx scripts/generate-logo-manifest.ts",
     "start": "next start",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -77,6 +79,7 @@
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "sanity": "^5.20.0",
+    "tsx": "^4.21.0",
     "typescript-eslint": "^8.58.0",
     "vitest": "^4.1.2"
   },

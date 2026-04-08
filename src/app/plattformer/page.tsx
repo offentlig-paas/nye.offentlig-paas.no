@@ -45,6 +45,8 @@ export default function Plattformer() {
                 src={project.logo}
                 alt=""
                 className="h-8 w-8"
+                width={32}
+                height={32}
                 unoptimized
               />
             </div>

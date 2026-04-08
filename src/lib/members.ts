@@ -1,4 +1,4 @@
-import type { ImageProps } from 'next/image'
+import { logoManifest } from '@/data/logo-manifest'
 
 export enum MemberType {
   // Central government ministries and agencies
@@ -29,13 +29,14 @@ interface MemberPlatform {
   description: string
   href: string
   label: string
-  logo: ImageProps['src']
+  logo: string
 }
 
 interface iMember {
   name: string
   type: MemberType
-  logo?: ImageProps['src']
+  slug?: string
+  logoKey?: string
   logoBackgroundColor?: string
   github?: string
   homepage?: string
@@ -46,7 +47,8 @@ interface iMember {
 export class Member implements iMember {
   name: string
   type: MemberType
-  logo?: ImageProps['src']
+  slug?: string
+  logoKey?: string
   logoBackgroundColor?: string
   github?: string
   homepage?: string
@@ -56,7 +58,8 @@ export class Member implements iMember {
   constructor({
     name,
     type,
-    logo,
+    slug,
+    logoKey,
     logoBackgroundColor,
     github,
     homepage,
@@ -65,7 +68,8 @@ export class Member implements iMember {
   }: iMember) {
     this.name = name
     this.type = type
-    this.logo = logo
+    this.slug = slug
+    this.logoKey = logoKey
     this.logoBackgroundColor = logoBackgroundColor
     this.homepage = homepage
     this.linkedinUrl = linkedinUrl
@@ -74,7 +78,14 @@ export class Member implements iMember {
   }
 
   image(size: number = 200) {
-    if (this.logo) return this.logo
+    const key = this.logoKey ?? this.slug
+    if (key) {
+      const entry = logoManifest[key]
+      if (entry) {
+        if (entry.hasMark) return `/logos/${key}-mark.svg`
+        return `/logos/${key}.${entry.ext}`
+      }
+    }
     if (this.github) return `https://github.com/${this.github}.png?size=${size}`
     return ''
   }
