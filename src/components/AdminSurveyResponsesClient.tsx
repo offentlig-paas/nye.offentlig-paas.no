@@ -1,12 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   ChevronDownIcon,
   ChevronUpIcon,
   ArrowDownTrayIcon,
   LinkIcon,
+  CheckCircleIcon,
 } from '@heroicons/react/24/outline'
 import { trpc } from '@/lib/trpc/client'
 import { downloadCSV } from '@/lib/csv-utils'
@@ -50,6 +51,7 @@ export function AdminSurveyResponsesClient({
 }) {
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [linkingId, setLinkingId] = useState<string | null>(null)
+  const [linkedId, setLinkedId] = useState<string | null>(null)
   const [isExporting, setIsExporting] = useState(false)
   const router = useRouter()
   const exportCsv = trpc.admin.surveys.exportCsv.useQuery(
@@ -57,11 +59,18 @@ export function AdminSurveyResponsesClient({
     { enabled: false }
   )
   const linkMutation = trpc.admin.surveys.linkOrganization.useMutation({
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       setLinkingId(null)
+      setLinkedId(variables.responseId)
       router.refresh()
     },
   })
+
+  useEffect(() => {
+    if (!linkedId) return
+    const timer = setTimeout(() => setLinkedId(null), 2500)
+    return () => clearTimeout(timer)
+  }, [linkedId])
 
   async function handleExport() {
     setIsExporting(true)
@@ -132,7 +141,10 @@ export function AdminSurveyResponsesClient({
                     memberName,
                   })
                 }}
-                linkPending={linkMutation.isPending}
+                linkPending={
+                  linkMutation.isPending && linkingId === response.id
+                }
+                justLinked={linkedId === response.id}
                 memberNames={memberNames}
               />
             ))}
@@ -173,6 +185,7 @@ function ResponseRowView({
   onCancelLink,
   onLink,
   linkPending,
+  justLinked,
   memberNames,
 }: {
   response: ResponseRow
@@ -184,6 +197,7 @@ function ResponseRowView({
   onCancelLink: () => void
   onLink: (memberName: string) => void
   linkPending: boolean
+  justLinked: boolean
   memberNames: string[]
 }) {
   const [search, setSearch] = useState('')
@@ -218,7 +232,13 @@ function ResponseRowView({
         <td className="px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100">
           <span className="inline-flex items-center gap-1.5">
             {response.organization}
-            {response.organizationOverride && (
+            {justLinked && (
+              <span className="inline-flex items-center gap-0.5 rounded bg-green-100 px-1.5 py-0.5 text-[10px] font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                <CheckCircleIcon className="h-3 w-3" />
+                Koblet
+              </span>
+            )}
+            {!justLinked && response.organizationOverride && (
               <span className="rounded bg-blue-100 px-1.5 py-0.5 text-[10px] font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
                 Koblet
               </span>
@@ -347,21 +367,29 @@ function LinkOrganizationForm({
     : memberNames
 
   return (
-    <div className="space-y-2" onClick={e => e.stopPropagation()}>
-      <label className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
-        Velg medlem å koble til
-      </label>
-      <input
-        type="text"
-        value={search}
-        onChange={e => onSearchChange(e.target.value)}
-        placeholder="Søk etter medlem…"
-        className="w-full max-w-sm rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder:text-zinc-500"
-        autoFocus
-        disabled={pending}
-      />
-      {filtered.length > 0 && (
-        <ul className="max-h-48 max-w-sm overflow-y-auto rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
+    <div className="max-w-sm space-y-1.5" onClick={e => e.stopPropagation()}>
+      <div className="relative">
+        <label className="sr-only" htmlFor="member-search">
+          Søk etter medlem
+        </label>
+        <input
+          id="member-search"
+          type="text"
+          value={search}
+          onChange={e => onSearchChange(e.target.value)}
+          placeholder="Søk etter medlem…"
+          className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder:text-zinc-500"
+          autoFocus
+          disabled={pending}
+        />
+        {pending && (
+          <div className="absolute top-1/2 right-3 -translate-y-1/2">
+            <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-zinc-300 border-t-teal-500" />
+          </div>
+        )}
+      </div>
+      {filtered.length > 0 && !pending && (
+        <ul className="max-h-48 overflow-y-auto rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
           {filtered.slice(0, 20).map(name => (
             <li key={name}>
               <button
@@ -380,7 +408,7 @@ function LinkOrganizationForm({
           )}
         </ul>
       )}
-      {filtered.length === 0 && search.trim() && (
+      {filtered.length === 0 && search.trim() && !pending && (
         <p className="text-xs text-zinc-400">Ingen treff</p>
       )}
       <button
