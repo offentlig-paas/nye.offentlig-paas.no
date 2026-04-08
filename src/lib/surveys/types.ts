@@ -31,6 +31,15 @@ export interface SurveyDefinition {
   owners?: SlackUser[]
   organizationQuestionId?: string
   sensitiveQuestionIds?: string[]
+  resultsConfig?: ResultsConfig
+}
+
+export interface ResultsConfig {
+  published: boolean
+  heroText?: string
+  methodologyNote?: string
+  typeaheadGroupingLimit?: number
+  minResponses?: number
 }
 
 export interface SurveySection {
@@ -52,6 +61,7 @@ interface QuestionBase {
   title: string
   description?: string
   required: boolean
+  visualization?: 'bar' | 'diverging' | 'hidden'
 }
 
 export interface TextQuestion extends QuestionBase {
