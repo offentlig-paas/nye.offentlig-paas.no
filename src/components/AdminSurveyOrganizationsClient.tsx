@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import {
   BuildingOfficeIcon,
   CheckCircleIcon,
@@ -116,15 +117,14 @@ export function AdminSurveyOrganizationsClient({ data }: { data: OrgData }) {
                         key={org.name}
                         className="flex items-center justify-between px-4 py-2"
                       >
-                        <span
-                          className={`text-sm ${
+                        <OrgLink
+                          name={org.name}
+                          className={
                             org.responded
                               ? 'text-zinc-900 dark:text-zinc-100'
                               : 'text-zinc-400 dark:text-zinc-500'
-                          }`}
-                        >
-                          {org.name}
-                        </span>
+                          }
+                        />
                         {org.responded ? (
                           <CheckCircleIcon className="h-4 w-4 text-teal-500 dark:text-teal-400" />
                         ) : (
@@ -184,6 +184,17 @@ export function AdminSurveyOrganizationsClient({ data }: { data: OrgData }) {
   )
 }
 
+function OrgLink({ name, className }: { name: string; className?: string }) {
+  return (
+    <Link
+      href={`/admin/members?search=${encodeURIComponent(name)}`}
+      className={`underline decoration-zinc-300 underline-offset-2 hover:decoration-teal-500 dark:decoration-zinc-600 dark:hover:decoration-teal-400 ${className ?? ''}`}
+    >
+      {name}
+    </Link>
+  )
+}
+
 function OrgTable({ orgBreakdown }: { orgBreakdown: OrgData['orgBreakdown'] }) {
   if (orgBreakdown.length === 0) {
     return (
@@ -209,7 +220,7 @@ function OrgTable({ orgBreakdown }: { orgBreakdown: OrgData['orgBreakdown'] }) {
             <tr key={row.organization}>
               <td className="px-4 py-2 text-sm text-zinc-900 dark:text-zinc-100">
                 <span className="inline-flex items-center gap-1.5">
-                  {row.organization}
+                  <OrgLink name={row.organization} />
                   {!row.isMember && (
                     <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
                       Ikke medlem
@@ -258,7 +269,7 @@ function MissingMembersTable({
           {members.map(org => (
             <tr key={org.name}>
               <td className="px-4 py-2 text-sm text-zinc-400 dark:text-zinc-500">
-                {org.name}
+                <OrgLink name={org.name} />
               </td>
               <td className="px-4 py-2 text-right">
                 <XCircleIcon className="ml-auto h-4 w-4 text-zinc-300 dark:text-zinc-600" />

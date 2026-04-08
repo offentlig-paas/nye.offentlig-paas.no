@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import {
   MagnifyingGlassIcon,
@@ -280,7 +281,8 @@ export function AdminMembersClient({
 }: {
   summary: SlackRepresentationSummary
 }) {
-  const [search, setSearch] = useState('')
+  const searchParams = useSearchParams()
+  const [search, setSearch] = useState(searchParams.get('search') ?? '')
   const [showUnmatched, setShowUnmatched] = useState(false)
   const [showDormant, setShowDormant] = useState(false)
 
