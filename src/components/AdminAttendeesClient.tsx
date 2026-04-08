@@ -9,7 +9,6 @@ import { AdminRegistrationFilters } from '@/components/AdminRegistrationFilters'
 import { AdminEventActions } from '@/components/AdminEventActions'
 import { AdminEventStats } from '@/components/AdminEventStats'
 import { AddRegistrationModal } from '@/components/AddRegistrationModal'
-import { UserPlusIcon } from '@heroicons/react/24/outline'
 import {
   deleteRegistration,
   updateRegistrationStatus,
@@ -192,28 +191,18 @@ export function AdminAttendeesClient() {
       <AdminEventStats eventDetails={eventDetails} />
 
       {/* Actions */}
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="flex-1">
-          <AdminEventActions
-            eventSlug={slug}
-            eventTitle={eventDetails.title}
-            eventDate={eventDetails.date}
-            eventStartTime={eventDetails.startTime}
-            activeRegistrations={eventDetails.stats.activeRegistrations}
-            attendedCount={eventDetails.stats.statusBreakdown.attended || 0}
-            onExport={handleExportCSV}
-            onSuccess={message => showSuccess('Sendt', message)}
-            onError={message => showError('Feil', message)}
-          />
-        </div>
-        <button
-          onClick={() => setIsAddModalOpen(true)}
-          className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600"
-        >
-          <UserPlusIcon className="mr-2 h-4 w-4" />
-          Legg til deltaker
-        </button>
-      </div>
+      <AdminEventActions
+        eventSlug={slug}
+        eventTitle={eventDetails.title}
+        eventDate={eventDetails.date}
+        eventStartTime={eventDetails.startTime}
+        activeRegistrations={eventDetails.stats.activeRegistrations}
+        attendedCount={eventDetails.stats.statusBreakdown.attended || 0}
+        onExport={handleExportCSV}
+        onAddRegistration={() => setIsAddModalOpen(true)}
+        onSuccess={message => showSuccess('Sendt', message)}
+        onError={message => showError('Feil', message)}
+      />
 
       {/* Bulk Actions */}
       {selectedRegistrations.length > 0 && (

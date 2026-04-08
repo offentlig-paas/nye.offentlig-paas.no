@@ -5,6 +5,7 @@ import {
   BellIcon,
   ChatBubbleLeftRightIcon,
   DocumentArrowDownIcon,
+  UserPlusIcon,
 } from '@heroicons/react/24/outline'
 import { SendReminderModal } from '@/components/SendReminderModal'
 import { SendFeedbackRequestModal } from '@/components/SendFeedbackRequestModal'
@@ -18,6 +19,7 @@ interface AdminEventActionsProps {
   activeRegistrations: number
   attendedCount: number
   onExport?: () => void
+  onAddRegistration?: () => void
   onSuccess?: (message: string) => void
   onError?: (message: string) => void
   showExport?: boolean
@@ -31,6 +33,7 @@ export function AdminEventActions({
   activeRegistrations,
   attendedCount,
   onExport,
+  onAddRegistration,
   onSuccess,
   onError,
   showExport = true,
@@ -74,6 +77,16 @@ export function AdminEventActions({
           >
             <DocumentArrowDownIcon className="mr-2 h-4 w-4" />
             Eksporter CSV
+          </button>
+        )}
+
+        {onAddRegistration && (
+          <button
+            onClick={onAddRegistration}
+            className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none dark:bg-blue-700 dark:hover:bg-blue-600 dark:focus:ring-offset-gray-800"
+          >
+            <UserPlusIcon className="mr-2 h-4 w-4" />
+            Legg til deltaker
           </button>
         )}
       </div>
