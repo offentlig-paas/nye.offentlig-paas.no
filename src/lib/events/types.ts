@@ -84,11 +84,8 @@ export enum Status {
   Current = 'current',
 }
 
-export interface SlackUser {
-  name: string
-  org?: string
-  url?: string
-}
+export type { SlackUser } from '@/lib/types'
+import type { SlackUser } from '@/lib/types'
 
 export interface Item {
   time: string

@@ -1,6 +1,7 @@
 import { surveys } from '@/data/surveys'
 import { researchProjects } from '@/data/research'
 import type { ResearchProject } from '@/lib/research/types'
+import { extractSlackUserId } from '@/lib/slack/utils'
 import {
   SurveyStatus,
   type SurveyDefinition,
@@ -53,6 +54,30 @@ export function getConsentContact(
 
 export function getActiveSurveys(): SurveyDefinition[] {
   return surveys.filter(s => s.status === SurveyStatus.Open)
+}
+
+export function canUserAccessSurvey(
+  survey: SurveyDefinition,
+  user: { isAdmin?: boolean; slackId?: string }
+): boolean {
+  if (user.isAdmin) return true
+
+  if (user.slackId && survey.owners?.length) {
+    return survey.owners.some(owner => {
+      if (!owner.url) return false
+      return extractSlackUserId(owner.url) === user.slackId
+    })
+  }
+
+  return false
+}
+
+export function getAccessibleSurveys(user: {
+  isAdmin?: boolean
+  slackId?: string
+}): SurveyDefinition[] {
+  if (user.isAdmin) return surveys
+  return surveys.filter(s => canUserAccessSurvey(s, user))
 }
 
 /**

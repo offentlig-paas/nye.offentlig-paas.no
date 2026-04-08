@@ -11,8 +11,8 @@ function AdminEventsListSkeleton() {
       title="Admin - Fagdager"
       intro="Oversikt over alle fagdager og påmeldinger."
       backButton={{
-        href: '/',
-        label: 'Tilbake til forsiden',
+        href: '/admin',
+        label: 'Tilbake til admin',
       }}
     >
       <div className="space-y-4">
@@ -46,8 +46,8 @@ async function AdminEventsContent() {
       title="Admin - Fagdager"
       intro="Oversikt over alle fagdager og påmeldinger."
       backButton={{
-        href: '/',
-        label: 'Tilbake til forsiden',
+        href: '/admin',
+        label: 'Tilbake til admin',
       }}
     >
       <AdminEventsClient eventsData={eventsData} />

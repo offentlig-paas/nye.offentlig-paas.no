@@ -1,3 +1,5 @@
+import type { SlackUser } from '@/lib/types'
+
 export enum SurveyStatus {
   Draft = 'draft',
   Open = 'open',
@@ -26,6 +28,9 @@ export interface SurveyDefinition {
   thankYouMessage?: string
   status: SurveyStatus
   sections: SurveySection[]
+  owners?: SlackUser[]
+  organizationQuestionId?: string
+  sensitiveQuestionIds?: string[]
 }
 
 export interface SurveySection {

@@ -8,6 +8,15 @@ export const aiAgents2026: SurveyDefinition = {
   slug: 'ai-agents-2026',
   version: 1,
   title: 'KI-kodeverktøy i norsk offentlig sektor',
+  owners: [
+    {
+      name: 'Hans Kristian Flaatten',
+      org: 'Nav',
+      url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+    },
+  ],
+  organizationQuestionId: 'q1-org',
+  sensitiveQuestionIds: ['q24-email'],
   description:
     'Vi kartlegger hvordan norske offentlige virksomheter tar i bruk og styrer KI-kodeverktøy (som GitHub Copilot, Cursor, Claude Code og lignende).\n\nUndersøkelsen dekker både din egen bruk av KI-kodeverktøy og hvordan organisasjonen din styrer og legger til rette for slik bruk.',
   consent: {

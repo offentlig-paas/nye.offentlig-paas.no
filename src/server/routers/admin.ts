@@ -18,7 +18,7 @@ import {
 import { extractSlackIds } from '@/lib/slack/utils'
 import { USER_GROUPS, buildInvitationMessage } from '@/lib/slack/types'
 import { EventRegistrationRepository } from '@/domains/event-registration/repository'
-import type { SlackUser } from '@/lib/events/types'
+import type { SlackUser } from '@/lib/types'
 import { sendBulkDirectMessages } from '@/lib/slack/messaging'
 import { formatDateShort } from '@/lib/formatDate'
 import { getEventParticipantInfo } from '@/lib/sanity/event-participant-info'
@@ -41,6 +41,7 @@ import {
   filterRegistrationsByStatus,
   extractUserIds,
 } from '../lib/slack-message-builder'
+import { adminSurveyRouter } from './admin-survey'
 
 const registrationRepository = new EventRegistrationRepository()
 
@@ -940,4 +941,6 @@ Mvh ${organizerNames}`
         return { message: 'Forslag slettet' }
       }),
   }),
+
+  surveys: adminSurveyRouter,
 })

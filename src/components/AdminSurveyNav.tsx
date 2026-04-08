@@ -1,0 +1,58 @@
+'use client'
+
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { ChartBarIcon, TableCellsIcon } from '@heroicons/react/24/outline'
+
+interface AdminSurveyNavProps {
+  surveySlug: string
+}
+
+export function AdminSurveyNav({ surveySlug }: AdminSurveyNavProps) {
+  const pathname = usePathname()
+
+  const tabs = [
+    {
+      name: 'Oversikt',
+      href: `/admin/forskning/${surveySlug}`,
+      icon: ChartBarIcon,
+      current: pathname === `/admin/forskning/${surveySlug}`,
+    },
+    {
+      name: 'Besvarelser',
+      href: `/admin/forskning/${surveySlug}/responses`,
+      icon: TableCellsIcon,
+      current: pathname === `/admin/forskning/${surveySlug}/responses`,
+    },
+  ]
+
+  return (
+    <div className="border-b border-gray-200 dark:border-gray-700">
+      <nav className="-mb-px flex space-x-8 overflow-x-auto" aria-label="Tabs">
+        {tabs.map(tab => {
+          const Icon = tab.icon
+          return (
+            <Link
+              key={tab.name}
+              href={tab.href}
+              className={`group inline-flex items-center gap-2 border-b-2 px-1 py-4 text-sm font-medium whitespace-nowrap transition-colors ${
+                tab.current
+                  ? 'border-blue-500 text-blue-600 dark:border-blue-400 dark:text-blue-400'
+                  : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-300'
+              }`}
+            >
+              <Icon
+                className={`h-5 w-5 ${
+                  tab.current
+                    ? 'text-blue-500 dark:text-blue-400'
+                    : 'text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
+                }`}
+              />
+              {tab.name}
+            </Link>
+          )
+        })}
+      </nav>
+    </div>
+  )
+}

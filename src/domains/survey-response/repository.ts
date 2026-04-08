@@ -42,13 +42,77 @@ export class SurveyResponseRepository {
     return await sanityClient.fetch<number>(query, { surveySlug })
   }
 
-  async countUniqueOrganizations(surveySlug: string): Promise<number> {
-    const query = `count(array::unique(*[_type == "surveyResponse" && surveySlug == $surveySlug].answers[questionId == "q1-org"].value))`
-    return await sanityClient.fetch<number>(query, { surveySlug })
+  async countUniqueOrganizations(
+    surveySlug: string,
+    orgQuestionId = 'q1-org'
+  ): Promise<number> {
+    const query = `count(array::unique(*[_type == "surveyResponse" && surveySlug == $surveySlug].answers[questionId == $orgQuestionId].value))`
+    return await sanityClient.fetch<number>(query, {
+      surveySlug,
+      orgQuestionId,
+    })
   }
 
   async findBySurvey(surveySlug: string): Promise<SurveyResponse[]> {
     const query = `*[_type == "surveyResponse" && surveySlug == $surveySlug] | order(submittedAt desc)`
     return await sanityClient.fetch<SurveyResponse[]>(query, { surveySlug })
+  }
+
+  async findBySurveyPaginated(
+    surveySlug: string,
+    offset: number,
+    limit: number
+  ): Promise<{ responses: SurveyResponse[]; total: number }> {
+    const [responses, total] = await Promise.all([
+      sanityClient.fetch<SurveyResponse[]>(
+        `*[_type == "surveyResponse" && surveySlug == $surveySlug] | order(submittedAt desc) [$offset...$end]`,
+        { surveySlug, offset, end: offset + limit }
+      ),
+      this.countBySurvey(surveySlug),
+    ])
+    return { responses, total }
+  }
+
+  async getOrganizationBreakdown(
+    surveySlug: string,
+    orgQuestionId = 'q1-org'
+  ): Promise<{ organization: string; count: number }[]> {
+    const query = `*[_type == "surveyResponse" && surveySlug == $surveySlug]{
+      "org": answers[questionId == $orgQuestionId].value[0]
+    }`
+    const rows = await sanityClient.fetch<{ org: string | null }[]>(query, {
+      surveySlug,
+      orgQuestionId,
+    })
+
+    const counts = new Map<string, number>()
+    for (const row of rows) {
+      const org = row.org ?? 'Ukjent'
+      counts.set(org, (counts.get(org) ?? 0) + 1)
+    }
+
+    return Array.from(counts.entries())
+      .map(([organization, count]) => ({ organization, count }))
+      .sort((a, b) => b.count - a.count)
+  }
+
+  async getDailyResponseCounts(
+    surveySlug: string
+  ): Promise<{ date: string; count: number }[]> {
+    const query = `*[_type == "surveyResponse" && surveySlug == $surveySlug]{
+      "date": string::split(submittedAt, "T")[0]
+    }`
+    const rows = await sanityClient.fetch<{ date: string }[]>(query, {
+      surveySlug,
+    })
+
+    const counts = new Map<string, number>()
+    for (const row of rows) {
+      counts.set(row.date, (counts.get(row.date) ?? 0) + 1)
+    }
+
+    return Array.from(counts.entries())
+      .map(([date, count]) => ({ date, count }))
+      .sort((a, b) => a.date.localeCompare(b.date))
   }
 }
