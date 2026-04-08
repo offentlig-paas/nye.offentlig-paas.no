@@ -40,6 +40,7 @@ export interface ResultsConfig {
   methodologyNote?: string
   typeaheadGroupingLimit?: number
   minResponses?: number
+  minBucketSize?: number
 }
 
 export interface SurveySection {

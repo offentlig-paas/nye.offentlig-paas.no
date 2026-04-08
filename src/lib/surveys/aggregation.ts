@@ -181,12 +181,13 @@ function aggregateTypeahead(
 export function aggregateSurveyResults(
   survey: SurveyDefinition,
   responses: SurveyResponse[],
-  options?: { excludeQuestionIds?: Set<string> }
+  options?: { excludeQuestionIds?: Set<string>; minBucketSize?: number }
 ): AggregatedSurveyResults {
   const sensitiveIds = new Set(survey.sensitiveQuestionIds ?? [])
   const excludeIds = options?.excludeQuestionIds
   const answerMaps = buildAnswerMaps(responses)
   const groupingLimit = survey.resultsConfig?.typeaheadGroupingLimit ?? 15
+  const minBucket = options?.minBucketSize ?? 0
 
   const sections: AggregatedSection[] = []
 
@@ -207,17 +208,42 @@ export function aggregateSurveyResults(
         answerMaps
       )
 
-      let options: AggregatedOption[] = []
+      let aggregatedOptions: AggregatedOption[] = []
 
       if (question.type === 'radio' || question.type === 'checkbox') {
-        options = aggregateRadioOrCheckbox(question, answerMaps, responseCount)
+        aggregatedOptions = aggregateRadioOrCheckbox(
+          question,
+          answerMaps,
+          responseCount
+        )
       } else if (question.type === 'typeahead') {
-        options = aggregateTypeahead(
+        aggregatedOptions = aggregateTypeahead(
           question,
           answerMaps,
           responseCount,
           groupingLimit
         )
+      }
+
+      if (minBucket > 0) {
+        const suppressed = aggregatedOptions.filter(
+          o => o.count > 0 && o.count < minBucket
+        )
+        if (suppressed.length > 0) {
+          const suppressedTotal = suppressed.reduce((s, o) => s + o.count, 0)
+          aggregatedOptions = aggregatedOptions.filter(
+            o => o.count === 0 || o.count >= minBucket
+          )
+          aggregatedOptions.push({
+            label: 'Andre (for få svar)',
+            value: '_suppressed',
+            count: suppressedTotal,
+            percentage:
+              responseCount > 0
+                ? Math.round((suppressedTotal / responseCount) * 100)
+                : 0,
+          })
+        }
       }
 
       questions.push({
@@ -227,7 +253,7 @@ export function aggregateSurveyResults(
         type: question.type,
         visualization: viz,
         responseCount,
-        options,
+        options: aggregatedOptions,
       })
     }
 

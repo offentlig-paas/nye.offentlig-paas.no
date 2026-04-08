@@ -114,10 +114,7 @@ export const surveyRouter = router({
       const repository = new SurveyResponseRepository()
       const orgQid = survey.organizationQuestionId ?? 'q1-org'
 
-      const [responses, uniqueOrgs] = await Promise.all([
-        repository.findBySurvey(survey.slug),
-        repository.countUniqueOrganizations(survey.slug, orgQid),
-      ])
+      const responses = await repository.findBySurvey(survey.slug)
 
       const minResponses = survey.resultsConfig.minResponses ?? 10
       if (responses.length < minResponses) {
@@ -125,6 +122,16 @@ export const surveyRouter = router({
           code: 'PRECONDITION_FAILED',
           message: `Ikke nok svar til å publisere resultater ennå (minimum ${minResponses})`,
         })
+      }
+
+      const uniqueOrgs = new Set<string>()
+      for (const r of responses) {
+        const org =
+          r.organizationOverride?.memberName ??
+          r.answers.find(a => a.questionId === orgQid)?.value
+        if (typeof org === 'string' && org) {
+          uniqueOrgs.add(org.toLowerCase().trim())
+        }
       }
 
       const excludeFromPublic = new Set<string>()
@@ -135,13 +142,16 @@ export const surveyRouter = router({
         }
       }
 
+      const minBucketSize = survey.resultsConfig.minBucketSize ?? 3
+
       const aggregated = aggregateSurveyResults(survey, responses, {
         excludeQuestionIds: excludeFromPublic,
+        minBucketSize,
       })
 
       return {
         ...aggregated,
-        uniqueOrganizations: uniqueOrgs,
+        uniqueOrganizations: uniqueOrgs.size,
         heroText: survey.resultsConfig.heroText,
         methodologyNote: survey.resultsConfig.methodologyNote,
       }

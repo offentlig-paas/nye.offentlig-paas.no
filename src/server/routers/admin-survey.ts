@@ -45,7 +45,7 @@ function getOrgQuestionId(survey: SurveyDefinition): string {
 
 function sanitizeCsvCell(value: string): string {
   const s = value.replace(/"/g, '""')
-  if (/^[=+\-@\t\r]/.test(s)) {
+  if (/^\s*[=+\-@\t\r]/.test(s)) {
     return `'${s}`
   }
   return s

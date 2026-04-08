@@ -463,4 +463,88 @@ describe('aggregateSurveyResults', () => {
     expect(result.sections[0]!.questions[0]!.responseCount).toBe(0)
     expect(result.sections[0]!.questions[0]!.options[0]!.percentage).toBe(0)
   })
+
+  it('suppresses small buckets when minBucketSize is set', () => {
+    const survey: SurveyDefinition = {
+      ...baseSurvey,
+      sections: [
+        {
+          id: 's1',
+          title: 'Section 1',
+          questions: [
+            {
+              id: 'q1',
+              type: 'radio',
+              title: 'Tool?',
+              required: true,
+              options: [
+                { label: 'A', value: 'a' },
+                { label: 'B', value: 'b' },
+                { label: 'C', value: 'c' },
+                { label: 'D', value: 'd' },
+              ],
+            },
+          ],
+        },
+      ],
+    }
+
+    const responses = [
+      ...Array.from({ length: 10 }, () =>
+        makeResponse([{ questionId: 'q1', value: 'a' }])
+      ),
+      ...Array.from({ length: 5 }, () =>
+        makeResponse([{ questionId: 'q1', value: 'b' }])
+      ),
+      makeResponse([{ questionId: 'q1', value: 'c' }]),
+      makeResponse([{ questionId: 'q1', value: 'd' }]),
+    ]
+
+    const result = aggregateSurveyResults(survey, responses, {
+      minBucketSize: 3,
+    })
+    const opts = result.sections[0]!.questions[0]!.options
+
+    const visible = opts.filter(o => o.value !== '_suppressed')
+    expect(visible).toHaveLength(2)
+    expect(visible.find(o => o.value === 'a')!.count).toBe(10)
+    expect(visible.find(o => o.value === 'b')!.count).toBe(5)
+
+    const suppressed = opts.find(o => o.value === '_suppressed')
+    expect(suppressed).toBeDefined()
+    expect(suppressed!.count).toBe(2)
+  })
+
+  it('does not suppress when minBucketSize is 0', () => {
+    const survey: SurveyDefinition = {
+      ...baseSurvey,
+      sections: [
+        {
+          id: 's1',
+          title: 'Section 1',
+          questions: [
+            {
+              id: 'q1',
+              type: 'radio',
+              title: 'Q',
+              required: true,
+              options: [
+                { label: 'A', value: 'a' },
+                { label: 'B', value: 'b' },
+              ],
+            },
+          ],
+        },
+      ],
+    }
+
+    const responses = [makeResponse([{ questionId: 'q1', value: 'a' }])]
+
+    const result = aggregateSurveyResults(survey, responses, {
+      minBucketSize: 0,
+    })
+    const opts = result.sections[0]!.questions[0]!.options
+    expect(opts.find(o => o.value === '_suppressed')).toBeUndefined()
+    expect(opts.find(o => o.value === 'a')!.count).toBe(1)
+  })
 })
