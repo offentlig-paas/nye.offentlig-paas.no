@@ -1,9 +1,11 @@
-import { Member, MemberType } from '@/lib/members'
+import { Member, MemberType, Sector } from '@/lib/members'
 
 export const members: Member[] = [
   new Member({
     name: 'Direktoratet for Høyere Utdanning og Kompetanse',
     type: MemberType.DIRECTORATE,
+    sectors: [Sector.EDUCATION],
+    domains: ['hkdir.no'],
     slug: 'hkdir',
     homepage: 'https://hkdir.no/',
     linkedinUrl: 'https://www.linkedin.com/company/hk-dir/',
@@ -11,6 +13,8 @@ export const members: Member[] = [
   new Member({
     name: 'Nav',
     type: MemberType.DIRECTORATE,
+    sectors: [Sector.GENERAL],
+    domains: ['nav.no'],
     github: 'navikt',
     homepage: 'https://www.nav.no',
     linkedinUrl: 'https://www.linkedin.com/company/nav',
@@ -26,6 +30,8 @@ export const members: Member[] = [
   new Member({
     name: 'Skatteetaten',
     type: MemberType.DIRECTORATE,
+    sectors: [Sector.FINANCE],
+    domains: ['skatteetaten.no'],
     logoBackgroundColor: '#000000',
     github: 'Skatteetaten',
     linkedinUrl: 'https://www.linkedin.com/company/skatteetaten/',
@@ -42,6 +48,8 @@ export const members: Member[] = [
   new Member({
     name: 'Miljødirektoratet',
     type: MemberType.DIRECTORATE,
+    sectors: [Sector.ENVIRONMENT],
+    domains: ['miljodirektoratet.no', 'miljodir.no'],
     slug: 'miljodirektoratet',
     github: 'miljodir',
     linkedinUrl: 'https://www.linkedin.com/company/miljodirektoratet/',
@@ -50,6 +58,8 @@ export const members: Member[] = [
   new Member({
     name: 'Kartverket',
     type: MemberType.DIRECTORATE,
+    sectors: [Sector.GENERAL],
+    domains: ['kartverket.no'],
     github: 'kartverket',
     homepage: 'https://www.kartverket.no',
     linkedinUrl: 'https://www.linkedin.com/company/kartverketno/',
@@ -64,6 +74,8 @@ export const members: Member[] = [
   new Member({
     name: 'Politiet',
     type: MemberType.DIRECTORATE,
+    sectors: [Sector.JUSTICE],
+    domains: ['politiet.no'],
     slug: 'politiet',
     github: 'politiet',
     homepage: 'https://www.politiet.no',
@@ -72,6 +84,8 @@ export const members: Member[] = [
   new Member({
     name: 'Brreg',
     type: MemberType.AGENCY,
+    sectors: [Sector.GENERAL],
+    domains: ['brreg.no'],
     slug: 'brreg',
     github: 'brreg',
     homepage: 'https://www.brreg.no',
@@ -80,6 +94,8 @@ export const members: Member[] = [
   new Member({
     name: 'NRK',
     type: MemberType.STATE_COMPANY,
+    sectors: [Sector.CULTURE],
+    domains: ['nrk.no'],
     slug: 'nrk',
     github: 'nrkno',
     homepage: 'https://www.nrk.no',
@@ -89,6 +105,8 @@ export const members: Member[] = [
   new Member({
     name: 'Husbanken',
     type: MemberType.DIRECTORATE,
+    sectors: [Sector.GENERAL],
+    domains: ['husbanken.no'],
     slug: 'husbanken',
     github: 'husbanken',
     homepage: 'https://www.husbanken.no',
@@ -97,6 +115,8 @@ export const members: Member[] = [
   new Member({
     name: 'Telenor',
     type: MemberType.STATE_COMPANY,
+    sectors: [Sector.DIGITAL],
+    domains: ['telenor.no', 'telenor.com'],
     slug: 'telenor',
     github: 'telenornorway',
     homepage: 'https://www.telenor.no',
@@ -112,6 +132,8 @@ export const members: Member[] = [
   new Member({
     name: 'Equinor',
     type: MemberType.STATE_COMPANY,
+    sectors: [Sector.ENERGY],
+    domains: ['equinor.com', 'statoil.com'],
     github: 'equinor',
     homepage: 'https://www.equinor.com',
     linkedinUrl: 'https://www.linkedin.com/company/equinor/',
@@ -126,6 +148,8 @@ export const members: Member[] = [
   new Member({
     name: 'Statkraft',
     type: MemberType.STATE_COMPANY,
+    sectors: [Sector.ENERGY],
+    domains: ['statkraft.com'],
     slug: 'statkraft',
     github: 'statkraft',
     homepage: 'https://www.statkraft.com',
@@ -134,6 +158,8 @@ export const members: Member[] = [
   new Member({
     name: 'Nasjonalbiblioteket',
     type: MemberType.AGENCY,
+    sectors: [Sector.CULTURE],
+    domains: ['nb.no', 'nasjonalbiblioteket.no'],
     github: 'NationalLibraryOfNorway',
     homepage: 'https://www.nb.no',
     linkedinUrl:
@@ -142,6 +168,8 @@ export const members: Member[] = [
   new Member({
     name: 'Statens Vegvesen',
     type: MemberType.AGENCY,
+    sectors: [Sector.TRANSPORT],
+    domains: ['vegvesen.no'],
     slug: 'vegvesen',
     github: 'vegvesen',
     homepage: 'https://www.vegvesen.no',
@@ -150,6 +178,8 @@ export const members: Member[] = [
   new Member({
     name: 'Tolletaten',
     type: MemberType.DIRECTORATE,
+    sectors: [Sector.FINANCE],
+    domains: ['toll.no', 'tolletaten.no'],
     slug: 'tolletaten',
     logoBackgroundColor: '#004D40',
     github: 'toll',
@@ -159,6 +189,8 @@ export const members: Member[] = [
   new Member({
     name: 'SSB',
     type: MemberType.AGENCY,
+    sectors: [Sector.GENERAL],
+    domains: ['ssb.no'],
     slug: 'ssb',
     github: 'statisticsnorway',
     homepage: 'https://www.ssb.no',
@@ -166,7 +198,9 @@ export const members: Member[] = [
   }),
   new Member({
     name: 'Lånekassen',
-    type: MemberType.PUBLIC_CORPORATION,
+    type: MemberType.DIRECTORATE,
+    sectors: [Sector.EDUCATION],
+    domains: ['lanekassen.no'],
     slug: 'lanekassen',
     github: 'lanekassen',
     homepage: 'https://www.lanekassen.no',
@@ -175,7 +209,9 @@ export const members: Member[] = [
   }),
   new Member({
     name: 'SPK',
-    type: MemberType.PUBLIC_CORPORATION,
+    type: MemberType.GOVERNMENT_AGENCY,
+    sectors: [Sector.FINANCE],
+    domains: ['spk.no'],
     slug: 'spk',
     github: 'statens-pensjonskasse',
     homepage: 'https://www.spk.no',
@@ -184,12 +220,16 @@ export const members: Member[] = [
   new Member({
     name: 'Legeforeningen',
     type: MemberType.OTHER,
+    sectors: [Sector.HEALTH],
+    domains: ['legeforeningen.no'],
     homepage: 'https://www.legeforeningen.no',
     linkedinUrl: 'https://www.linkedin.com/company/legeforeningen/',
   }),
   new Member({
     name: 'Entur',
     type: MemberType.STATE_COMPANY,
+    sectors: [Sector.TRANSPORT],
+    domains: ['entur.org'],
     github: 'entur',
     homepage: 'https://www.entur.org',
     linkedinUrl: 'https://www.linkedin.com/company/entur-as/',
@@ -198,6 +238,8 @@ export const members: Member[] = [
   new Member({
     name: 'Vy',
     type: MemberType.STATE_COMPANY,
+    sectors: [Sector.TRANSPORT],
+    domains: ['vy.no'],
     github: 'nsbno',
     homepage: 'https://www.vy.no',
     linkedinUrl: 'https://www.linkedin.com/company/vygruppen/',
@@ -205,6 +247,8 @@ export const members: Member[] = [
   new Member({
     name: 'MET',
     type: MemberType.RESEARCH_INSTITUTE,
+    sectors: [Sector.ENVIRONMENT],
+    domains: ['met.no'],
     slug: 'met',
     github: 'metno',
     homepage: 'https://www.met.no',
@@ -213,6 +257,8 @@ export const members: Member[] = [
   new Member({
     name: 'NIVA',
     type: MemberType.RESEARCH_INSTITUTE,
+    sectors: [Sector.ENVIRONMENT],
+    domains: ['niva.no'],
     slug: 'niva',
     github: 'NIVANorge',
     homepage: 'https://www.niva.no',
@@ -221,6 +267,8 @@ export const members: Member[] = [
   new Member({
     name: 'Mattilsynet',
     type: MemberType.DIRECTORATE,
+    sectors: [Sector.AGRICULTURE],
+    domains: ['mattilsynet.no'],
     slug: 'mattilsynet',
     github: 'Mattilsynet',
     homepage: 'https://www.mattilsynet.no',
@@ -229,7 +277,9 @@ export const members: Member[] = [
   }),
   new Member({
     name: 'Digdir',
-    type: MemberType.AGENCY,
+    type: MemberType.DIRECTORATE,
+    sectors: [Sector.DIGITAL],
+    domains: ['digdir.no', 'difi.no'],
     github: 'digdir',
     homepage: 'https://www.digdir.no',
     linkedinUrl:
@@ -245,6 +295,8 @@ export const members: Member[] = [
   new Member({
     name: 'Sikt',
     type: MemberType.AGENCY,
+    sectors: [Sector.EDUCATION, Sector.DIGITAL],
+    domains: ['sikt.no', 'unit.no', 'uninett.no'],
     slug: 'sikt',
     github: 'BIBSYSDEV',
     homepage: 'https://www.sikt.no',
@@ -253,6 +305,18 @@ export const members: Member[] = [
   new Member({
     name: 'Oslo kommune',
     type: MemberType.MUNICIPALITY,
+    sectors: [Sector.GENERAL],
+    domains: [
+      'oslo.kommune.no',
+      'dig.oslo.kommune.no',
+      'drift.oslo.kommune.no',
+      'origo.oslo.kommune.no',
+      'uke.oslo.kommune.no',
+      'byr.oslo.kommune.no',
+      'sye.oslo.kommune.no',
+      'hel.oslo.kommune.no',
+      'bym.oslo.kommune.no',
+    ],
     slug: 'oslo',
     github: 'oslokommune',
     homepage: 'https://www.oslo.kommune.no',
@@ -261,6 +325,8 @@ export const members: Member[] = [
   new Member({
     name: 'Norsk Helsenett',
     type: MemberType.PUBLIC_CORPORATION,
+    sectors: [Sector.HEALTH, Sector.DIGITAL],
+    domains: ['nhn.no'],
     slug: 'nhn',
     github: 'NorskHelsenett',
     homepage: 'https://www.nhn.no',
@@ -270,6 +336,8 @@ export const members: Member[] = [
   new Member({
     name: 'UDI',
     type: MemberType.DIRECTORATE,
+    sectors: [Sector.JUSTICE],
+    domains: ['udi.no'],
     slug: 'udi',
     homepage: 'https://www.udi.no',
     linkedinUrl: 'https://www.linkedin.com/company/udi/',
@@ -277,6 +345,8 @@ export const members: Member[] = [
   new Member({
     name: 'Domstolene',
     type: MemberType.GOVERNMENT_AGENCY,
+    sectors: [Sector.JUSTICE],
+    domains: ['domstol.no', 'domstoladministrasjonen.no'],
     slug: 'domstolene',
     github: 'domstolene',
     homepage: 'https://www.domstol.no',
@@ -284,7 +354,9 @@ export const members: Member[] = [
   }),
   new Member({
     name: 'Norsk Tipping',
-    type: MemberType.PUBLIC_CORPORATION,
+    type: MemberType.STATE_COMPANY,
+    sectors: [Sector.CULTURE],
+    domains: ['norsk-tipping.no', 'norsktipping.no'],
     slug: 'norsktipping',
     github: 'Norsk-Tipping',
     homepage: 'https://www.norsk-tipping.no',
@@ -293,6 +365,8 @@ export const members: Member[] = [
   new Member({
     name: 'Å Energi',
     type: MemberType.MUNICIPAL_COMPANY,
+    sectors: [Sector.ENERGY],
+    domains: ['aenergi.no', 'a-energi.no', 'ae.no'],
     logoBackgroundColor: '#3D0C11',
     github: 'aenergi',
     homepage: 'https://www.a-energi.no',
@@ -301,6 +375,8 @@ export const members: Member[] = [
   new Member({
     name: 'Fiskeridirektoratet',
     type: MemberType.DIRECTORATE,
+    sectors: [Sector.AGRICULTURE],
+    domains: ['fiskeridir.no', 'fiskeridirektoratet.no'],
     slug: 'fiskeridirektoratet',
     homepage: 'https://www.fiskeridir.no',
     logoBackgroundColor: '#003366',
@@ -309,7 +385,9 @@ export const members: Member[] = [
   }),
   new Member({
     name: 'Sykehusapoteket',
-    type: MemberType.STATE_COMPANY,
+    type: MemberType.STATE_ENTERPRISE,
+    sectors: [Sector.HEALTH],
+    domains: ['sykehusapoteket.no', 'sykehusapotekene.no'],
     slug: 'sykehusapotekene',
     homepage: 'https://www.sykehusapoteket.no',
     linkedinUrl: 'https://www.linkedin.com/company/sykehusapotekene-ans/',
@@ -317,6 +395,8 @@ export const members: Member[] = [
   new Member({
     name: 'Posten Bring',
     type: MemberType.STATE_COMPANY,
+    sectors: [Sector.TRANSPORT],
+    domains: ['postenbring.no', 'posten.no', 'bring.no', 'bring.com'],
     slug: 'postenbring',
     github: 'bring',
     homepage: 'https://www.postenbring.no',
@@ -325,6 +405,8 @@ export const members: Member[] = [
   new Member({
     name: 'Digipost',
     type: MemberType.STATE_COMPANY,
+    sectors: [Sector.DIGITAL],
+    domains: ['digipost.no'],
     github: 'digipost',
     homepage: 'https://www.digipost.no',
     linkedinUrl: 'https://www.linkedin.com/company/postenbring/',
@@ -332,6 +414,8 @@ export const members: Member[] = [
   new Member({
     name: 'DSB',
     type: MemberType.DIRECTORATE,
+    sectors: [Sector.JUSTICE],
+    domains: ['dsb.no'],
     slug: 'dsb',
     github: 'dsb-norge',
     homepage: 'https://www.dsb.no',
@@ -341,6 +425,8 @@ export const members: Member[] = [
   new Member({
     name: 'Arkivverket',
     type: MemberType.AGENCY,
+    sectors: [Sector.CULTURE],
+    domains: ['arkivverket.no'],
     github: 'arkivverket',
     homepage: 'https://www.arkivverket.no',
     linkedinUrl: 'https://www.linkedin.com/company/arkivverket/',
@@ -348,6 +434,8 @@ export const members: Member[] = [
   new Member({
     name: 'Arbeidstilsynet',
     type: MemberType.DIRECTORATE,
+    sectors: [Sector.GENERAL],
+    domains: ['arbeidstilsynet.no'],
     slug: 'arbeidstilsynet',
     github: 'Arbeidstilsynet',
     homepage: 'https://www.arbeidstilsynet.no',
@@ -356,6 +444,8 @@ export const members: Member[] = [
   new Member({
     name: 'Statnett SF',
     type: MemberType.STATE_ENTERPRISE,
+    sectors: [Sector.ENERGY],
+    domains: ['statnett.no'],
     slug: 'statnett',
     github: 'statnett',
     homepage: 'https://www.statnett.no',
@@ -364,6 +454,8 @@ export const members: Member[] = [
   new Member({
     name: 'KS Digital',
     type: MemberType.MUNICIPAL_COMPANY,
+    sectors: [Sector.DIGITAL],
+    domains: ['ks.no'],
     slug: 'ks',
     logoBackgroundColor: '#001A58',
     github: 'ks-no',
@@ -373,6 +465,8 @@ export const members: Member[] = [
   new Member({
     name: 'Avinor',
     type: MemberType.STATE_ENTERPRISE,
+    sectors: [Sector.TRANSPORT],
+    domains: ['avinor.no'],
     slug: 'avinor',
     logoBackgroundColor: '#6B2D73',
     github: 'avinor',
@@ -382,6 +476,8 @@ export const members: Member[] = [
   new Member({
     name: 'Bane NOR',
     type: MemberType.STATE_ENTERPRISE,
+    sectors: [Sector.TRANSPORT],
+    domains: ['banenor.no'],
     slug: 'banenor',
     github: 'banenor',
     homepage: 'https://www.banenor.no',
@@ -390,6 +486,8 @@ export const members: Member[] = [
   new Member({
     name: 'Kommunal- og Distriktsdepartementet',
     type: MemberType.GOVERNMENT_AGENCY,
+    sectors: [Sector.DIGITAL, Sector.GENERAL],
+    domains: ['kdd.dep.no', 'kdd.no', 'dio.dep.no'],
     slug: 'kdd',
     logoBackgroundColor: 'rgb(0, 46, 94)',
     homepage: 'https://www.regjeringen.no/no/dep/kdd/',
@@ -398,6 +496,8 @@ export const members: Member[] = [
   new Member({
     name: 'DFØ',
     type: MemberType.DIRECTORATE,
+    sectors: [Sector.FINANCE],
+    domains: ['dfo.no'],
     slug: 'dfo',
     github: 'dfo-no',
     homepage: 'https://www.dfo.no',
@@ -407,6 +507,8 @@ export const members: Member[] = [
   new Member({
     name: 'Enova',
     type: MemberType.STATE_ENTERPRISE,
+    sectors: [Sector.ENERGY, Sector.ENVIRONMENT],
+    domains: ['enova.no'],
     slug: 'enova',
     homepage: 'https://www.enova.no',
     linkedinUrl: 'https://www.linkedin.com/company/enova-sf/',
@@ -414,6 +516,8 @@ export const members: Member[] = [
   new Member({
     name: 'FHI',
     type: MemberType.AGENCY,
+    sectors: [Sector.HEALTH],
+    domains: ['fhi.no'],
     slug: 'fhi',
     github: 'folkehelseinstituttet',
     homepage: 'https://www.fhi.no',
@@ -421,7 +525,9 @@ export const members: Member[] = [
   }),
   new Member({
     name: 'Forsvarsbygg',
-    type: MemberType.AGENCY,
+    type: MemberType.GOVERNMENT_AGENCY,
+    sectors: [Sector.DEFENSE],
+    domains: ['forsvarsbygg.no'],
     slug: 'forsvarsbygg',
     homepage: 'https://www.forsvarsbygg.no',
     linkedinUrl: 'https://www.linkedin.com/company/forsvarsbygg/',
@@ -429,6 +535,8 @@ export const members: Member[] = [
   new Member({
     name: 'Helsedirektoratet',
     type: MemberType.DIRECTORATE,
+    sectors: [Sector.HEALTH],
+    domains: ['helsedir.no', 'helsedirektoratet.no', 'ehelse.no'],
     slug: 'helsedirektoratet',
     logoBackgroundColor: '#00806E',
     homepage: 'https://www.helsedir.no',
@@ -437,6 +545,8 @@ export const members: Member[] = [
   new Member({
     name: 'Jernbanedirektoratet',
     type: MemberType.DIRECTORATE,
+    sectors: [Sector.TRANSPORT],
+    domains: ['jernbanedirektoratet.no'],
     slug: 'jernbanedirektoratet',
     homepage: 'https://www.jernbanedirektoratet.no',
     linkedinUrl: 'https://www.linkedin.com/company/jernbanedirektoratet/',
@@ -444,6 +554,8 @@ export const members: Member[] = [
   new Member({
     name: 'Kystverket',
     type: MemberType.DIRECTORATE,
+    sectors: [Sector.TRANSPORT],
+    domains: ['kystverket.no'],
     slug: 'kystverket',
     github: 'Kystverket',
     homepage: 'https://www.kystverket.no',
@@ -452,6 +564,8 @@ export const members: Member[] = [
   new Member({
     name: 'Landbruksdirektoratet',
     type: MemberType.DIRECTORATE,
+    sectors: [Sector.AGRICULTURE],
+    domains: ['landbruksdirektoratet.no'],
     slug: 'landbruksdirektoratet',
     homepage: 'https://www.landbruksdirektoratet.no',
     linkedinUrl: 'https://www.linkedin.com/company/landbruksdirektoratet/',
@@ -459,6 +573,8 @@ export const members: Member[] = [
   new Member({
     name: 'NBIM',
     type: MemberType.PUBLIC_CORPORATION,
+    sectors: [Sector.FINANCE],
+    domains: ['nbim.no'],
     slug: 'nbim',
     logoBackgroundColor: '#DDE2E7',
     homepage: 'https://www.nbim.no',
@@ -468,6 +584,8 @@ export const members: Member[] = [
   new Member({
     name: 'NKOM',
     type: MemberType.DIRECTORATE,
+    sectors: [Sector.DIGITAL],
+    domains: ['nkom.no'],
     slug: 'nkom',
     logoBackgroundColor: '#000000',
     homepage: 'https://www.nkom.no',
@@ -476,6 +594,8 @@ export const members: Member[] = [
   new Member({
     name: 'NMBU',
     type: MemberType.UNIVERSITY,
+    sectors: [Sector.EDUCATION],
+    domains: ['nmbu.no'],
     slug: 'nmbu',
     github: 'nmbu-no',
     homepage: 'https://www.nmbu.no',
@@ -485,6 +605,8 @@ export const members: Member[] = [
   new Member({
     name: 'Norad',
     type: MemberType.DIRECTORATE,
+    sectors: [Sector.GENERAL],
+    domains: ['norad.no'],
     slug: 'norad',
     logoBackgroundColor: 'rgb(3, 84, 45)',
     homepage: 'https://www.norad.no',
@@ -493,6 +615,8 @@ export const members: Member[] = [
   new Member({
     name: 'Norges Bank',
     type: MemberType.PUBLIC_CORPORATION,
+    sectors: [Sector.FINANCE],
+    domains: ['norges-bank.no', 'norgesbank.no'],
     slug: 'norgesbank',
     homepage: 'https://www.norges-bank.no',
     linkedinUrl: 'https://www.linkedin.com/company/norges-bank/',
@@ -500,6 +624,8 @@ export const members: Member[] = [
   new Member({
     name: 'NSM',
     type: MemberType.DIRECTORATE,
+    sectors: [Sector.DEFENSE],
+    domains: ['nsm.no'],
     slug: 'nsm',
     homepage: 'https://www.nsm.no',
     linkedinUrl: 'https://www.linkedin.com/company/nsm-norge/',
@@ -507,6 +633,8 @@ export const members: Member[] = [
   new Member({
     name: 'NTNU',
     type: MemberType.UNIVERSITY,
+    sectors: [Sector.EDUCATION],
+    domains: ['ntnu.no'],
     slug: 'ntnu',
     github: 'ntnu',
     homepage: 'https://www.ntnu.no',
@@ -515,6 +643,8 @@ export const members: Member[] = [
   new Member({
     name: 'Nye Veier',
     type: MemberType.STATE_ENTERPRISE,
+    sectors: [Sector.TRANSPORT],
+    domains: ['nyeveier.no'],
     slug: 'nyeveier',
     homepage: 'https://www.nyeveier.no',
     linkedinUrl: 'https://www.linkedin.com/company/nye-veier/',
@@ -522,6 +652,8 @@ export const members: Member[] = [
   new Member({
     name: 'Riksrevisjonen',
     type: MemberType.AGENCY,
+    sectors: [Sector.GENERAL],
+    domains: ['riksrevisjonen.no'],
     slug: 'riksrevisjonen',
     github: 'Riksrevisjonen',
     homepage: 'https://www.riksrevisjonen.no',
@@ -530,6 +662,8 @@ export const members: Member[] = [
   new Member({
     name: 'Ruter',
     type: MemberType.MUNICIPAL_COMPANY,
+    sectors: [Sector.TRANSPORT],
+    domains: ['ruter.no'],
     slug: 'ruter',
     github: 'ruter-as',
     homepage: 'https://www.ruter.no',
@@ -538,6 +672,8 @@ export const members: Member[] = [
   new Member({
     name: 'Statsbygg',
     type: MemberType.AGENCY,
+    sectors: [Sector.GENERAL],
+    domains: ['statsbygg.no'],
     slug: 'statsbygg',
     homepage: 'https://www.statsbygg.no',
     linkedinUrl: 'https://www.linkedin.com/company/statsbygg/',
@@ -545,6 +681,8 @@ export const members: Member[] = [
   new Member({
     name: 'Statsforvalteren',
     type: MemberType.GOVERNMENT_AGENCY,
+    sectors: [Sector.GENERAL],
+    domains: ['statsforvalteren.no'],
     slug: 'statsforvalteren',
     homepage: 'https://www.statsforvalteren.no',
     linkedinUrl: 'https://www.linkedin.com/company/statsforvalteren/',
@@ -552,6 +690,8 @@ export const members: Member[] = [
   new Member({
     name: 'Stortinget',
     type: MemberType.GOVERNMENT_AGENCY,
+    sectors: [Sector.GENERAL],
+    domains: ['stortinget.no'],
     slug: 'stortinget',
     homepage: 'https://www.stortinget.no',
     linkedinUrl: 'https://www.linkedin.com/company/stortinget/',
@@ -559,6 +699,8 @@ export const members: Member[] = [
   new Member({
     name: 'UiB',
     type: MemberType.UNIVERSITY,
+    sectors: [Sector.EDUCATION],
+    domains: ['uib.no', 'it.uib.no'],
     github: 'uib',
     homepage: 'https://www.uib.no',
     linkedinUrl: 'https://www.linkedin.com/school/university-of-bergen/',
@@ -566,6 +708,8 @@ export const members: Member[] = [
   new Member({
     name: 'UiO',
     type: MemberType.UNIVERSITY,
+    sectors: [Sector.EDUCATION],
+    domains: ['uio.no', 'usit.uio.no', 'ifi.uio.no'],
     slug: 'uio',
     github: 'unioslo',
     homepage: 'https://www.uio.no',
@@ -574,6 +718,8 @@ export const members: Member[] = [
   new Member({
     name: 'UiT',
     type: MemberType.UNIVERSITY,
+    sectors: [Sector.EDUCATION],
+    domains: ['uit.no'],
     github: 'uit-no',
     homepage: 'https://www.uit.no',
     linkedinUrl:
@@ -582,6 +728,8 @@ export const members: Member[] = [
   new Member({
     name: 'Vinmonopolet',
     type: MemberType.STATE_ENTERPRISE,
+    sectors: [Sector.GENERAL],
+    domains: ['vinmonopolet.no'],
     slug: 'vinmonopolet',
     homepage: 'https://www.vinmonopolet.no',
     linkedinUrl: 'https://www.linkedin.com/company/vinmonopolet/',
@@ -589,6 +737,8 @@ export const members: Member[] = [
   new Member({
     name: 'Bærum kommune',
     type: MemberType.MUNICIPALITY,
+    sectors: [Sector.GENERAL],
+    domains: ['baerum.kommune.no'],
     slug: 'baerum',
     homepage: 'https://www.baerum.kommune.no',
     linkedinUrl: 'https://www.linkedin.com/company/bærum-kommune/',
@@ -596,6 +746,8 @@ export const members: Member[] = [
   new Member({
     name: 'Bergen kommune',
     type: MemberType.MUNICIPALITY,
+    sectors: [Sector.GENERAL],
+    domains: ['bergen.kommune.no'],
     slug: 'bergen',
     github: 'bergenkommune',
     homepage: 'https://www.bergen.kommune.no',
@@ -604,13 +756,26 @@ export const members: Member[] = [
   new Member({
     name: 'Bodø kommune',
     type: MemberType.MUNICIPALITY,
+    sectors: [Sector.GENERAL],
+    domains: ['bodo.kommune.no'],
     slug: 'bodo',
     homepage: 'https://www.bodo.kommune.no',
     linkedinUrl: 'https://www.linkedin.com/company/bodø-kommune/',
   }),
   new Member({
+    name: 'Lillestrøm kommune',
+    type: MemberType.MUNICIPALITY,
+    sectors: [Sector.GENERAL],
+    domains: ['lillestrom.kommune.no', 'skedsmo.kommune.no'],
+    slug: 'lillestrom',
+    homepage: 'https://www.lillestrom.kommune.no',
+    linkedinUrl: 'https://www.linkedin.com/company/lillestrom-kommune/',
+  }),
+  new Member({
     name: 'Moss kommune',
     type: MemberType.MUNICIPALITY,
+    sectors: [Sector.GENERAL],
+    domains: ['moss.kommune.no'],
     slug: 'moss',
     homepage: 'https://www.moss.kommune.no',
     linkedinUrl: 'https://www.linkedin.com/company/moss-kommune/',
@@ -618,6 +783,8 @@ export const members: Member[] = [
   new Member({
     name: 'Trondheim kommune',
     type: MemberType.MUNICIPALITY,
+    sectors: [Sector.GENERAL],
+    domains: ['trondheim.kommune.no'],
     slug: 'trondheim',
     github: 'Trondheim-kommune',
     homepage: 'https://www.trondheim.kommune.no',
@@ -626,6 +793,8 @@ export const members: Member[] = [
   new Member({
     name: 'Rogaland Fylkeskommune',
     type: MemberType.COUNTY,
+    sectors: [Sector.GENERAL],
+    domains: ['rogfk.no'],
     slug: 'rogaland',
     homepage: 'https://www.rogfk.no',
     linkedinUrl: 'https://www.linkedin.com/company/rogaland-fylkeskommune/',
@@ -633,6 +802,8 @@ export const members: Member[] = [
   new Member({
     name: 'Trøndelag Fylkeskommune',
     type: MemberType.COUNTY,
+    sectors: [Sector.GENERAL],
+    domains: ['trondelagfylke.no'],
     slug: 'trondelag',
     homepage: 'https://www.trondelagfylke.no',
     linkedinUrl: 'https://www.linkedin.com/company/trøndelag-fylkeskommune/',
@@ -640,6 +811,8 @@ export const members: Member[] = [
   new Member({
     name: 'Vestland Fylkeskommune',
     type: MemberType.COUNTY,
+    sectors: [Sector.GENERAL],
+    domains: ['vlfk.no'],
     slug: 'vestland',
     homepage: 'https://www.vlfk.no',
     linkedinUrl: 'https://www.linkedin.com/company/vestland-fylkeskommune/',
@@ -647,6 +820,8 @@ export const members: Member[] = [
   new Member({
     name: 'Røde Kors',
     type: MemberType.OTHER,
+    sectors: [Sector.HEALTH],
+    domains: ['rodekors.no', 'redcross.no'],
     slug: 'rodekors',
     homepage: 'https://www.rodekors.no',
     linkedinUrl: 'https://www.linkedin.com/company/norwegian-red-cross/',
@@ -654,6 +829,8 @@ export const members: Member[] = [
   new Member({
     name: 'BKK',
     type: MemberType.MUNICIPAL_COMPANY,
+    sectors: [Sector.ENERGY],
+    domains: ['bkk.no'],
     slug: 'bkk',
     homepage: 'https://www.bkk.no',
     linkedinUrl:
@@ -662,6 +839,8 @@ export const members: Member[] = [
   new Member({
     name: 'Eviny',
     type: MemberType.MUNICIPAL_COMPANY,
+    sectors: [Sector.ENERGY],
+    domains: ['eviny.no'],
     slug: 'eviny',
     homepage: 'https://www.eviny.no',
     linkedinUrl: 'https://www.linkedin.com/company/eviny/',
@@ -669,6 +848,8 @@ export const members: Member[] = [
   new Member({
     name: 'Hafslund',
     type: MemberType.MUNICIPAL_COMPANY,
+    sectors: [Sector.ENERGY],
+    domains: ['hafslund.no'],
     slug: 'hafslund',
     homepage: 'https://www.hafslund.no',
     linkedinUrl: 'https://www.linkedin.com/company/hafslund/',
@@ -676,12 +857,16 @@ export const members: Member[] = [
   new Member({
     name: 'Hafslund Eco',
     type: MemberType.MUNICIPAL_COMPANY,
+    sectors: [Sector.ENERGY],
+    domains: ['hafslundeco.no'],
     homepage: 'https://www.hafslundeco.no',
     linkedinUrl: 'https://www.linkedin.com/company/hafslund-eco/',
   }),
   new Member({
     name: 'Skagerak Energi',
     type: MemberType.STATE_COMPANY,
+    sectors: [Sector.ENERGY],
+    domains: ['skagerakenergi.no'],
     logoKey: 'statkraft',
     github: 'skagerakenergi',
     homepage: 'https://www.skagerakenergi.no',
@@ -690,6 +875,8 @@ export const members: Member[] = [
   new Member({
     name: 'Lyse',
     type: MemberType.MUNICIPAL_COMPANY,
+    sectors: [Sector.ENERGY],
+    domains: ['lyse.no'],
     slug: 'lyse',
     homepage: 'https://www.lyse.no',
     linkedinUrl: 'https://no.linkedin.com/company/lyse-as',
@@ -697,10 +884,240 @@ export const members: Member[] = [
   }),
   new Member({
     name: 'Hemit HF',
-    type: MemberType.STATE_COMPANY,
+    type: MemberType.STATE_ENTERPRISE,
+    sectors: [Sector.HEALTH],
+    domains: ['hemit.no', 'helse-midt.no'],
     slug: 'hemit',
     homepage: 'https://www.hemit.no',
     linkedinUrl: 'https://www.linkedin.com/company/hemit',
     logoBackgroundColor: '#1a1a1a',
+  }),
+
+  new Member({
+    name: 'AtB',
+    type: MemberType.MUNICIPAL_COMPANY,
+    sectors: [Sector.TRANSPORT],
+    domains: ['atb.no'],
+    slug: 'atb',
+    homepage: 'https://www.atb.no',
+    linkedinUrl: 'https://www.linkedin.com/company/atb-as/',
+  }),
+  new Member({
+    name: 'Barne-, ungdoms- og familiedirektoratet',
+    type: MemberType.DIRECTORATE,
+    sectors: [Sector.GENERAL],
+    domains: ['bufdir.no'],
+    slug: 'bufdir',
+    homepage: 'https://www.bufdir.no',
+    linkedinUrl: 'https://www.linkedin.com/company/bufdir/',
+  }),
+  new Member({
+    name: 'Forsvaret',
+    type: MemberType.AGENCY,
+    sectors: [Sector.DEFENSE],
+    domains: ['mil.no', 'sgp.norgov.no'],
+    slug: 'forsvaret',
+    homepage: 'https://www.forsvaret.no',
+    linkedinUrl: 'https://www.linkedin.com/company/forsvaret/',
+  }),
+  new Member({
+    name: 'FRID IKS',
+    type: MemberType.MUNICIPAL_COMPANY,
+    sectors: [Sector.DIGITAL],
+    domains: ['frid-iks.no'],
+    slug: 'frid-iks',
+    homepage: 'https://frid-iks.no',
+    linkedinUrl: 'https://www.linkedin.com/company/frid-iks/',
+  }),
+  new Member({
+    name: 'Havforskningsinstituttet',
+    type: MemberType.RESEARCH_INSTITUTE,
+    sectors: [Sector.ENVIRONMENT, Sector.AGRICULTURE],
+    domains: ['hi.no'],
+    slug: 'havforskningsinstituttet',
+    homepage: 'https://www.hi.no',
+    linkedinUrl:
+      'https://www.linkedin.com/company/institute-of-marine-research/',
+  }),
+  new Member({
+    name: 'Helse Nord IKT',
+    type: MemberType.STATE_ENTERPRISE,
+    sectors: [Sector.HEALTH],
+    domains: ['hnikt.no'],
+    slug: 'helse-nord-ikt',
+    homepage: 'https://www.helsenordikt.no',
+    linkedinUrl: 'https://www.linkedin.com/company/helse-nord-ikt/',
+  }),
+  new Member({
+    name: 'Helse Vest IKT',
+    type: MemberType.STATE_COMPANY,
+    sectors: [Sector.HEALTH],
+    domains: ['helse-vest-ikt.no', 'ihelse.net'],
+    slug: 'helse-vest-ikt',
+    homepage: 'https://www.helse-vest-ikt.no',
+    linkedinUrl: 'https://www.linkedin.com/company/helse-vest-ikt/',
+  }),
+  new Member({
+    name: 'Helseplattformen',
+    type: MemberType.STATE_COMPANY,
+    sectors: [Sector.HEALTH],
+    domains: ['helseplattformen.no'],
+    slug: 'helseplattformen',
+    homepage: 'https://www.helseplattformen.no',
+    linkedinUrl: 'https://www.linkedin.com/company/helseplattformen-as/',
+  }),
+  new Member({
+    name: 'Høgskolen i Innlandet',
+    type: MemberType.UNIVERSITY,
+    sectors: [Sector.EDUCATION],
+    domains: ['inn.no'],
+    slug: 'inn',
+    homepage: 'https://www.inn.no',
+    linkedinUrl: 'https://www.linkedin.com/school/inn-university/',
+  }),
+  new Member({
+    name: 'Innovasjon Norge',
+    type: MemberType.STATE_COMPANY,
+    sectors: [Sector.GENERAL],
+    domains: ['innovasjonnorge.no'],
+    slug: 'innovasjon-norge',
+    homepage: 'https://www.innovasjonnorge.no',
+    linkedinUrl: 'https://www.linkedin.com/company/innovasjon-norge/',
+  }),
+  new Member({
+    name: 'KLP',
+    type: MemberType.PUBLIC_CORPORATION,
+    sectors: [Sector.FINANCE],
+    domains: ['klp.no'],
+    slug: 'klp',
+    homepage: 'https://www.klp.no',
+    linkedinUrl: 'https://www.linkedin.com/company/klp/',
+  }),
+  new Member({
+    name: 'Kongsberg Satellite Services',
+    type: MemberType.STATE_COMPANY,
+    sectors: [Sector.DEFENSE],
+    domains: ['ksat.no'],
+    slug: 'ksat',
+    homepage: 'https://www.ksat.no',
+    linkedinUrl:
+      'https://www.linkedin.com/company/ksat---kongsberg-satellite-services/',
+  }),
+  new Member({
+    name: 'Kriminalomsorgsdirektoratet',
+    type: MemberType.DIRECTORATE,
+    sectors: [Sector.JUSTICE],
+    domains: ['kriminalomsorg.no'],
+    slug: 'kriminalomsorgsdirektoratet',
+    homepage: 'https://www.kriminalomsorgen.no',
+    linkedinUrl:
+      'https://www.linkedin.com/company/kriminalomsorgsdirektoratet/',
+  }),
+  new Member({
+    name: 'Nasjonalt klageorgan for helsetjenesten',
+    type: MemberType.GOVERNMENT_AGENCY,
+    sectors: [Sector.HEALTH],
+    domains: ['helseklage.no'],
+    slug: 'helseklage',
+    homepage: 'https://www.helseklage.no',
+    linkedinUrl:
+      'https://www.linkedin.com/company/nasjonalt-klageorgan-for-helsetjenesten/',
+  }),
+  new Member({
+    name: 'Norges Idrettsforbund',
+    type: MemberType.PUBLIC_CORPORATION,
+    sectors: [Sector.CULTURE],
+    domains: ['idrettsforbundet.no'],
+    slug: 'norges-idrettsforbund',
+    homepage: 'https://www.idrettsforbundet.no',
+    linkedinUrl: 'https://www.linkedin.com/company/norges-idrettsforbund/',
+  }),
+  new Member({
+    name: 'Norges sjømatråd',
+    type: MemberType.STATE_COMPANY,
+    sectors: [Sector.AGRICULTURE],
+    domains: ['seafood.no'],
+    slug: 'norges-sjomatrad',
+    homepage: 'https://www.seafood.no',
+    linkedinUrl: 'https://www.linkedin.com/company/norwegian-seafood-council/',
+  }),
+  new Member({
+    name: 'Novari IKS',
+    type: MemberType.MUNICIPAL_COMPANY,
+    sectors: [Sector.DIGITAL, Sector.EDUCATION],
+    domains: ['novari.no', 'vigoiks.no'],
+    slug: 'novari',
+    homepage: 'https://novari.no',
+    linkedinUrl: 'https://www.linkedin.com/company/novari-iks/',
+  }),
+  new Member({
+    name: 'Oslo Pensjonsforsikring',
+    type: MemberType.MUNICIPAL_COMPANY,
+    sectors: [Sector.FINANCE],
+    domains: ['opf.no'],
+    slug: 'opf',
+    homepage: 'https://www.opf.no',
+    linkedinUrl: 'https://www.linkedin.com/company/oslo-pensjonsforsikring-as/',
+  }),
+  new Member({
+    name: 'OsloMet',
+    type: MemberType.UNIVERSITY,
+    sectors: [Sector.EDUCATION],
+    domains: ['oslomet.no'],
+    slug: 'oslomet',
+    homepage: 'https://www.oslomet.no',
+    linkedinUrl: 'https://www.linkedin.com/school/oslomet/',
+  }),
+  new Member({
+    name: 'Riksantikvaren',
+    type: MemberType.DIRECTORATE,
+    sectors: [Sector.CULTURE],
+    domains: ['ra.no'],
+    slug: 'riksantikvaren',
+    homepage: 'https://riksantikvaren.no',
+    linkedinUrl: 'https://www.linkedin.com/company/riksantikvaren/',
+  }),
+  new Member({
+    name: 'Skyss',
+    type: MemberType.PUBLIC_CORPORATION,
+    sectors: [Sector.TRANSPORT],
+    domains: ['skyss.no'],
+    slug: 'skyss',
+    homepage: 'https://www.skyss.no',
+  }),
+  new Member({
+    name: 'Space Norway',
+    type: MemberType.STATE_COMPANY,
+    sectors: [Sector.DEFENSE],
+    domains: ['spacenorway.com'],
+    slug: 'space-norway',
+    homepage: 'https://spacenorway.no',
+    linkedinUrl: 'https://www.linkedin.com/company/space-norway-as/',
+  }),
+  new Member({
+    name: 'Sykehusinnkjøp HF',
+    type: MemberType.STATE_ENTERPRISE,
+    sectors: [Sector.HEALTH],
+    domains: ['shn.no'],
+    slug: 'sykehusinnkjop',
+    homepage: 'https://www.sykehusinnkjop.no',
+    linkedinUrl: 'https://www.linkedin.com/company/sykehusinnkjop-hf/',
+  }),
+  new Member({
+    name: 'Sykehuspartner HF',
+    type: MemberType.STATE_ENTERPRISE,
+    sectors: [Sector.HEALTH],
+    domains: ['sykehuspartner.no'],
+    slug: 'sykehuspartner',
+    homepage: 'https://www.sykehuspartner.no',
+    linkedinUrl: 'https://www.linkedin.com/company/sykehuspartner-hf/',
+  }),
+  new Member({
+    name: 'TET Digital',
+    type: MemberType.MUNICIPAL_COMPANY,
+    sectors: [Sector.TRANSPORT, Sector.DIGITAL],
+    domains: ['tetdigital.no'],
+    slug: 'tet-digital',
+    homepage: 'https://www.tetdigital.no',
   }),
 ]

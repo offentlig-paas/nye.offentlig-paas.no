@@ -24,6 +24,21 @@ export enum MemberType {
   OTHER = 'Andre',
 }
 
+export enum Sector {
+  TRANSPORT = 'Transport',
+  HEALTH = 'Helse',
+  ENERGY = 'Energi',
+  EDUCATION = 'Utdanning og forskning',
+  JUSTICE = 'Justis og beredskap',
+  FINANCE = 'Finans og økonomi',
+  DIGITAL = 'Digitalisering',
+  ENVIRONMENT = 'Miljø og klima',
+  CULTURE = 'Kultur og medier',
+  DEFENSE = 'Forsvar og sikkerhet',
+  AGRICULTURE = 'Landbruk og mat',
+  GENERAL = 'Generell forvaltning',
+}
+
 interface MemberPlatform {
   name: string
   description: string
@@ -35,6 +50,8 @@ interface MemberPlatform {
 interface iMember {
   name: string
   type: MemberType
+  sectors: Sector[]
+  domains?: string[]
   slug?: string
   logoKey?: string
   logoBackgroundColor?: string
@@ -47,6 +64,8 @@ interface iMember {
 export class Member implements iMember {
   name: string
   type: MemberType
+  sectors: Sector[]
+  domains: string[]
   slug?: string
   logoKey?: string
   logoBackgroundColor?: string
@@ -58,6 +77,8 @@ export class Member implements iMember {
   constructor({
     name,
     type,
+    sectors,
+    domains,
     slug,
     logoKey,
     logoBackgroundColor,
@@ -68,6 +89,8 @@ export class Member implements iMember {
   }: iMember) {
     this.name = name
     this.type = type
+    this.sectors = sectors
+    this.domains = domains ?? []
     this.slug = slug
     this.logoKey = logoKey
     this.logoBackgroundColor = logoBackgroundColor

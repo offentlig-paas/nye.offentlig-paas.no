@@ -42,6 +42,7 @@ import {
   extractUserIds,
 } from '../lib/slack-message-builder'
 import { adminSurveyRouter } from './admin-survey'
+import { adminMembersRouter } from './admin-members'
 
 const registrationRepository = new EventRegistrationRepository()
 
@@ -943,4 +944,6 @@ Mvh ${organizerNames}`
   }),
 
   surveys: adminSurveyRouter,
+
+  members: adminMembersRouter,
 })

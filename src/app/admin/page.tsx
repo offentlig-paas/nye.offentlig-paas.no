@@ -3,7 +3,11 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { auth } from '@/auth'
 import { AdminLayout } from '@/components/AdminLayout'
-import { CalendarDaysIcon, BeakerIcon } from '@heroicons/react/24/outline'
+import {
+  CalendarDaysIcon,
+  BeakerIcon,
+  UserGroupIcon,
+} from '@heroicons/react/24/outline'
 
 const cards = [
   {
@@ -18,13 +22,19 @@ const cards = [
     href: '/admin/forskning',
     icon: BeakerIcon,
   },
+  {
+    title: 'Medlemmer',
+    description: 'Se Slack-representasjon per medlemsorganisasjon.',
+    href: '/admin/members',
+    icon: UserGroupIcon,
+  },
 ]
 
 function AdminLandingSkeleton() {
   return (
     <AdminLayout title="Admin" intro="Administrasjonspanel for Offentlig PaaS.">
       <div className="grid gap-6 sm:grid-cols-2">
-        {[...Array(2)].map((_, i) => (
+        {[...Array(3)].map((_, i) => (
           <div
             key={i}
             className="h-32 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-700"
