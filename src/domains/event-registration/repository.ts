@@ -65,6 +65,27 @@ export class EventRegistrationRepository {
   }
 
   /**
+   * Find registration by event slug and user email
+   */
+  async findByEventAndEmail(
+    eventSlug: string,
+    email: string
+  ): Promise<EventRegistration | null> {
+    const normalizedEmail = email.trim().toLowerCase()
+    const query = groq`*[_type == "eventRegistration" && eventSlug == $eventSlug && lower(email) == $email][0]`
+    const result = await sanityClient.fetch(
+      query,
+      {
+        eventSlug,
+        email: normalizedEmail,
+      },
+      { cache: 'no-store', next: { revalidate: 0 } }
+    )
+
+    return result ? this.mapSanityToEventRegistration(result) : null
+  }
+
+  /**
    * Find all registrations with optional filtering
    */
   async findMany(
@@ -178,7 +199,7 @@ export class EventRegistrationRepository {
       eventSlug: doc.eventSlug as string,
       name: doc.name as string,
       email: doc.email as string,
-      slackUserId: doc.slackUserId as string,
+      slackUserId: (doc.slackUserId as string) || undefined,
       organisation: doc.organisation as string,
       dietary: doc.dietary as string | undefined,
       comments: doc.comments as string | undefined,

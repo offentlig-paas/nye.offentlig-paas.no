@@ -32,7 +32,6 @@ const eventRegistrationSchema = defineType({
       name: 'slackUserId',
       title: 'Slack User ID',
       type: 'string',
-      validation: Rule => Rule.required(),
     },
     {
       name: 'organisation',

@@ -8,10 +8,13 @@ import { AdminRegistrationList } from '@/components/AdminRegistrationList'
 import { AdminRegistrationFilters } from '@/components/AdminRegistrationFilters'
 import { AdminEventActions } from '@/components/AdminEventActions'
 import { AdminEventStats } from '@/components/AdminEventStats'
+import { AddRegistrationModal } from '@/components/AddRegistrationModal'
+import { UserPlusIcon } from '@heroicons/react/24/outline'
 import {
   deleteRegistration,
   updateRegistrationStatus,
   bulkUpdateRegistrationStatus,
+  createManualRegistration,
 } from '@/app/admin/events/[slug]/actions'
 import { useAdminEvent } from '@/contexts/AdminEventContext'
 import type { RegistrationStatus } from '@/domains/event-registration/types'
@@ -29,6 +32,7 @@ export function AdminAttendeesClient() {
   )
   const [isDeleting, setIsDeleting] = useState<string | null>(null)
   const [isUpdatingStatus, setIsUpdatingStatus] = useState<string | null>(null)
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const { showSuccess, showError } = useToast()
   const router = useRouter()
   const [_isPending, startTransition] = useTransition()
@@ -113,6 +117,22 @@ export function AdminAttendeesClient() {
     downloadCSV(csvContent, `${slug}-paemeldinger.csv`)
   }
 
+  const handleAddRegistration = async (data: {
+    name: string
+    email: string
+    organisation: string
+    attendanceType: 'physical' | 'digital'
+    attendingSocialEvent?: boolean
+    dietary?: string
+    comments?: string
+  }) => {
+    const result = await createManualRegistration(slug, data)
+    showSuccess('Lagt til', result.message)
+    startTransition(() => {
+      router.refresh()
+    })
+  }
+
   const filteredRegistrations = useMemo(
     () =>
       eventDetails?.registrations.filter(
@@ -172,17 +192,28 @@ export function AdminAttendeesClient() {
       <AdminEventStats eventDetails={eventDetails} />
 
       {/* Actions */}
-      <AdminEventActions
-        eventSlug={slug}
-        eventTitle={eventDetails.title}
-        eventDate={eventDetails.date}
-        eventStartTime={eventDetails.startTime}
-        activeRegistrations={eventDetails.stats.activeRegistrations}
-        attendedCount={eventDetails.stats.statusBreakdown.attended || 0}
-        onExport={handleExportCSV}
-        onSuccess={message => showSuccess('Sendt', message)}
-        onError={message => showError('Feil', message)}
-      />
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="flex-1">
+          <AdminEventActions
+            eventSlug={slug}
+            eventTitle={eventDetails.title}
+            eventDate={eventDetails.date}
+            eventStartTime={eventDetails.startTime}
+            activeRegistrations={eventDetails.stats.activeRegistrations}
+            attendedCount={eventDetails.stats.statusBreakdown.attended || 0}
+            onExport={handleExportCSV}
+            onSuccess={message => showSuccess('Sendt', message)}
+            onError={message => showError('Feil', message)}
+          />
+        </div>
+        <button
+          onClick={() => setIsAddModalOpen(true)}
+          className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600"
+        >
+          <UserPlusIcon className="mr-2 h-4 w-4" />
+          Legg til deltaker
+        </button>
+      </div>
 
       {/* Bulk Actions */}
       {selectedRegistrations.length > 0 && (
@@ -293,6 +324,15 @@ export function AdminAttendeesClient() {
         isUpdatingStatus={isUpdatingStatus}
         isDeleting={isDeleting}
         searchTerm={searchTerm}
+      />
+
+      {/* Add Registration Modal */}
+      <AddRegistrationModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={handleAddRegistration}
+        hasSocialEvent={eventDetails.hasSocialEvent}
+        attendanceTypes={eventDetails.registration.attendanceTypes}
       />
     </div>
   )
