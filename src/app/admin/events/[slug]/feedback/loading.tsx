@@ -1,4 +1,4 @@
-const shimmer = 'animate-pulse rounded bg-zinc-200 dark:bg-zinc-700' as const
+import { SHIMMER_CLASS as shimmer } from '@/lib/admin-ui'
 
 export default function Loading() {
   return (

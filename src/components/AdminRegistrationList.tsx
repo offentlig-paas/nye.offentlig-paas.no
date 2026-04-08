@@ -1,6 +1,8 @@
 import { Avatar } from '@/components/Avatar'
 import { StatusBadge } from '@/components/StatusBadge'
+import { Badge } from '@/components/Badge'
 import { ActionsMenu } from '@/components/ActionsMenu'
+import { AdminEmptyState } from '@/components/AdminEmptyState'
 import { UsersIcon, UserGroupIcon } from '@heroicons/react/20/solid'
 import type {
   EventRegistration,
@@ -41,17 +43,15 @@ export function AdminRegistrationList({
 
   if (registrations.length === 0) {
     return (
-      <div className="py-12 text-center">
-        <UsersIcon className="mx-auto h-12 w-12 text-zinc-400 dark:text-zinc-500" />
-        <h3 className="mt-2 text-sm font-semibold text-zinc-900 dark:text-white">
-          {searchTerm ? 'Ingen påmeldinger funnet' : 'Ingen påmeldinger'}
-        </h3>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-          {searchTerm
+      <AdminEmptyState
+        icon={UsersIcon}
+        title={searchTerm ? 'Ingen påmeldinger funnet' : 'Ingen påmeldinger'}
+        description={
+          searchTerm
             ? 'Prøv å justere søkekriteriene.'
-            : 'Det er ingen påmeldinger til denne fagdagen ennå.'}
-        </p>
-      </div>
+            : 'Det er ingen påmeldinger til denne fagdagen ennå.'
+        }
+      />
     )
   }
 
@@ -134,13 +134,9 @@ export function AdminRegistrationList({
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap">
                   {registration.attendanceType === 'physical' ? (
-                    <span className="inline-flex items-center rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700 ring-1 ring-green-600/20 ring-inset dark:bg-green-500/10 dark:text-green-400 dark:ring-green-500/20">
-                      Fysisk
-                    </span>
+                    <Badge color="green">Fysisk</Badge>
                   ) : registration.attendanceType === 'digital' ? (
-                    <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-blue-600/20 ring-inset dark:bg-blue-500/10 dark:text-blue-400 dark:ring-blue-500/20">
-                      Digitalt
-                    </span>
+                    <Badge color="blue">Digitalt</Badge>
                   ) : (
                     <span className="text-xs text-zinc-300 dark:text-zinc-600">
                       -

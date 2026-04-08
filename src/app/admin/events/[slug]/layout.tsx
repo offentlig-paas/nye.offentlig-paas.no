@@ -6,6 +6,7 @@ import { getEvent, getTalksCount } from '@/lib/events/helpers'
 import { formatDateTime } from '@/lib/formatDate'
 import { createCaller } from '@/server/root'
 import { AdminEventProvider } from '@/contexts/AdminEventContext'
+import { SHIMMER_CLASS as shimmer } from '@/lib/admin-ui'
 
 interface AdminEventLayoutProps {
   children: React.ReactNode
@@ -15,8 +16,6 @@ interface AdminEventLayoutProps {
 }
 
 function NavSkeleton() {
-  const shimmer = 'animate-pulse rounded bg-zinc-200 dark:bg-zinc-700' as const
-
   return (
     <div className="border-b border-zinc-200 dark:border-zinc-700">
       <nav className="-mb-px flex space-x-8">

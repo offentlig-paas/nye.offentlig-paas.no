@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { useToast } from '@/components/ToastProvider'
 import { useAdminEvent } from '@/contexts/AdminEventContext'
 import { trpc } from '@/lib/trpc/client'
+import { Badge } from '@/components/Badge'
+import type { BadgeColor } from '@/components/Badge'
 import {
   TalkFormatDisplay,
   TalkSubmissionStatusDisplay,
@@ -22,26 +24,12 @@ import {
 
 const statusConfig: Record<
   TalkSubmissionStatus,
-  { icon: typeof ClockIcon; badge: string }
+  { icon: typeof ClockIcon; color: BadgeColor }
 > = {
-  submitted: {
-    icon: ClockIcon,
-    badge:
-      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300',
-  },
-  accepted: {
-    icon: CheckCircleIcon,
-    badge:
-      'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
-  },
-  rejected: {
-    icon: XCircleIcon,
-    badge: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
-  },
-  withdrawn: {
-    icon: XMarkIcon,
-    badge: 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800/30 dark:text-zinc-400',
-  },
+  submitted: { icon: ClockIcon, color: 'yellow' },
+  accepted: { icon: CheckCircleIcon, color: 'green' },
+  rejected: { icon: XCircleIcon, color: 'red' },
+  withdrawn: { icon: XMarkIcon, color: 'zinc' },
 }
 
 const STATUS_FILTERS: Array<{
@@ -201,12 +189,10 @@ export function AdminTalkSubmissionsClient() {
                       <h3 className="truncate text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                         {submission.title}
                       </h3>
-                      <span
-                        className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${config.badge}`}
-                      >
+                      <Badge color={config.color} className="gap-1">
                         <StatusIcon className="h-3 w-3" />
                         {TalkSubmissionStatusDisplay[submission.status]}
-                      </span>
+                      </Badge>
                     </div>
                     <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-zinc-500 dark:text-zinc-400">
                       <span>{submission.speakerName}</span>

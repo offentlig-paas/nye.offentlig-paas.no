@@ -1,4 +1,14 @@
+import { Badge } from '@/components/Badge'
+import type { BadgeColor } from '@/components/Badge'
 import type { RegistrationStatus } from '@/domains/event-registration/types'
+
+const STATUS_CONFIG: Record<string, { label: string; color: BadgeColor }> = {
+  confirmed: { label: 'Bekreftet', color: 'green' },
+  waitlist: { label: 'Venteliste', color: 'yellow' },
+  cancelled: { label: 'Avmeldt', color: 'red' },
+  attended: { label: 'Deltok', color: 'blue' },
+  'no-show': { label: 'Ikke møtt', color: 'zinc' },
+}
 
 interface StatusBadgeProps {
   status: RegistrationStatus
@@ -6,54 +16,14 @@ interface StatusBadgeProps {
 }
 
 export function StatusBadge({ status, className = '' }: StatusBadgeProps) {
-  const getStatusConfig = (status: RegistrationStatus) => {
-    switch (status) {
-      case 'confirmed':
-        return {
-          label: 'Bekreftet',
-          classes:
-            'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400',
-        }
-      case 'waitlist':
-        return {
-          label: 'Venteliste',
-          classes:
-            'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400',
-        }
-      case 'cancelled':
-        return {
-          label: 'Avmeldt',
-          classes:
-            'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400',
-        }
-      case 'attended':
-        return {
-          label: 'Deltok',
-          classes:
-            'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400',
-        }
-      case 'no-show':
-        return {
-          label: 'Ikke møtt',
-          classes:
-            'bg-zinc-100 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-300',
-        }
-      default:
-        return {
-          label: status,
-          classes:
-            'bg-zinc-100 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-300',
-        }
-    }
+  const config = STATUS_CONFIG[status] || {
+    label: status,
+    color: 'zinc' as BadgeColor,
   }
 
-  const config = getStatusConfig(status)
-
   return (
-    <span
-      className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-zinc-500/10 ring-inset ${config.classes} ${className}`}
-    >
+    <Badge color={config.color} className={className}>
       {config.label}
-    </span>
+    </Badge>
   )
 }

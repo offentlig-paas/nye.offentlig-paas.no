@@ -6,26 +6,18 @@ import {
   BuildingOfficeIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline'
+import { Badge } from '@/components/Badge'
+import type { BadgeColor } from '@/components/Badge'
 import type { inferRouterOutputs } from '@trpc/server'
 import type { AppRouter } from '@/server/root'
 
 type SurveyListItem =
   inferRouterOutputs<AppRouter>['admin']['surveys']['list'][0]
 
-const statusLabels: Record<string, { label: string; className: string }> = {
-  draft: {
-    label: 'Utkast',
-    className: 'bg-zinc-100 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300',
-  },
-  open: {
-    label: 'Åpen',
-    className:
-      'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-  },
-  closed: {
-    label: 'Stengt',
-    className: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
-  },
+const statusLabels: Record<string, { label: string; color: BadgeColor }> = {
+  draft: { label: 'Utkast', color: 'zinc' },
+  open: { label: 'Åpen', color: 'green' },
+  closed: { label: 'Stengt', color: 'red' },
 }
 
 export function AdminSurveyListClient({
@@ -57,11 +49,7 @@ export function AdminSurveyListClient({
                   <h3 className="truncate text-lg font-semibold text-zinc-900 group-hover:text-teal-600 dark:text-zinc-100 dark:group-hover:text-teal-400">
                     {survey.title}
                   </h3>
-                  <span
-                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${status.className}`}
-                  >
-                    {status.label}
-                  </span>
+                  <Badge color={status.color}>{status.label}</Badge>
                 </div>
                 <div className="mt-2 flex items-center gap-6 text-sm text-zinc-500 dark:text-zinc-400">
                   <span className="flex items-center gap-1.5">

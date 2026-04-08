@@ -15,6 +15,8 @@ import {
   ChatBubbleLeftIcon,
 } from '@heroicons/react/24/outline'
 import { StatCard } from '@/components/StatCard'
+import { AdminEmptyState } from '@/components/AdminEmptyState'
+import { Badge } from '@/components/Badge'
 import type { inferRouterOutputs } from '@trpc/server'
 import type { AppRouter } from '@/server/root'
 
@@ -106,19 +108,19 @@ export function AdminEventsClient({ eventsData }: AdminEventsClientProps) {
 
       {/* Events Grid */}
       {displayedEvents.length === 0 ? (
-        <div className="rounded-xl border border-zinc-200 bg-white py-12 text-center shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
-          <CalendarIcon className="mx-auto h-12 w-12 text-zinc-400 dark:text-zinc-500" />
-          <h3 className="mt-2 text-sm font-semibold text-zinc-900 dark:text-white">
-            {view === 'upcoming'
+        <AdminEmptyState
+          icon={CalendarIcon}
+          title={
+            view === 'upcoming'
               ? 'Ingen kommende fagdager'
-              : 'Ingen tidligere fagdager'}
-          </h3>
-          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-            {view === 'upcoming'
+              : 'Ingen tidligere fagdager'
+          }
+          description={
+            view === 'upcoming'
               ? 'Det er ingen planlagte fagdager.'
-              : 'Det er ingen avholdte fagdager.'}
-          </p>
-        </div>
+              : 'Det er ingen avholdte fagdager.'
+          }
+        />
       ) : (
         <div className="space-y-4">
           {displayedEvents.map(event => (
@@ -160,15 +162,15 @@ export function AdminEventsClient({ eventsData }: AdminEventsClientProps) {
                   {/* Status Badge */}
                   <div>
                     {view === 'upcoming' ? (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800 dark:bg-green-900/30 dark:text-green-300">
+                      <Badge color="green" className="gap-1.5 px-3 py-1">
                         <CheckCircleIcon className="h-3.5 w-3.5" />
                         Kommende
-                      </span>
+                      </Badge>
                     ) : (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-800 dark:bg-zinc-700 dark:text-zinc-300">
+                      <Badge color="zinc" className="gap-1.5 px-3 py-1">
                         <ArchiveBoxIcon className="h-3.5 w-3.5" />
                         Avholdt
-                      </span>
+                      </Badge>
                     )}
                   </div>
                 </div>
@@ -255,23 +257,23 @@ export function AdminEventsClient({ eventsData }: AdminEventsClientProps) {
                 {view === 'past' && (
                   <div className="mt-4 flex flex-wrap gap-2">
                     {event.hasRecording && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                      <Badge color="blue" className="gap-1">
                         <VideoCameraIcon className="h-3 w-3" />
                         Opptak tilgjengelig
-                      </span>
+                      </Badge>
                     )}
                     {event.feedbackRating && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-yellow-100 px-2.5 py-1 text-xs font-medium text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300">
+                      <Badge color="yellow" className="gap-1">
                         <StarIcon className="h-3 w-3" />
                         {event.feedbackRating.toFixed(1)}/5 av{' '}
                         {event.feedbackRespondents}
-                      </span>
+                      </Badge>
                     )}
                     {event.scheduleItemCount > 0 && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-800 dark:bg-green-900/30 dark:text-green-300">
+                      <Badge color="green" className="gap-1">
                         <ChatBubbleLeftIcon className="h-3 w-3" />
                         {event.scheduleItemCount} programpunkter
-                      </span>
+                      </Badge>
                     )}
                   </div>
                 )}
