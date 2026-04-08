@@ -15,6 +15,7 @@ import {
   ClipboardDocumentIcon,
   CheckIcon,
   ChatBubbleLeftIcon,
+  XMarkIcon,
 } from '@heroicons/react/24/outline'
 import type {
   SlackRepresentationSummary,
@@ -371,8 +372,17 @@ export function AdminMembersClient({
             placeholder="Søk etter organisasjon eller domene..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full rounded-lg border border-zinc-200 bg-white py-2 pr-3 pl-9 text-sm text-zinc-900 placeholder-zinc-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+            className="w-full rounded-lg border border-zinc-200 bg-white py-2 pr-8 pl-9 text-sm text-zinc-900 placeholder-zinc-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
           />
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch('')}
+              className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded p-0.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
+            >
+              <XMarkIcon className="h-4 w-4" />
+            </button>
+          )}
         </div>
         <CopyDomainsButton
           domains={summary.members.flatMap(m => m.domains)}
