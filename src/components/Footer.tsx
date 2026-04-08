@@ -30,7 +30,6 @@ export function Footer() {
               <div className="flex flex-wrap justify-center gap-x-6 gap-y-1 text-sm font-medium text-zinc-800 dark:text-zinc-200">
                 <NavLink href="/om">Om</NavLink>
                 <NavLink href="/artikkel">Artikler</NavLink>
-                <NavLink href="/plattformer">Plattformer</NavLink>
                 <NavLink href="/fagdag">Fagdager</NavLink>
                 <NavLink href="/medlemmer">Medlemmer</NavLink>
               </div>

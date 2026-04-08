@@ -8,6 +8,12 @@ import logoBanenor from '@/images/logos/banenor.svg'
 import logoSykehusapotekene from '@/images/logos/sykehusapotekene.svg'
 import logoUdi from '@/images/logos/udi.svg'
 import logoHKDir from '@/images/logos/hkdir.svg'
+import logoAltinn from '@/images/platforms/altinn.svg'
+import logoAurora from '@/images/platforms/aurora.jpg'
+import logoSkip from '@/images/platforms/skip.png'
+import logoNais from '@/images/platforms/nais.svg'
+import logoNova from '@/images/platforms/nova.png'
+import logoRadix from '@/images/platforms/radix.svg'
 import logoEnova from '@/images/logos/enova.svg'
 import logoLyse from '@/images/logos/lyse.svg'
 
@@ -28,6 +34,13 @@ export const members: Member[] = [
     homepage: 'https://www.nav.no',
     linkedinUrl: 'https://www.linkedin.com/company/nav',
     logoBackgroundColor: '#C20000',
+    platform: {
+      name: 'NAIS',
+      description: 'Nav sin applikasjonsplattform basert på Kubernetes',
+      href: 'https://nais.io',
+      label: 'nais.io',
+      logo: logoNais,
+    },
   }),
   new Member({
     name: 'Skatteetaten',
@@ -35,6 +48,14 @@ export const members: Member[] = [
     github: 'Skatteetaten',
     linkedinUrl: 'https://www.linkedin.com/company/skatteetaten/',
     homepage: 'https://www.skatteetaten.no',
+    platform: {
+      name: 'Aurora',
+      description:
+        'Skatteetaten sin applikasjonsplattform basert på RedHat OpenShift',
+      href: 'https://skatteetaten.github.io/aurora/',
+      label: 'skatteetaten.github.io',
+      logo: logoAurora,
+    },
   }),
   new Member({
     name: 'Miljødirektoratet',
@@ -49,6 +70,13 @@ export const members: Member[] = [
     github: 'kartverket',
     homepage: 'https://www.kartverket.no',
     linkedinUrl: 'https://www.linkedin.com/company/kartverketno/',
+    platform: {
+      name: 'Skip',
+      description: 'Statens Kartverks Infrastrukturplatform (Skip)',
+      href: 'https://skip.kartverket.no/',
+      label: 'skip.kartverket.no',
+      logo: logoSkip,
+    },
   }),
   new Member({
     name: 'Politiet',
@@ -85,6 +113,13 @@ export const members: Member[] = [
     github: 'telenornorway',
     homepage: 'https://www.telenor.no',
     linkedinUrl: 'https://www.linkedin.com/company/telenor-group/',
+    platform: {
+      name: 'Nova',
+      description: 'Telenor sin applikasjonsplattform',
+      href: 'https://cloud.telenor.no',
+      label: 'cloud.telenor.no',
+      logo: logoNova,
+    },
   }),
   new Member({
     name: 'Equinor',
@@ -92,6 +127,13 @@ export const members: Member[] = [
     github: 'equinor',
     homepage: 'https://www.equinor.com',
     linkedinUrl: 'https://www.linkedin.com/company/equinor/',
+    platform: {
+      name: 'Radix',
+      description: 'Equinor sin applikasjonsplattform basert på Kubernetes',
+      href: 'https://www.radix.equinor.com/',
+      label: 'radix.equinor.com',
+      logo: logoRadix,
+    },
   }),
   new Member({
     name: 'Statkraft',
@@ -196,6 +238,13 @@ export const members: Member[] = [
     homepage: 'https://www.digdir.no',
     linkedinUrl:
       'https://www.linkedin.com/company/digitaliseringsdirektoratet/',
+    platform: {
+      name: 'Altinn Studio',
+      description: 'Digdir sin applikasjonsplattform basert på Kubernetes',
+      href: 'https://docs.altinn.studio/nb/altinn-studio/about/',
+      label: 'docs.altinn.studio',
+      logo: logoAltinn,
+    },
   }),
   new Member({
     name: 'Sikt',

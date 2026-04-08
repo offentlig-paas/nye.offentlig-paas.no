@@ -6,7 +6,10 @@ import { SimpleLayout } from '@/components/SimpleLayout'
 import { members } from '@/data/members'
 import { useState } from 'react'
 import { GitHubIcon, LinkedInIcon } from '@/components/SocialIcons'
-import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
+import {
+  ArrowTopRightOnSquareIcon,
+  ServerStackIcon,
+} from '@heroicons/react/24/outline'
 
 const types = Array.from(new Set(members.map(member => member.type))).sort(
   (a, b) => a.localeCompare(b, 'nb-NO')
@@ -119,6 +122,17 @@ export default function Uses() {
                   <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                     {member.type}
                   </p>
+                  {member.platform && (
+                    <a
+                      href={member.platform.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-2 inline-flex items-center gap-1 rounded-full bg-teal-50 px-2.5 py-0.5 text-xs font-medium text-teal-700 transition-colors hover:bg-teal-100 dark:bg-teal-900/30 dark:text-teal-400 dark:hover:bg-teal-900/50"
+                    >
+                      <ServerStackIcon className="h-3 w-3" />
+                      {member.platform.name}
+                    </a>
+                  )}
                 </div>
 
                 {/* Links */}

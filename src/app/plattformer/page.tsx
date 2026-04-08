@@ -4,61 +4,12 @@ import Image from 'next/image'
 
 import { Card } from '@/components/Card'
 import { SimpleLayout } from '@/components/SimpleLayout'
-import logoSkip from '@/images/platforms/skip.png'
-import logoAltinn from '@/images/platforms/altinn.svg'
-import logoAurora from '@/images/platforms/aurora.jpg'
-import logoNais from '@/images/platforms/nais.svg'
-import logoNova from '@/images/platforms/nova.png'
-import logoRadix from '@/images/platforms/radix.svg'
+import { members } from '@/data/members'
 
-const plattformer = [
-  {
-    name: 'Altinn Studio',
-    description: 'Digdir sin applikasjonsplattform basert på Kubernetes',
-    link: {
-      href: 'https://docs.altinn.studio/nb/altinn-studio/about/',
-      label: 'docs.altinn.studio',
-    },
-    logo: logoAltinn,
-  },
-  {
-    name: 'Aurora',
-    description:
-      'Skatteetaten sin applikasjonsplattform basert på RedHat OpenShift',
-    link: {
-      href: 'https://skatteetaten.github.io/aurora/',
-      label: 'skatteetaten.github.io',
-    },
-    logo: logoAurora,
-  },
-  {
-    name: 'Skip',
-    description: 'Statens Kartverks Infrastrukturplatform (Skip)',
-    link: { href: 'https://skip.kartverket.no/', label: 'skip.kartverket.no' },
-    logo: logoSkip,
-  },
-  {
-    name: 'NAIS',
-    description: 'Nav sin applikasjonsplattform basert på Kubernetes',
-    link: { href: 'https://nais.io', label: 'nais.io' },
-    logo: logoNais,
-  },
-  {
-    name: 'Nova',
-    description: 'Telenor sin applikasjonsplattform',
-    link: { href: 'https://cloud.telenor.no', label: 'cloud.telenor.no' },
-    logo: logoNova,
-  },
-  {
-    name: 'Radix',
-    description: 'Equinor sin applikasjonsplattform basert på Kubernetes',
-    link: {
-      href: 'https://www.radix.equinor.com/',
-      label: 'radix.equinor.com',
-    },
-    logo: logoRadix,
-  },
-]
+const plattformer = members
+  .filter(m => m.platform)
+  .map(m => m.platform!)
+  .sort((a, b) => a.name.localeCompare(b.name, 'nb-NO'))
 
 function LinkIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
@@ -98,12 +49,12 @@ export default function Plattformer() {
               />
             </div>
             <h2 className="mt-6 text-base font-semibold text-zinc-800 dark:text-zinc-100">
-              <Card.Link href={project.link.href}>{project.name}</Card.Link>
+              <Card.Link href={project.href}>{project.name}</Card.Link>
             </h2>
             <Card.Description>{project.description}</Card.Description>
             <p className="relative z-10 mt-6 flex text-sm font-medium text-zinc-400 transition group-hover:text-teal-500 dark:text-zinc-200">
               <LinkIcon className="h-6 w-6 flex-none" />
-              <span className="ml-2">{project.link.label}</span>
+              <span className="ml-2">{project.label}</span>
             </p>
           </Card>
         ))}

@@ -24,6 +24,14 @@ export enum MemberType {
   OTHER = 'Andre',
 }
 
+interface MemberPlatform {
+  name: string
+  description: string
+  href: string
+  label: string
+  logo: ImageProps['src']
+}
+
 interface iMember {
   name: string
   type: MemberType
@@ -32,6 +40,7 @@ interface iMember {
   github?: string
   homepage?: string
   linkedinUrl?: string
+  platform?: MemberPlatform
 }
 
 export class Member implements iMember {
@@ -42,6 +51,7 @@ export class Member implements iMember {
   github?: string
   homepage?: string
   linkedinUrl?: string
+  platform?: MemberPlatform
 
   constructor({
     name,
@@ -51,6 +61,7 @@ export class Member implements iMember {
     github,
     homepage,
     linkedinUrl,
+    platform,
   }: iMember) {
     this.name = name
     this.type = type
@@ -59,6 +70,7 @@ export class Member implements iMember {
     this.homepage = homepage
     this.linkedinUrl = linkedinUrl
     this.github = github
+    this.platform = platform
   }
 
   image(size: number = 200) {
