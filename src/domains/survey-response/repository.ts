@@ -4,6 +4,7 @@ import type {
   SurveyResponse,
   CreateSurveyResponseInput,
   CreateSurveyContactInput,
+  OrganizationOverride,
 } from './types'
 import { TRPCError } from '@trpc/server'
 
@@ -146,5 +147,22 @@ export class SurveyResponseRepository {
     return Array.from(counts.entries())
       .map(([date, count]) => ({ date, count }))
       .sort((a, b) => a.date.localeCompare(b.date))
+  }
+
+  async setOrganizationOverride(
+    responseId: string,
+    override: OrganizationOverride
+  ): Promise<void> {
+    await sanityClient
+      .patch(responseId)
+      .set({ organizationOverride: override })
+      .commit()
+  }
+
+  async findById(responseId: string): Promise<SurveyResponse | null> {
+    return await sanityClient.fetch<SurveyResponse | null>(
+      `*[_type == "surveyResponse" && _id == $id][0]`,
+      { id: responseId }
+    )
   }
 }

@@ -759,6 +759,38 @@ const surveyResponseSchema = defineType({
         },
       ],
     },
+    {
+      name: 'organizationOverride',
+      title: 'Organization Override',
+      type: 'object',
+      description: 'Admin override linking response to a member organization',
+      fields: [
+        {
+          name: 'memberName',
+          title: 'Member Name',
+          type: 'string',
+          validation: Rule => Rule.required(),
+        },
+        {
+          name: 'originalValue',
+          title: 'Original Value',
+          type: 'string',
+          validation: Rule => Rule.required(),
+        },
+        {
+          name: 'overriddenBy',
+          title: 'Overridden By',
+          type: 'string',
+          validation: Rule => Rule.required(),
+        },
+        {
+          name: 'overriddenAt',
+          title: 'Overridden At',
+          type: 'datetime',
+          validation: Rule => Rule.required(),
+        },
+      ],
+    },
   ],
   preview: {
     select: {

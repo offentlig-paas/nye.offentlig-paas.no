@@ -1,10 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   ChevronDownIcon,
   ChevronUpIcon,
   ArrowDownTrayIcon,
+  LinkIcon,
 } from '@heroicons/react/24/outline'
 import { trpc } from '@/lib/trpc/client'
 import { downloadCSV } from '@/lib/csv-utils'
@@ -39,17 +41,27 @@ export function AdminSurveyResponsesClient({
   slug,
   initialData,
   questionMeta,
+  memberNames,
 }: {
   slug: string
   initialData: ResponsesData
   questionMeta: Record<string, QuestionMeta>
+  memberNames: string[]
 }) {
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [linkingId, setLinkingId] = useState<string | null>(null)
   const [isExporting, setIsExporting] = useState(false)
+  const router = useRouter()
   const exportCsv = trpc.admin.surveys.exportCsv.useQuery(
     { slug },
     { enabled: false }
   )
+  const linkMutation = trpc.admin.surveys.linkOrganization.useMutation({
+    onSuccess: () => {
+      setLinkingId(null)
+      router.refresh()
+    },
+  })
 
   async function handleExport() {
     setIsExporting(true)
@@ -110,6 +122,18 @@ export function AdminSurveyResponsesClient({
                     prev === response.id ? null : response.id
                   )
                 }
+                isLinking={linkingId === response.id}
+                onStartLink={() => setLinkingId(response.id)}
+                onCancelLink={() => setLinkingId(null)}
+                onLink={memberName => {
+                  linkMutation.mutate({
+                    slug,
+                    responseId: response.id,
+                    memberName,
+                  })
+                }}
+                linkPending={linkMutation.isPending}
+                memberNames={memberNames}
               />
             ))}
           </tbody>
@@ -144,12 +168,25 @@ function ResponseRowView({
   questionMeta,
   isExpanded,
   onToggle,
+  isLinking,
+  onStartLink,
+  onCancelLink,
+  onLink,
+  linkPending,
+  memberNames,
 }: {
   response: ResponseRow
   questionMeta: Record<string, QuestionMeta>
   isExpanded: boolean
   onToggle: () => void
+  isLinking: boolean
+  onStartLink: () => void
+  onCancelLink: () => void
+  onLink: (memberName: string) => void
+  linkPending: boolean
+  memberNames: string[]
 }) {
+  const [search, setSearch] = useState('')
   const duration = response.durationSeconds
     ? `${Math.round(response.durationSeconds / 60)} min`
     : '–'
@@ -181,12 +218,22 @@ function ResponseRowView({
         <td className="px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100">
           <span className="inline-flex items-center gap-1.5">
             {response.organization}
-            {!response.isMember && (
+            {response.organizationOverride && (
+              <span className="rounded bg-blue-100 px-1.5 py-0.5 text-[10px] font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                Koblet
+              </span>
+            )}
+            {!response.isMember && !response.organizationOverride && (
               <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
                 Ikke medlem
               </span>
             )}
           </span>
+          {response.organizationOverride && (
+            <span className="ml-2 text-[10px] text-zinc-400 dark:text-zinc-500">
+              (opprinnelig: {response.organizationOverride.originalValue})
+            </span>
+          )}
         </td>
         <td className="px-4 py-3 text-sm text-zinc-500 dark:text-zinc-400">
           {date}
@@ -240,10 +287,109 @@ function ResponseRowView({
                   </div>
                 )
               )}
+              {!response.isMember && (
+                <div className="border-t border-zinc-200 pt-3 dark:border-zinc-700">
+                  {isLinking ? (
+                    <LinkOrganizationForm
+                      memberNames={memberNames}
+                      search={search}
+                      onSearchChange={setSearch}
+                      onSelect={onLink}
+                      onCancel={() => {
+                        onCancelLink()
+                        setSearch('')
+                      }}
+                      pending={linkPending}
+                    />
+                  ) : (
+                    <button
+                      onClick={e => {
+                        e.stopPropagation()
+                        onStartLink()
+                      }}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-300 px-2.5 py-1.5 text-xs font-medium text-zinc-600 transition hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-400 dark:hover:bg-zinc-700"
+                    >
+                      <LinkIcon className="h-3.5 w-3.5" />
+                      {response.organizationOverride
+                        ? 'Endre kobling'
+                        : 'Koble til medlem'}
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           </td>
         </tr>
       )}
     </>
+  )
+}
+
+function LinkOrganizationForm({
+  memberNames,
+  search,
+  onSearchChange,
+  onSelect,
+  onCancel,
+  pending,
+}: {
+  memberNames: string[]
+  search: string
+  onSearchChange: (v: string) => void
+  onSelect: (name: string) => void
+  onCancel: () => void
+  pending: boolean
+}) {
+  const filtered = search.trim()
+    ? memberNames.filter(n =>
+        n.toLowerCase().includes(search.toLowerCase().trim())
+      )
+    : memberNames
+
+  return (
+    <div className="space-y-2" onClick={e => e.stopPropagation()}>
+      <label className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+        Velg medlem å koble til
+      </label>
+      <input
+        type="text"
+        value={search}
+        onChange={e => onSearchChange(e.target.value)}
+        placeholder="Søk etter medlem…"
+        className="w-full max-w-sm rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder:text-zinc-500"
+        autoFocus
+        disabled={pending}
+      />
+      {filtered.length > 0 && (
+        <ul className="max-h-48 max-w-sm overflow-y-auto rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
+          {filtered.slice(0, 20).map(name => (
+            <li key={name}>
+              <button
+                onClick={() => onSelect(name)}
+                disabled={pending}
+                className="w-full px-3 py-1.5 text-left text-sm text-zinc-700 transition hover:bg-teal-50 disabled:opacity-50 dark:text-zinc-300 dark:hover:bg-teal-900/20"
+              >
+                {name}
+              </button>
+            </li>
+          ))}
+          {filtered.length > 20 && (
+            <li className="px-3 py-1.5 text-xs text-zinc-400">
+              +{filtered.length - 20} flere…
+            </li>
+          )}
+        </ul>
+      )}
+      {filtered.length === 0 && search.trim() && (
+        <p className="text-xs text-zinc-400">Ingen treff</p>
+      )}
+      <button
+        onClick={onCancel}
+        disabled={pending}
+        className="text-xs text-zinc-500 underline hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300"
+      >
+        Avbryt
+      </button>
+    </div>
   )
 }

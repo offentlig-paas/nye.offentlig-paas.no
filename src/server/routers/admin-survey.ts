@@ -4,6 +4,7 @@ import {
   createSurveyAccessMiddleware,
 } from '../trpc'
 import { z } from 'zod'
+import { TRPCError } from '@trpc/server'
 import { SurveyResponseRepository } from '@/domains/survey-response/repository'
 import { getAccessibleSurveys } from '@/lib/surveys/helpers'
 import { members } from '@/data/members'
@@ -15,15 +16,21 @@ function getMemberNameSet(): Set<string> {
   return new Set(members.map(m => m.name.toLowerCase().trim()))
 }
 
-function countRespondedMembers(
-  orgBreakdown: { organization: string }[]
-): number {
-  const memberNames = getMemberNameSet()
-  let count = 0
-  for (const o of orgBreakdown) {
-    if (memberNames.has(o.organization.toLowerCase().trim())) count++
+function getMemberNames(): string[] {
+  return members.map(m => m.name)
+}
+
+function resolveOrganization(
+  response: {
+    answers: { questionId: string; value?: string }[]
+    organizationOverride?: { memberName: string }
+  },
+  orgQid: string
+): string {
+  if (response.organizationOverride?.memberName) {
+    return response.organizationOverride.memberName
   }
-  return count
+  return response.answers.find(a => a.questionId === orgQid)?.value ?? 'Ukjent'
 }
 
 const surveyAccessForSlug = createSurveyAccessMiddleware(
@@ -74,34 +81,25 @@ export const adminSurveyRouter = router({
     .query(async ({ ctx }) => {
       const { survey } = ctx
       const orgQid = getOrgQuestionId(survey)
-      const [
-        responseCount,
-        orgCount,
-        dailyCounts,
-        latestResponse,
-        allResponses,
-        orgBreakdown,
-      ] = await Promise.all([
-        repository.countBySurvey(survey.slug),
-        repository.countUniqueOrganizations(survey.slug, orgQid),
-        repository.getDailyResponseCounts(survey.slug),
-        repository.getLatestResponseDate(survey.slug),
-        repository.findBySurvey(survey.slug),
-        repository.getOrganizationBreakdown(survey.slug, orgQid),
-      ])
+      const [responseCount, dailyCounts, latestResponse, allResponses] =
+        await Promise.all([
+          repository.countBySurvey(survey.slug),
+          repository.getDailyResponseCounts(survey.slug),
+          repository.getLatestResponseDate(survey.slug),
+          repository.findBySurvey(survey.slug),
+        ])
 
       const memberCount = (await import('@/data/members')).members.length
-      const respondedMemberCount = countRespondedMembers(orgBreakdown)
+      const memberNames = getMemberNameSet()
 
-      const totalQuestions = survey.sections.reduce(
-        (acc, s) => acc + s.questions.length,
-        0
-      )
-
+      const uniqueResolvedOrgs = new Set<string>()
       const deviceBreakdown = new Map<string, number>()
       const durations: number[] = []
 
       for (const r of allResponses) {
+        const org = resolveOrganization(r, orgQid)
+        uniqueResolvedOrgs.add(org.toLowerCase().trim())
+
         const device = r.metadata?.deviceCategory ?? 'unknown'
         deviceBreakdown.set(device, (deviceBreakdown.get(device) ?? 0) + 1)
 
@@ -109,6 +107,16 @@ export const adminSurveyRouter = router({
           durations.push(r.metadata.durationSeconds)
         }
       }
+
+      let respondedMemberCount = 0
+      for (const org of uniqueResolvedOrgs) {
+        if (memberNames.has(org)) respondedMemberCount++
+      }
+
+      const totalQuestions = survey.sections.reduce(
+        (acc, s) => acc + s.questions.length,
+        0
+      )
 
       durations.sort((a, b) => a - b)
       const medianDuration =
@@ -140,7 +148,7 @@ export const adminSurveyRouter = router({
           questionCount: totalQuestions,
         },
         responseCount,
-        orgCount,
+        orgCount: uniqueResolvedOrgs.size,
         respondedMemberCount,
         memberCount,
         dailyCounts,
@@ -163,21 +171,27 @@ export const adminSurveyRouter = router({
     .query(async ({ ctx }) => {
       const { survey } = ctx
       const orgQid = getOrgQuestionId(survey)
-      const orgBreakdown = await repository.getOrganizationBreakdown(
-        survey.slug,
-        orgQid
-      )
+      const allResponses = await repository.findBySurvey(survey.slug)
 
       const memberNames = getMemberNameSet()
+
+      const orgCounts = new Map<string, number>()
+      for (const r of allResponses) {
+        const org = resolveOrganization(r, orgQid)
+        orgCounts.set(org, (orgCounts.get(org) ?? 0) + 1)
+      }
+
+      const orgBreakdown = Array.from(orgCounts.entries())
+        .map(([organization, count]) => ({
+          organization,
+          count,
+          isMember: memberNames.has(organization.toLowerCase().trim()),
+        }))
+        .sort((a, b) => b.count - a.count)
 
       const respondedOrgs = new Set(
         orgBreakdown.map(o => o.organization.toLowerCase().trim())
       )
-
-      const orgBreakdownWithMembership = orgBreakdown.map(o => ({
-        ...o,
-        isMember: memberNames.has(o.organization.toLowerCase().trim()),
-      }))
 
       const membersByType = new Map<
         string,
@@ -225,7 +239,7 @@ export const adminSurveyRouter = router({
       )
 
       return {
-        orgBreakdown: orgBreakdownWithMembership,
+        orgBreakdown,
         sectorBreakdown,
         totalMembers,
         respondedMembers,
@@ -258,8 +272,7 @@ export const adminSurveyRouter = router({
 
       return {
         responses: result.responses.map(r => {
-          const org =
-            r.answers.find(a => a.questionId === orgQid)?.value ?? 'Ukjent'
+          const org = resolveOrganization(r, orgQid)
           return {
             id: r._id,
             submittedAt: r.submittedAt,
@@ -268,6 +281,12 @@ export const adminSurveyRouter = router({
             deviceCategory: r.metadata?.deviceCategory ?? 'unknown',
             durationSeconds: r.metadata?.durationSeconds,
             answers: r.answers.filter(a => !sensitiveIds.has(a.questionId)),
+            organizationOverride: r.organizationOverride
+              ? {
+                  memberName: r.organizationOverride.memberName,
+                  originalValue: r.organizationOverride.originalValue,
+                }
+              : undefined,
           }
         }),
         total: result.total,
@@ -291,6 +310,7 @@ export const adminSurveyRouter = router({
       const headers = [
         'Tidspunkt',
         'Organisasjon',
+        'Organisasjon (original)',
         'Enhet',
         'Kilde',
         ...exportableQuestions.map(q => q.title),
@@ -298,10 +318,13 @@ export const adminSurveyRouter = router({
 
       const rows = responses.map(r => {
         const answerMap = new Map(r.answers.map(a => [a.questionId, a]))
+        const rawOrg = r.answers.find(a => a.questionId === orgQid)?.value ?? ''
+        const resolvedOrg = resolveOrganization(r, orgQid)
 
         return [
           r.submittedAt,
-          r.answers.find(a => a.questionId === orgQid)?.value ?? '',
+          resolvedOrg,
+          r.organizationOverride ? rawOrg : '',
           r.metadata?.deviceCategory ?? '',
           r.metadata?.submissionSource ?? '',
           ...exportableQuestions.map(q => {
@@ -323,5 +346,55 @@ export const adminSurveyRouter = router({
       ].join('\n')
 
       return { csv: csvContent, filename: `${survey.slug}-responses.csv` }
+    }),
+
+  linkOrganization: adminSurveyProcedure
+    .input(
+      z.object({
+        slug: z.string(),
+        responseId: z.string(),
+        memberName: z.string().min(1),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.user.isAdmin) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Kun administratorer kan koble organisasjoner',
+        })
+      }
+
+      const { survey } = ctx
+      const orgQid = getOrgQuestionId(survey)
+
+      const validMembers = getMemberNames()
+      if (!validMembers.includes(input.memberName)) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: `"${input.memberName}" er ikke et gyldig medlemsnavn`,
+        })
+      }
+
+      const response = await repository.findById(input.responseId)
+      if (!response || response.surveySlug !== survey.slug) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Besvarelsen ble ikke funnet',
+        })
+      }
+
+      const originalValue =
+        response.answers.find(a => a.questionId === orgQid)?.value ?? 'Ukjent'
+
+      const adminName = ctx.user?.name ?? ctx.user?.email ?? 'unknown'
+
+      await repository.setOrganizationOverride(input.responseId, {
+        memberName: input.memberName,
+        originalValue,
+        overriddenBy: adminName,
+        overriddenAt: new Date().toISOString(),
+      })
+
+      return { success: true }
     }),
 })

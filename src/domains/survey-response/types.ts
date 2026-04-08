@@ -5,6 +5,14 @@ export interface SurveyResponse {
   answers: SurveyResponseAnswer[]
   submittedAt: string
   metadata?: SurveyResponseMetadata
+  organizationOverride?: OrganizationOverride
+}
+
+export interface OrganizationOverride {
+  memberName: string
+  originalValue: string
+  overriddenBy: string
+  overriddenAt: string
 }
 
 export interface SurveyResponseAnswer {
