@@ -13,7 +13,7 @@ export class SurveyResponseRepository {
     submissionId: string
   ): Promise<SurveyResponse> {
     const doc = prepareSanityDocument({
-      _id: `survey-response-${input.surveySlug}-${submissionId}`,
+      _id: `survey-response-${submissionId}`,
       _type: 'surveyResponse' as const,
       surveySlug: input.surveySlug,
       surveyVersion: input.surveyVersion,

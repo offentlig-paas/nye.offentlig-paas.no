@@ -55,9 +55,28 @@ async function ResultsContent({ slug }: { slug: string }) {
   if (!survey || !survey.resultsConfig?.published) notFound()
 
   const caller = await createCaller()
-  const data = await caller.survey.getAggregatedResults({
-    surveySlug: survey.slug,
-  })
+
+  let data: Awaited<
+    ReturnType<typeof caller.survey.getAggregatedResults>
+  > | null = null
+  try {
+    data = await caller.survey.getAggregatedResults({
+      surveySlug: survey.slug,
+    })
+  } catch {
+    // minResponses threshold not met — show placeholder
+  }
+
+  if (!data) {
+    return (
+      <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-8 text-center dark:border-zinc-700 dark:bg-zinc-800">
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          Resultatene publiseres når vi har mottatt nok svar til å sikre
+          anonymitet.
+        </p>
+      </div>
+    )
+  }
 
   return (
     <SurveyResultsRenderer
