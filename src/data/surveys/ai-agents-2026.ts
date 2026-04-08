@@ -17,6 +17,13 @@ export const aiAgents2026: SurveyDefinition = {
   ],
   organizationQuestionId: 'q1-org',
   sensitiveQuestionIds: ['q24-email'],
+  resultsConfig: {
+    published: true,
+    heroText:
+      'Foreløpige resultater fra kartleggingen av KI-kodeverktøy i norsk offentlig sektor. Undersøkelsen er fortsatt åpen — tallene oppdateres fortløpende.',
+    methodologyNote:
+      'Undersøkelsen er distribuert gjennom Offentlig PaaS Slack, LinkedIn og arrangementer. Utvalget er selvselektert og ikke representativt for hele offentlig sektor. Organisasjoner med flere respondenter teller én gang i organisasjonsstatistikken.',
+  },
   description:
     'Vi kartlegger hvordan norske offentlige virksomheter tar i bruk og styrer KI-kodeverktøy (som GitHub Copilot, Cursor, Claude Code og lignende).\n\nUndersøkelsen dekker både din egen bruk av KI-kodeverktøy og hvordan organisasjonen din styrer og legger til rette for slik bruk.',
   consent: {
@@ -36,6 +43,7 @@ export const aiAgents2026: SurveyDefinition = {
           required: true,
           placeholder: 'Begynn å skrive for å se forslag...',
           suggestions: orgSuggestions,
+          visualization: 'hidden',
         },
         {
           id: 'q2-role',
@@ -128,6 +136,7 @@ export const aiAgents2026: SurveyDefinition = {
           type: 'radio',
           title: 'Hvor sikker er du på svaret over?',
           required: true,
+          visualization: 'hidden',
           options: [
             {
               label:
@@ -176,6 +185,7 @@ export const aiAgents2026: SurveyDefinition = {
           type: 'radio',
           title: 'Hvor sikker er du på svaret over?',
           required: true,
+          visualization: 'hidden',
           options: [
             {
               label:
@@ -457,6 +467,7 @@ export const aiAgents2026: SurveyDefinition = {
           type: 'radio',
           title: 'Hvor sikker er du på svaret over?',
           required: true,
+          visualization: 'hidden',
           options: [
             {
               label:
@@ -698,6 +709,7 @@ export const aiAgents2026: SurveyDefinition = {
           type: 'radio',
           title: 'Hvordan forholder du deg til KI-generert kode?',
           required: true,
+          visualization: 'diverging',
           options: [
             {
               label:
@@ -729,6 +741,7 @@ export const aiAgents2026: SurveyDefinition = {
           title:
             'Er det et gap mellom hva organisasjonen din tillater og hva du mener er forsvarlig?',
           required: true,
+          visualization: 'diverging',
           options: [
             {
               label:
