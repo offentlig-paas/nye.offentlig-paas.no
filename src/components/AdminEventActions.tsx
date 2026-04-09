@@ -6,6 +6,7 @@ import {
   ChatBubbleLeftRightIcon,
   DocumentArrowDownIcon,
   UserPlusIcon,
+  ArrowDownTrayIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 import { SendReminderModal } from '@/components/SendReminderModal'
@@ -22,6 +23,7 @@ interface AdminEventActionsProps {
   attendedCount: number
   onExport?: () => void
   onAddRegistration?: () => void
+  onImportRegistrations?: () => void
   onSuccess?: (message: string) => void
   onError?: (message: string) => void
   showExport?: boolean
@@ -39,6 +41,7 @@ export function AdminEventActions({
   attendedCount,
   onExport,
   onAddRegistration,
+  onImportRegistrations,
   onSuccess,
   onError,
   showExport = true,
@@ -141,6 +144,16 @@ export function AdminEventActions({
               >
                 <UserPlusIcon className="mr-2 h-4 w-4" />
                 Legg til deltaker
+              </button>
+            )}
+
+            {onImportRegistrations && (
+              <button
+                onClick={onImportRegistrations}
+                className="inline-flex items-center rounded-xl border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition-colors duration-150 hover:bg-zinc-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600 dark:focus:ring-offset-zinc-800"
+              >
+                <ArrowDownTrayIcon className="mr-2 h-4 w-4" />
+                Importer påmeldinger
               </button>
             )}
           </>

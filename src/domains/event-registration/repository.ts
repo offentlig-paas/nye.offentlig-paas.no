@@ -189,6 +189,46 @@ export class EventRegistrationRepository {
   }
 
   /**
+   * Get all unique event slugs with their registration counts
+   */
+  async getEventSlugCounts(): Promise<
+    Array<{ eventSlug: string; count: number }>
+  > {
+    const query = groq`*[_type == "eventRegistration"]{ eventSlug }`
+    const results: Array<{ eventSlug: string }> = await sanityClient.fetch(
+      query,
+      {},
+      { cache: 'no-store', next: { revalidate: 0 } }
+    )
+
+    const counts = new Map<string, number>()
+    for (const r of results) {
+      counts.set(r.eventSlug, (counts.get(r.eventSlug) || 0) + 1)
+    }
+
+    return Array.from(counts.entries()).map(([eventSlug, count]) => ({
+      eventSlug,
+      count,
+    }))
+  }
+
+  /**
+   * Reassign all registrations from one event slug to another
+   */
+  async reassignEventSlug(
+    fromSlug: string,
+    toSlug: string,
+    registrationIds: string[]
+  ): Promise<number> {
+    await Promise.all(
+      registrationIds.map(id =>
+        sanityClient.patch(id).set({ eventSlug: toSlug }).commit()
+      )
+    )
+    return registrationIds.length
+  }
+
+  /**
    * Map Sanity document to domain type
    */
   private mapSanityToEventRegistration(

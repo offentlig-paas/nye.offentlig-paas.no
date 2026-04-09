@@ -1,6 +1,7 @@
 import {
   router,
   protectedProcedure,
+  adminProcedure,
   createEventAccessMiddleware,
 } from '../trpc'
 import { z } from 'zod'
@@ -1067,6 +1068,37 @@ Mvh ${organizerNames}`
 
         await talkSubmissionService.deleteSubmission(input.submissionId)
         return { message: 'Forslag slettet' }
+      }),
+  }),
+
+  orphanedRegistrations: router({
+    list: adminProcedure.query(async () => {
+      return eventRegistrationService.getOrphanedRegistrationGroups()
+    }),
+
+    import: adminEventProcedure
+      .input(
+        z.object({
+          slug: z.string(),
+          fromSlug: z.string(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const result = await eventRegistrationService.importRegistrations(
+          input.fromSlug,
+          input.slug
+        )
+        const parts = []
+        if (result.imported > 0) {
+          parts.push(`${result.imported} påmeldinger importert`)
+        }
+        if (result.skipped > 0) {
+          parts.push(`${result.skipped} duplikater hoppet over`)
+        }
+        return {
+          ...result,
+          message: parts.join(', ') || 'Ingen påmeldinger å importere',
+        }
       }),
   }),
 
