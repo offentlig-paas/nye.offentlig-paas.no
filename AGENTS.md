@@ -220,6 +220,7 @@ See **[EDITOR.md](EDITOR.md)** for full documentation: architecture, tool refere
 - Do not create lengthy summaries after coding sessions
 - Clean up comments and unused code before finalizing
 - Always run `yarn run check` after making changes
+- Do not commit code unless the user explicitly asks for it
 - Use Heroicons for icons, not emojis
 
 ## Development Best Practices
