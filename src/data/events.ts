@@ -26,6 +26,7 @@ export const events: Event[] = [
       {
         name: 'Christian Skarby',
         org: 'MET',
+        url: 'https://offentlig-paas-no.slack.com/team/U5649URE1',
       },
       {
         name: 'Hans Kristian Flaatten',
@@ -36,18 +37,21 @@ export const events: Event[] = [
     schedule: [
       {
         time: '12:00 - 12:45',
-        title: 'Dataplattform for Politiet - Utfordringer, hindringer og store muligheter',
+        title:
+          'Dataplattform for Politiet - Utfordringer, hindringer og store muligheter',
         speakers: [
           {
             name: 'Peter Bull Hove',
             org: 'Politiet',
+            url: 'https://offentlig-paas-no.slack.com/team/U09GM8P459C',
           },
         ],
         type: ItemType.Talk,
       },
       {
         time: '12:45 - 13:30',
-        title: 'GPU og utfordringer med å kjøre løsninger som ikke er ment for sky i Kubernetes',
+        title:
+          'GPU og utfordringer med å kjøre løsninger som ikke er ment for sky i Kubernetes',
         speakers: [
           {
             name: 'Team Punkt',
