@@ -8,6 +8,57 @@ import {
 
 export const events: Event[] = [
   {
+    slug: '2026-05-26-fagdag',
+    title: 'Offentlig PaaS Fagdag',
+    ingress:
+      'Vi inviterer til fagdag tirsdag 26. mai fra kl 12:00 - 16:00 i Forskningsparken / Oslo. Foreløpig har vi bare satt av tid og auditorium, men håper på godt engasjement og oppmøte.',
+    description:
+      'En fagdag hvor vi samles for å dele erfaringer og kunnskap om plattformutvikling i offentlig sektor. Legg gjerne igjen en kommentar på https://offentlig-paas-no.slack.com/archives/CDJ1J491V/p1769703426987569 om det er noe du ønsker å høre om eller presentere! Mer informasjon kommer.',
+    start: new Date('2026-05-26T12:00+02:00'),
+    end: new Date('2026-05-26T16:00+02:00'),
+    audience: Audience.PublicSector,
+    location: 'Forskningsparken, Oslo',
+    callForPapersEnabled: true,
+    registration: {
+      attendanceTypes: [AttendanceType.Physical],
+    },
+    organizers: [
+      {
+        name: 'Christian Skarby',
+        org: 'MET',
+      },
+      {
+        name: 'Hans Kristian Flaatten',
+        org: 'Nav',
+        url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+      },
+    ],
+    schedule: [
+      {
+        time: '12:00 - 12:45',
+        title: 'Dataplattform for Politiet - Utfordringer, hindringer og store muligheter',
+        speakers: [
+          {
+            name: 'Peter Bull Hove',
+            org: 'Politiet',
+          },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '12:45 - 13:30',
+        title: 'GPU og utfordringer med å kjøre løsninger som ikke er ment for sky i Kubernetes',
+        speakers: [
+          {
+            name: 'Team Punkt',
+            org: 'MET',
+          },
+        ],
+        type: ItemType.Talk,
+      },
+    ],
+  },
+  {
     slug: '2026-05-12-ki-kodeagenter',
     title: 'Erfaringsdeling: KI-kodeagenter',
     bannerImage: {
@@ -51,42 +102,6 @@ export const events: Event[] = [
       notes:
         'SPK holder til på Skøyen, Verkstedveien 1. Tre minutters gange fra Skøyen stasjon. Nærmeste trikke- og bussholdeplass er Thune.',
     },
-  },
-  {
-    slug: '2026-02-23-fagdag',
-    title: 'Offentlig PaaS Fagdag',
-    ingress:
-      'Vi inviterer til fagdag mandag 25. mai (NB! NY DATO) fra kl 12:00 - 16:00 i Forskningsparken / Oslo. Foreløpig har vi bare satt av tid og auditorium, men håper på godt engasjement og oppmøte.',
-    description:
-      'En fagdag hvor vi samles for å dele erfaringer og kunnskap om plattformutvikling i offentlig sektor. Legg gjerne igjen en kommentar på https://offentlig-paas-no.slack.com/archives/CDJ1J491V/p1769703426987569 om det er noe du ønsker å høre om eller presentere! Mer informasjon kommer.',
-    start: new Date('2026-05-25T12:00+01:00'),
-    end: new Date('2026-05-25T16:00+01:00'),
-    audience: Audience.PublicSector,
-    location: 'Forskningsparken, Oslo',
-    callForPapersEnabled: true,
-    registration: {
-      attendanceTypes: [AttendanceType.Physical],
-    },
-    organizers: [
-      {
-        name: 'Christian Skarby',
-        org: 'MET',
-      },
-      {
-        name: 'Hans Kristian Flaatten',
-        org: 'Nav',
-        url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
-      },
-    ],
-    schedule: [
-      {
-        time: '12:00 - 16:00',
-        title: 'Program kommer',
-        description:
-          'Detaljert program vil bli publisert når vi har mottatt forslag til presentasjoner.',
-        type: ItemType.Info,
-      },
-    ],
   },
   {
     slug: '2025-12-04-fagdag-digital',
