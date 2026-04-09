@@ -4,6 +4,7 @@ import { signIn, signOut, useSession } from 'next-auth/react'
 import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Cog6ToothIcon } from '@heroicons/react/24/outline'
 import { Button } from '@/components/Button'
 import { Avatar } from '@/components/Avatar'
 
@@ -137,6 +138,16 @@ export function AuthButton({
                 </svg>
                 Min profil
               </Link>
+              {session.user.isAdmin && (
+                <Link
+                  href="/admin"
+                  onClick={() => setIsDropdownOpen(false)}
+                  className="flex w-full items-center rounded-md px-3 py-2 text-sm text-zinc-700 transition hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                >
+                  <Cog6ToothIcon className="mr-3 h-4 w-4" />
+                  Admin
+                </Link>
+              )}
               <button
                 onClick={() => {
                   signOut()
