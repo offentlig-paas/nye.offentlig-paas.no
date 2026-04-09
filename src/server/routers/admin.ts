@@ -18,6 +18,7 @@ import {
 import { extractSlackIds } from '@/lib/slack/utils'
 import { USER_GROUPS, buildInvitationMessage } from '@/lib/slack/types'
 import { EventRegistrationRepository } from '@/domains/event-registration/repository'
+import { AttendanceType } from '@/lib/events/types'
 import type { SlackUser } from '@/lib/types'
 import { sendBulkDirectMessages } from '@/lib/slack/messaging'
 import { formatDateShort } from '@/lib/formatDate'
@@ -55,6 +56,43 @@ const adminEventProcedure = protectedProcedure.use(eventAccessForSlug)
 
 export const adminRouter = router({
   registrations: router({
+    create: adminEventProcedure
+      .input(
+        z.object({
+          slug: z.string(),
+          name: z.string().min(1, 'Navn er påkrevd'),
+          email: z.string().email('Ugyldig e-postadresse'),
+          organisation: z.string().min(1, 'Organisasjon er påkrevd'),
+          attendanceType: z.enum(['physical', 'digital'] as const),
+          attendingSocialEvent: z.boolean().optional(),
+          dietary: z.string().optional(),
+          comments: z.string().optional(),
+        })
+      )
+      .mutation(async ({ input, ctx }) => {
+        const registration = await eventRegistrationService.registerManually(
+          {
+            eventSlug: input.slug,
+            name: input.name,
+            email: input.email,
+            organisation: input.organisation,
+            attendanceType: input.attendanceType as AttendanceType,
+            attendingSocialEvent: input.attendingSocialEvent,
+            dietary: input.dietary,
+            comments: input.comments,
+          },
+          { maxCapacity: ctx.event.maxCapacity }
+        )
+
+        return {
+          registration,
+          message:
+            registration.status === 'waitlist'
+              ? 'Deltaker lagt til på venteliste'
+              : 'Deltaker lagt til',
+        }
+      }),
+
     delete: adminEventProcedure
       .input(z.object({ slug: z.string(), id: z.string() }))
       .mutation(async ({ input }) => {
@@ -858,6 +896,7 @@ Mvh ${organizerNames}`
           schedule: scheduleWithAttachments,
           eventStats: ctx.event.stats,
           registration: ctx.event.registration,
+          hasSocialEvent: !!ctx.event.socialEvent,
           slackChannel,
           registrations: eventRegistrations.map(reg => ({
             _id: reg._id,

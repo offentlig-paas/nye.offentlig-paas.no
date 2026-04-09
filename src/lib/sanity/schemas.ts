@@ -32,7 +32,6 @@ const eventRegistrationSchema = defineType({
       name: 'slackUserId',
       title: 'Slack User ID',
       type: 'string',
-      validation: Rule => Rule.required(),
     },
     {
       name: 'organisation',
@@ -112,6 +111,27 @@ const eventRegistrationSchema = defineType({
               { title: 'Advanced', value: 'advanced' },
             ],
           },
+        },
+        {
+          name: 'reregisteredAt',
+          title: 'Re-registered At',
+          type: 'datetime',
+          description: 'When a cancelled registration was re-activated',
+          readOnly: true,
+        },
+        {
+          name: 'anonymized',
+          title: 'Anonymized',
+          type: 'boolean',
+          description: 'Whether this registration has been anonymized (GDPR)',
+          readOnly: true,
+        },
+        {
+          name: 'anonymizedAt',
+          title: 'Anonymized At',
+          type: 'datetime',
+          description: 'When this registration was anonymized',
+          readOnly: true,
         },
       ],
     },
@@ -383,6 +403,14 @@ const eventFeedbackSchema = defineType({
       ],
     },
     {
+      name: 'isQuickFeedback',
+      title: 'Quick Feedback',
+      type: 'boolean',
+      description:
+        'Whether this is a quick feedback from Slack (can be upgraded to full)',
+      initialValue: false,
+    },
+    {
       name: 'submittedAt',
       title: 'Submitted At',
       type: 'datetime',
@@ -479,6 +507,12 @@ const eventPhotoSchema = defineType({
       type: 'number',
       description: 'Order in which photos are displayed',
       validation: Rule => Rule.integer().min(0),
+    },
+    {
+      name: 'featured',
+      title: 'Featured',
+      type: 'boolean',
+      description: 'Whether this photo is featured on the event page',
     },
   ],
   preview: {

@@ -82,3 +82,30 @@ export async function bulkUpdateRegistrationStatus(
   revalidatePath(`/admin/events/${slug}`)
   return result
 }
+
+export async function createManualRegistration(
+  slug: string,
+  data: {
+    name: string
+    email: string
+    organisation: string
+    attendanceType: 'physical' | 'digital'
+    attendingSocialEvent?: boolean
+    dietary?: string
+    comments?: string
+  }
+) {
+  const session = await auth()
+  if (!session?.user?.isAdmin) {
+    throw new Error('Unauthorized')
+  }
+
+  const caller = await createCaller()
+  const result = await caller.admin.registrations.create({
+    slug,
+    ...data,
+  })
+
+  revalidatePath(`/admin/events/${slug}`)
+  return result
+}

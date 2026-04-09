@@ -6,7 +6,7 @@ import {
   ChartBarIcon,
   StarIcon,
 } from '@heroicons/react/24/outline'
-import { AdminEventStatCard } from '@/components/AdminEventStatCard'
+import { StatCard } from '@/components/StatCard'
 
 interface AdminEventStatsProps {
   eventDetails: {
@@ -47,23 +47,20 @@ export function AdminEventStats({ eventDetails }: AdminEventStatsProps) {
   if (useLegacyStats && eventDetails.eventStats) {
     return (
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-        <AdminEventStatCard
+        <StatCard
           label="Deltakere"
           value={eventDetails.eventStats.participants}
           icon={UsersIcon}
-          color="blue"
         />
-        <AdminEventStatCard
+        <StatCard
           label="Organisasjoner"
           value={eventDetails.eventStats.organisations}
           icon={BuildingOfficeIcon}
-          color="gray"
         />
-        <AdminEventStatCard
+        <StatCard
           label="Påmeldinger"
           value={eventDetails.eventStats.registrations}
           icon={CheckCircleIcon}
-          color="green"
         />
       </div>
     )
@@ -85,35 +82,22 @@ export function AdminEventStats({ eventDetails }: AdminEventStatsProps) {
 
     return (
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
-        <AdminEventStatCard
+        <StatCard
           label="Påmeldte"
           value={eventDetails.stats.activeRegistrations}
           icon={UsersIcon}
-          color="blue"
         />
-        <AdminEventStatCard
-          label="Fysisk"
-          value={physicalCount}
-          icon={UserGroupIcon}
-          color="green"
-        />
-        <AdminEventStatCard
-          label="Digitalt"
-          value={digitalCount}
-          icon={UserGroupIcon}
-          color="purple"
-        />
-        <AdminEventStatCard
+        <StatCard label="Fysisk" value={physicalCount} icon={UserGroupIcon} />
+        <StatCard label="Digitalt" value={digitalCount} icon={UserGroupIcon} />
+        <StatCard
           label="Sosialt"
           value={socialEventCount}
           icon={UserGroupIcon}
-          color="orange"
         />
-        <AdminEventStatCard
+        <StatCard
           label="Organisasjoner"
           value={eventDetails.stats.uniqueOrganisations}
           icon={BuildingOfficeIcon}
-          color="gray"
         />
       </div>
     )
@@ -136,29 +120,25 @@ export function AdminEventStats({ eventDetails }: AdminEventStatsProps) {
 
   return (
     <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-      <AdminEventStatCard
+      <StatCard
         label="Deltok"
         value={eventDetails.stats.statusBreakdown.attended}
         icon={CheckCircleIcon}
-        color="green"
       />
-      <AdminEventStatCard
+      <StatCard
         label="Oppmøte %"
         value={`${attendanceRate}%`}
         icon={ChartBarIcon}
-        color="blue"
       />
-      <AdminEventStatCard
+      <StatCard
         label="Tilbakemeldinger"
         value={feedbackDisplay}
         icon={StarIcon}
-        color="yellow"
       />
-      <AdminEventStatCard
+      <StatCard
         label="Organisasjoner"
         value={eventDetails.stats.uniqueOrganisations}
         icon={BuildingOfficeIcon}
-        color="gray"
       />
     </div>
   )

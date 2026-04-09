@@ -147,7 +147,7 @@ export function AdminSlackChannelManager({
             <button
               onClick={() => handleAddMembers([USER_GROUPS.ORGANIZERS])}
               disabled={isAddingMembers || organizersCount === 0}
-              className="inline-flex w-full items-center justify-center rounded-lg border border-purple-300 bg-white px-4 py-2 text-sm font-medium text-purple-700 transition-colors duration-150 hover:bg-purple-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-purple-700 dark:bg-gray-800 dark:text-purple-300 dark:hover:bg-gray-700"
+              className="inline-flex w-full items-center justify-center rounded-lg border border-purple-300 bg-white px-4 py-2 text-sm font-medium text-purple-700 transition-colors duration-150 hover:bg-purple-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-purple-700 dark:bg-zinc-800 dark:text-purple-300 dark:hover:bg-zinc-700"
             >
               <UserGroupIcon className="mr-2 h-4 w-4" />
               Legg til arrangører ({organizersCount})
@@ -156,7 +156,7 @@ export function AdminSlackChannelManager({
             <button
               onClick={() => handleAddMembers([USER_GROUPS.SPEAKERS])}
               disabled={isAddingMembers || speakersCount === 0}
-              className="inline-flex w-full items-center justify-center rounded-lg border border-purple-300 bg-white px-4 py-2 text-sm font-medium text-purple-700 transition-colors duration-150 hover:bg-purple-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-purple-700 dark:bg-gray-800 dark:text-purple-300 dark:hover:bg-gray-700"
+              className="inline-flex w-full items-center justify-center rounded-lg border border-purple-300 bg-white px-4 py-2 text-sm font-medium text-purple-700 transition-colors duration-150 hover:bg-purple-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-purple-700 dark:bg-zinc-800 dark:text-purple-300 dark:hover:bg-zinc-700"
             >
               <UserGroupIcon className="mr-2 h-4 w-4" />
               Legg til foredragsholdere ({speakersCount})
@@ -165,7 +165,7 @@ export function AdminSlackChannelManager({
             <button
               onClick={() => handleAddMembers([USER_GROUPS.ATTENDEES])}
               disabled={isAddingMembers || attendeesCount === 0}
-              className="inline-flex w-full items-center justify-center rounded-lg border border-purple-300 bg-white px-4 py-2 text-sm font-medium text-purple-700 transition-colors duration-150 hover:bg-purple-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-purple-700 dark:bg-gray-800 dark:text-purple-300 dark:hover:bg-gray-700"
+              className="inline-flex w-full items-center justify-center rounded-lg border border-purple-300 bg-white px-4 py-2 text-sm font-medium text-purple-700 transition-colors duration-150 hover:bg-purple-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-purple-700 dark:bg-zinc-800 dark:text-purple-300 dark:hover:bg-zinc-700"
             >
               <UserGroupIcon className="mr-2 h-4 w-4" />
               Legg til deltakere ({attendeesCount})
@@ -195,7 +195,7 @@ export function AdminSlackChannelManager({
           <button
             onClick={handleArchiveChannel}
             disabled={isArchiving}
-            className="inline-flex w-full items-center justify-center rounded-lg border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-700 transition-colors duration-150 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-red-700 dark:bg-gray-800 dark:text-red-300 dark:hover:bg-gray-700"
+            className="inline-flex w-full items-center justify-center rounded-lg border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-700 transition-colors duration-150 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-red-700 dark:bg-zinc-800 dark:text-red-300 dark:hover:bg-zinc-700"
           >
             <ArchiveBoxIcon className="mr-2 h-4 w-4" />
             Arkiver kanal

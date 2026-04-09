@@ -1,3 +1,5 @@
+import { AdminCard } from '@/components/AdminCard'
+
 export function StatCard({
   icon: Icon,
   label,
@@ -10,7 +12,7 @@ export function StatCard({
   subtext?: string
 }) {
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
+    <AdminCard padding="5">
       <div className="flex items-start gap-3">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-teal-50 text-teal-600 dark:bg-teal-900/30 dark:text-teal-400">
           <Icon className="h-5 w-5" />
@@ -27,6 +29,6 @@ export function StatCard({
           )}
         </div>
       </div>
-    </div>
+    </AdminCard>
   )
 }

@@ -2,6 +2,7 @@ import { EventRegistrationRepository } from './repository'
 import type {
   EventRegistration,
   CreateEventRegistrationInput,
+  CreateManualRegistrationInput,
   UpdateEventRegistrationInput,
   EventRegistrationQuery,
   RegistrationStatus,
@@ -18,10 +19,12 @@ export class EventRegistrationService {
     input: CreateEventRegistrationInput,
     event?: { maxCapacity?: number }
   ): Promise<EventRegistration> {
-    const existingRegistration = await this.repository.findByEventAndUser(
-      input.eventSlug,
-      input.slackUserId
-    )
+    const existingRegistration = input.slackUserId
+      ? await this.repository.findByEventAndUser(
+          input.eventSlug,
+          input.slackUserId
+        )
+      : null
 
     if (existingRegistration && existingRegistration.status !== 'cancelled') {
       throw new Error('User is already registered for this event')
@@ -56,6 +59,62 @@ export class EventRegistrationService {
     }
 
     return await this.repository.create(input, registrationStatus)
+  }
+
+  async registerManually(
+    input: CreateManualRegistrationInput,
+    event?: { maxCapacity?: number }
+  ): Promise<EventRegistration> {
+    const normalizedEmail = input.email.trim().toLowerCase()
+
+    const existingRegistration = await this.repository.findByEventAndEmail(
+      input.eventSlug,
+      normalizedEmail
+    )
+
+    if (existingRegistration && existingRegistration.status !== 'cancelled') {
+      throw new Error('En påmelding med denne e-postadressen finnes allerede')
+    }
+
+    if (!input.name.trim()) throw new Error('Navn er påkrevd')
+    if (!normalizedEmail) throw new Error('E-post er påkrevd')
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(normalizedEmail))
+      throw new Error('Ugyldig e-postformat')
+    if (!input.organisation.trim()) throw new Error('Organisasjon er påkrevd')
+    if (!input.attendanceType) throw new Error('Deltakertype er påkrevd')
+
+    let registrationStatus: RegistrationStatus = 'confirmed'
+
+    if (
+      input.attendanceType === 'physical' &&
+      event?.maxCapacity !== undefined
+    ) {
+      const currentPhysicalCount =
+        await this.repository.getPhysicalAttendeesCount(input.eventSlug)
+      if (currentPhysicalCount >= event.maxCapacity) {
+        registrationStatus = 'waitlist'
+      }
+    }
+
+    const createInput: CreateEventRegistrationInput = {
+      ...input,
+      email: normalizedEmail,
+      metadata: { source: 'admin' },
+    }
+
+    if (existingRegistration && existingRegistration.status === 'cancelled') {
+      return await this.repository.update(existingRegistration._id!, {
+        ...createInput,
+        status: registrationStatus,
+        metadata: {
+          source: 'admin',
+          reregisteredAt: new Date().toISOString(),
+        },
+      })
+    }
+
+    return await this.repository.create(createInput, registrationStatus)
   }
 
   async getEventRegistrations(eventSlug: string): Promise<EventRegistration[]> {
@@ -289,9 +348,6 @@ export class EventRegistrationService {
     }
     if (!input.email.trim()) {
       throw new Error('Email is required')
-    }
-    if (!input.slackUserId.trim()) {
-      throw new Error('Slack user ID is required')
     }
     if (!input.organisation.trim()) {
       throw new Error('Organisation is required')

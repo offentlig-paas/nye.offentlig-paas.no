@@ -20,7 +20,7 @@ import { TalkAttachmentManager } from '@/components/TalkAttachmentManager'
 import { StarRating } from '@/components/StarRating'
 import { Button } from '@/components/Button'
 import { useToast } from '@/components/ToastProvider'
-import { AdminEventStatCard } from '@/components/AdminEventStatCard'
+import { StatCard } from '@/components/StatCard'
 import { useAdminEvent } from '@/contexts/AdminEventContext'
 import { getUniqueSpeakersWithoutUrls } from '@/lib/events/helpers'
 import { trpc } from '@/lib/trpc/client'
@@ -159,12 +159,12 @@ export function AdminAgendaClient() {
 
   if (talks.length === 0) {
     return (
-      <div className="rounded-lg border border-gray-200 bg-white p-8 text-center shadow-sm dark:border-gray-700 dark:bg-gray-800">
-        <PresentationChartLineIcon className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
-        <h3 className="mt-2 text-sm font-semibold text-gray-900 dark:text-white">
+      <div className="rounded-xl border border-zinc-200 bg-white p-8 text-center shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
+        <PresentationChartLineIcon className="mx-auto h-12 w-12 text-zinc-400 dark:text-zinc-500" />
+        <h3 className="mt-2 text-sm font-semibold text-zinc-900 dark:text-white">
           Ingen foredrag i programmet
         </h3>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
           Programmet inneholder ingen presentasjoner, paneler eller workshops
           ennå.
         </p>
@@ -177,12 +177,12 @@ export function AdminAgendaClient() {
       {/* Speaker Matcher - Only in dev */}
       {process.env.NODE_ENV === 'development' &&
         speakersWithoutUrls.length > 0 && (
-          <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-            <div className="border-b border-gray-200 px-4 py-4 dark:border-gray-700">
-              <h3 className="text-base font-semibold text-gray-900 dark:text-white">
+          <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
+            <div className="border-b border-zinc-200 px-4 py-4 dark:border-zinc-700">
+              <h3 className="text-base font-semibold text-zinc-900 dark:text-white">
                 Koble foredragsholdere til Slack
               </h3>
-              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
                 {speakersWithoutUrls.length} foredragsholdere mangler
                 Slack-profil
               </p>
@@ -195,38 +195,34 @@ export function AdminAgendaClient() {
 
       {/* Stats Overview */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <AdminEventStatCard
+        <StatCard
           label="Totalt foredrag"
           value={stats.total}
           icon={PresentationChartLineIcon}
-          color="blue"
         />
-        <AdminEventStatCard
+        <StatCard
           label="Med slides"
           value={stats.withSlides}
           icon={DocumentArrowUpIcon}
-          color="green"
         />
-        <AdminEventStatCard
+        <StatCard
           label="Mangler slides"
           value={stats.withoutSlides}
           icon={XCircleIcon}
-          color="orange"
         />
-        <AdminEventStatCard
+        <StatCard
           label="Snitt vurdering"
           value={stats.avgRating > 0 ? stats.avgRating.toFixed(1) : '-'}
           icon={StarIcon}
-          color="yellow"
         />
       </div>
 
       {/* Actions Bar */}
-      <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+      <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <FunnelIcon className="h-5 w-5 text-gray-400 dark:text-gray-500" />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <FunnelIcon className="h-5 w-5 text-zinc-400 dark:text-zinc-500" />
+            <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
               Filtrer:
             </span>
             <select
@@ -279,8 +275,8 @@ export function AdminAgendaClient() {
       {/* Talks Grid */}
       <div className="space-y-3">
         {filteredTalks.length === 0 ? (
-          <div className="rounded-lg border border-gray-200 bg-white p-8 text-center shadow-sm dark:border-gray-700 dark:bg-gray-800">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+          <div className="rounded-xl border border-zinc-200 bg-white p-8 text-center shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">
               Ingen foredrag matcher valgte filtre
             </p>
           </div>
@@ -299,18 +295,18 @@ export function AdminAgendaClient() {
             return (
               <div
                 key={`${talk.title}-${idx}`}
-                className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800"
+                className="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-800"
               >
                 {/* Talk Header */}
-                <div className="border-b border-gray-200 px-4 py-4 dark:border-gray-700">
+                <div className="border-b border-zinc-200 px-4 py-4 dark:border-zinc-700">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex min-w-0 flex-1 items-start gap-3">
-                      <div className={`mt-0.5 rounded-lg p-2 ${colorClass}`}>
+                      <div className={`mt-0.5 rounded-xl p-2 ${colorClass}`}>
                         <Icon className="h-5 w-5" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-start justify-between gap-2">
-                          <h4 className="text-base font-semibold text-gray-900 dark:text-white">
+                          <h4 className="text-base font-semibold text-zinc-900 dark:text-white">
                             {talk.title}
                           </h4>
                           {hasAttachments && (
@@ -318,7 +314,7 @@ export function AdminAgendaClient() {
                           )}
                         </div>
 
-                        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-600 dark:text-gray-400">
+                        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-zinc-600 dark:text-zinc-400">
                           <div className="flex items-center gap-1.5">
                             <ClockIcon className="h-4 w-4" />
                             <span>{talk.time}</span>
@@ -341,7 +337,7 @@ export function AdminAgendaClient() {
                         </div>
 
                         {talk.description && (
-                          <p className="mt-2 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">
+                          <p className="mt-2 line-clamp-2 text-sm text-zinc-600 dark:text-zinc-400">
                             {talk.description}
                           </p>
                         )}
@@ -356,16 +352,16 @@ export function AdminAgendaClient() {
                                 size="sm"
                                 showLabel={false}
                               />
-                              <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                              <span className="text-sm font-semibold text-zinc-900 dark:text-white">
                                 {talkRating.averageRating.toFixed(1)}
                               </span>
-                              <span className="text-xs text-gray-500 dark:text-gray-400">
+                              <span className="text-xs text-zinc-500 dark:text-zinc-400">
                                 ({talkRating.totalRatings} vurderinger)
                               </span>
                             </div>
 
                             {talkRating.comments.length > 0 && (
-                              <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                              <div className="flex items-center gap-1 text-xs text-zinc-500 dark:text-zinc-400">
                                 <ChatBubbleLeftIcon className="h-3.5 w-3.5" />
                                 <span>
                                   {talkRating.comments.length} kommentarer
@@ -381,7 +377,7 @@ export function AdminAgendaClient() {
                     {hasAttachments ? (
                       <CheckCircleIcon className="h-6 w-6 flex-shrink-0 text-green-600 dark:text-green-400" />
                     ) : (
-                      <XCircleIcon className="h-6 w-6 flex-shrink-0 text-gray-300 dark:text-gray-600" />
+                      <XCircleIcon className="h-6 w-6 flex-shrink-0 text-zinc-300 dark:text-zinc-600" />
                     )}
                   </div>
                 </div>
@@ -411,8 +407,8 @@ export function AdminAgendaClient() {
 
                     {/* Feedback Comments */}
                     {talkRating && talkRating.comments.length > 0 && (
-                      <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900/50">
-                        <h5 className="mb-2 text-xs font-semibold text-gray-700 dark:text-gray-300">
+                      <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-700 dark:bg-zinc-900/50">
+                        <h5 className="mb-2 text-xs font-semibold text-zinc-700 dark:text-zinc-300">
                           Tilbakemeldinger fra deltakere:
                         </h5>
                         <div className="space-y-2">
@@ -421,7 +417,7 @@ export function AdminAgendaClient() {
                             .map((comment, idx) => (
                               <p
                                 key={idx}
-                                className="text-xs text-gray-600 dark:text-gray-400"
+                                className="text-xs text-zinc-600 dark:text-zinc-400"
                               >
                                 &ldquo;{comment}&rdquo;
                               </p>
@@ -445,7 +441,7 @@ export function AdminAgendaClient() {
 
       {/* Results summary */}
       {filteredTalks.length > 0 && filteredTalks.length !== talks.length && (
-        <div className="text-center text-sm text-gray-600 dark:text-gray-400">
+        <div className="text-center text-sm text-zinc-600 dark:text-zinc-400">
           Viser {filteredTalks.length} av {talks.length} foredrag
         </div>
       )}

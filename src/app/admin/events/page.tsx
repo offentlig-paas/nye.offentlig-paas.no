@@ -17,7 +17,7 @@ function AdminEventsListSkeleton() {
         {[...Array(3)].map((_, i) => (
           <div
             key={i}
-            className="h-24 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-700"
+            className="h-24 animate-pulse rounded-xl bg-zinc-200 dark:bg-zinc-700"
           />
         ))}
       </div>

@@ -184,7 +184,7 @@ export function buildFeedbackRequestMessage(
  * Filters registrations based on status
  */
 export function filterRegistrationsByStatus<
-  T extends { status: string; slackUserId: string },
+  T extends { status: string; slackUserId?: string },
 >(registrations: T[], statusFilter?: string): T[] {
   if (!statusFilter || statusFilter === 'all') {
     return registrations.filter(r =>
@@ -197,7 +197,7 @@ export function filterRegistrationsByStatus<
 /**
  * Extracts Slack user IDs from registrations
  */
-export function extractUserIds<T extends { slackUserId: string }>(
+export function extractUserIds<T extends { slackUserId?: string }>(
   registrations: T[]
 ): string[] {
   return registrations

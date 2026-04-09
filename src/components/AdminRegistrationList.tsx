@@ -1,6 +1,8 @@
 import { Avatar } from '@/components/Avatar'
 import { StatusBadge } from '@/components/StatusBadge'
+import { Badge } from '@/components/Badge'
 import { ActionsMenu } from '@/components/ActionsMenu'
+import { AdminEmptyState } from '@/components/AdminEmptyState'
 import { UsersIcon, UserGroupIcon } from '@heroicons/react/20/solid'
 import type {
   EventRegistration,
@@ -41,27 +43,25 @@ export function AdminRegistrationList({
 
   if (registrations.length === 0) {
     return (
-      <div className="py-12 text-center">
-        <UsersIcon className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
-        <h3 className="mt-2 text-sm font-semibold text-gray-900 dark:text-white">
-          {searchTerm ? 'Ingen påmeldinger funnet' : 'Ingen påmeldinger'}
-        </h3>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          {searchTerm
+      <AdminEmptyState
+        icon={UsersIcon}
+        title={searchTerm ? 'Ingen påmeldinger funnet' : 'Ingen påmeldinger'}
+        description={
+          searchTerm
             ? 'Prøv å justere søkekriteriene.'
-            : 'Det er ingen påmeldinger til denne fagdagen ennå.'}
-        </p>
-      </div>
+            : 'Det er ingen påmeldinger til denne fagdagen ennå.'
+        }
+      />
     )
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+    <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead className="bg-gray-50 dark:bg-gray-700/50">
+        <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
+          <thead className="bg-zinc-50 dark:bg-zinc-800">
             <tr>
-              <th className="w-12 px-3 py-2">
+              <th className="w-12 px-4 py-3">
                 <input
                   type="checkbox"
                   checked={allSelected}
@@ -69,30 +69,33 @@ export function AdminRegistrationList({
                   className="size-4 rounded-sm border border-zinc-300 bg-white checked:border-blue-600 checked:bg-blue-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:border-white/10 dark:bg-white/5 dark:checked:border-blue-500 dark:checked:bg-blue-500 forced-colors:appearance-auto"
                 />
               </th>
-              <th className="px-3 py-2 text-left text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-300">
+              <th className="px-4 py-3 text-left text-xs font-medium tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
                 Navn
               </th>
-              <th className="px-3 py-2 text-left text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-300">
+              <th className="px-4 py-3 text-left text-xs font-medium tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
                 Organisasjon
               </th>
-              <th className="w-20 px-3 py-2 text-center text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-300">
+              <th className="w-24 px-4 py-3 text-left text-xs font-medium tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
+                Deltakelse
+              </th>
+              <th className="w-20 px-4 py-3 text-center text-xs font-medium tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
                 Sosialt
               </th>
-              <th className="w-32 px-3 py-2 text-left text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-300">
+              <th className="w-32 px-4 py-3 text-left text-xs font-medium tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
                 Status
               </th>
-              <th className="w-12 px-3 py-2">
+              <th className="w-12 px-4 py-3">
                 <span className="sr-only">Handlinger</span>
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
+          <tbody className="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-800">
             {registrations.map(registration => (
               <tr
                 key={registration._id}
-                className="hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                className="hover:bg-zinc-50 dark:hover:bg-zinc-700/50"
               >
-                <td className="px-3 py-2 whitespace-nowrap">
+                <td className="px-4 py-3 whitespace-nowrap">
                   <input
                     type="checkbox"
                     checked={selectedRegistrations.includes(registration._id)}
@@ -102,7 +105,7 @@ export function AdminRegistrationList({
                     className="size-4 rounded-sm border border-zinc-300 bg-white checked:border-blue-600 checked:bg-blue-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:border-white/10 dark:bg-white/5 dark:checked:border-blue-500 dark:checked:bg-blue-500 forced-colors:appearance-auto"
                   />
                 </td>
-                <td className="px-3 py-2">
+                <td className="px-4 py-3">
                   <div className="flex items-center space-x-2">
                     <Avatar
                       name={registration.name}
@@ -119,29 +122,40 @@ export function AdminRegistrationList({
                           {registration.name}
                         </a>
                       ) : (
-                        <div className="truncate text-sm font-semibold text-gray-900 dark:text-white">
+                        <div className="truncate text-sm font-semibold text-zinc-900 dark:text-white">
                           {registration.name}
                         </div>
                       )}
                     </div>
                   </div>
                 </td>
-                <td className="px-3 py-2 text-sm text-gray-700 dark:text-gray-300">
+                <td className="px-4 py-3 text-sm text-zinc-700 dark:text-zinc-300">
                   {registration.organisation}
                 </td>
-                <td className="px-3 py-2 text-center whitespace-nowrap">
-                  {registration.attendingSocialEvent ? (
-                    <UserGroupIcon className="mx-auto h-4 w-4 text-orange-600 dark:text-orange-400" />
+                <td className="px-4 py-3 whitespace-nowrap">
+                  {registration.attendanceType === 'physical' ? (
+                    <Badge color="green">Fysisk</Badge>
+                  ) : registration.attendanceType === 'digital' ? (
+                    <Badge color="blue">Digitalt</Badge>
                   ) : (
-                    <span className="text-xs text-gray-300 dark:text-gray-600">
+                    <span className="text-xs text-zinc-300 dark:text-zinc-600">
                       -
                     </span>
                   )}
                 </td>
-                <td className="px-3 py-2">
+                <td className="px-4 py-3 text-center whitespace-nowrap">
+                  {registration.attendingSocialEvent ? (
+                    <UserGroupIcon className="mx-auto h-4 w-4 text-orange-600 dark:text-orange-400" />
+                  ) : (
+                    <span className="text-xs text-zinc-300 dark:text-zinc-600">
+                      -
+                    </span>
+                  )}
+                </td>
+                <td className="px-4 py-3">
                   <StatusBadge status={registration.status} />
                 </td>
-                <td className="px-3 py-2 text-right">
+                <td className="px-4 py-3 text-right">
                   <ActionsMenu
                     currentStatus={registration.status}
                     onStatusChange={(status: RegistrationStatus) =>

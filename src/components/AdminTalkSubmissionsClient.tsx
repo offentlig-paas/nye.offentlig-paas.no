@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { useToast } from '@/components/ToastProvider'
 import { useAdminEvent } from '@/contexts/AdminEventContext'
 import { trpc } from '@/lib/trpc/client'
+import { Badge } from '@/components/Badge'
+import type { BadgeColor } from '@/components/Badge'
 import {
   TalkFormatDisplay,
   TalkSubmissionStatusDisplay,
@@ -22,26 +24,12 @@ import {
 
 const statusConfig: Record<
   TalkSubmissionStatus,
-  { icon: typeof ClockIcon; badge: string }
+  { icon: typeof ClockIcon; color: BadgeColor }
 > = {
-  submitted: {
-    icon: ClockIcon,
-    badge:
-      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300',
-  },
-  accepted: {
-    icon: CheckCircleIcon,
-    badge:
-      'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
-  },
-  rejected: {
-    icon: XCircleIcon,
-    badge: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
-  },
-  withdrawn: {
-    icon: XMarkIcon,
-    badge: 'bg-gray-100 text-gray-500 dark:bg-gray-800/30 dark:text-gray-400',
-  },
+  submitted: { icon: ClockIcon, color: 'yellow' },
+  accepted: { icon: CheckCircleIcon, color: 'green' },
+  rejected: { icon: XCircleIcon, color: 'red' },
+  withdrawn: { icon: XMarkIcon, color: 'zinc' },
 }
 
 const STATUS_FILTERS: Array<{
@@ -135,7 +123,7 @@ export function AdminTalkSubmissionsClient() {
         {[1, 2, 3].map(i => (
           <div
             key={i}
-            className="h-20 rounded-lg bg-gray-100 dark:bg-gray-800"
+            className="h-20 rounded-xl bg-zinc-100 dark:bg-zinc-800"
           />
         ))}
       </div>
@@ -144,8 +132,8 @@ export function AdminTalkSubmissionsClient() {
 
   if (submissions.length === 0) {
     return (
-      <div className="rounded-lg border border-dashed border-gray-300 p-8 text-center dark:border-gray-600">
-        <p className="text-sm text-gray-500 dark:text-gray-400">
+      <div className="rounded-xl border border-dashed border-zinc-300 p-8 text-center dark:border-zinc-600">
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">
           Ingen foredragsforslag er sendt inn ennå.
         </p>
       </div>
@@ -170,7 +158,7 @@ export function AdminTalkSubmissionsClient() {
             className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
               statusFilter === filter.value
                 ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700'
+                : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700'
             }`}
           >
             {filter.label}
@@ -192,7 +180,7 @@ export function AdminTalkSubmissionsClient() {
           return (
             <div
               key={submission._id}
-              className="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-gray-400/5"
+              className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-zinc-900/5 dark:bg-zinc-800 dark:ring-zinc-400/5"
             >
               <div className="p-4">
                 <div className="flex items-start justify-between gap-3">
@@ -201,12 +189,10 @@ export function AdminTalkSubmissionsClient() {
                       <h3 className="truncate text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                         {submission.title}
                       </h3>
-                      <span
-                        className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${config.badge}`}
-                      >
+                      <Badge color={config.color} className="gap-1">
                         <StatusIcon className="h-3 w-3" />
                         {TalkSubmissionStatusDisplay[submission.status]}
-                      </span>
+                      </Badge>
                     </div>
                     <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-zinc-500 dark:text-zinc-400">
                       <span>{submission.speakerName}</span>
@@ -219,7 +205,7 @@ export function AdminTalkSubmissionsClient() {
                   </div>
                   <button
                     onClick={() => toggleExpand(submission._id)}
-                    className="shrink-0 rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300"
+                    className="shrink-0 rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-zinc-300"
                   >
                     {isExpanded ? (
                       <ChevronUpIcon className="h-5 w-5" />
@@ -230,7 +216,7 @@ export function AdminTalkSubmissionsClient() {
                 </div>
 
                 {isExpanded && (
-                  <div className="mt-3 space-y-3 border-t border-gray-100 pt-3 dark:border-gray-700">
+                  <div className="mt-3 space-y-3 border-t border-zinc-100 pt-3 dark:border-zinc-700">
                     <div>
                       <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
                         Beskrivelse
@@ -276,7 +262,7 @@ export function AdminTalkSubmissionsClient() {
                       )}
                     </div>
 
-                    <div className="flex flex-wrap gap-2 border-t border-gray-100 pt-3 dark:border-gray-700">
+                    <div className="flex flex-wrap gap-2 border-t border-zinc-100 pt-3 dark:border-zinc-700">
                       {submission.status !== 'accepted' && (
                         <button
                           onClick={() =>
@@ -313,7 +299,7 @@ export function AdminTalkSubmissionsClient() {
                       <button
                         onClick={() => handleDelete(submission._id)}
                         disabled={deleteMutation.isPending}
-                        className="rounded-md bg-gray-50 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
+                        className="rounded-md bg-zinc-50 px-3 py-1.5 text-xs font-medium text-zinc-700 hover:bg-zinc-100 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700"
                       >
                         <TrashIcon className="inline h-3.5 w-3.5" /> Slett
                       </button>

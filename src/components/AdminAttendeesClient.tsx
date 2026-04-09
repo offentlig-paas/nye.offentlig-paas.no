@@ -8,10 +8,12 @@ import { AdminRegistrationList } from '@/components/AdminRegistrationList'
 import { AdminRegistrationFilters } from '@/components/AdminRegistrationFilters'
 import { AdminEventActions } from '@/components/AdminEventActions'
 import { AdminEventStats } from '@/components/AdminEventStats'
+import { AddRegistrationModal } from '@/components/AddRegistrationModal'
 import {
   deleteRegistration,
   updateRegistrationStatus,
   bulkUpdateRegistrationStatus,
+  createManualRegistration,
 } from '@/app/admin/events/[slug]/actions'
 import { useAdminEvent } from '@/contexts/AdminEventContext'
 import type { RegistrationStatus } from '@/domains/event-registration/types'
@@ -29,6 +31,7 @@ export function AdminAttendeesClient() {
   )
   const [isDeleting, setIsDeleting] = useState<string | null>(null)
   const [isUpdatingStatus, setIsUpdatingStatus] = useState<string | null>(null)
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const { showSuccess, showError } = useToast()
   const router = useRouter()
   const [_isPending, startTransition] = useTransition()
@@ -113,6 +116,22 @@ export function AdminAttendeesClient() {
     downloadCSV(csvContent, `${slug}-paemeldinger.csv`)
   }
 
+  const handleAddRegistration = async (data: {
+    name: string
+    email: string
+    organisation: string
+    attendanceType: 'physical' | 'digital'
+    attendingSocialEvent?: boolean
+    dietary?: string
+    comments?: string
+  }) => {
+    const result = await createManualRegistration(slug, data)
+    showSuccess('Lagt til', result.message)
+    startTransition(() => {
+      router.refresh()
+    })
+  }
+
   const filteredRegistrations = useMemo(
     () =>
       eventDetails?.registrations.filter(
@@ -180,50 +199,19 @@ export function AdminAttendeesClient() {
         activeRegistrations={eventDetails.stats.activeRegistrations}
         attendedCount={eventDetails.stats.statusBreakdown.attended || 0}
         onExport={handleExportCSV}
+        onAddRegistration={() => setIsAddModalOpen(true)}
         onSuccess={message => showSuccess('Sendt', message)}
         onError={message => showError('Feil', message)}
+        selectedCount={selectedRegistrations.length}
+        onBulkStatusUpdate={handleBulkStatusUpdate}
+        onClearSelection={() => setSelectedRegistrations([])}
       />
-
-      {/* Bulk Actions */}
-      {selectedRegistrations.length > 0 && (
-        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 shadow-sm dark:border-blue-800 dark:bg-blue-900/20">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
-              {selectedRegistrations.length} påmeldinger valgt
-            </span>
-            <button
-              onClick={() => handleBulkStatusUpdate('confirmed')}
-              className="inline-flex items-center rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600"
-            >
-              Bekreft
-            </button>
-            <button
-              onClick={() => handleBulkStatusUpdate('attended')}
-              className="inline-flex items-center rounded-lg border border-blue-300 bg-white px-4 py-2 text-sm font-medium text-blue-700 transition-colors duration-150 hover:bg-blue-50 dark:border-blue-700 dark:bg-gray-800 dark:text-blue-300 dark:hover:bg-gray-700"
-            >
-              Merk som deltok
-            </button>
-            <button
-              onClick={() => handleBulkStatusUpdate('no-show')}
-              className="inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-150 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-            >
-              Ikke møtt
-            </button>
-            <button
-              onClick={() => handleBulkStatusUpdate('waitlist')}
-              className="inline-flex items-center rounded-lg border border-yellow-300 bg-white px-4 py-2 text-sm font-medium text-yellow-700 transition-colors duration-150 hover:bg-yellow-50 dark:border-yellow-700 dark:bg-gray-800 dark:text-yellow-300 dark:hover:bg-gray-700"
-            >
-              Venteliste
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Waitlist Quick Action */}
       {statusFilter === 'waitlist' &&
         filteredRegistrations.length > 0 &&
         selectedRegistrations.length === 0 && (
-          <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 shadow-sm dark:border-yellow-800 dark:bg-yellow-900/20">
+          <div className="rounded-xl border border-yellow-200 bg-yellow-50 p-4 shadow-sm dark:border-yellow-800 dark:bg-yellow-900/20">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-medium text-yellow-800 dark:text-yellow-300">
@@ -240,7 +228,7 @@ export function AdminAttendeesClient() {
                     .map(r => r._id!)
                   setSelectedRegistrations(waitlistIds)
                 }}
-                className="inline-flex items-center rounded-lg bg-yellow-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-yellow-700 dark:bg-yellow-700 dark:hover:bg-yellow-600"
+                className="inline-flex items-center rounded-xl bg-yellow-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-yellow-700 dark:bg-yellow-700 dark:hover:bg-yellow-600"
               >
                 Velg alle på venteliste
               </button>
@@ -293,6 +281,15 @@ export function AdminAttendeesClient() {
         isUpdatingStatus={isUpdatingStatus}
         isDeleting={isDeleting}
         searchTerm={searchTerm}
+      />
+
+      {/* Add Registration Modal */}
+      <AddRegistrationModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={handleAddRegistration}
+        hasSocialEvent={eventDetails.hasSocialEvent}
+        attendanceTypes={eventDetails.registration.attendanceTypes}
       />
     </div>
   )

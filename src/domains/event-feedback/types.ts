@@ -28,7 +28,6 @@ export interface EventFeedback {
 interface FeedbackMetadata {
   userAgent?: string
   submissionSource?: string
-  [key: string]: unknown
 }
 
 export interface CreateEventFeedbackInput {

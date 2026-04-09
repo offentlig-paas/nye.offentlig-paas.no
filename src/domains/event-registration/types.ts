@@ -6,7 +6,7 @@ export interface EventRegistration {
   eventSlug: string
   name: string
   email: string
-  slackUserId: string
+  slackUserId?: string
   organisation: string
   dietary?: string
   comments?: string
@@ -27,7 +27,9 @@ export type RegistrationStatus =
 interface RegistrationMetadata {
   source?: string
   experience?: 'beginner' | 'intermediate' | 'advanced'
-  [key: string]: unknown
+  reregisteredAt?: string
+  anonymized?: boolean
+  anonymizedAt?: string
 }
 
 // Input type for creating new registrations
@@ -35,13 +37,25 @@ export interface CreateEventRegistrationInput {
   eventSlug: string
   name: string
   email: string
-  slackUserId: string
+  slackUserId?: string
   organisation: string
   dietary?: string
   comments?: string
   attendanceType: AttendanceType
   attendingSocialEvent?: boolean
   metadata?: RegistrationMetadata
+}
+
+// Input type for admin-created manual registrations (no Slack required)
+export interface CreateManualRegistrationInput {
+  eventSlug: string
+  name: string
+  email: string
+  organisation: string
+  attendanceType: AttendanceType
+  attendingSocialEvent?: boolean
+  dietary?: string
+  comments?: string
 }
 
 // Update type for modifying registrations

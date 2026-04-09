@@ -51,9 +51,9 @@ export function ParticipantInfoEditor({
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-      <div className="flex items-center justify-between border-b border-gray-200 px-4 py-4 dark:border-gray-700">
-        <h3 className="text-base font-semibold text-gray-900 dark:text-white">
+    <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
+      <div className="flex items-center justify-between border-b border-zinc-200 px-4 py-4 dark:border-zinc-700">
+        <h3 className="text-base font-semibold text-zinc-900 dark:text-white">
           Deltakerinformasjon
         </h3>
         {!isEditing && (
@@ -70,7 +70,7 @@ export function ParticipantInfoEditor({
         <div>
           <label
             htmlFor="streamingUrl"
-            className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+            className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
           >
             Streaming URL
           </label>
@@ -89,7 +89,7 @@ export function ParticipantInfoEditor({
               placeholder="https://..."
             />
           ) : (
-            <div className="text-sm text-gray-900 dark:text-white">
+            <div className="text-sm text-zinc-900 dark:text-white">
               {participantInfo.streamingUrl ? (
                 <a
                   href={participantInfo.streamingUrl}
@@ -101,7 +101,7 @@ export function ParticipantInfoEditor({
                   Åpne streaming
                 </a>
               ) : (
-                <span className="text-gray-500 dark:text-gray-400">
+                <span className="text-zinc-500 dark:text-zinc-400">
                   Ikke satt
                 </span>
               )}
@@ -112,7 +112,7 @@ export function ParticipantInfoEditor({
         <div>
           <label
             htmlFor="notes"
-            className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+            className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
           >
             Notater
           </label>
@@ -131,7 +131,7 @@ export function ParticipantInfoEditor({
               placeholder="Legg til notater om arrangementet..."
             />
           ) : (
-            <p className="text-sm whitespace-pre-wrap text-gray-600 dark:text-gray-400">
+            <p className="text-sm whitespace-pre-wrap text-zinc-600 dark:text-zinc-400">
               {participantInfo.notes || 'Ingen notater'}
             </p>
           )}

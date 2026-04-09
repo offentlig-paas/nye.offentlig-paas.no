@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react'
 import { Button } from '@/components/Button'
 import { AuthButton } from '@/components/AuthButton'
 import { useToast } from '@/components/ToastProvider'
+import { OrganisationTypeahead } from '@/components/OrganisationTypeahead'
 import { trpc } from '@/lib/trpc/client'
 import {
   TalkFormatDisplay,
@@ -314,29 +315,19 @@ export function TalkSubmissionForm({
         </div>
 
         <div>
-          <label
-            htmlFor="talk-organisation"
-            className="block text-sm/6 font-medium text-zinc-900 dark:text-white"
-          >
-            Organisasjon
-          </label>
-          <div className="mt-2">
-            <input
-              type="text"
-              id="talk-organisation"
-              className={inputClassName}
-              placeholder={
-                session.user.statusText || 'F.eks. NAV, Skatteetaten'
-              }
-              value={formData.organisation}
-              onChange={e =>
-                setFormData(prev => ({
-                  ...prev,
-                  organisation: e.target.value,
-                }))
-              }
-            />
-          </div>
+          <OrganisationTypeahead
+            id="talk-organisation"
+            value={formData.organisation}
+            onChange={value =>
+              setFormData(prev => ({
+                ...prev,
+                organisation: value,
+              }))
+            }
+            label="Organisasjon"
+            placeholder={session.user.statusText || 'Søk etter organisasjon...'}
+            className={inputClassName}
+          />
         </div>
 
         <div>
