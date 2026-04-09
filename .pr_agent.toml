@@ -1,0 +1,43 @@
+[pr_description]
+generate_ai_title = true
+use_bullet_points = true
+extra_instructions = """
+- Use Norwegian (bokmål) for the PR title and description when the changes are content-related
+- Use English for technical/code-focused PRs
+- Mention affected domains: events, surveys, members, articles, admin
+"""
+
+[pr_reviewer]
+require_tests_review = true
+require_estimate_effort_to_review = true
+extra_instructions = """
+This is a Next.js 16 App Router site with TypeScript, Tailwind CSS 4, MDX, tRPC v11, and Sanity CMS.
+
+Key review guidelines:
+- Check that Sanity documents use prepareSanityDocument() for arrays (ensures _key properties)
+- Verify tRPC is used for new API endpoints (REST only for file uploads)
+- Ensure shared admin components are used: AdminCard, Badge, AdminEmptyState, AdminModal, StatusBadge, StatCard
+- Check for duplicate utility functions — existing helpers exist in src/lib/formatDate.ts, src/lib/events/helpers.ts, src/lib/organization-utils.ts, src/lib/sanity/utils.ts
+- Verify new domain logic follows the repository pattern (types → repository → service)
+- Flag any use of `any` type or loose index signatures like [key: string]: unknown
+- Survey questions must use shared validation from src/lib/surveys/validation.ts
+- Admin pages should use zinc color palette (not gray) and rounded-xl cards
+- Heroicons only for icons, no emojis in UI
+"""
+
+[pr_code_suggestions]
+extra_instructions = """
+- Suggest using existing utility functions from src/lib/ instead of creating new ones
+- Flag missing test coverage for new domain services
+- Recommend prepareSanityDocument() when Sanity arrays are constructed manually
+"""
+
+[ignore]
+glob = [
+    "dist/*",
+    "coverage/*",
+    ".next/*",
+    "node_modules/*",
+    "pnpm-lock.yaml",
+    "tsconfig.tsbuildinfo",
+]
