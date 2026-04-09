@@ -18,7 +18,8 @@
     "typecheck": "tsc --noEmit",
     "sanity": "sanity",
     "knip": "knip",
-    "knip:fix": "knip --fix"
+    "knip:fix": "knip --fix",
+    "postinstall": "simple-git-hooks"
   },
   "browserslist": "defaults, not ie <= 11",
   "dependencies": {
@@ -79,9 +80,13 @@
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "sanity": "^5.20.0",
+    "simple-git-hooks": "^2.13.1",
     "tsx": "^4.21.0",
     "typescript-eslint": "^8.58.0",
     "vitest": "^4.1.2"
   },
-  "packageManager": "pnpm@10.24.0"
+  "packageManager": "pnpm@10.24.0",
+  "simple-git-hooks": {
+    "pre-commit": "pnpm run check"
+  }
 }

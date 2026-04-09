@@ -9,6 +9,7 @@ import { AdminRegistrationFilters } from '@/components/AdminRegistrationFilters'
 import { AdminEventActions } from '@/components/AdminEventActions'
 import { AdminEventStats } from '@/components/AdminEventStats'
 import { AddRegistrationModal } from '@/components/AddRegistrationModal'
+import { ImportRegistrationsModal } from '@/components/ImportRegistrationsModal'
 import {
   deleteRegistration,
   updateRegistrationStatus,
@@ -32,6 +33,7 @@ export function AdminAttendeesClient() {
   const [isDeleting, setIsDeleting] = useState<string | null>(null)
   const [isUpdatingStatus, setIsUpdatingStatus] = useState<string | null>(null)
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false)
   const { showSuccess, showError } = useToast()
   const router = useRouter()
   const [_isPending, startTransition] = useTransition()
@@ -200,6 +202,7 @@ export function AdminAttendeesClient() {
         attendedCount={eventDetails.stats.statusBreakdown.attended || 0}
         onExport={handleExportCSV}
         onAddRegistration={() => setIsAddModalOpen(true)}
+        onImportRegistrations={() => setIsImportModalOpen(true)}
         onSuccess={message => showSuccess('Sendt', message)}
         onError={message => showError('Feil', message)}
         selectedCount={selectedRegistrations.length}
@@ -290,6 +293,19 @@ export function AdminAttendeesClient() {
         onSubmit={handleAddRegistration}
         hasSocialEvent={eventDetails.hasSocialEvent}
         attendanceTypes={eventDetails.registration.attendanceTypes}
+      />
+
+      <ImportRegistrationsModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        targetSlug={slug}
+        onSuccess={message => showSuccess('Importert', message)}
+        onError={message => showError('Feil', message)}
+        onImported={() => {
+          startTransition(() => {
+            router.refresh()
+          })
+        }}
       />
     </div>
   )

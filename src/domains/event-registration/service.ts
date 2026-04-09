@@ -7,6 +7,20 @@ import type {
   EventRegistrationQuery,
   RegistrationStatus,
 } from './types'
+import { getAllEvents } from '@/lib/events/helpers'
+
+interface OrphanedRegistrationGroup {
+  eventSlug: string
+  count: number
+  registrations: Array<{
+    _id: string
+    name: string
+    email: string
+    organisation: string
+    status: RegistrationStatus
+    attendanceType?: string
+  }>
+}
 
 export class EventRegistrationService {
   private repository: EventRegistrationRepository
@@ -340,6 +354,87 @@ export class EventRegistrationService {
     )
 
     return registrations.length
+  }
+
+  async getOrphanedRegistrationGroups(): Promise<OrphanedRegistrationGroup[]> {
+    const slugCounts = await this.repository.getEventSlugCounts()
+    const knownSlugs = new Set(getAllEvents().map(e => e.slug))
+    const orphanedSlugs = slugCounts.filter(sc => !knownSlugs.has(sc.eventSlug))
+
+    const groups = await Promise.all(
+      orphanedSlugs.map(async ({ eventSlug }) => {
+        const registrations = await this.repository.findMany({ eventSlug })
+        const activeRegistrations = registrations.filter(
+          r => r.status !== 'cancelled'
+        )
+        return {
+          eventSlug,
+          count: activeRegistrations.length,
+          registrations: activeRegistrations.map(r => ({
+            _id: r._id!,
+            name: r.name,
+            email: r.email,
+            organisation: r.organisation,
+            status: r.status,
+            attendanceType: r.attendanceType,
+          })),
+        }
+      })
+    )
+
+    return groups.filter(g => g.count > 0)
+  }
+
+  async importRegistrations(
+    fromSlug: string,
+    toSlug: string
+  ): Promise<{ imported: number; skipped: number }> {
+    if (fromSlug === toSlug) {
+      throw new Error('Kan ikke importere påmeldinger til samme arrangement')
+    }
+
+    const knownSlugs = new Set(getAllEvents().map(e => e.slug))
+    if (knownSlugs.has(fromSlug)) {
+      throw new Error(
+        'Kan bare importere fra foreldreløse arrangementer som ikke lenger finnes'
+      )
+    }
+
+    const sourceRegistrations = await this.repository.findMany({
+      eventSlug: fromSlug,
+    })
+    const targetRegistrations = await this.repository.findMany({
+      eventSlug: toSlug,
+    })
+
+    const activeSource = sourceRegistrations.filter(
+      r => r.status !== 'cancelled'
+    )
+
+    const activeTargetEmails = new Set(
+      targetRegistrations
+        .filter(r => r.status !== 'cancelled')
+        .map(r => r.email.toLowerCase())
+    )
+    const activeTargetSlackIds = new Set(
+      targetRegistrations
+        .filter(r => r.status !== 'cancelled' && r.slackUserId)
+        .map(r => r.slackUserId!)
+    )
+
+    const toImport = activeSource.filter(r => {
+      if (activeTargetEmails.has(r.email.toLowerCase())) return false
+      if (r.slackUserId && activeTargetSlackIds.has(r.slackUserId)) return false
+      return true
+    })
+    const skipped = activeSource.length - toImport.length
+
+    await this.repository.reassignEventSlug(
+      toSlug,
+      toImport.map(r => r._id!)
+    )
+
+    return { imported: toImport.length, skipped }
   }
 
   private validateRegistrationInput(input: CreateEventRegistrationInput): void {
