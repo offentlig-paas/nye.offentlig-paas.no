@@ -1,8 +1,8 @@
 import { type Metadata } from 'next'
 import { headers } from 'next/headers'
+import { notFound } from 'next/navigation'
 import React, { Suspense } from 'react'
 
-import { SimpleLayout } from '@/components/SimpleLayout'
 import { EventRegistrationPanel } from '@/components/EventRegistrationPanel'
 import { EventFeedbackPrompt } from '@/components/EventFeedbackPrompt'
 import { EventFeedbackSummaryWrapper } from '@/components/EventFeedbackSummaryWrapper'
@@ -245,16 +245,7 @@ async function FagdagContent({ params }: { params: Params }) {
   const { slug } = await params
   const event = getEvent(slug)
   if (!event) {
-    return (
-      <SimpleLayout
-        title="Fagdag ikke funnet"
-        intro="Fagdagen du leter etter finnes ikke."
-        backButton={{
-          href: '/fagdag',
-          label: 'Tilbake til fagdager',
-        }}
-      />
-    )
+    notFound()
   }
 
   const session = await auth()
