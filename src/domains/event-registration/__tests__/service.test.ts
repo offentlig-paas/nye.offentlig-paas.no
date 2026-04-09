@@ -10,10 +10,7 @@ import type {
 
 vi.mock('../repository')
 vi.mock('@/lib/events/helpers', () => ({
-  getAllEvents: vi.fn(() => [
-    { slug: 'test-event' },
-    { slug: 'active-event' },
-  ]),
+  getAllEvents: vi.fn(() => [{ slug: 'test-event' }, { slug: 'active-event' }]),
 }))
 
 describe('EventRegistrationService', () => {
@@ -577,8 +574,16 @@ describe('EventRegistrationService', () => {
         { eventSlug: 'orphan-slug', count: 2 },
       ])
       mockRepository.findMany.mockResolvedValue([
-        { ...mockRegistration, _id: 'r1', status: 'confirmed' as RegistrationStatus },
-        { ...mockRegistration, _id: 'r2', status: 'cancelled' as RegistrationStatus },
+        {
+          ...mockRegistration,
+          _id: 'r1',
+          status: 'confirmed' as RegistrationStatus,
+        },
+        {
+          ...mockRegistration,
+          _id: 'r2',
+          status: 'cancelled' as RegistrationStatus,
+        },
       ])
 
       const result = await service.getOrphanedRegistrationGroups()
@@ -603,7 +608,11 @@ describe('EventRegistrationService', () => {
         { eventSlug: 'orphan-slug', count: 1 },
       ])
       mockRepository.findMany.mockResolvedValue([
-        { ...mockRegistration, _id: 'r1', status: 'cancelled' as RegistrationStatus },
+        {
+          ...mockRegistration,
+          _id: 'r1',
+          status: 'cancelled' as RegistrationStatus,
+        },
       ])
 
       const result = await service.getOrphanedRegistrationGroups()
@@ -616,12 +625,21 @@ describe('EventRegistrationService', () => {
     it('should reassign registrations from orphaned slug to target', async () => {
       mockRepository.findMany
         .mockResolvedValueOnce([
-          { ...mockRegistration, _id: 'r1', eventSlug: 'orphan-slug', email: 'a@test.com', slackUserId: 'U001' },
+          {
+            ...mockRegistration,
+            _id: 'r1',
+            eventSlug: 'orphan-slug',
+            email: 'a@test.com',
+            slackUserId: 'U001',
+          },
         ])
         .mockResolvedValueOnce([])
       mockRepository.reassignEventSlug.mockResolvedValue(1)
 
-      const result = await service.importRegistrations('orphan-slug', 'test-event')
+      const result = await service.importRegistrations(
+        'orphan-slug',
+        'test-event'
+      )
 
       expect(result.imported).toBe(1)
       expect(result.skipped).toBe(0)
@@ -634,15 +652,33 @@ describe('EventRegistrationService', () => {
     it('should skip duplicates by email', async () => {
       mockRepository.findMany
         .mockResolvedValueOnce([
-          { ...mockRegistration, _id: 'r1', email: 'dup@test.com', slackUserId: 'U001' },
-          { ...mockRegistration, _id: 'r2', email: 'new@test.com', slackUserId: 'U002' },
+          {
+            ...mockRegistration,
+            _id: 'r1',
+            email: 'dup@test.com',
+            slackUserId: 'U001',
+          },
+          {
+            ...mockRegistration,
+            _id: 'r2',
+            email: 'new@test.com',
+            slackUserId: 'U002',
+          },
         ])
         .mockResolvedValueOnce([
-          { ...mockRegistration, _id: 'existing', email: 'dup@test.com', slackUserId: 'U003' },
+          {
+            ...mockRegistration,
+            _id: 'existing',
+            email: 'dup@test.com',
+            slackUserId: 'U003',
+          },
         ])
       mockRepository.reassignEventSlug.mockResolvedValue(1)
 
-      const result = await service.importRegistrations('orphan-slug', 'test-event')
+      const result = await service.importRegistrations(
+        'orphan-slug',
+        'test-event'
+      )
 
       expect(result.imported).toBe(1)
       expect(result.skipped).toBe(1)
@@ -655,14 +691,27 @@ describe('EventRegistrationService', () => {
     it('should skip duplicates by slackUserId', async () => {
       mockRepository.findMany
         .mockResolvedValueOnce([
-          { ...mockRegistration, _id: 'r1', email: 'new@test.com', slackUserId: 'U111' },
+          {
+            ...mockRegistration,
+            _id: 'r1',
+            email: 'new@test.com',
+            slackUserId: 'U111',
+          },
         ])
         .mockResolvedValueOnce([
-          { ...mockRegistration, _id: 'existing', email: 'other@test.com', slackUserId: 'U111' },
+          {
+            ...mockRegistration,
+            _id: 'existing',
+            email: 'other@test.com',
+            slackUserId: 'U111',
+          },
         ])
       mockRepository.reassignEventSlug.mockResolvedValue(0)
 
-      const result = await service.importRegistrations('orphan-slug', 'test-event')
+      const result = await service.importRegistrations(
+        'orphan-slug',
+        'test-event'
+      )
 
       expect(result.imported).toBe(0)
       expect(result.skipped).toBe(1)
@@ -671,14 +720,29 @@ describe('EventRegistrationService', () => {
     it('should not skip when target has cancelled duplicate', async () => {
       mockRepository.findMany
         .mockResolvedValueOnce([
-          { ...mockRegistration, _id: 'r1', email: 'a@test.com', slackUserId: 'U001', status: 'confirmed' as RegistrationStatus },
+          {
+            ...mockRegistration,
+            _id: 'r1',
+            email: 'a@test.com',
+            slackUserId: 'U001',
+            status: 'confirmed' as RegistrationStatus,
+          },
         ])
         .mockResolvedValueOnce([
-          { ...mockRegistration, _id: 'existing', email: 'a@test.com', slackUserId: 'U002', status: 'cancelled' as RegistrationStatus },
+          {
+            ...mockRegistration,
+            _id: 'existing',
+            email: 'a@test.com',
+            slackUserId: 'U002',
+            status: 'cancelled' as RegistrationStatus,
+          },
         ])
       mockRepository.reassignEventSlug.mockResolvedValue(1)
 
-      const result = await service.importRegistrations('orphan-slug', 'test-event')
+      const result = await service.importRegistrations(
+        'orphan-slug',
+        'test-event'
+      )
 
       expect(result.imported).toBe(1)
       expect(result.skipped).toBe(0)
@@ -687,13 +751,28 @@ describe('EventRegistrationService', () => {
     it('should exclude cancelled source registrations', async () => {
       mockRepository.findMany
         .mockResolvedValueOnce([
-          { ...mockRegistration, _id: 'r1', email: 'a@test.com', slackUserId: 'U001', status: 'cancelled' as RegistrationStatus },
-          { ...mockRegistration, _id: 'r2', email: 'b@test.com', slackUserId: 'U002', status: 'confirmed' as RegistrationStatus },
+          {
+            ...mockRegistration,
+            _id: 'r1',
+            email: 'a@test.com',
+            slackUserId: 'U001',
+            status: 'cancelled' as RegistrationStatus,
+          },
+          {
+            ...mockRegistration,
+            _id: 'r2',
+            email: 'b@test.com',
+            slackUserId: 'U002',
+            status: 'confirmed' as RegistrationStatus,
+          },
         ])
         .mockResolvedValueOnce([])
       mockRepository.reassignEventSlug.mockResolvedValue(1)
 
-      const result = await service.importRegistrations('orphan-slug', 'test-event')
+      const result = await service.importRegistrations(
+        'orphan-slug',
+        'test-event'
+      )
 
       expect(result.imported).toBe(1)
       expect(result.skipped).toBe(0)
