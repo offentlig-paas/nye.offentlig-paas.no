@@ -1076,7 +1076,7 @@ Mvh ${organizerNames}`
       return eventRegistrationService.getOrphanedRegistrationGroups()
     }),
 
-    import: adminEventProcedure
+    import: adminProcedure
       .input(
         z.object({
           slug: z.string(),

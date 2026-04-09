@@ -188,9 +188,6 @@ export class EventRegistrationRepository {
     )
   }
 
-  /**
-   * Get all unique event slugs with their registration counts
-   */
   async getEventSlugCounts(): Promise<
     Array<{ eventSlug: string; count: number }>
   > {
@@ -212,19 +209,15 @@ export class EventRegistrationRepository {
     }))
   }
 
-  /**
-   * Reassign all registrations from one event slug to another
-   */
   async reassignEventSlug(
-    fromSlug: string,
     toSlug: string,
     registrationIds: string[]
   ): Promise<number> {
-    await Promise.all(
-      registrationIds.map(id =>
-        sanityClient.patch(id).set({ eventSlug: toSlug }).commit()
-      )
-    )
+    const transaction = sanityClient.transaction()
+    for (const id of registrationIds) {
+      transaction.patch(id, patch => patch.set({ eventSlug: toSlug }))
+    }
+    await transaction.commit()
     return registrationIds.length
   }
 

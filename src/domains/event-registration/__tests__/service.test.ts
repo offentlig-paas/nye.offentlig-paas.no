@@ -626,7 +626,6 @@ describe('EventRegistrationService', () => {
       expect(result.imported).toBe(1)
       expect(result.skipped).toBe(0)
       expect(mockRepository.reassignEventSlug).toHaveBeenCalledWith(
-        'orphan-slug',
         'test-event',
         ['r1']
       )
@@ -648,7 +647,6 @@ describe('EventRegistrationService', () => {
       expect(result.imported).toBe(1)
       expect(result.skipped).toBe(1)
       expect(mockRepository.reassignEventSlug).toHaveBeenCalledWith(
-        'orphan-slug',
         'test-event',
         ['r2']
       )
@@ -700,7 +698,6 @@ describe('EventRegistrationService', () => {
       expect(result.imported).toBe(1)
       expect(result.skipped).toBe(0)
       expect(mockRepository.reassignEventSlug).toHaveBeenCalledWith(
-        'orphan-slug',
         'test-event',
         ['r2']
       )

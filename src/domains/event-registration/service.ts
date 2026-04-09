@@ -430,7 +430,6 @@ export class EventRegistrationService {
     const skipped = activeSource.length - toImport.length
 
     await this.repository.reassignEventSlug(
-      fromSlug,
       toSlug,
       toImport.map(r => r._id!)
     )
