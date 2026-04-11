@@ -1,7 +1,15 @@
 import { initTRPC, TRPCError } from '@trpc/server'
 import { auth } from '@/auth'
-import { getEventBySlug, canUserAccessEvent, getUserEventRole } from '@/lib/events/helpers'
-import { getSurvey, canUserAccessSurvey, getUserSurveyRole } from '@/lib/surveys/helpers'
+import {
+  getEventBySlug,
+  canUserAccessEvent,
+  getUserEventRole,
+} from '@/lib/events/helpers'
+import {
+  getSurvey,
+  canUserAccessSurvey,
+  getUserSurveyRole,
+} from '@/lib/surveys/helpers'
 import type { Session } from 'next-auth'
 import type { Event } from '@/lib/events/types'
 import superjson from 'superjson'

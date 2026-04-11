@@ -50,9 +50,7 @@ export function AdminSurveyNav({ surveySlug, role }: AdminSurveyNavProps) {
   ]
 
   const tabs =
-    role === 'researcher'
-      ? allTabs.filter(tab => !tab.ownerOnly)
-      : allTabs
+    role === 'researcher' ? allTabs.filter(tab => !tab.ownerOnly) : allTabs
 
   return (
     <div className="border-b border-zinc-200 dark:border-zinc-700">

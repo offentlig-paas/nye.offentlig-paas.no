@@ -50,9 +50,7 @@ function AdminLandingSkeleton() {
 async function AdminLandingContent() {
   const session = await auth()
   const isAdmin = session?.user?.isAdmin ?? false
-  const visibleCards = isAdmin
-    ? cards
-    : cards.filter(c => !c.adminOnly)
+  const visibleCards = isAdmin ? cards : cards.filter(c => !c.adminOnly)
 
   return (
     <AdminLayout title="Admin" intro="Administrasjonspanel for Offentlig PaaS.">

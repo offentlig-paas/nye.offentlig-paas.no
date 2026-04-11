@@ -235,9 +235,9 @@ describe('hasAnySurveyAccess', () => {
   })
 
   it('returns true for survey owners', () => {
-    expect(
-      hasAnySurveyAccess({ isAdmin: false, slackId: 'U7DQV0KUY' })
-    ).toBe(true)
+    expect(hasAnySurveyAccess({ isAdmin: false, slackId: 'U7DQV0KUY' })).toBe(
+      true
+    )
   })
 
   it('returns false for users with no survey access', () => {

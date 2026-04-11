@@ -2,7 +2,11 @@ import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { AdminLayout } from '@/components/AdminLayout'
 import { AdminEventNav } from '@/components/AdminEventNav'
-import { getEvent, getTalksCount, canUserAccessEvent } from '@/lib/events/helpers'
+import {
+  getEvent,
+  getTalksCount,
+  canUserAccessEvent,
+} from '@/lib/events/helpers'
 import { formatDateTime } from '@/lib/formatDate'
 import { createCaller } from '@/server/root'
 import { AdminEventProvider } from '@/contexts/AdminEventContext'

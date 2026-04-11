@@ -4,9 +4,7 @@ import { extractSlackUserId, matchesSlackUser } from '../utils'
 describe('extractSlackUserId', () => {
   it('extracts user ID from a valid Slack team URL', () => {
     expect(
-      extractSlackUserId(
-        'https://offentlig-paas-no.slack.com/team/U7DQV0KUY'
-      )
+      extractSlackUserId('https://offentlig-paas-no.slack.com/team/U7DQV0KUY')
     ).toBe('U7DQV0KUY')
   })
 

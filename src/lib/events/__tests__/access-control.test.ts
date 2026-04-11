@@ -195,9 +195,7 @@ describe('isUserEventSpeaker', () => {
   it('ignores non-talk schedule items (breaks)', () => {
     const breakOnlyEvent: Event = {
       ...baseEvent,
-      schedule: [
-        { time: '11:00', title: 'Lunch', type: ItemType.Break },
-      ],
+      schedule: [{ time: '11:00', title: 'Lunch', type: ItemType.Break }],
     }
     expect(isUserEventSpeaker(breakOnlyEvent, 'USPEAK01')).toBe(false)
   })
@@ -220,15 +218,21 @@ describe('isUserEventSpeaker', () => {
 
 describe('isUserSpeakerForTalk', () => {
   it('returns true when user is speaker for the specified talk', () => {
-    expect(isUserSpeakerForTalk(eventWithSpeakers, 'Keynote', 'USPEAK01')).toBe(true)
+    expect(isUserSpeakerForTalk(eventWithSpeakers, 'Keynote', 'USPEAK01')).toBe(
+      true
+    )
   })
 
   it('returns false when user is not speaker for that talk', () => {
-    expect(isUserSpeakerForTalk(eventWithSpeakers, 'Keynote', 'USPEAK02')).toBe(false)
+    expect(isUserSpeakerForTalk(eventWithSpeakers, 'Keynote', 'USPEAK02')).toBe(
+      false
+    )
   })
 
   it('returns false for non-existent talk title', () => {
-    expect(isUserSpeakerForTalk(eventWithSpeakers, 'Does Not Exist', 'USPEAK01')).toBe(false)
+    expect(
+      isUserSpeakerForTalk(eventWithSpeakers, 'Does Not Exist', 'USPEAK01')
+    ).toBe(false)
   })
 
   it('returns false for empty slackId', () => {
@@ -240,11 +244,17 @@ describe('isUserSpeakerForTalk', () => {
   })
 
   it('matches panel speakers correctly', () => {
-    expect(isUserSpeakerForTalk(eventWithSpeakers, 'Panel Discussion', 'USPEAK03')).toBe(true)
-    expect(isUserSpeakerForTalk(eventWithSpeakers, 'Panel Discussion', 'USPEAK02')).toBe(false)
+    expect(
+      isUserSpeakerForTalk(eventWithSpeakers, 'Panel Discussion', 'USPEAK03')
+    ).toBe(true)
+    expect(
+      isUserSpeakerForTalk(eventWithSpeakers, 'Panel Discussion', 'USPEAK02')
+    ).toBe(false)
   })
 
   it('does not match break items even if title matches', () => {
-    expect(isUserSpeakerForTalk(eventWithSpeakers, 'Lunch', 'USPEAK01')).toBe(false)
+    expect(isUserSpeakerForTalk(eventWithSpeakers, 'Lunch', 'USPEAK01')).toBe(
+      false
+    )
   })
 })
