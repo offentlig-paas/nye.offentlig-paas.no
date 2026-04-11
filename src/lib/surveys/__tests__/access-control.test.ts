@@ -269,3 +269,81 @@ describe('getAccessibleSurveys', () => {
     expect(surveys).toHaveLength(0)
   })
 })
+
+describe('survey admin authorization matrix', () => {
+  const surveyWithRoles: SurveyDefinition = {
+    ...baseSurvey,
+    owners: [
+      {
+        name: 'Owner',
+        url: 'https://offentlig-paas-no.slack.com/team/UOWNER',
+      },
+    ],
+    researchers: [
+      {
+        name: 'Researcher',
+        url: 'https://offentlig-paas-no.slack.com/team/URESEARCHER',
+      },
+    ],
+  }
+
+  const admin = { isAdmin: true } as const
+  const owner = { isAdmin: false, slackId: 'UOWNER' } as const
+  const researcher = { isAdmin: false, slackId: 'URESEARCHER' } as const
+  const nobody = { isAdmin: false, slackId: 'UNOBODY' } as const
+
+  function isOwnerRole(role: ReturnType<typeof getUserSurveyRole>): boolean {
+    return role === 'owner'
+  }
+
+  describe('overview and organizations (all roles)', () => {
+    it.each([
+      ['admin', admin, true],
+      ['owner', owner, true],
+      ['researcher', researcher, true],
+      ['nobody', nobody, false],
+    ])('%s can access survey: %s', (_, user, expected) => {
+      expect(canUserAccessSurvey(surveyWithRoles, user)).toBe(expected)
+    })
+  })
+
+  describe('responses, export, and link organization (owner-only)', () => {
+    it.each([
+      ['admin', admin, true],
+      ['owner', owner, true],
+      ['researcher', researcher, false],
+    ])('%s can access owner-only procedures: %s', (_, user, expected) => {
+      const role = getUserSurveyRole(surveyWithRoles, user)
+      expect(isOwnerRole(role)).toBe(expected)
+    })
+  })
+
+  describe('researcher cannot escalate to owner', () => {
+    it('researcher role is never owner even with access', () => {
+      const role = getUserSurveyRole(surveyWithRoles, researcher)
+      expect(role).toBe('researcher')
+      expect(role).not.toBe('owner')
+    })
+
+    it('owner listed as researcher still gets owner role', () => {
+      const survey = {
+        ...baseSurvey,
+        owners: [
+          {
+            name: 'Both',
+            url: 'https://offentlig-paas-no.slack.com/team/UBOTH',
+          },
+        ],
+        researchers: [
+          {
+            name: 'Both',
+            url: 'https://offentlig-paas-no.slack.com/team/UBOTH',
+          },
+        ],
+      }
+      expect(
+        getUserSurveyRole(survey, { isAdmin: false, slackId: 'UBOTH' })
+      ).toBe('owner')
+    })
+  })
+})

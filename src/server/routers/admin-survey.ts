@@ -371,10 +371,10 @@ export const adminSurveyRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      if (!ctx.user.isAdmin) {
+      if (ctx.surveyRole !== 'owner') {
         throw new TRPCError({
           code: 'FORBIDDEN',
-          message: 'Kun administratorer kan koble organisasjoner',
+          message: 'Kun eiere av undersøkelsen kan koble organisasjoner',
         })
       }
 
