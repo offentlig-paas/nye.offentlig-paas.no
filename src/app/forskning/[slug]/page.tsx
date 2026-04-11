@@ -11,6 +11,7 @@ import {
   CalendarDaysIcon,
   UserIcon,
   ShieldCheckIcon,
+  CogIcon,
 } from '@heroicons/react/20/solid'
 import { Container } from '@/components/Container'
 import {
@@ -35,6 +36,8 @@ import {
   type ResearchProject,
   type ResearchEthics,
 } from '@/lib/research/types'
+import { auth } from '@/auth'
+import { canUserAccessSurvey, getSurvey } from '@/lib/surveys/helpers'
 
 type Params = Promise<{ slug: string }>
 
@@ -84,6 +87,19 @@ export default async function ResearchProjectPage({
     s => getSurveyStatus(s) === SurveyStatus.Open
   )
 
+  const session = await auth()
+  const adminSurveySlug = session?.user
+    ? (project.surveys ?? [])
+        .filter(
+          (s): s is import('@/lib/research/types').InternalSurvey =>
+            'surveySlug' in s
+        )
+        .find(s => {
+          const survey = getSurvey(s.surveySlug)
+          return survey && canUserAccessSurvey(survey, session.user!)
+        })?.surveySlug
+    : undefined
+
   return (
     <Container className="mt-16 lg:mt-32">
       <div className="xl:relative">
@@ -100,14 +116,25 @@ export default async function ResearchProjectPage({
             <h1 className="text-3xl font-bold tracking-tight text-zinc-800 sm:text-4xl dark:text-zinc-100">
               {project.title}
             </h1>
-            <span
-              className={clsx(
-                'mt-1 inline-flex shrink-0 items-center rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset',
-                statusColors[project.status]
+            <div className="flex shrink-0 items-center gap-2">
+              <span
+                className={clsx(
+                  'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset',
+                  statusColors[project.status]
+                )}
+              >
+                {project.status}
+              </span>
+              {adminSurveySlug && (
+                <Link
+                  href={`/admin/forskning/${adminSurveySlug}`}
+                  className="inline-flex items-center gap-1.5 rounded-md bg-zinc-100 px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+                >
+                  <CogIcon className="h-4 w-4" aria-hidden="true" />
+                  <span className="hidden sm:inline">Admin</span>
+                </Link>
               )}
-            >
-              {project.status}
-            </span>
+            </div>
           </div>
 
           <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-zinc-500 dark:text-zinc-400">
