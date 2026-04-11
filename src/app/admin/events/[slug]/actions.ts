@@ -109,3 +109,24 @@ export async function createManualRegistration(
   revalidatePath(`/admin/events/${slug}`)
   return result
 }
+
+export async function updateRegistrationOrganisation(
+  slug: string,
+  registrationId: string,
+  organisation: string
+) {
+  const session = await auth()
+  if (!session?.user?.isAdmin) {
+    throw new Error('Unauthorized')
+  }
+
+  const caller = await createCaller()
+  const result = await caller.admin.registrations.updateOrganisation({
+    slug,
+    id: registrationId,
+    organisation,
+  })
+
+  revalidatePath(`/admin/events/${slug}`)
+  return result
+}

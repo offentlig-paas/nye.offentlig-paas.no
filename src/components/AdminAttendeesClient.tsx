@@ -15,6 +15,7 @@ import {
   updateRegistrationStatus,
   bulkUpdateRegistrationStatus,
   createManualRegistration,
+  updateRegistrationOrganisation,
 } from '@/app/admin/events/[slug]/actions'
 import { useAdminEvent } from '@/contexts/AdminEventContext'
 import type { RegistrationStatus } from '@/domains/event-registration/types'
@@ -132,6 +133,22 @@ export function AdminAttendeesClient() {
     startTransition(() => {
       router.refresh()
     })
+  }
+
+  const handleOrganisationChange = async (
+    registrationId: string,
+    organisation: string
+  ) => {
+    try {
+      await updateRegistrationOrganisation(slug, registrationId, organisation)
+      showSuccess('Oppdatert', 'Organisasjon ble oppdatert')
+      startTransition(() => {
+        router.refresh()
+      })
+    } catch (error) {
+      console.error('Error updating organisation:', error)
+      showError('Feil', 'Noe gikk galt ved oppdatering av organisasjon')
+    }
   }
 
   const filteredRegistrations = useMemo(
@@ -281,6 +298,7 @@ export function AdminAttendeesClient() {
         }}
         onStatusChange={handleStatusUpdate}
         onDelete={handleDeleteRegistration}
+        onOrganisationChange={handleOrganisationChange}
         isUpdatingStatus={isUpdatingStatus}
         isDeleting={isDeleting}
         searchTerm={searchTerm}

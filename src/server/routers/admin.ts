@@ -149,6 +149,36 @@ export const adminRouter = router({
         }
       }),
 
+    updateOrganisation: adminEventProcedure
+      .input(
+        z.object({
+          slug: z.string(),
+          id: z.string(),
+          organisation: z.string().trim().min(1, 'Organisasjon er påkrevd'),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const registration = await eventRegistrationService.getRegistration(
+          input.id
+        )
+        if (!registration || registration.eventSlug !== input.slug) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Påmelding ikke funnet',
+          })
+        }
+
+        const updatedRegistration =
+          await eventRegistrationService.updateRegistration(input.id, {
+            organisation: input.organisation,
+          })
+
+        return {
+          registration: updatedRegistration,
+          message: 'Organisasjon oppdatert',
+        }
+      }),
+
     bulkUpdateStatus: adminEventProcedure
       .input(
         z.object({

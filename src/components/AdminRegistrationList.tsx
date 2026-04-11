@@ -1,9 +1,14 @@
+import { useState } from 'react'
 import { Avatar } from '@/components/Avatar'
 import { StatusBadge } from '@/components/StatusBadge'
 import { Badge } from '@/components/Badge'
 import { ActionsMenu } from '@/components/ActionsMenu'
 import { AdminEmptyState } from '@/components/AdminEmptyState'
-import { UsersIcon, UserGroupIcon } from '@heroicons/react/20/solid'
+import {
+  UsersIcon,
+  UserGroupIcon,
+  PencilSquareIcon,
+} from '@heroicons/react/20/solid'
 import type {
   EventRegistration,
   RegistrationStatus,
@@ -21,6 +26,7 @@ interface RegistrationListProps {
   onSelectOne: (id: string, checked: boolean) => void
   onStatusChange: (id: string, newStatus: RegistrationStatus) => void
   onDelete: (id: string) => void
+  onOrganisationChange?: (id: string, organisation: string) => Promise<void>
   isUpdatingStatus: string | null
   isDeleting: string | null
   searchTerm: string
@@ -33,10 +39,40 @@ export function AdminRegistrationList({
   onSelectOne,
   onStatusChange,
   onDelete,
+  onOrganisationChange,
   isUpdatingStatus,
   isDeleting,
   searchTerm,
 }: RegistrationListProps) {
+  const [editingOrgId, setEditingOrgId] = useState<string | null>(null)
+  const [editingOrgValue, setEditingOrgValue] = useState('')
+  const [isSavingOrg, setIsSavingOrg] = useState(false)
+
+  const startEditingOrg = (id: string, currentValue: string) => {
+    setEditingOrgId(id)
+    setEditingOrgValue(currentValue)
+  }
+
+  const cancelEditingOrg = () => {
+    setEditingOrgId(null)
+    setEditingOrgValue('')
+  }
+
+  const saveOrg = async () => {
+    if (!editingOrgId || !editingOrgValue.trim() || !onOrganisationChange)
+      return
+    setIsSavingOrg(true)
+    try {
+      await onOrganisationChange(editingOrgId, editingOrgValue.trim())
+      setEditingOrgId(null)
+      setEditingOrgValue('')
+    } catch {
+      // Parent shows error toast; keep edit state so user can retry
+    } finally {
+      setIsSavingOrg(false)
+    }
+  }
+
   const allSelected =
     registrations.length > 0 &&
     selectedRegistrations.length === registrations.length
@@ -130,7 +166,51 @@ export function AdminRegistrationList({
                   </div>
                 </td>
                 <td className="px-4 py-3 text-sm text-zinc-700 dark:text-zinc-300">
-                  {registration.organisation}
+                  {editingOrgId === registration._id ? (
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={editingOrgValue}
+                        onChange={e => setEditingOrgValue(e.target.value)}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter') saveOrg()
+                          if (e.key === 'Escape') cancelEditingOrg()
+                        }}
+                        autoFocus
+                        className="block w-full min-w-0 flex-1 rounded-md bg-white px-2 py-1 text-sm text-zinc-900 outline-1 -outline-offset-1 outline-zinc-300 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 dark:bg-white/5 dark:text-white dark:outline-white/10"
+                      />
+                      <button
+                        onClick={saveOrg}
+                        disabled={isSavingOrg || !editingOrgValue.trim()}
+                        className="rounded-md bg-blue-600 px-2 py-1 text-xs font-medium text-white hover:bg-blue-700 disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-400"
+                      >
+                        {isSavingOrg ? '...' : 'Lagre'}
+                      </button>
+                      <button
+                        onClick={cancelEditingOrg}
+                        disabled={isSavingOrg}
+                        className="rounded-md px-2 py-1 text-xs font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
+                      >
+                        Avbryt
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() =>
+                        startEditingOrg(
+                          registration._id,
+                          registration.organisation
+                        )
+                      }
+                      disabled={!onOrganisationChange}
+                      className="group inline-flex items-center gap-1 text-left disabled:cursor-default"
+                    >
+                      <span>{registration.organisation}</span>
+                      {onOrganisationChange && (
+                        <PencilSquareIcon className="h-3.5 w-3.5 text-zinc-400 opacity-0 transition-opacity group-hover:opacity-100 dark:text-zinc-500" />
+                      )}
+                    </button>
+                  )}
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap">
                   {registration.attendanceType === 'physical' ? (

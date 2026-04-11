@@ -221,6 +221,8 @@ See **[EDITOR.md](EDITOR.md)** for full documentation: architecture, tool refere
 - Clean up comments and unused code before finalizing
 - Always run `yarn run check` after making changes
 - Do not commit code unless the user explicitly asks for it
+- Do not add Co-authored-by or other commit trailers to commit messages
+- Use conventional commits syntax for commit messages (e.g. `fix:`, `feat:`, `docs:`, `refactor:`)
 - Use Heroicons for icons, not emojis
 
 ## Development Best Practices

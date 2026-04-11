@@ -58,6 +58,29 @@ export function OrganisationTypeahead({
     [onChange]
   )
 
+  const handleBlur = useCallback(() => {
+    setTimeout(() => {
+      if (activeIndex >= 0 && filtered[activeIndex]) {
+        select(filtered[activeIndex])
+        return
+      }
+
+      const trimmed = value.trim()
+      if (trimmed) {
+        const exactMatch = ORGANISATION_NAMES.find(
+          name => name.toLowerCase() === trimmed.toLowerCase()
+        )
+        if (exactMatch) {
+          select(exactMatch)
+          return
+        }
+      }
+
+      setIsOpen(false)
+      setActiveIndex(-1)
+    }, 200)
+  }, [activeIndex, filtered, value, select])
+
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (!showSuggestions) return
@@ -130,9 +153,7 @@ export function OrganisationTypeahead({
             setActiveIndex(-1)
           }}
           onFocus={() => setIsOpen(true)}
-          onBlur={() => {
-            setTimeout(() => setIsOpen(false), 200)
-          }}
+          onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           required={required}
