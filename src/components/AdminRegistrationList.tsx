@@ -4,10 +4,13 @@ import { StatusBadge } from '@/components/StatusBadge'
 import { Badge } from '@/components/Badge'
 import { ActionsMenu } from '@/components/ActionsMenu'
 import { AdminEmptyState } from '@/components/AdminEmptyState'
+import { AdminModal } from '@/components/AdminModal'
+import { OrganisationTypeahead } from '@/components/OrganisationTypeahead'
 import {
   UsersIcon,
   UserGroupIcon,
   PencilSquareIcon,
+  BuildingOfficeIcon,
 } from '@heroicons/react/20/solid'
 import type {
   EventRegistration,
@@ -166,35 +169,7 @@ export function AdminRegistrationList({
                   </div>
                 </td>
                 <td className="px-4 py-3 text-sm text-zinc-700 dark:text-zinc-300">
-                  {editingOrgId === registration._id ? (
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        value={editingOrgValue}
-                        onChange={e => setEditingOrgValue(e.target.value)}
-                        onKeyDown={e => {
-                          if (e.key === 'Enter') saveOrg()
-                          if (e.key === 'Escape') cancelEditingOrg()
-                        }}
-                        autoFocus
-                        className="block w-full min-w-0 flex-1 rounded-md bg-white px-2 py-1 text-sm text-zinc-900 outline-1 -outline-offset-1 outline-zinc-300 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 dark:bg-white/5 dark:text-white dark:outline-white/10"
-                      />
-                      <button
-                        onClick={saveOrg}
-                        disabled={isSavingOrg || !editingOrgValue.trim()}
-                        className="rounded-md bg-blue-600 px-2 py-1 text-xs font-medium text-white hover:bg-blue-700 disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-400"
-                      >
-                        {isSavingOrg ? '...' : 'Lagre'}
-                      </button>
-                      <button
-                        onClick={cancelEditingOrg}
-                        disabled={isSavingOrg}
-                        className="rounded-md px-2 py-1 text-xs font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
-                      >
-                        Avbryt
-                      </button>
-                    </div>
-                  ) : (
+                  {onOrganisationChange ? (
                     <button
                       onClick={() =>
                         startEditingOrg(
@@ -202,14 +177,13 @@ export function AdminRegistrationList({
                           registration.organisation
                         )
                       }
-                      disabled={!onOrganisationChange}
-                      className="group inline-flex items-center gap-1 text-left disabled:cursor-default"
+                      className="-ml-1.5 inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 text-left transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-700"
                     >
                       <span>{registration.organisation}</span>
-                      {onOrganisationChange && (
-                        <PencilSquareIcon className="h-3.5 w-3.5 text-zinc-400 opacity-0 transition-opacity group-hover:opacity-100 dark:text-zinc-500" />
-                      )}
+                      <PencilSquareIcon className="h-3.5 w-3.5 flex-shrink-0 text-zinc-400 dark:text-zinc-500" />
                     </button>
+                  ) : (
+                    registration.organisation
                   )}
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap">
@@ -252,6 +226,45 @@ export function AdminRegistrationList({
           </tbody>
         </table>
       </div>
+
+      {onOrganisationChange && (
+        <AdminModal
+          isOpen={editingOrgId !== null}
+          onClose={cancelEditingOrg}
+          title="Endre organisasjon"
+          icon={BuildingOfficeIcon}
+          maxWidth="sm"
+          closeDisabled={isSavingOrg}
+        >
+          <div className="space-y-4">
+            <OrganisationTypeahead
+              id="edit-organisation"
+              value={editingOrgValue}
+              onChange={setEditingOrgValue}
+              required
+              placeholder="Søk etter organisasjon..."
+            />
+            <div className="flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={cancelEditingOrg}
+                disabled={isSavingOrg}
+                className="rounded-lg px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-700"
+              >
+                Avbryt
+              </button>
+              <button
+                type="button"
+                onClick={saveOrg}
+                disabled={isSavingOrg || !editingOrgValue.trim()}
+                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-400"
+              >
+                {isSavingOrg ? 'Lagrer...' : 'Lagre'}
+              </button>
+            </div>
+          </div>
+        </AdminModal>
+      )}
     </div>
   )
 }
