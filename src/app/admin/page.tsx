@@ -6,6 +6,7 @@ import {
   BeakerIcon,
   UserGroupIcon,
 } from '@heroicons/react/24/outline'
+import { auth } from '@/auth'
 
 const cards = [
   {
@@ -13,18 +14,21 @@ const cards = [
     description: 'Administrer arrangementer, påmeldinger og tilbakemeldinger.',
     href: '/admin/events',
     icon: CalendarDaysIcon,
+    adminOnly: true,
   },
   {
     title: 'Forskning',
     description: 'Se besvarelser og statistikk for undersøkelser.',
     href: '/admin/forskning',
     icon: BeakerIcon,
+    adminOnly: false,
   },
   {
     title: 'Medlemmer',
     description: 'Se Slack-representasjon per medlemsorganisasjon.',
     href: '/admin/members',
     icon: UserGroupIcon,
+    adminOnly: true,
   },
 ]
 
@@ -44,10 +48,16 @@ function AdminLandingSkeleton() {
 }
 
 async function AdminLandingContent() {
+  const session = await auth()
+  const isAdmin = session?.user?.isAdmin ?? false
+  const visibleCards = isAdmin
+    ? cards
+    : cards.filter(c => !c.adminOnly)
+
   return (
     <AdminLayout title="Admin" intro="Administrasjonspanel for Offentlig PaaS.">
       <div className="grid gap-6 sm:grid-cols-2">
-        {cards.map(card => (
+        {visibleCards.map(card => (
           <Link
             key={card.href}
             href={card.href}

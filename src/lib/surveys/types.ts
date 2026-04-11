@@ -19,6 +19,8 @@ export interface ConsentContact {
   retentionPeriod: string
 }
 
+export type SurveyRole = 'owner' | 'researcher'
+
 export interface SurveyDefinition {
   slug: string
   version: number
@@ -29,6 +31,7 @@ export interface SurveyDefinition {
   status: SurveyStatus
   sections: SurveySection[]
   owners?: SlackUser[]
+  researchers?: SlackUser[]
   organizationQuestionId?: string
   sensitiveQuestionIds?: string[]
   resultsConfig?: ResultsConfig

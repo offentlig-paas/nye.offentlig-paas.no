@@ -8,40 +8,51 @@ import {
   PresentationChartBarIcon,
   BuildingOffice2Icon,
 } from '@heroicons/react/24/outline'
+import type { SurveyRole } from '@/lib/surveys/types'
 
 interface AdminSurveyNavProps {
   surveySlug: string
+  role: SurveyRole
 }
 
-export function AdminSurveyNav({ surveySlug }: AdminSurveyNavProps) {
+export function AdminSurveyNav({ surveySlug, role }: AdminSurveyNavProps) {
   const pathname = usePathname()
 
-  const tabs = [
+  const allTabs = [
     {
       name: 'Oversikt',
       href: `/admin/forskning/${surveySlug}`,
       icon: ChartBarIcon,
       current: pathname === `/admin/forskning/${surveySlug}`,
+      ownerOnly: false,
     },
     {
       name: 'Organisasjoner',
       href: `/admin/forskning/${surveySlug}/organisasjoner`,
       icon: BuildingOffice2Icon,
       current: pathname === `/admin/forskning/${surveySlug}/organisasjoner`,
+      ownerOnly: false,
     },
     {
       name: 'Resultater',
       href: `/admin/forskning/${surveySlug}/resultater`,
       icon: PresentationChartBarIcon,
       current: pathname === `/admin/forskning/${surveySlug}/resultater`,
+      ownerOnly: true,
     },
     {
       name: 'Besvarelser',
       href: `/admin/forskning/${surveySlug}/responses`,
       icon: TableCellsIcon,
       current: pathname === `/admin/forskning/${surveySlug}/responses`,
+      ownerOnly: true,
     },
   ]
+
+  const tabs =
+    role === 'researcher'
+      ? allTabs.filter(tab => !tab.ownerOnly)
+      : allTabs
 
   return (
     <div className="border-b border-zinc-200 dark:border-zinc-700">

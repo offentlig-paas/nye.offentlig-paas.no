@@ -1,9 +1,10 @@
 import { surveys } from '@/data/surveys'
 import { researchProjects } from '@/data/research'
 import type { ResearchProject } from '@/lib/research/types'
-import { extractSlackUserId } from '@/lib/slack/utils'
+import { matchesSlackUser } from '@/lib/slack/utils'
 import {
   SurveyStatus,
+  type SurveyRole,
   type SurveyDefinition,
   type SurveyAnswer,
   type SurveySection,
@@ -56,20 +57,31 @@ export function getActiveSurveys(): SurveyDefinition[] {
   return surveys.filter(s => s.status === SurveyStatus.Open)
 }
 
+export function getUserSurveyRole(
+  survey: SurveyDefinition,
+  user: { isAdmin?: boolean; slackId?: string }
+): SurveyRole | null {
+  if (user.isAdmin) return 'owner'
+
+  if (matchesSlackUser(user.slackId, survey.owners)) return 'owner'
+  if (matchesSlackUser(user.slackId, survey.researchers)) return 'researcher'
+
+  return null
+}
+
 export function canUserAccessSurvey(
   survey: SurveyDefinition,
   user: { isAdmin?: boolean; slackId?: string }
 ): boolean {
+  return getUserSurveyRole(survey, user) !== null
+}
+
+export function hasAnySurveyAccess(user: {
+  isAdmin?: boolean
+  slackId?: string
+}): boolean {
   if (user.isAdmin) return true
-
-  if (user.slackId && survey.owners?.length) {
-    return survey.owners.some(owner => {
-      if (!owner.url) return false
-      return extractSlackUserId(owner.url) === user.slackId
-    })
-  }
-
-  return false
+  return surveys.some(s => getUserSurveyRole(s, user) !== null)
 }
 
 export function getAccessibleSurveys(user: {

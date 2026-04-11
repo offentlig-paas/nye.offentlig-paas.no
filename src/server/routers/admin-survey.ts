@@ -259,6 +259,13 @@ export const adminSurveyRouter = router({
       })
     )
     .query(async ({ ctx, input }) => {
+      if (ctx.surveyRole !== 'owner') {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Forskere har ikke tilgang til individuelle besvarelser',
+        })
+      }
+
       const { survey } = ctx
       const orgQid = getOrgQuestionId(survey)
       const sensitiveIds = new Set(survey.sensitiveQuestionIds ?? [])
@@ -298,6 +305,13 @@ export const adminSurveyRouter = router({
   exportCsv: adminSurveyProcedure
     .input(z.object({ slug: z.string() }))
     .query(async ({ ctx }) => {
+      if (ctx.surveyRole !== 'owner') {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Forskere har ikke tilgang til CSV-eksport',
+        })
+      }
+
       const { survey } = ctx
       const orgQid = getOrgQuestionId(survey)
       const sensitiveIds = new Set(survey.sensitiveQuestionIds ?? [])

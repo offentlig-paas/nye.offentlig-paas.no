@@ -8,6 +8,7 @@ import type {
   RegistrationStatus,
 } from '@/domains/event-registration/types'
 import type { EventFeedbackSummary } from '@/domains/event-feedback/types'
+import { matchesSlackUser } from '@/lib/slack/utils'
 // Note: DocumentChartBarIcon is used for slides instead of PresentationChartLineIcon for visual consistency across the application.
 import {
   DocumentTextIcon,
@@ -141,23 +142,19 @@ export function isUserEventOrganizer(
   event: Event,
   userSlackId: string
 ): boolean {
-  if (!userSlackId || !event.organizers || event.organizers.length === 0) {
-    return false
-  }
+  return matchesSlackUser(userSlackId, event.organizers)
+}
 
-  return event.organizers.some(organizer => {
-    if (!organizer.url) {
-      return false
-    }
+export type EventRole = 'organizer'
 
-    const slackIdMatch = organizer.url.match(/\/team\/([A-Z0-9]+)$/)
-    if (!slackIdMatch) {
-      return false
-    }
-
-    const organizerSlackId = slackIdMatch[1]
-    return organizerSlackId === userSlackId
-  })
+export function getUserEventRole(
+  event: Event,
+  user: { isAdmin?: boolean; slackId?: string }
+): EventRole | null {
+  if (user.isAdmin) return 'organizer'
+  if (user.slackId && isUserEventOrganizer(event, user.slackId))
+    return 'organizer'
+  return null
 }
 
 export function isUserEventSpeaker(event: Event, userSlackId: string): boolean {
@@ -228,17 +225,7 @@ export function canUserAccessEvent(
   event: Event,
   user: { isAdmin?: boolean; slackId?: string }
 ): boolean {
-  if (user.isAdmin) {
-    return true
-  }
-
-  if (user.slackId) {
-    if (isUserEventOrganizer(event, user.slackId)) {
-      return true
-    }
-  }
-
-  return false
+  return getUserEventRole(event, user) !== null
 }
 
 export function getEventBySlug(slug: string): Event | null {

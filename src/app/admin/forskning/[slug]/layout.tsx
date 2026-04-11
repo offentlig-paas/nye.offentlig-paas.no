@@ -2,7 +2,8 @@ import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { AdminLayout } from '@/components/AdminLayout'
 import { AdminSurveyNav } from '@/components/AdminSurveyNav'
-import { getSurvey } from '@/lib/surveys/helpers'
+import { getSurvey, getUserSurveyRole } from '@/lib/surveys/helpers'
+import { requireAdminOrSurveyAccess } from '@/lib/auth-guards'
 
 interface AdminSurveyLayoutProps {
   children: React.ReactNode
@@ -40,6 +41,12 @@ export default async function AdminSurveyLayout({
     notFound()
   }
 
+  const session = await requireAdminOrSurveyAccess()
+  const role = getUserSurveyRole(survey, session.user)
+  if (!role) {
+    notFound()
+  }
+
   return (
     <AdminLayout
       title={survey.title}
@@ -51,7 +58,7 @@ export default async function AdminSurveyLayout({
     >
       <Suspense fallback={<NavSkeleton />}>
         <div className="space-y-4">
-          <AdminSurveyNav surveySlug={slug} />
+          <AdminSurveyNav surveySlug={slug} role={role} />
           {children}
         </div>
       </Suspense>

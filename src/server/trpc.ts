@@ -1,7 +1,7 @@
 import { initTRPC, TRPCError } from '@trpc/server'
 import { auth } from '@/auth'
-import { getEventBySlug, canUserAccessEvent } from '@/lib/events/helpers'
-import { getSurvey, canUserAccessSurvey } from '@/lib/surveys/helpers'
+import { getEventBySlug, canUserAccessEvent, getUserEventRole } from '@/lib/events/helpers'
+import { getSurvey, canUserAccessSurvey, getUserSurveyRole } from '@/lib/surveys/helpers'
 import type { Session } from 'next-auth'
 import type { Event } from '@/lib/events/types'
 import superjson from 'superjson'
@@ -111,12 +111,15 @@ export const createEventAccessMiddleware = (
       })
     }
 
+    const eventRole = getUserEventRole(event, ctx.session.user)!
+
     return next({
       ctx: {
         session: ctx.session,
         user: ctx.session.user,
         event,
         slug,
+        eventRole,
       },
     })
   })
@@ -150,12 +153,15 @@ export const createSurveyAccessMiddleware = (
       })
     }
 
+    const surveyRole = getUserSurveyRole(survey, ctx.session.user)!
+
     return next({
       ctx: {
         session: ctx.session,
         user: ctx.session.user,
         survey,
         slug,
+        surveyRole,
       },
     })
   })

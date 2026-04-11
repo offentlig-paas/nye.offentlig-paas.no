@@ -1,9 +1,10 @@
 import { Suspense } from 'react'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { SurveyResultsRenderer } from '@/components/SurveyResultsRenderer'
-import { getSurvey } from '@/lib/surveys/helpers'
+import { getSurvey, getUserSurveyRole } from '@/lib/surveys/helpers'
 import { SurveyResponseRepository } from '@/domains/survey-response/repository'
 import { aggregateSurveyResults } from '@/lib/surveys/aggregation'
+import { requireAdminOrSurveyAccess } from '@/lib/auth-guards'
 
 interface AdminSurveyResultsPageProps {
   params: Promise<{ slug: string }>
@@ -58,6 +59,12 @@ export default async function AdminSurveyResultsPage({
   params,
 }: AdminSurveyResultsPageProps) {
   const { slug } = await params
+
+  const session = await requireAdminOrSurveyAccess()
+  const survey = getSurvey(slug)
+  if (survey && getUserSurveyRole(survey, session.user) === 'researcher') {
+    redirect(`/admin/forskning/${slug}`)
+  }
 
   return (
     <Suspense fallback={<ResultsSkeleton />}>

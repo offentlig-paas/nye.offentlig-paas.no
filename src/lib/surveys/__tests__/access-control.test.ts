@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest'
-import { canUserAccessSurvey, getAccessibleSurveys } from '../helpers'
+import {
+  canUserAccessSurvey,
+  getAccessibleSurveys,
+  getUserSurveyRole,
+  hasAnySurveyAccess,
+} from '../helpers'
 import type { SurveyDefinition } from '../types'
 import { SurveyStatus } from '../types'
 
@@ -11,6 +16,102 @@ const baseSurvey: SurveyDefinition = {
   status: SurveyStatus.Open,
   sections: [],
 }
+
+describe('getUserSurveyRole', () => {
+  it('returns owner for global admins', () => {
+    expect(getUserSurveyRole(baseSurvey, { isAdmin: true })).toBe('owner')
+  })
+
+  it('returns owner when user slackId matches an owner URL', () => {
+    const survey = {
+      ...baseSurvey,
+      owners: [
+        {
+          name: 'Owner',
+          url: 'https://offentlig-paas-no.slack.com/team/U12345',
+        },
+      ],
+    }
+    expect(
+      getUserSurveyRole(survey, { isAdmin: false, slackId: 'U12345' })
+    ).toBe('owner')
+  })
+
+  it('returns researcher when user slackId matches a researcher URL', () => {
+    const survey = {
+      ...baseSurvey,
+      researchers: [
+        {
+          name: 'Researcher',
+          url: 'https://offentlig-paas-no.slack.com/team/URES01',
+        },
+      ],
+    }
+    expect(
+      getUserSurveyRole(survey, { isAdmin: false, slackId: 'URES01' })
+    ).toBe('researcher')
+  })
+
+  it('returns owner over researcher when user matches both', () => {
+    const survey = {
+      ...baseSurvey,
+      owners: [
+        {
+          name: 'Both',
+          url: 'https://offentlig-paas-no.slack.com/team/UBOTH1',
+        },
+      ],
+      researchers: [
+        {
+          name: 'Both',
+          url: 'https://offentlig-paas-no.slack.com/team/UBOTH1',
+        },
+      ],
+    }
+    expect(
+      getUserSurveyRole(survey, { isAdmin: false, slackId: 'UBOTH1' })
+    ).toBe('owner')
+  })
+
+  it('returns null when user has no matching role', () => {
+    const survey = {
+      ...baseSurvey,
+      owners: [
+        {
+          name: 'Owner',
+          url: 'https://offentlig-paas-no.slack.com/team/U12345',
+        },
+      ],
+    }
+    expect(
+      getUserSurveyRole(survey, { isAdmin: false, slackId: 'U99999' })
+    ).toBeNull()
+  })
+
+  it('returns null when user has no slackId', () => {
+    const survey = {
+      ...baseSurvey,
+      owners: [
+        {
+          name: 'Owner',
+          url: 'https://offentlig-paas-no.slack.com/team/U12345',
+        },
+      ],
+    }
+    expect(getUserSurveyRole(survey, { isAdmin: false })).toBeNull()
+  })
+
+  it('returns null when owner/researcher has no URL', () => {
+    const survey = {
+      ...baseSurvey,
+      owners: [{ name: 'Owner without URL' }],
+      researchers: [{ name: 'Researcher without URL' }],
+    }
+    expect(
+      getUserSurveyRole(survey, { isAdmin: false, slackId: 'U12345' })
+    ).toBeNull()
+  })
+})
 
 describe('canUserAccessSurvey', () => {
   it('grants access to global admins regardless of ownership', () => {
@@ -35,6 +136,21 @@ describe('canUserAccessSurvey', () => {
     }
     expect(
       canUserAccessSurvey(survey, { isAdmin: false, slackId: 'U12345' })
+    ).toBe(true)
+  })
+
+  it('grants access when user slackId matches a researcher URL', () => {
+    const survey = {
+      ...baseSurvey,
+      researchers: [
+        {
+          name: 'Researcher',
+          url: 'https://offentlig-paas-no.slack.com/team/URES01',
+        },
+      ],
+    }
+    expect(
+      canUserAccessSurvey(survey, { isAdmin: false, slackId: 'URES01' })
     ).toBe(true)
   })
 
@@ -109,6 +225,24 @@ describe('canUserAccessSurvey', () => {
     ).toBe(true)
     expect(
       canUserAccessSurvey(survey, { isAdmin: false, slackId: 'U33333' })
+    ).toBe(false)
+  })
+})
+
+describe('hasAnySurveyAccess', () => {
+  it('returns true for admin users', () => {
+    expect(hasAnySurveyAccess({ isAdmin: true })).toBe(true)
+  })
+
+  it('returns true for survey owners', () => {
+    expect(
+      hasAnySurveyAccess({ isAdmin: false, slackId: 'U7DQV0KUY' })
+    ).toBe(true)
+  })
+
+  it('returns false for users with no survey access', () => {
+    expect(
+      hasAnySurveyAccess({ isAdmin: false, slackId: 'UNONEXISTENT' })
     ).toBe(false)
   })
 })

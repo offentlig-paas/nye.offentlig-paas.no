@@ -8,6 +8,20 @@ export function extractSlackUserId(slackUrl: string): string | null {
   return match ? match[1] || null : null
 }
 
+/**
+ * Checks if a Slack user ID matches any user in a SlackUser array.
+ * Shared utility for access control across events and surveys.
+ */
+export function matchesSlackUser(
+  slackId: string | undefined,
+  users: { url?: string }[] | undefined
+): boolean {
+  if (!slackId || !users?.length) return false
+  return users.some(
+    user => user.url && extractSlackUserId(user.url) === slackId
+  )
+}
+
 interface SlackIdMapping {
   slackId?: string
   slackUserId?: string

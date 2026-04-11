@@ -1,8 +1,10 @@
 import { Suspense } from 'react'
+import { redirect } from 'next/navigation'
 import { AdminSurveyResponsesClient } from '@/components/AdminSurveyResponsesClient'
 import { createCaller } from '@/server/root'
-import { getSurvey } from '@/lib/surveys/helpers'
+import { getSurvey, getUserSurveyRole } from '@/lib/surveys/helpers'
 import { members } from '@/data/members'
+import { requireAdminOrSurveyAccess } from '@/lib/auth-guards'
 import type { QuestionMeta } from '@/components/AdminSurveyResponsesClient'
 
 interface AdminSurveyResponsesPageProps {
@@ -66,6 +68,13 @@ export default async function AdminSurveyResponsesPage({
   params,
 }: AdminSurveyResponsesPageProps) {
   const { slug } = await params
+
+  const session = await requireAdminOrSurveyAccess()
+  const survey = getSurvey(slug)
+  if (survey && getUserSurveyRole(survey, session.user) === 'researcher') {
+    redirect(`/admin/forskning/${slug}`)
+  }
+
   return (
     <Suspense fallback={<ResponsesSkeleton />}>
       <ResponsesContent slug={slug} />
