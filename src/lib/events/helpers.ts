@@ -163,11 +163,7 @@ export function isUserEventSpeaker(event: Event, userSlackId: string): boolean {
   }
 
   return event.schedule.some(
-    item =>
-      isTalkType(item.type) &&
-      item.speakers?.some(
-        speaker => speaker.url && speaker.url.includes(`/team/${userSlackId}`)
-      )
+    item => isTalkType(item.type) && matchesSlackUser(userSlackId, item.speakers)
   )
 }
 
@@ -188,9 +184,7 @@ export function isUserSpeakerForTalk(
     return false
   }
 
-  return talk.speakers.some(
-    speaker => speaker.url && speaker.url.includes(`/team/${userSlackId}`)
-  )
+  return matchesSlackUser(userSlackId, talk.speakers)
 }
 
 export function getUserTalksFromEvents(
@@ -206,10 +200,7 @@ export function getUserTalksFromEvents(
         .filter(
           item =>
             isTalkType(item.type) &&
-            item.speakers?.some(
-              speaker =>
-                speaker.url && speaker.url.includes(`/team/${userSlackId}`)
-            )
+            matchesSlackUser(userSlackId, item.speakers)
         )
         .map(item => ({
           event,

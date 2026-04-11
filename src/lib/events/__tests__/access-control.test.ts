@@ -3,9 +3,11 @@ import {
   isUserEventOrganizer,
   getUserEventRole,
   canUserAccessEvent,
+  isUserEventSpeaker,
+  isUserSpeakerForTalk,
 } from '../helpers'
 import type { Event } from '../types'
-import { AttendanceType, Audience } from '../types'
+import { AttendanceType, Audience, ItemType } from '../types'
 
 const baseEvent: Event = {
   slug: 'test-event',
@@ -26,6 +28,54 @@ const baseEvent: Event = {
     },
   ],
   schedule: [],
+}
+
+const eventWithSpeakers: Event = {
+  ...baseEvent,
+  schedule: [
+    {
+      time: '09:00',
+      title: 'Keynote',
+      type: ItemType.Talk,
+      speakers: [
+        {
+          name: 'Speaker A',
+          url: 'https://offentlig-paas-no.slack.com/team/USPEAK01',
+        },
+      ],
+    },
+    {
+      time: '10:00',
+      title: 'Workshop Time',
+      type: ItemType.Workshop,
+      speakers: [
+        {
+          name: 'Speaker B',
+          url: 'https://offentlig-paas-no.slack.com/team/USPEAK02',
+        },
+      ],
+    },
+    {
+      time: '11:00',
+      title: 'Lunch',
+      type: ItemType.Break,
+    },
+    {
+      time: '12:00',
+      title: 'Panel Discussion',
+      type: ItemType.Panel,
+      speakers: [
+        {
+          name: 'Speaker A',
+          url: 'https://offentlig-paas-no.slack.com/team/USPEAK01',
+        },
+        {
+          name: 'Speaker C',
+          url: 'https://offentlig-paas-no.slack.com/team/USPEAK03',
+        },
+      ],
+    },
+  ],
 }
 
 describe('isUserEventOrganizer', () => {
@@ -114,5 +164,87 @@ describe('canUserAccessEvent', () => {
 
   it('denies access when user has no slackId and is not admin', () => {
     expect(canUserAccessEvent(baseEvent, { isAdmin: false })).toBe(false)
+  })
+})
+
+describe('isUserEventSpeaker', () => {
+  it('returns true when user is a speaker for a talk', () => {
+    expect(isUserEventSpeaker(eventWithSpeakers, 'USPEAK01')).toBe(true)
+  })
+
+  it('returns true when user is a speaker for a workshop', () => {
+    expect(isUserEventSpeaker(eventWithSpeakers, 'USPEAK02')).toBe(true)
+  })
+
+  it('returns true when user is a speaker for a panel', () => {
+    expect(isUserEventSpeaker(eventWithSpeakers, 'USPEAK03')).toBe(true)
+  })
+
+  it('returns false for non-speaker user', () => {
+    expect(isUserEventSpeaker(eventWithSpeakers, 'UOTHER')).toBe(false)
+  })
+
+  it('returns false for empty slackId', () => {
+    expect(isUserEventSpeaker(eventWithSpeakers, '')).toBe(false)
+  })
+
+  it('returns false when event has no schedule', () => {
+    expect(isUserEventSpeaker(baseEvent, 'USPEAK01')).toBe(false)
+  })
+
+  it('ignores non-talk schedule items (breaks)', () => {
+    const breakOnlyEvent: Event = {
+      ...baseEvent,
+      schedule: [
+        { time: '11:00', title: 'Lunch', type: ItemType.Break },
+      ],
+    }
+    expect(isUserEventSpeaker(breakOnlyEvent, 'USPEAK01')).toBe(false)
+  })
+
+  it('handles speakers without URLs', () => {
+    const event: Event = {
+      ...baseEvent,
+      schedule: [
+        {
+          time: '09:00',
+          title: 'Talk',
+          type: ItemType.Talk,
+          speakers: [{ name: 'No URL Speaker' }],
+        },
+      ],
+    }
+    expect(isUserEventSpeaker(event, 'USPEAK01')).toBe(false)
+  })
+})
+
+describe('isUserSpeakerForTalk', () => {
+  it('returns true when user is speaker for the specified talk', () => {
+    expect(isUserSpeakerForTalk(eventWithSpeakers, 'Keynote', 'USPEAK01')).toBe(true)
+  })
+
+  it('returns false when user is not speaker for that talk', () => {
+    expect(isUserSpeakerForTalk(eventWithSpeakers, 'Keynote', 'USPEAK02')).toBe(false)
+  })
+
+  it('returns false for non-existent talk title', () => {
+    expect(isUserSpeakerForTalk(eventWithSpeakers, 'Does Not Exist', 'USPEAK01')).toBe(false)
+  })
+
+  it('returns false for empty slackId', () => {
+    expect(isUserSpeakerForTalk(eventWithSpeakers, 'Keynote', '')).toBe(false)
+  })
+
+  it('returns false for empty talk title', () => {
+    expect(isUserSpeakerForTalk(eventWithSpeakers, '', 'USPEAK01')).toBe(false)
+  })
+
+  it('matches panel speakers correctly', () => {
+    expect(isUserSpeakerForTalk(eventWithSpeakers, 'Panel Discussion', 'USPEAK03')).toBe(true)
+    expect(isUserSpeakerForTalk(eventWithSpeakers, 'Panel Discussion', 'USPEAK02')).toBe(false)
+  })
+
+  it('does not match break items even if title matches', () => {
+    expect(isUserSpeakerForTalk(eventWithSpeakers, 'Lunch', 'USPEAK01')).toBe(false)
   })
 })

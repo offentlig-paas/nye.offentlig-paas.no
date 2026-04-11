@@ -2,11 +2,12 @@ import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { AdminLayout } from '@/components/AdminLayout'
 import { AdminEventNav } from '@/components/AdminEventNav'
-import { getEvent, getTalksCount } from '@/lib/events/helpers'
+import { getEvent, getTalksCount, canUserAccessEvent } from '@/lib/events/helpers'
 import { formatDateTime } from '@/lib/formatDate'
 import { createCaller } from '@/server/root'
 import { AdminEventProvider } from '@/contexts/AdminEventContext'
 import { SHIMMER_CLASS as shimmer } from '@/lib/admin-ui'
+import { requireAdmin } from '@/lib/auth-guards'
 
 interface AdminEventLayoutProps {
   children: React.ReactNode
@@ -87,6 +88,11 @@ export default async function AdminEventLayout({
 
   const event = getEvent(slug)
   if (!event) {
+    notFound()
+  }
+
+  const session = await requireAdmin()
+  if (!canUserAccessEvent(event, session.user)) {
     notFound()
   }
 
