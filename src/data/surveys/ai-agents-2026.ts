@@ -15,6 +15,12 @@ export const aiAgents2026: SurveyDefinition = {
       url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
     },
   ],
+  researchers: [
+    {
+      name: 'Anders Olsen Sandvik',
+      url: 'https://offentlig-paas-no.slack.com/team/U071L6QLNAZ',
+    },
+  ],
   organizationQuestionId: 'q1-org',
   sensitiveQuestionIds: ['q24-email'],
   resultsConfig: {
