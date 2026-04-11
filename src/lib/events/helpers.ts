@@ -145,7 +145,7 @@ export function isUserEventOrganizer(
   return matchesSlackUser(userSlackId, event.organizers)
 }
 
-export type EventRole = 'organizer'
+type EventRole = 'organizer'
 
 export function getUserEventRole(
   event: Event,
@@ -163,7 +163,8 @@ export function isUserEventSpeaker(event: Event, userSlackId: string): boolean {
   }
 
   return event.schedule.some(
-    item => isTalkType(item.type) && matchesSlackUser(userSlackId, item.speakers)
+    item =>
+      isTalkType(item.type) && matchesSlackUser(userSlackId, item.speakers)
   )
 }
 
