@@ -11,7 +11,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "check": "tsc --noEmit && eslint . && knip && prettier --write . --list-different && vitest run",
+    "check": "tsc --noEmit && eslint . --quiet && knip && prettier --write . --list-different && vitest run --reporter=dot",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
