@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { TalkAttachmentUpload } from './TalkAttachmentUpload'
 import { getAttachmentIcon } from '@/lib/events/helpers'
 import { TrashIcon } from '@heroicons/react/24/outline'
-import type { TalkAttachment } from '@/lib/sanity/talk-attachments'
+import type { TalkAttachment } from '@/lib/sanity/talk-attachment-types'
 
 interface TalkAttachmentManagerProps {
   eventSlug: string

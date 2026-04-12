@@ -15,7 +15,8 @@
   "project": [
     "src/**/*.{ts,tsx,js,jsx}",
     "!src/**/*.test.{ts,tsx}",
-    "!src/**/__tests__/**"
+    "!src/**/__tests__/**",
+    "!src/test-*.ts"
   ],
   "ignoreDependencies": ["@types/webpack-env", "@types/mdx", "postcss"],
   "next": {

@@ -1,26 +1,8 @@
+import 'server-only'
 import { sanityClient } from './config'
-import {
-  createImageUrlBuilder,
-  type SanityImageSource,
-} from '@sanity/image-url'
+import type { EventPhoto } from './image-url'
 
-const builder = createImageUrlBuilder(sanityClient)
-
-export interface EventPhoto {
-  _id: string
-  eventSlug: string
-  image: SanityImageSource
-  caption?: string
-  speakers?: string[]
-  uploadedAt: string
-  uploadedBy?: string
-  order?: number
-  featured?: boolean
-}
-
-export function urlForImage(source: SanityImageSource) {
-  return builder.image(source)
-}
+export { urlForImage, prepareEventThumbnailUrls } from './image-url'
 
 function removeUndefinedFields<T extends Record<string, unknown>>(
   obj: T
@@ -108,14 +90,4 @@ export async function reorderEventPhotos(photoIds: string[]): Promise<void> {
   })
 
   await transaction.commit()
-}
-
-export function prepareEventThumbnailUrls(photos: EventPhoto[]): string[] {
-  return photos.slice(0, 4).map((photo, index) => {
-    const isFirstOrLast = index === 0 || index === 3
-    return urlForImage(photo.image)
-      .width(800)
-      .height(isFirstOrLast ? 1200 : 600)
-      .url()
-  })
 }

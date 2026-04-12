@@ -1,5 +1,9 @@
+import 'server-only'
 import { sanityClient } from './config'
 import type { AttachmentType } from '@/lib/events/types'
+
+export type { TalkAttachment } from './talk-attachment-types'
+import type { TalkAttachment } from './talk-attachment-types'
 
 interface SanityTalkAttachment {
   _id: string
@@ -17,19 +21,6 @@ interface SanityTalkAttachment {
       url?: string
     }
   }
-  type: AttachmentType
-  uploadedAt: string
-  uploadedBy: string
-}
-
-export interface TalkAttachment {
-  id: string
-  eventSlug: string
-  talkTitle: string
-  speakerSlackId: string
-  title?: string
-  url?: string
-  fileUrl?: string
   type: AttachmentType
   uploadedAt: string
   uploadedBy: string

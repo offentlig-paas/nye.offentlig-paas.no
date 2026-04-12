@@ -1,3 +1,4 @@
+import 'server-only'
 import { sanityClient } from '@/lib/sanity/config'
 import { prepareSanityDocument } from '@/lib/sanity/utils'
 import type { EventFeedback, EventFeedbackQuery } from './types'

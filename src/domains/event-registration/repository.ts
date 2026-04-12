@@ -1,3 +1,4 @@
+import 'server-only'
 import { sanityClient } from '@/lib/sanity/config'
 import type {
   EventRegistration,

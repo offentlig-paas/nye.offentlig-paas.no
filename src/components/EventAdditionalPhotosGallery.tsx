@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { urlForImage, type EventPhoto } from '@/lib/sanity/event-photos'
+import { urlForImage, type EventPhoto } from '@/lib/sanity/image-url'
 
 interface EventAdditionalPhotosGalleryProps {
   photos: EventPhoto[]

@@ -1,3 +1,4 @@
+import 'server-only'
 import { sanityClient } from './config'
 import type { EventParticipantInfo } from '@/lib/events/types'
 

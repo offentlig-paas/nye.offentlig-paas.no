@@ -1,3 +1,4 @@
+import 'server-only'
 import { createClient } from '@sanity/client'
 
 // Use NEXT_PUBLIC_ environment variables for client/server compatibility

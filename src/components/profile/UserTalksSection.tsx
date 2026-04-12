@@ -7,7 +7,7 @@ import { PresentationChartLineIcon } from '@heroicons/react/20/solid'
 import { formatDateLong } from '@/lib/formatDate'
 import { getAttachmentIcon } from '@/lib/events/helpers'
 import { TalkAttachmentManager } from '@/components/TalkAttachmentManager'
-import { urlForImage, type EventPhoto } from '@/lib/sanity/event-photos'
+import { urlForImage, type EventPhoto } from '@/lib/sanity/image-url'
 import type { Event } from '@/lib/events/types'
 
 interface UserTalk {

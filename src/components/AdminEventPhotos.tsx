@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react'
 import Image from 'next/image'
 import { trpc } from '@/lib/trpc/client'
-import { urlForImage, type EventPhoto } from '@/lib/sanity/event-photos'
+import { urlForImage, type EventPhoto } from '@/lib/sanity/image-url'
 import { getUniqueSpeakers } from '@/lib/events/helpers'
 import {
   TrashIcon,
