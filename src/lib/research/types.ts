@@ -90,6 +90,7 @@ export interface ResearchProject {
   status: ResearchStatus
   tags: string[]
   lead: string
+  team?: string[]
   startDate: string
   lastUpdated: string
   callout?: {

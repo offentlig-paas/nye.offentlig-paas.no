@@ -129,6 +129,7 @@ export const researchProjects: ResearchProject[] = [
     status: ResearchStatus.DataCollection,
     tags: ['state-of-ai-agents'],
     lead: 'Hans Kristian Flaatten',
+    team: ['Hans Kristian Flaatten', 'Anders Olsen Sandvik'],
     startDate: '2026-01-01',
     lastUpdated: '2026-04-05',
     callout: {

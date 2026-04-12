@@ -140,7 +140,7 @@ export default async function ResearchProjectPage({
           <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-zinc-500 dark:text-zinc-400">
             <span className="flex items-center gap-1.5">
               <UserIcon className="h-4 w-4" />
-              {project.lead}
+              {project.team ? project.team.join(', ') : project.lead}
             </span>
             <span className="flex items-center gap-1.5">
               <CalendarDaysIcon className="h-4 w-4" />
