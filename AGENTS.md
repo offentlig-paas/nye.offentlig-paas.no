@@ -89,6 +89,13 @@
 - `aggregateSurveyResults()` - Aggregate all responses into per-question breakdowns
 - Supports `excludeQuestionIds` option to omit sensitive questions from public output
 
+**Sanity client-safe modules** (safe to import from Client Components):
+
+- `src/lib/sanity/image-url.ts` - Image URL builder using only `NEXT_PUBLIC_*` env vars
+- `src/lib/sanity/talk-attachment-types.ts` - `TalkAttachment` type definition
+
+**IMPORTANT**: All Sanity modules using `sanityClient` have `import 'server-only'` to prevent token leaks. See `src/lib/sanity/` for the server/client split pattern.
+
 ## Key Patterns & Conventions
 
 ### Key Patterns
@@ -244,3 +251,7 @@ When asked to create functionality:
 - Slack integration (check `slack/` directory)
 - Form validation patterns
 - Error handling patterns
+
+### Sanity Server/Client Module Boundary
+
+Sanity modules using `sanityClient` (with `SANITY_API_TOKEN`) are protected with `import 'server-only'`. Client Components must import from client-safe modules (`image-url.ts`, `talk-attachment-types.ts`). New Sanity modules using `sanityClient` must add `import 'server-only'` as the first import. See `src/lib/sanity/` for examples.
