@@ -95,5 +95,24 @@ describe('Calendar download with participant info', () => {
       expect(ics).toContain('DTSTART:20251015T100000Z')
       expect(ics).toContain('DTEND:20251015T160000Z')
     })
+
+    it('uses real CRLF line endings, not literal backslash-n', () => {
+      const ics = getIcsFileContent(mockEvent, mockUrl)
+
+      expect(ics).not.toContain('BEGIN:VCALENDAR\\n')
+      expect(ics).toContain('BEGIN:VCALENDAR\r\n')
+    })
+
+    it('each ICS property is on its own line', () => {
+      const ics = getIcsFileContent(mockEvent, mockUrl)
+      const lines = ics.split('\r\n')
+
+      expect(lines[0]).toBe('BEGIN:VCALENDAR')
+      expect(lines[1]).toBe('VERSION:2.0')
+      expect(lines).toContain('BEGIN:VEVENT')
+      expect(lines).toContain('SUMMARY:Test Event')
+      expect(lines).toContain('END:VEVENT')
+      expect(lines).toContain('END:VCALENDAR')
+    })
   })
 })

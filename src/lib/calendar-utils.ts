@@ -45,5 +45,5 @@ export function getIcsFileContent(
     `URL:${url}`,
     'END:VEVENT',
     'END:VCALENDAR',
-  ].join('\\n')
+  ].join('\r\n')
 }
