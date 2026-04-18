@@ -426,7 +426,7 @@ export const members: Member[] = [
     name: 'Nasjonalarkivet',
     type: MemberType.AGENCY,
     sectors: [Sector.CULTURE],
-    domains: ['nasjonalarkivet.no'],
+    domains: ['nasjonalarkivet.no', 'arkivverket.no'],
     slug: 'nasjonalarkivet',
     github: 'nasjonalarkivet',
     homepage: 'https://www.nasjonalarkivet.no',
