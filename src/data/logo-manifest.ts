@@ -127,6 +127,10 @@ export const logoManifest: Record<
     ext: 'svg',
     hasMark: true,
   },
+  nasjonalarkivet: {
+    ext: 'svg',
+    hasMark: true,
+  },
   moss: {
     ext: 'svg',
     hasMark: true,
