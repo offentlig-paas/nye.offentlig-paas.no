@@ -324,12 +324,9 @@ describe('survey admin authorization matrix', () => {
       ['owner', owner, true],
       ['researcher', researcher, true],
       ['nobody', nobody, false],
-    ])(
-      '%s can access getNonRespondingContacts: %s',
-      (_, user, expected) => {
-        expect(canUserAccessSurvey(surveyWithRoles, user)).toBe(expected)
-      }
-    )
+    ])('%s can access getNonRespondingContacts: %s', (_, user, expected) => {
+      expect(canUserAccessSurvey(surveyWithRoles, user)).toBe(expected)
+    })
 
     it('researcher gets researcher role (not owner) for contacts', () => {
       const role = getUserSurveyRole(surveyWithRoles, researcher)

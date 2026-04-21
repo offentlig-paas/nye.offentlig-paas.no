@@ -143,9 +143,7 @@ describe('getNonRespondingContacts validation logic', () => {
   })
 
   it('non-responding check blocks responded orgs', () => {
-    const responses = [
-      { answers: [{ questionId: 'q1-org', value: 'Nav' }] },
-    ]
+    const responses = [{ answers: [{ questionId: 'q1-org', value: 'Nav' }] }]
     const respondedOrgs = getRespondedOrgNames(responses, 'q1-org')
 
     expect(respondedOrgs.has('nav')).toBe(true)
@@ -153,9 +151,7 @@ describe('getNonRespondingContacts validation logic', () => {
   })
 
   it('non-responding check is case-insensitive', () => {
-    const responses = [
-      { answers: [{ questionId: 'q1-org', value: 'NAV' }] },
-    ]
+    const responses = [{ answers: [{ questionId: 'q1-org', value: 'NAV' }] }]
     const respondedOrgs = getRespondedOrgNames(responses, 'q1-org')
 
     expect(respondedOrgs.has('nav')).toBe(true)
