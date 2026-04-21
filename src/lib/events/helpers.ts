@@ -145,6 +145,15 @@ export function isUserEventOrganizer(
   return matchesSlackUser(userSlackId, event.organizers)
 }
 
+export function hasAnyEventAccess(user: {
+  isAdmin?: boolean
+  slackId?: string
+}): boolean {
+  if (user.isAdmin) return true
+  if (!user.slackId) return false
+  return events.some(event => isUserEventOrganizer(event, user.slackId!))
+}
+
 type EventRole = 'organizer'
 
 export function getUserEventRole(

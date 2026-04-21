@@ -11,7 +11,7 @@ import { formatDateTime } from '@/lib/formatDate'
 import { createCaller } from '@/server/root'
 import { AdminEventProvider } from '@/contexts/AdminEventContext'
 import { SHIMMER_CLASS as shimmer } from '@/lib/admin-ui'
-import { requireAdmin } from '@/lib/auth-guards'
+import { requireAuth } from '@/lib/auth-guards'
 
 interface AdminEventLayoutProps {
   children: React.ReactNode
@@ -95,7 +95,7 @@ export default async function AdminEventLayout({
     notFound()
   }
 
-  const session = await requireAdmin()
+  const session = await requireAuth()
   if (!canUserAccessEvent(event, session.user)) {
     notFound()
   }

@@ -28,6 +28,7 @@ import { enrichEventWithDynamicData } from './event'
 import {
   getAllEvents,
   getDetailedEventInfoFromSlug,
+  canUserAccessEvent,
 } from '@/lib/events/helpers'
 import { getUniqueCleanedOrganizations } from '@/lib/organization-utils'
 import {
@@ -785,18 +786,22 @@ Mvh ${organizerNames}`
 
   events: router({
     list: protectedProcedure.query(async ({ ctx }) => {
-      if (!ctx.user.isAdmin) {
+      const allEvents = getAllEvents()
+
+      const accessibleEvents = allEvents.filter(event =>
+        canUserAccessEvent(event, ctx.user)
+      )
+
+      if (accessibleEvents.length === 0) {
         throw new TRPCError({
           code: 'FORBIDDEN',
-          message: 'Admin access required',
+          message: 'Ingen tilgang til fagdager',
         })
       }
 
-      const allEvents = getAllEvents()
-
       // Use enrichEventWithDynamicData for each event
       const enrichedEvents = await Promise.all(
-        allEvents.map(async event => {
+        accessibleEvents.map(async event => {
           try {
             return await enrichEventWithDynamicData(event.slug)
           } catch (error) {

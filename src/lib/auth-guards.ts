@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { auth } from '@/auth'
 import { hasAnySurveyAccess } from '@/lib/surveys/helpers'
+import { hasAnyEventAccess } from '@/lib/events/helpers'
 
 /**
  * Requires authentication and admin access
@@ -22,8 +23,8 @@ export async function requireAdmin() {
 }
 
 /**
- * Requires authentication and either admin access or survey access (owner/researcher).
- * Used by the admin layout to allow survey participants through.
+ * Requires authentication and either admin, event organizer, or survey access.
+ * Used by the top-level admin layout to allow non-admin collaborators through.
  */
 export async function requireAdminOrSurveyAccess() {
   const session = await auth()
@@ -32,8 +33,26 @@ export async function requireAdminOrSurveyAccess() {
     redirect('/auth/signin')
   }
 
-  if (!session.user.isAdmin && !hasAnySurveyAccess(session.user)) {
+  if (
+    !session.user.isAdmin &&
+    !hasAnySurveyAccess(session.user) &&
+    !hasAnyEventAccess(session.user)
+  ) {
     redirect('/')
+  }
+
+  return session
+}
+
+/**
+ * Requires authentication and returns the session.
+ * Does NOT check admin or any role — caller must do authorization.
+ */
+export async function requireAuth() {
+  const session = await auth()
+
+  if (!session?.user) {
+    redirect('/auth/signin')
   }
 
   return session
