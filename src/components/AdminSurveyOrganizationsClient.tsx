@@ -8,19 +8,31 @@ import {
   XCircleIcon,
   ChevronDownIcon,
   ChevronRightIcon,
+  ChatBubbleLeftIcon,
+  ArrowPathIcon,
 } from '@heroicons/react/24/outline'
 import type { inferRouterOutputs } from '@trpc/server'
 import type { AppRouter } from '@/server/root'
+import type { SurveyRole } from '@/lib/surveys/types'
 import { StatCard } from '@/components/StatCard'
+import { trpc } from '@/lib/trpc/client'
 
 type OrgData =
   inferRouterOutputs<AppRouter>['admin']['surveys']['getOrganizations']
 
-export function AdminSurveyOrganizationsClient({ data }: { data: OrgData }) {
+export function AdminSurveyOrganizationsClient({
+  data,
+  surveySlug,
+}: {
+  data: OrgData
+  surveySlug: string
+}) {
   const [expandedSectors, setExpandedSectors] = useState<Set<string>>(new Set())
   const [filter, setFilter] = useState<
     'all' | 'members' | 'non-members' | 'missing'
   >('all')
+
+  const role = data.role
 
   function toggleSector(type: string) {
     setExpandedSectors(prev => {
@@ -117,8 +129,9 @@ export function AdminSurveyOrganizationsClient({ data }: { data: OrgData }) {
                         key={org.name}
                         className="flex items-center justify-between px-4 py-2"
                       >
-                        <OrgLink
+                        <OrgName
                           name={org.name}
+                          role={role}
                           className={
                             org.responded
                               ? 'text-zinc-900 dark:text-zinc-100'
@@ -175,27 +188,48 @@ export function AdminSurveyOrganizationsClient({ data }: { data: OrgData }) {
           </div>
         </div>
         {filter === 'missing' ? (
-          <MissingMembersTable members={missingMembers} />
+          <MissingMembersTable
+            members={missingMembers}
+            role={role}
+            surveySlug={surveySlug}
+          />
         ) : (
-          <OrgTable orgBreakdown={filteredOrgBreakdown} />
+          <OrgTable orgBreakdown={filteredOrgBreakdown} role={role} />
         )}
       </section>
     </div>
   )
 }
 
-function OrgLink({ name, className }: { name: string; className?: string }) {
-  return (
-    <Link
-      href={`/admin/members?search=${encodeURIComponent(name)}`}
-      className={`underline decoration-zinc-300 underline-offset-2 hover:decoration-teal-500 dark:decoration-zinc-600 dark:hover:decoration-teal-400 ${className ?? ''}`}
-    >
-      {name}
-    </Link>
-  )
+function OrgName({
+  name,
+  role,
+  className,
+}: {
+  name: string
+  role: SurveyRole
+  className?: string
+}) {
+  if (role === 'owner') {
+    return (
+      <Link
+        href={`/admin/members?search=${encodeURIComponent(name)}`}
+        className={`underline decoration-zinc-300 underline-offset-2 hover:decoration-teal-500 dark:decoration-zinc-600 dark:hover:decoration-teal-400 ${className ?? ''}`}
+      >
+        {name}
+      </Link>
+    )
+  }
+  return <span className={className}>{name}</span>
 }
 
-function OrgTable({ orgBreakdown }: { orgBreakdown: OrgData['orgBreakdown'] }) {
+function OrgTable({
+  orgBreakdown,
+  role,
+}: {
+  orgBreakdown: OrgData['orgBreakdown']
+  role: SurveyRole
+}) {
   if (orgBreakdown.length === 0) {
     return (
       <p className="py-8 text-center text-sm text-zinc-400">Ingen svar ennå</p>
@@ -220,7 +254,7 @@ function OrgTable({ orgBreakdown }: { orgBreakdown: OrgData['orgBreakdown'] }) {
             <tr key={row.organization}>
               <td className="px-4 py-2 text-sm text-zinc-900 dark:text-zinc-100">
                 <span className="inline-flex items-center gap-1.5">
-                  <OrgLink name={row.organization} />
+                  <OrgName name={row.organization} role={role} />
                   {!row.isMember && (
                     <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
                       Ikke medlem
@@ -239,10 +273,108 @@ function OrgTable({ orgBreakdown }: { orgBreakdown: OrgData['orgBreakdown'] }) {
   )
 }
 
+function ContactRow({
+  memberName,
+  surveySlug,
+}: {
+  memberName: string
+  surveySlug: string
+}) {
+  const [isOpen, setIsOpen] = useState(false)
+  const { data, isFetching, error } =
+    trpc.admin.surveys.getNonRespondingContacts.useQuery(
+      { slug: surveySlug, memberName },
+      { enabled: isOpen, retry: false }
+    )
+
+  const teamId = process.env.NEXT_PUBLIC_SLACK_TEAM_ID
+  const hasResponded = error?.message?.includes('allerede svart')
+
+  return (
+    <tr>
+      <td colSpan={2} className="p-0">
+        <button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+          className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300"
+        >
+          <ChevronRightIcon
+            className={`h-3.5 w-3.5 shrink-0 transition-transform ${isOpen ? 'rotate-90' : ''}`}
+          />
+          <span className="flex-1">{memberName}</span>
+          {data && (
+            <span className="shrink-0 text-xs text-zinc-400">
+              {data.userCount} i Slack
+            </span>
+          )}
+        </button>
+        {isOpen && (
+          <div className="border-t border-zinc-100 bg-zinc-50/50 dark:border-zinc-700/50 dark:bg-zinc-800/30">
+            {isFetching && (
+              <div className="flex items-center justify-center py-3">
+                <ArrowPathIcon className="h-4 w-4 animate-spin text-zinc-400" />
+              </div>
+            )}
+            {hasResponded && (
+              <p className="px-4 py-3 text-xs text-teal-600 dark:text-teal-400">
+                Denne organisasjonen har nå svart på undersøkelsen.
+              </p>
+            )}
+            {error && !hasResponded && (
+              <p className="px-4 py-3 text-xs text-red-500">
+                Kunne ikke hente kontakter.
+              </p>
+            )}
+            {data && data.users.length === 0 && (
+              <p className="px-4 py-3 text-xs text-zinc-400">
+                Ingen Slack-brukere funnet for denne organisasjonen.
+              </p>
+            )}
+            {data && data.users.length > 0 && (
+              <ul className="divide-y divide-zinc-100 dark:divide-zinc-700/50">
+                {data.users.map(user => (
+                  <li
+                    key={user.slackId}
+                    className="flex items-center gap-3 px-6 py-1.5"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <span className="text-sm text-zinc-700 dark:text-zinc-300">
+                        {user.realName}
+                      </span>
+                      {user.title && (
+                        <span className="ml-2 text-xs text-zinc-400">
+                          {user.title}
+                        </span>
+                      )}
+                    </div>
+                    {teamId && (
+                      <a
+                        href={`slack://user?team=${teamId}&id=${user.slackId}`}
+                        className="shrink-0 rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-zinc-300"
+                        title="Åpne i Slack"
+                      >
+                        <ChatBubbleLeftIcon className="h-4 w-4" />
+                      </a>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+      </td>
+    </tr>
+  )
+}
+
 function MissingMembersTable({
   members,
+  role,
+  surveySlug,
 }: {
   members: { name: string; responded: boolean }[]
+  role: SurveyRole
+  surveySlug: string
 }) {
   if (members.length === 0) {
     return (
@@ -266,16 +398,24 @@ function MissingMembersTable({
           </tr>
         </thead>
         <tbody className="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-900">
-          {members.map(org => (
-            <tr key={org.name}>
-              <td className="px-4 py-2 text-sm text-zinc-400 dark:text-zinc-500">
-                <OrgLink name={org.name} />
-              </td>
-              <td className="px-4 py-2 text-right">
-                <XCircleIcon className="ml-auto h-4 w-4 text-zinc-300 dark:text-zinc-600" />
-              </td>
-            </tr>
-          ))}
+          {members.map(org =>
+            role === 'owner' ? (
+              <tr key={org.name}>
+                <td className="px-4 py-2 text-sm text-zinc-400 dark:text-zinc-500">
+                  <OrgName name={org.name} role={role} />
+                </td>
+                <td className="px-4 py-2 text-right">
+                  <XCircleIcon className="ml-auto h-4 w-4 text-zinc-300 dark:text-zinc-600" />
+                </td>
+              </tr>
+            ) : (
+              <ContactRow
+                key={org.name}
+                memberName={org.name}
+                surveySlug={surveySlug}
+              />
+            )
+          )}
         </tbody>
       </table>
     </div>

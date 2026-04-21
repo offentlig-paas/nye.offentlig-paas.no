@@ -30,7 +30,7 @@ function OrgSkeleton() {
 async function OrgContent({ slug }: { slug: string }) {
   const caller = await createCaller()
   const data = await caller.admin.surveys.getOrganizations({ slug })
-  return <AdminSurveyOrganizationsClient data={data} />
+  return <AdminSurveyOrganizationsClient data={data} surveySlug={slug} />
 }
 
 export default async function AdminSurveyOrganizationsPage({

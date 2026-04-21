@@ -318,6 +318,25 @@ describe('survey admin authorization matrix', () => {
     })
   })
 
+  describe('non-responding contacts (all authenticated roles)', () => {
+    it.each([
+      ['admin', admin, true],
+      ['owner', owner, true],
+      ['researcher', researcher, true],
+      ['nobody', nobody, false],
+    ])(
+      '%s can access getNonRespondingContacts: %s',
+      (_, user, expected) => {
+        expect(canUserAccessSurvey(surveyWithRoles, user)).toBe(expected)
+      }
+    )
+
+    it('researcher gets researcher role (not owner) for contacts', () => {
+      const role = getUserSurveyRole(surveyWithRoles, researcher)
+      expect(role).toBe('researcher')
+    })
+  })
+
   describe('researcher cannot escalate to owner', () => {
     it('researcher role is never owner even with access', () => {
       const role = getUserSurveyRole(surveyWithRoles, researcher)

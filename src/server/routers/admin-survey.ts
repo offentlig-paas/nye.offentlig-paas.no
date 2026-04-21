@@ -7,6 +7,7 @@ import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import { SurveyResponseRepository } from '@/domains/survey-response/repository'
 import { getAccessibleSurveys } from '@/lib/surveys/helpers'
+import { getSlackUsersForMember } from '@/lib/members-slack'
 import { members } from '@/data/members'
 import type { SurveyDefinition } from '@/lib/surveys/types'
 
@@ -41,6 +42,18 @@ const adminSurveyProcedure = protectedProcedure.use(surveyAccessForSlug)
 
 function getOrgQuestionId(survey: SurveyDefinition): string {
   return survey.organizationQuestionId ?? 'q1-org'
+}
+
+async function getRespondedOrgNames(
+  surveySlug: string,
+  orgQid: string
+): Promise<Set<string>> {
+  const allResponses = await repository.findBySurvey(surveySlug)
+  const responded = new Set<string>()
+  for (const r of allResponses) {
+    responded.add(resolveOrganization(r, orgQid).toLowerCase().trim())
+  }
+  return responded
 }
 
 function sanitizeCsvCell(value: string): string {
@@ -239,6 +252,7 @@ export const adminSurveyRouter = router({
       )
 
       return {
+        role: ctx.surveyRole,
         orgBreakdown,
         sectorBreakdown,
         totalMembers,
@@ -410,5 +424,47 @@ export const adminSurveyRouter = router({
       })
 
       return { success: true }
+    }),
+
+  getNonRespondingContacts: adminSurveyProcedure
+    .input(
+      z.object({
+        slug: z.string(),
+        memberName: z.string().min(1),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { survey } = ctx
+      const orgQid = getOrgQuestionId(survey)
+
+      if (!members.some(m => m.name === input.memberName)) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: `"${input.memberName}" er ikke et gyldig medlemsnavn`,
+        })
+      }
+
+      const respondedOrgs = await getRespondedOrgNames(survey.slug, orgQid)
+
+      if (respondedOrgs.has(input.memberName.toLowerCase().trim())) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Denne organisasjonen har allerede svart på undersøkelsen',
+        })
+      }
+
+      const result = await getSlackUsersForMember(input.memberName)
+      if (!result) {
+        return { users: [], userCount: 0 }
+      }
+
+      return {
+        users: result.member.users.map(u => ({
+          realName: u.realName,
+          title: u.title ?? '',
+          slackId: u.id,
+        })),
+        userCount: result.member.userCount,
+      }
     }),
 })
