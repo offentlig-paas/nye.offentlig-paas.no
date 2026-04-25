@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import {
   BuildingOfficeIcon,
   CheckCircleIcon,
@@ -13,7 +12,6 @@ import {
 } from '@heroicons/react/24/outline'
 import type { inferRouterOutputs } from '@trpc/server'
 import type { AppRouter } from '@/server/root'
-import type { SurveyRole } from '@/lib/surveys/types'
 import { StatCard } from '@/components/StatCard'
 import { trpc } from '@/lib/trpc/client'
 
@@ -31,8 +29,6 @@ export function AdminSurveyOrganizationsClient({
   const [filter, setFilter] = useState<
     'all' | 'members' | 'non-members' | 'missing'
   >('all')
-
-  const role = data.role
 
   function toggleSector(type: string) {
     setExpandedSectors(prev => {
@@ -131,7 +127,6 @@ export function AdminSurveyOrganizationsClient({
                       >
                         <OrgName
                           name={org.name}
-                          role={role}
                           className={
                             org.responded
                               ? 'text-zinc-900 dark:text-zinc-100'
@@ -193,7 +188,7 @@ export function AdminSurveyOrganizationsClient({
             surveySlug={surveySlug}
           />
         ) : (
-          <OrgTable orgBreakdown={filteredOrgBreakdown} role={role} />
+          <OrgTable orgBreakdown={filteredOrgBreakdown} />
         )}
       </section>
     </div>
@@ -202,32 +197,18 @@ export function AdminSurveyOrganizationsClient({
 
 function OrgName({
   name,
-  role,
   className,
 }: {
   name: string
-  role: SurveyRole
   className?: string
 }) {
-  if (role === 'owner') {
-    return (
-      <Link
-        href={`/admin/members?search=${encodeURIComponent(name)}`}
-        className={`underline decoration-zinc-300 underline-offset-2 hover:decoration-teal-500 dark:decoration-zinc-600 dark:hover:decoration-teal-400 ${className ?? ''}`}
-      >
-        {name}
-      </Link>
-    )
-  }
   return <span className={className}>{name}</span>
 }
 
 function OrgTable({
   orgBreakdown,
-  role,
 }: {
   orgBreakdown: OrgData['orgBreakdown']
-  role: SurveyRole
 }) {
   if (orgBreakdown.length === 0) {
     return (
@@ -253,7 +234,7 @@ function OrgTable({
             <tr key={row.organization}>
               <td className="px-4 py-2 text-sm text-zinc-900 dark:text-zinc-100">
                 <span className="inline-flex items-center gap-1.5">
-                  <OrgName name={row.organization} role={role} />
+                  <OrgName name={row.organization} />
                   {!row.isMember && (
                     <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
                       Ikke medlem

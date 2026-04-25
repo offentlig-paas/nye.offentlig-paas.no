@@ -252,7 +252,6 @@ export const adminSurveyRouter = router({
       )
 
       return {
-        role: ctx.surveyRole,
         orgBreakdown,
         sectorBreakdown,
         totalMembers,
