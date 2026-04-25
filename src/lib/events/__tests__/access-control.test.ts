@@ -1,13 +1,53 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import {
   isUserEventOrganizer,
   getUserEventRole,
   canUserAccessEvent,
   isUserEventSpeaker,
   isUserSpeakerForTalk,
+  hasAnyEventAccess,
 } from '../helpers'
 import type { Event } from '../types'
 import { AttendanceType, Audience, ItemType } from '../types'
+
+vi.mock('@/data/events', () => ({
+  events: [
+    {
+      slug: 'event-a',
+      title: 'Event A',
+      ingress: 'Test',
+      start: new Date('2024-01-01'),
+      end: new Date('2024-01-02'),
+      location: 'Oslo',
+      audience: 'Offentlig sektor',
+      registration: { disabled: false, attendanceTypes: ['physical'] },
+      organizers: [
+        {
+          name: 'Org A',
+          url: 'https://offentlig-paas-no.slack.com/team/UORGA1',
+        },
+      ],
+      schedule: [],
+    },
+    {
+      slug: 'event-b',
+      title: 'Event B',
+      ingress: 'Test',
+      start: new Date('2024-06-01'),
+      end: new Date('2024-06-02'),
+      location: 'Bergen',
+      audience: 'Offentlig sektor',
+      registration: { disabled: false, attendanceTypes: ['physical'] },
+      organizers: [
+        {
+          name: 'Org B',
+          url: 'https://offentlig-paas-no.slack.com/team/UORGB2',
+        },
+      ],
+      schedule: [],
+    },
+  ],
+}))
 
 const baseEvent: Event = {
   slug: 'test-event',
@@ -256,5 +296,30 @@ describe('isUserSpeakerForTalk', () => {
     expect(isUserSpeakerForTalk(eventWithSpeakers, 'Lunch', 'USPEAK01')).toBe(
       false
     )
+  })
+})
+
+describe('hasAnyEventAccess', () => {
+  it('grants access to admins', () => {
+    expect(hasAnyEventAccess({ isAdmin: true })).toBe(true)
+  })
+
+  it('grants access to organizer of any event', () => {
+    expect(hasAnyEventAccess({ isAdmin: false, slackId: 'UORGA1' })).toBe(true)
+    expect(hasAnyEventAccess({ isAdmin: false, slackId: 'UORGB2' })).toBe(true)
+  })
+
+  it('denies access to non-organizer', () => {
+    expect(hasAnyEventAccess({ isAdmin: false, slackId: 'UOTHER' })).toBe(
+      false
+    )
+  })
+
+  it('denies access when user has no slackId', () => {
+    expect(hasAnyEventAccess({ isAdmin: false })).toBe(false)
+  })
+
+  it('denies access when slackId is empty', () => {
+    expect(hasAnyEventAccess({ isAdmin: false, slackId: '' })).toBe(false)
   })
 })
