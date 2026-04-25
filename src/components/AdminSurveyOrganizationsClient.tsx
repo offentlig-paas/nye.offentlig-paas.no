@@ -190,7 +190,6 @@ export function AdminSurveyOrganizationsClient({
         {filter === 'missing' ? (
           <MissingMembersTable
             members={missingMembers}
-            role={role}
             surveySlug={surveySlug}
           />
         ) : (
@@ -369,11 +368,9 @@ function ContactRow({
 
 function MissingMembersTable({
   members,
-  role,
   surveySlug,
 }: {
   members: { name: string; responded: boolean }[]
-  role: SurveyRole
   surveySlug: string
 }) {
   if (members.length === 0) {
@@ -389,33 +386,22 @@ function MissingMembersTable({
       <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
         <thead className="bg-zinc-50 dark:bg-zinc-800">
           <tr>
-            <th className="px-4 py-3 text-left text-xs font-medium tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
+            <th
+              colSpan={2}
+              className="px-4 py-3 text-left text-xs font-medium tracking-wider text-zinc-500 uppercase dark:text-zinc-400"
+            >
               Medlem
-            </th>
-            <th className="px-4 py-3 text-right text-xs font-medium tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
-              Status
             </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-900">
-          {members.map(org =>
-            role === 'owner' ? (
-              <tr key={org.name}>
-                <td className="px-4 py-2 text-sm text-zinc-400 dark:text-zinc-500">
-                  <OrgName name={org.name} role={role} />
-                </td>
-                <td className="px-4 py-2 text-right">
-                  <XCircleIcon className="ml-auto h-4 w-4 text-zinc-300 dark:text-zinc-600" />
-                </td>
-              </tr>
-            ) : (
-              <ContactRow
-                key={org.name}
-                memberName={org.name}
-                surveySlug={surveySlug}
-              />
-            )
-          )}
+          {members.map(org => (
+            <ContactRow
+              key={org.name}
+              memberName={org.name}
+              surveySlug={surveySlug}
+            />
+          ))}
         </tbody>
       </table>
     </div>
