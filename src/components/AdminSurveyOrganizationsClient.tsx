@@ -120,26 +120,26 @@ export function AdminSurveyOrganizationsClient({
 
                 {isExpanded && (
                   <div className="divide-y divide-zinc-100 bg-white dark:divide-zinc-700/50 dark:bg-zinc-900/50">
-                    {sector.organizations.map(org => (
-                      <div
-                        key={org.name}
-                        className="flex items-center justify-between px-4 py-2"
-                      >
-                        <OrgName
-                          name={org.name}
-                          className={
-                            org.responded
-                              ? 'text-zinc-900 dark:text-zinc-100'
-                              : 'text-zinc-400 dark:text-zinc-500'
-                          }
-                        />
-                        {org.responded ? (
+                    {sector.organizations.map(org =>
+                      org.responded ? (
+                        <div
+                          key={org.name}
+                          className="flex items-center justify-between px-4 py-2"
+                        >
+                          <OrgName
+                            name={org.name}
+                            className="text-zinc-900 dark:text-zinc-100"
+                          />
                           <CheckCircleIcon className="h-4 w-4 text-teal-500 dark:text-teal-400" />
-                        ) : (
-                          <XCircleIcon className="h-4 w-4 text-zinc-300 dark:text-zinc-600" />
-                        )}
-                      </div>
-                    ))}
+                        </div>
+                      ) : (
+                        <ExpandableOrgContacts
+                          key={org.name}
+                          memberName={org.name}
+                          surveySlug={surveySlug}
+                        />
+                      )
+                    )}
                   </div>
                 )}
               </div>
@@ -205,6 +205,103 @@ function OrgName({
   return <span className={className}>{name}</span>
 }
 
+function ExpandableOrgContacts({
+  memberName,
+  surveySlug,
+}: {
+  memberName: string
+  surveySlug: string
+}) {
+  const [isOpen, setIsOpen] = useState(false)
+  const { data, isFetching, error } =
+    trpc.admin.surveys.getNonRespondingContacts.useQuery(
+      { slug: surveySlug, memberName },
+      { enabled: isOpen, retry: false }
+    )
+
+  const teamId = process.env.NEXT_PUBLIC_SLACK_TEAM_ID
+  const hasResponded = error?.message?.includes('allerede svart')
+
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex w-full items-center justify-between px-4 py-2 text-left transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+      >
+        <span className="flex items-center gap-2 text-sm text-zinc-400 dark:text-zinc-500">
+          <ChevronRightIcon
+            className={`h-3.5 w-3.5 shrink-0 transition-transform ${isOpen ? 'rotate-90' : ''}`}
+          />
+          {memberName}
+        </span>
+        <span className="flex items-center gap-2">
+          {data && (
+            <span className="text-xs text-zinc-400">
+              {data.userCount} i Slack
+            </span>
+          )}
+          <XCircleIcon className="h-4 w-4 text-zinc-300 dark:text-zinc-600" />
+        </span>
+      </button>
+      {isOpen && (
+        <div className="border-t border-zinc-100 bg-zinc-50/50 dark:border-zinc-700/50 dark:bg-zinc-800/30">
+          {isFetching && (
+            <div className="flex items-center justify-center py-3">
+              <ArrowPathIcon className="h-4 w-4 animate-spin text-zinc-400" />
+            </div>
+          )}
+          {hasResponded && (
+            <p className="px-4 py-3 text-xs text-teal-600 dark:text-teal-400">
+              Denne organisasjonen har nå svart på undersøkelsen.
+            </p>
+          )}
+          {error && !hasResponded && (
+            <p className="px-4 py-3 text-xs text-red-500">
+              Kunne ikke hente kontakter.
+            </p>
+          )}
+          {data && data.users.length === 0 && (
+            <p className="px-4 py-3 text-xs text-zinc-400">
+              Ingen Slack-brukere funnet for denne organisasjonen.
+            </p>
+          )}
+          {data && data.users.length > 0 && (
+            <ul className="divide-y divide-zinc-100 dark:divide-zinc-700/50">
+              {data.users.map(user => (
+                <li
+                  key={user.slackId}
+                  className="flex items-center gap-3 px-6 py-1.5"
+                >
+                  <div className="min-w-0 flex-1">
+                    <span className="text-sm text-zinc-700 dark:text-zinc-300">
+                      {user.realName}
+                    </span>
+                    {user.title && (
+                      <span className="ml-2 text-xs text-zinc-400">
+                        {user.title}
+                      </span>
+                    )}
+                  </div>
+                  {teamId && (
+                    <a
+                      href={`slack://user?team=${teamId}&id=${user.slackId}`}
+                      className="shrink-0 rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-zinc-300"
+                      title="Åpne i Slack"
+                    >
+                      <ChatBubbleLeftIcon className="h-4 w-4" />
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
 function OrgTable({
   orgBreakdown,
 }: {
@@ -253,100 +350,6 @@ function OrgTable({
   )
 }
 
-function ContactRow({
-  memberName,
-  surveySlug,
-}: {
-  memberName: string
-  surveySlug: string
-}) {
-  const [isOpen, setIsOpen] = useState(false)
-  const { data, isFetching, error } =
-    trpc.admin.surveys.getNonRespondingContacts.useQuery(
-      { slug: surveySlug, memberName },
-      { enabled: isOpen, retry: false }
-    )
-
-  const teamId = process.env.NEXT_PUBLIC_SLACK_TEAM_ID
-  const hasResponded = error?.message?.includes('allerede svart')
-
-  return (
-    <tr>
-      <td colSpan={2} className="p-0">
-        <button
-          type="button"
-          onClick={() => setIsOpen(!isOpen)}
-          className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300"
-        >
-          <ChevronRightIcon
-            className={`h-3.5 w-3.5 shrink-0 transition-transform ${isOpen ? 'rotate-90' : ''}`}
-          />
-          <span className="flex-1">{memberName}</span>
-          {data && (
-            <span className="shrink-0 text-xs text-zinc-400">
-              {data.userCount} i Slack
-            </span>
-          )}
-        </button>
-        {isOpen && (
-          <div className="border-t border-zinc-100 bg-zinc-50/50 dark:border-zinc-700/50 dark:bg-zinc-800/30">
-            {isFetching && (
-              <div className="flex items-center justify-center py-3">
-                <ArrowPathIcon className="h-4 w-4 animate-spin text-zinc-400" />
-              </div>
-            )}
-            {hasResponded && (
-              <p className="px-4 py-3 text-xs text-teal-600 dark:text-teal-400">
-                Denne organisasjonen har nå svart på undersøkelsen.
-              </p>
-            )}
-            {error && !hasResponded && (
-              <p className="px-4 py-3 text-xs text-red-500">
-                Kunne ikke hente kontakter.
-              </p>
-            )}
-            {data && data.users.length === 0 && (
-              <p className="px-4 py-3 text-xs text-zinc-400">
-                Ingen Slack-brukere funnet for denne organisasjonen.
-              </p>
-            )}
-            {data && data.users.length > 0 && (
-              <ul className="divide-y divide-zinc-100 dark:divide-zinc-700/50">
-                {data.users.map(user => (
-                  <li
-                    key={user.slackId}
-                    className="flex items-center gap-3 px-6 py-1.5"
-                  >
-                    <div className="min-w-0 flex-1">
-                      <span className="text-sm text-zinc-700 dark:text-zinc-300">
-                        {user.realName}
-                      </span>
-                      {user.title && (
-                        <span className="ml-2 text-xs text-zinc-400">
-                          {user.title}
-                        </span>
-                      )}
-                    </div>
-                    {teamId && (
-                      <a
-                        href={`slack://user?team=${teamId}&id=${user.slackId}`}
-                        className="shrink-0 rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-zinc-300"
-                        title="Åpne i Slack"
-                      >
-                        <ChatBubbleLeftIcon className="h-4 w-4" />
-                      </a>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        )}
-      </td>
-    </tr>
-  )
-}
-
 function MissingMembersTable({
   members,
   surveySlug,
@@ -364,27 +367,15 @@ function MissingMembersTable({
 
   return (
     <div className="overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700">
-      <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
-        <thead className="bg-zinc-50 dark:bg-zinc-800">
-          <tr>
-            <th
-              colSpan={2}
-              className="px-4 py-3 text-left text-xs font-medium tracking-wider text-zinc-500 uppercase dark:text-zinc-400"
-            >
-              Medlem
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-900">
-          {members.map(org => (
-            <ContactRow
-              key={org.name}
-              memberName={org.name}
-              surveySlug={surveySlug}
-            />
-          ))}
-        </tbody>
-      </table>
+      <div className="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-900">
+        {members.map(org => (
+          <ExpandableOrgContacts
+            key={org.name}
+            memberName={org.name}
+            surveySlug={surveySlug}
+          />
+        ))}
+      </div>
     </div>
   )
 }
