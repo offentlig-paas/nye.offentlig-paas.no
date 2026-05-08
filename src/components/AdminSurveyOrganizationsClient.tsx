@@ -195,13 +195,7 @@ export function AdminSurveyOrganizationsClient({
   )
 }
 
-function OrgName({
-  name,
-  className,
-}: {
-  name: string
-  className?: string
-}) {
+function OrgName({ name, className }: { name: string; className?: string }) {
   return <span className={className}>{name}</span>
 }
 
@@ -302,11 +296,7 @@ function ExpandableOrgContacts({
   )
 }
 
-function OrgTable({
-  orgBreakdown,
-}: {
-  orgBreakdown: OrgData['orgBreakdown']
-}) {
+function OrgTable({ orgBreakdown }: { orgBreakdown: OrgData['orgBreakdown'] }) {
   if (orgBreakdown.length === 0) {
     return (
       <p className="py-8 text-center text-sm text-zinc-400">Ingen svar ennå</p>

@@ -16,6 +16,7 @@ import type {
   EventRegistration,
   RegistrationStatus,
 } from '@/domains/event-registration/types'
+import type { AttendanceType } from '@/lib/events/types'
 
 type AdminRegistration = Omit<EventRegistration, 'registeredAt'> & {
   registeredAt: string
@@ -30,6 +31,10 @@ interface RegistrationListProps {
   onStatusChange: (id: string, newStatus: RegistrationStatus) => void
   onDelete: (id: string) => void
   onOrganisationChange?: (id: string, organisation: string) => Promise<void>
+  onAttendanceTypeChange?: (
+    id: string,
+    attendanceType: 'physical' | 'digital'
+  ) => Promise<void>
   isUpdatingStatus: string | null
   isDeleting: string | null
   searchTerm: string
@@ -43,6 +48,7 @@ export function AdminRegistrationList({
   onStatusChange,
   onDelete,
   onOrganisationChange,
+  onAttendanceTypeChange,
   isUpdatingStatus,
   isDeleting,
   searchTerm,
@@ -50,6 +56,9 @@ export function AdminRegistrationList({
   const [editingOrgId, setEditingOrgId] = useState<string | null>(null)
   const [editingOrgValue, setEditingOrgValue] = useState('')
   const [isSavingOrg, setIsSavingOrg] = useState(false)
+  const [updatingAttendanceId, setUpdatingAttendanceId] = useState<
+    string | null
+  >(null)
 
   const startEditingOrg = (id: string, currentValue: string) => {
     setEditingOrgId(id)
@@ -73,6 +82,22 @@ export function AdminRegistrationList({
       // Parent shows error toast; keep edit state so user can retry
     } finally {
       setIsSavingOrg(false)
+    }
+  }
+
+  const toggleAttendanceType = async (
+    id: string,
+    current: AttendanceType | undefined
+  ) => {
+    if (!onAttendanceTypeChange || !current) return
+    const newType = current === 'physical' ? 'digital' : 'physical'
+    setUpdatingAttendanceId(id)
+    try {
+      await onAttendanceTypeChange(id, newType)
+    } catch {
+      // Parent shows error toast
+    } finally {
+      setUpdatingAttendanceId(null)
     }
   }
 
@@ -187,7 +212,29 @@ export function AdminRegistrationList({
                   )}
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap">
-                  {registration.attendanceType === 'physical' ? (
+                  {onAttendanceTypeChange && registration.attendanceType ? (
+                    <button
+                      onClick={() =>
+                        toggleAttendanceType(
+                          registration._id,
+                          registration.attendanceType as AttendanceType
+                        )
+                      }
+                      disabled={updatingAttendanceId === registration._id}
+                      className="transition-opacity hover:opacity-70 disabled:opacity-50"
+                      title={
+                        registration.attendanceType === 'physical'
+                          ? 'Bytt til digitalt'
+                          : 'Bytt til fysisk'
+                      }
+                    >
+                      {registration.attendanceType === 'physical' ? (
+                        <Badge color="green">Fysisk</Badge>
+                      ) : (
+                        <Badge color="blue">Digitalt</Badge>
+                      )}
+                    </button>
+                  ) : registration.attendanceType === 'physical' ? (
                     <Badge color="green">Fysisk</Badge>
                   ) : registration.attendanceType === 'digital' ? (
                     <Badge color="blue">Digitalt</Badge>

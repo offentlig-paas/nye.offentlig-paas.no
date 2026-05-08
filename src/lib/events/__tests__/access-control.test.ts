@@ -310,9 +310,7 @@ describe('hasAnyEventAccess', () => {
   })
 
   it('denies access to non-organizer', () => {
-    expect(hasAnyEventAccess({ isAdmin: false, slackId: 'UOTHER' })).toBe(
-      false
-    )
+    expect(hasAnyEventAccess({ isAdmin: false, slackId: 'UOTHER' })).toBe(false)
   })
 
   it('denies access when user has no slackId', () => {

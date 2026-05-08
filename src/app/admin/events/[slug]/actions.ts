@@ -130,3 +130,24 @@ export async function updateRegistrationOrganisation(
   revalidatePath(`/admin/events/${slug}`)
   return result
 }
+
+export async function updateRegistrationAttendanceType(
+  slug: string,
+  registrationId: string,
+  attendanceType: 'physical' | 'digital'
+) {
+  const session = await auth()
+  if (!session?.user?.isAdmin) {
+    throw new Error('Unauthorized')
+  }
+
+  const caller = await createCaller()
+  const result = await caller.admin.registrations.updateAttendanceType({
+    slug,
+    id: registrationId,
+    attendanceType,
+  })
+
+  revalidatePath(`/admin/events/${slug}`)
+  return result
+}

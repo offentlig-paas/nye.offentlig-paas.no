@@ -180,6 +180,36 @@ export const adminRouter = router({
         }
       }),
 
+    updateAttendanceType: adminEventProcedure
+      .input(
+        z.object({
+          slug: z.string(),
+          id: z.string(),
+          attendanceType: z.enum(['physical', 'digital'] as const),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const registration = await eventRegistrationService.getRegistration(
+          input.id
+        )
+        if (!registration || registration.eventSlug !== input.slug) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Påmelding ikke funnet',
+          })
+        }
+
+        const updatedRegistration =
+          await eventRegistrationService.updateRegistration(input.id, {
+            attendanceType: input.attendanceType as AttendanceType,
+          })
+
+        return {
+          registration: updatedRegistration,
+          message: 'Deltakelsestype oppdatert',
+        }
+      }),
+
     bulkUpdateStatus: adminEventProcedure
       .input(
         z.object({

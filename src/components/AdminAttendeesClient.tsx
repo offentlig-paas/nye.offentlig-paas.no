@@ -16,6 +16,7 @@ import {
   bulkUpdateRegistrationStatus,
   createManualRegistration,
   updateRegistrationOrganisation,
+  updateRegistrationAttendanceType,
 } from '@/app/admin/events/[slug]/actions'
 import { useAdminEvent } from '@/contexts/AdminEventContext'
 import type { RegistrationStatus } from '@/domains/event-registration/types'
@@ -148,6 +149,26 @@ export function AdminAttendeesClient() {
     } catch (error) {
       console.error('Error updating organisation:', error)
       showError('Feil', 'Noe gikk galt ved oppdatering av organisasjon')
+    }
+  }
+
+  const handleAttendanceTypeChange = async (
+    registrationId: string,
+    attendanceType: 'physical' | 'digital'
+  ) => {
+    try {
+      await updateRegistrationAttendanceType(
+        slug,
+        registrationId,
+        attendanceType
+      )
+      showSuccess('Oppdatert', 'Deltakelsestype ble oppdatert')
+      startTransition(() => {
+        router.refresh()
+      })
+    } catch (error) {
+      console.error('Error updating attendance type:', error)
+      showError('Feil', 'Noe gikk galt ved oppdatering av deltakelsestype')
     }
   }
 
@@ -299,6 +320,7 @@ export function AdminAttendeesClient() {
         onStatusChange={handleStatusUpdate}
         onDelete={handleDeleteRegistration}
         onOrganisationChange={handleOrganisationChange}
+        onAttendanceTypeChange={handleAttendanceTypeChange}
         isUpdatingStatus={isUpdatingStatus}
         isDeleting={isDeleting}
         searchTerm={searchTerm}
