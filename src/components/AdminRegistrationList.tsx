@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Avatar } from '@/components/Avatar'
 import { StatusBadge } from '@/components/StatusBadge'
 import { Badge } from '@/components/Badge'
@@ -11,6 +11,7 @@ import {
   UserGroupIcon,
   PencilSquareIcon,
   BuildingOfficeIcon,
+  ChevronDownIcon,
 } from '@heroicons/react/20/solid'
 import type {
   EventRegistration,
@@ -59,6 +60,19 @@ export function AdminRegistrationList({
   const [updatingAttendanceId, setUpdatingAttendanceId] = useState<
     string | null
   >(null)
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
+
+  const toggleExpanded = (id: string) => {
+    setExpandedIds(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
+      return next
+    })
+  }
 
   const startEditingOrg = (id: string, currentValue: string) => {
     setEditingOrgId(id)
@@ -155,8 +169,8 @@ export function AdminRegistrationList({
           </thead>
           <tbody className="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-800">
             {registrations.map(registration => (
+              <React.Fragment key={registration._id}>
               <tr
-                key={registration._id}
                 className="hover:bg-zinc-50 dark:hover:bg-zinc-700/50"
               >
                 <td className="px-4 py-3 whitespace-nowrap">
@@ -191,6 +205,17 @@ export function AdminRegistrationList({
                         </div>
                       )}
                     </div>
+                    {(registration.dietary || registration.comments) && (
+                      <button
+                        onClick={() => toggleExpanded(registration._id)}
+                        className="flex-shrink-0 rounded p-0.5 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-700 dark:hover:text-zinc-300"
+                        title="Vis detaljer"
+                      >
+                        <ChevronDownIcon
+                          className={`h-4 w-4 transition-transform ${expandedIds.has(registration._id) ? 'rotate-180' : ''}`}
+                        />
+                      </button>
+                    )}
                   </div>
                 </td>
                 <td className="px-4 py-3 text-sm text-zinc-700 dark:text-zinc-300">
@@ -269,6 +294,33 @@ export function AdminRegistrationList({
                   />
                 </td>
               </tr>
+              {expandedIds.has(registration._id) &&
+                (registration.dietary || registration.comments) && (
+                  <tr className="bg-zinc-50/50 dark:bg-zinc-800/50">
+                    <td />
+                    <td colSpan={6} className="px-4 py-2">
+                      <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-zinc-600 dark:text-zinc-400">
+                        {registration.dietary && (
+                          <div>
+                            <span className="font-medium text-zinc-700 dark:text-zinc-300">
+                              Diett:{' '}
+                            </span>
+                            {registration.dietary}
+                          </div>
+                        )}
+                        {registration.comments && (
+                          <div>
+                            <span className="font-medium text-zinc-700 dark:text-zinc-300">
+                              Kommentar:{' '}
+                            </span>
+                            {registration.comments}
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
             ))}
           </tbody>
         </table>
