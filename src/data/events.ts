@@ -72,7 +72,7 @@ export const events: Event[] = [
     ingress:
       'Erfaringsdeling om KI-kodeagenter tirsdag 12. mai kl. 09:00–12:30 hos SPK på Skøyen. Begrenset antall plasser.',
     description:
-      'Hvordan bruker organisasjonen din KI-kodeagenter? Kom og del erfaringer om innføring, styring og praktisk bruk. Vi snakker blant annet om formell vs. uformell innføring, retningslinjer for KI-generert kode, sikkerhetsvurderinger og hvordan dere måler effekten. Offentlig PaaS kjører også en undersøkelse om KI-kodeverktøy i offentlig sektor — vi diskuterer funn derfra. Detaljert agenda kommer.',
+      'Hvordan bruker organisasjonen din KI-kodeagenter? Kom og del erfaringer om innføring, styring og praktisk bruk. Vi snakker blant annet om formell vs. uformell innføring, retningslinjer for KI-generert kode, sikkerhetsvurderinger og hvordan dere måler effekten. Offentlig PaaS kjører også en undersøkelse om KI-kodeverktøy i offentlig sektor — vi diskuterer funn derfra.',
     start: new Date('2026-05-12T09:00+02:00'),
     end: new Date('2026-05-12T12:30+02:00'),
     audience: Audience.PublicSector,
@@ -95,11 +95,38 @@ export const events: Event[] = [
     ],
     schedule: [
       {
-        time: '09:00 - 12:30',
-        title: 'Program kommer',
-        description:
-          'Vi planlegger agendaen. Forvent diskusjon og erfaringsdeling, ikke bare foredrag.',
+        time: '09:00 - 09:05',
+        title: 'Velkommen',
         type: ItemType.Info,
+      },
+      {
+        time: '09:10 - 10:00',
+        title: 'Runden rundt bordet',
+        description:
+          'Hvor er dere i dag? Hva har fungert bra? Hva er utfordringer? Hva ønsker du lære/diskutere mer om? (alle skriver minst én lapp)',
+        type: ItemType.Workshop,
+      },
+      {
+        time: '10:00 - 10:10',
+        title: 'Pause',
+        description: 'Stemme på lapper / dot voting',
+        type: ItemType.Break,
+      },
+      {
+        time: '10:10 - 10:30',
+        title: 'Resultater fra KI-undersøkelsen',
+        type: ItemType.Talk,
+        speakers: [{ name: 'Hans Kristian Flaatten' }],
+      },
+      {
+        time: '10:30 - 11:30',
+        title: 'Diskusjon i plenum / openspace',
+        type: ItemType.Workshop,
+      },
+      {
+        time: '11:30 - 12:30',
+        title: 'Lunsj og prating i smågrupper',
+        type: ItemType.Break,
       },
     ],
     participantInfo: {
