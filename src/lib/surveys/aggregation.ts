@@ -15,7 +15,7 @@ export interface AggregatedSurveyResults {
   sections: AggregatedSection[]
 }
 
-export interface AggregatedSection {
+interface AggregatedSection {
   id: string
   title: string
   description?: string

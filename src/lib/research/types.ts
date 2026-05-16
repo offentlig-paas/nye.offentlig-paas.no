@@ -27,12 +27,12 @@ export interface ResearchWave {
   description?: string
 }
 
-export interface ResearchAuthor {
+interface ResearchAuthor {
   name: string
   affiliation?: string
 }
 
-export interface ResearchPaper {
+interface ResearchPaper {
   title: string
   url?: string
   date: string
@@ -62,7 +62,7 @@ export interface ExternalSurvey extends ResearchSurveyBase {
   status: SurveyStatus
 }
 
-export interface ResearchDataset {
+interface ResearchDataset {
   title: string
   url: string
   format: string

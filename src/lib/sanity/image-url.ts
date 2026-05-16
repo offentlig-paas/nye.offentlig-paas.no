@@ -8,8 +8,6 @@ const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production'
 
 const builder = projectId ? createImageUrlBuilder({ projectId, dataset }) : null
 
-export type { SanityImageSource }
-
 export interface EventPhoto {
   _id: string
   eventSlug: string

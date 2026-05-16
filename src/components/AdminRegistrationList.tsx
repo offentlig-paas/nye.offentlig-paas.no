@@ -170,156 +170,154 @@ export function AdminRegistrationList({
           <tbody className="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-800">
             {registrations.map(registration => (
               <React.Fragment key={registration._id}>
-              <tr
-                className="hover:bg-zinc-50 dark:hover:bg-zinc-700/50"
-              >
-                <td className="px-4 py-3 whitespace-nowrap">
-                  <input
-                    type="checkbox"
-                    checked={selectedRegistrations.includes(registration._id)}
-                    onChange={e =>
-                      onSelectOne(registration._id, e.target.checked)
-                    }
-                    className="size-4 rounded-sm border border-zinc-300 bg-white checked:border-blue-600 checked:bg-blue-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:border-white/10 dark:bg-white/5 dark:checked:border-blue-500 dark:checked:bg-blue-500 forced-colors:appearance-auto"
-                  />
-                </td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center space-x-2">
-                    <Avatar
-                      name={registration.name}
-                      slackUserId={registration.slackUserId}
-                      size="sm"
-                      className="flex-shrink-0"
+                <tr className="hover:bg-zinc-50 dark:hover:bg-zinc-700/50">
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <input
+                      type="checkbox"
+                      checked={selectedRegistrations.includes(registration._id)}
+                      onChange={e =>
+                        onSelectOne(registration._id, e.target.checked)
+                      }
+                      className="size-4 rounded-sm border border-zinc-300 bg-white checked:border-blue-600 checked:bg-blue-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:border-white/10 dark:bg-white/5 dark:checked:border-blue-500 dark:checked:bg-blue-500 forced-colors:appearance-auto"
                     />
-                    <div className="min-w-0">
-                      {registration.slackUserId ? (
-                        <a
-                          href={`slack://user?team=${process.env.NEXT_PUBLIC_SLACK_TEAM_ID}&id=${registration.slackUserId}`}
-                          className="truncate text-sm font-semibold text-blue-600 hover:text-blue-700 hover:underline dark:text-blue-400 dark:hover:text-blue-300"
-                        >
-                          {registration.name}
-                        </a>
-                      ) : (
-                        <div className="truncate text-sm font-semibold text-zinc-900 dark:text-white">
-                          {registration.name}
-                        </div>
-                      )}
-                    </div>
-                    {(registration.dietary || registration.comments) && (
-                      <button
-                        onClick={() => toggleExpanded(registration._id)}
-                        className="flex-shrink-0 rounded p-0.5 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-700 dark:hover:text-zinc-300"
-                        title="Vis detaljer"
-                      >
-                        <ChevronDownIcon
-                          className={`h-4 w-4 transition-transform ${expandedIds.has(registration._id) ? 'rotate-180' : ''}`}
-                        />
-                      </button>
-                    )}
-                  </div>
-                </td>
-                <td className="px-4 py-3 text-sm text-zinc-700 dark:text-zinc-300">
-                  {onOrganisationChange ? (
-                    <button
-                      onClick={() =>
-                        startEditingOrg(
-                          registration._id,
-                          registration.organisation
-                        )
-                      }
-                      className="-ml-1.5 inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 text-left transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-700"
-                    >
-                      <span>{registration.organisation}</span>
-                      <PencilSquareIcon className="h-3.5 w-3.5 flex-shrink-0 text-zinc-400 dark:text-zinc-500" />
-                    </button>
-                  ) : (
-                    registration.organisation
-                  )}
-                </td>
-                <td className="px-4 py-3 whitespace-nowrap">
-                  {onAttendanceTypeChange && registration.attendanceType ? (
-                    <button
-                      onClick={() =>
-                        toggleAttendanceType(
-                          registration._id,
-                          registration.attendanceType as AttendanceType
-                        )
-                      }
-                      disabled={updatingAttendanceId === registration._id}
-                      className="transition-opacity hover:opacity-70 disabled:opacity-50"
-                      title={
-                        registration.attendanceType === 'physical'
-                          ? 'Bytt til digitalt'
-                          : 'Bytt til fysisk'
-                      }
-                    >
-                      {registration.attendanceType === 'physical' ? (
-                        <Badge color="green">Fysisk</Badge>
-                      ) : (
-                        <Badge color="blue">Digitalt</Badge>
-                      )}
-                    </button>
-                  ) : registration.attendanceType === 'physical' ? (
-                    <Badge color="green">Fysisk</Badge>
-                  ) : registration.attendanceType === 'digital' ? (
-                    <Badge color="blue">Digitalt</Badge>
-                  ) : (
-                    <span className="text-xs text-zinc-300 dark:text-zinc-600">
-                      -
-                    </span>
-                  )}
-                </td>
-                <td className="px-4 py-3 text-center whitespace-nowrap">
-                  {registration.attendingSocialEvent ? (
-                    <UserGroupIcon className="mx-auto h-4 w-4 text-orange-600 dark:text-orange-400" />
-                  ) : (
-                    <span className="text-xs text-zinc-300 dark:text-zinc-600">
-                      -
-                    </span>
-                  )}
-                </td>
-                <td className="px-4 py-3">
-                  <StatusBadge status={registration.status} />
-                </td>
-                <td className="px-4 py-3 text-right">
-                  <ActionsMenu
-                    currentStatus={registration.status}
-                    onStatusChange={(status: RegistrationStatus) =>
-                      onStatusChange(registration._id, status)
-                    }
-                    onDelete={() => onDelete(registration._id)}
-                    disabled={isUpdatingStatus === registration._id}
-                    isDeleting={isDeleting === registration._id}
-                    isUpdating={isUpdatingStatus === registration._id}
-                  />
-                </td>
-              </tr>
-              {expandedIds.has(registration._id) &&
-                (registration.dietary || registration.comments) && (
-                  <tr className="bg-zinc-50/50 dark:bg-zinc-800/50">
-                    <td />
-                    <td colSpan={6} className="px-4 py-2">
-                      <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-zinc-600 dark:text-zinc-400">
-                        {registration.dietary && (
-                          <div>
-                            <span className="font-medium text-zinc-700 dark:text-zinc-300">
-                              Diett:{' '}
-                            </span>
-                            {registration.dietary}
-                          </div>
-                        )}
-                        {registration.comments && (
-                          <div>
-                            <span className="font-medium text-zinc-700 dark:text-zinc-300">
-                              Kommentar:{' '}
-                            </span>
-                            {registration.comments}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center space-x-2">
+                      <Avatar
+                        name={registration.name}
+                        slackUserId={registration.slackUserId}
+                        size="sm"
+                        className="flex-shrink-0"
+                      />
+                      <div className="min-w-0">
+                        {registration.slackUserId ? (
+                          <a
+                            href={`slack://user?team=${process.env.NEXT_PUBLIC_SLACK_TEAM_ID}&id=${registration.slackUserId}`}
+                            className="truncate text-sm font-semibold text-blue-600 hover:text-blue-700 hover:underline dark:text-blue-400 dark:hover:text-blue-300"
+                          >
+                            {registration.name}
+                          </a>
+                        ) : (
+                          <div className="truncate text-sm font-semibold text-zinc-900 dark:text-white">
+                            {registration.name}
                           </div>
                         )}
                       </div>
-                    </td>
-                  </tr>
-                )}
+                      {(registration.dietary || registration.comments) && (
+                        <button
+                          onClick={() => toggleExpanded(registration._id)}
+                          className="flex-shrink-0 rounded p-0.5 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-700 dark:hover:text-zinc-300"
+                          title="Vis detaljer"
+                        >
+                          <ChevronDownIcon
+                            className={`h-4 w-4 transition-transform ${expandedIds.has(registration._id) ? 'rotate-180' : ''}`}
+                          />
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 text-sm text-zinc-700 dark:text-zinc-300">
+                    {onOrganisationChange ? (
+                      <button
+                        onClick={() =>
+                          startEditingOrg(
+                            registration._id,
+                            registration.organisation
+                          )
+                        }
+                        className="-ml-1.5 inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 text-left transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-700"
+                      >
+                        <span>{registration.organisation}</span>
+                        <PencilSquareIcon className="h-3.5 w-3.5 flex-shrink-0 text-zinc-400 dark:text-zinc-500" />
+                      </button>
+                    ) : (
+                      registration.organisation
+                    )}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    {onAttendanceTypeChange && registration.attendanceType ? (
+                      <button
+                        onClick={() =>
+                          toggleAttendanceType(
+                            registration._id,
+                            registration.attendanceType as AttendanceType
+                          )
+                        }
+                        disabled={updatingAttendanceId === registration._id}
+                        className="transition-opacity hover:opacity-70 disabled:opacity-50"
+                        title={
+                          registration.attendanceType === 'physical'
+                            ? 'Bytt til digitalt'
+                            : 'Bytt til fysisk'
+                        }
+                      >
+                        {registration.attendanceType === 'physical' ? (
+                          <Badge color="green">Fysisk</Badge>
+                        ) : (
+                          <Badge color="blue">Digitalt</Badge>
+                        )}
+                      </button>
+                    ) : registration.attendanceType === 'physical' ? (
+                      <Badge color="green">Fysisk</Badge>
+                    ) : registration.attendanceType === 'digital' ? (
+                      <Badge color="blue">Digitalt</Badge>
+                    ) : (
+                      <span className="text-xs text-zinc-300 dark:text-zinc-600">
+                        -
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-center whitespace-nowrap">
+                    {registration.attendingSocialEvent ? (
+                      <UserGroupIcon className="mx-auto h-4 w-4 text-orange-600 dark:text-orange-400" />
+                    ) : (
+                      <span className="text-xs text-zinc-300 dark:text-zinc-600">
+                        -
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">
+                    <StatusBadge status={registration.status} />
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <ActionsMenu
+                      currentStatus={registration.status}
+                      onStatusChange={(status: RegistrationStatus) =>
+                        onStatusChange(registration._id, status)
+                      }
+                      onDelete={() => onDelete(registration._id)}
+                      disabled={isUpdatingStatus === registration._id}
+                      isDeleting={isDeleting === registration._id}
+                      isUpdating={isUpdatingStatus === registration._id}
+                    />
+                  </td>
+                </tr>
+                {expandedIds.has(registration._id) &&
+                  (registration.dietary || registration.comments) && (
+                    <tr className="bg-zinc-50/50 dark:bg-zinc-800/50">
+                      <td />
+                      <td colSpan={6} className="px-4 py-2">
+                        <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-zinc-600 dark:text-zinc-400">
+                          {registration.dietary && (
+                            <div>
+                              <span className="font-medium text-zinc-700 dark:text-zinc-300">
+                                Diett:{' '}
+                              </span>
+                              {registration.dietary}
+                            </div>
+                          )}
+                          {registration.comments && (
+                            <div>
+                              <span className="font-medium text-zinc-700 dark:text-zinc-300">
+                                Kommentar:{' '}
+                              </span>
+                              {registration.comments}
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
               </React.Fragment>
             ))}
           </tbody>

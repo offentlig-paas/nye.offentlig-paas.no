@@ -14,7 +14,7 @@ interface SlackChannel {
   name: string
 }
 
-export interface BannerImage {
+interface BannerImage {
   src: string
   alt: string
 }
@@ -84,7 +84,6 @@ export enum Status {
   Current = 'current',
 }
 
-export type { SlackUser } from '@/lib/types'
 import type { SlackUser } from '@/lib/types'
 
 export interface Item {

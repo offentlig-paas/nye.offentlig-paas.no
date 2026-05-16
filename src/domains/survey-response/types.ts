@@ -15,14 +15,14 @@ export interface OrganizationOverride {
   overriddenAt: string
 }
 
-export interface SurveyResponseAnswer {
+interface SurveyResponseAnswer {
   questionId: string
   value?: string
   arrayValue?: string[]
   otherText?: string
 }
 
-export interface SurveyResponseMetadata {
+interface SurveyResponseMetadata {
   deviceCategory?: string
   submissionSource?: string
   consentVersion?: number
