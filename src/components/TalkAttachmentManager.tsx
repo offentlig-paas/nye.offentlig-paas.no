@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { TalkAttachmentUpload } from './TalkAttachmentUpload'
 import { getAttachmentIcon } from '@/lib/events/helpers'
 import { TrashIcon } from '@heroicons/react/24/outline'
@@ -28,32 +28,33 @@ export function TalkAttachmentManager({
   const [attachments, setAttachments] = useState<TalkAttachment[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isDeleting, setIsDeleting] = useState<string | null>(null)
-
-  const fetchAttachments = useCallback(async () => {
-    try {
-      const apiUrl = isAdminContext
-        ? `/api/admin/events/${encodeURIComponent(eventSlug)}/talk-attachments?talkTitle=${encodeURIComponent(talkTitle)}`
-        : `/api/talk-attachments?eventSlug=${encodeURIComponent(eventSlug)}&talkTitle=${encodeURIComponent(talkTitle)}`
-
-      const response = await fetch(apiUrl)
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch attachments')
-      }
-
-      const data = await response.json()
-      setAttachments(data.attachments || [])
-    } catch (error) {
-      console.error('Error fetching attachments:', error)
-      onError?.('Kunne ikke laste vedlegg')
-    } finally {
-      setIsLoading(false)
-    }
-  }, [eventSlug, talkTitle, isAdminContext, onError])
+  const [refreshKey, setRefreshKey] = useState(0)
 
   useEffect(() => {
-    fetchAttachments()
-  }, [fetchAttachments])
+    const apiUrl = isAdminContext
+      ? `/api/admin/events/${encodeURIComponent(eventSlug)}/talk-attachments?talkTitle=${encodeURIComponent(talkTitle)}`
+      : `/api/talk-attachments?eventSlug=${encodeURIComponent(eventSlug)}&talkTitle=${encodeURIComponent(talkTitle)}`
+
+    let cancelled = false
+    fetch(apiUrl)
+      .then(response => {
+        if (!response.ok) throw new Error('Failed to fetch attachments')
+        return response.json()
+      })
+      .then(data => {
+        if (!cancelled) setAttachments(data.attachments || [])
+      })
+      .catch(error => {
+        console.error('Error fetching attachments:', error)
+        if (!cancelled) onError?.('Kunne ikke laste vedlegg')
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [eventSlug, talkTitle, isAdminContext, onError, refreshKey])
 
   const handleDelete = async (attachmentId: string) => {
     if (!confirm('Er du sikker på at du vil slette dette vedlegget?')) {
@@ -87,7 +88,7 @@ export function TalkAttachmentManager({
 
   const handleUploadComplete = () => {
     onSuccess?.('Vedlegg lastet opp')
-    fetchAttachments()
+    setRefreshKey(k => k + 1)
   }
 
   if (isLoading) {

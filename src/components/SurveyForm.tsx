@@ -58,7 +58,7 @@ export function SurveyForm({ survey, contact }: SurveyFormProps) {
   const submittingRef = useRef(false)
   const submissionIdRef = useRef(draft?.submissionId ?? crypto.randomUUID())
   const startTimeRef = useRef<number | null>(draft?.startTime ?? null)
-  const sessionSeed = useMemo(() => Math.floor(Math.random() * 2147483647), [])
+  const [sessionSeed] = useState(() => Math.floor(Math.random() * 2147483647))
   const [stepAnnouncement, setStepAnnouncement] = useState('')
 
   const estimatedMinutes = useMemo(
@@ -94,9 +94,9 @@ export function SurveyForm({ survey, contact }: SurveyFormProps) {
     currentSectionIndex,
     consentAccepted,
     showConsent,
-    startTimeRef.current,
+    startTimeRef,
     isSuccess,
-    submissionIdRef.current
+    submissionIdRef
   )
 
   const submitMutation = trpc.survey.submit.useMutation()

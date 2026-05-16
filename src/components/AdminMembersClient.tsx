@@ -319,10 +319,6 @@ export function AdminMembersClient() {
   const [showUnmatched, setShowUnmatched] = useState(false)
   const [showDormant, setShowDormant] = useState(false)
 
-  useEffect(() => {
-    setSearch(urlSearch)
-  }, [urlSearch])
-
   const { data: summary, isLoading } = trpc.admin.members.getSummary.useQuery()
 
   if (isLoading || !summary) {

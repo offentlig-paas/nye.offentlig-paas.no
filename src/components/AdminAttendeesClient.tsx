@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { useToast } from '@/components/ToastProvider'
 import { generateRegistrationsCSV, downloadCSV } from '@/lib/csv-utils'
@@ -172,54 +172,38 @@ export function AdminAttendeesClient() {
     }
   }
 
-  const filteredRegistrations = useMemo(
-    () =>
-      eventDetails?.registrations.filter(
-        (
-          registration
-        ): registration is typeof registration & { _id: string } => {
-          if (!registration._id) return false
+  const filteredRegistrations =
+    eventDetails?.registrations.filter(
+      (registration): registration is typeof registration & { _id: string } => {
+        if (!registration._id) return false
 
-          const matchesSearch =
-            registration.name
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase()) ||
-            registration.email
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase()) ||
-            registration.organisation
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase())
+        const matchesSearch =
+          registration.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          registration.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          registration.organisation
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())
 
-          const matchesStatus =
-            statusFilter === 'all' || registration.status === statusFilter
+        const matchesStatus =
+          statusFilter === 'all' || registration.status === statusFilter
 
-          const matchesAttendance =
-            attendanceFilter === 'all' ||
-            registration.attendanceType === attendanceFilter
+        const matchesAttendance =
+          attendanceFilter === 'all' ||
+          registration.attendanceType === attendanceFilter
 
-          const matchesSocialEvent =
-            socialEventFilter === 'all' ||
-            (socialEventFilter === 'yes' &&
-              registration.attendingSocialEvent) ||
-            (socialEventFilter === 'no' && !registration.attendingSocialEvent)
+        const matchesSocialEvent =
+          socialEventFilter === 'all' ||
+          (socialEventFilter === 'yes' && registration.attendingSocialEvent) ||
+          (socialEventFilter === 'no' && !registration.attendingSocialEvent)
 
-          return (
-            matchesSearch &&
-            matchesStatus &&
-            matchesAttendance &&
-            matchesSocialEvent
-          )
-        }
-      ) || [],
-    [
-      eventDetails?.registrations,
-      searchTerm,
-      statusFilter,
-      attendanceFilter,
-      socialEventFilter,
-    ]
-  )
+        return (
+          matchesSearch &&
+          matchesStatus &&
+          matchesAttendance &&
+          matchesSocialEvent
+        )
+      }
+    ) || []
 
   if (!eventDetails) {
     return null

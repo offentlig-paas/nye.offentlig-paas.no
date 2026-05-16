@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, useCallback, type RefObject } from 'react'
 import type { SurveyAnswer } from './types'
 
 interface DraftState {
@@ -63,9 +63,9 @@ export function useDraftPersistence(
   currentSectionIndex: number,
   consentAccepted: boolean,
   showConsent: boolean,
-  startTime: number | null,
+  startTimeRef: RefObject<number | null>,
   isSuccess: boolean,
-  submissionId: string
+  submissionIdRef: RefObject<string>
 ) {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -77,8 +77,8 @@ export function useDraftPersistence(
         currentSectionIndex,
         consentAccepted,
         showConsent,
-        startTime,
-        submissionId,
+        startTime: startTimeRef.current,
+        submissionId: submissionIdRef.current,
       }
       sessionStorage.setItem(storageKey(slug, version), JSON.stringify(state))
     } catch {
@@ -91,9 +91,9 @@ export function useDraftPersistence(
     currentSectionIndex,
     consentAccepted,
     showConsent,
-    startTime,
+    startTimeRef,
     isSuccess,
-    submissionId,
+    submissionIdRef,
   ])
 
   useEffect(() => {

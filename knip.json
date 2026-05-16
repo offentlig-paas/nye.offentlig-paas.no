@@ -18,7 +18,7 @@
     "!src/**/__tests__/**",
     "!src/test-*.ts"
   ],
-  "ignoreDependencies": ["@types/webpack-env", "@types/mdx", "postcss"],
+  "ignoreDependencies": ["@types/webpack-env", "@types/mdx"],
   "next": {
     "entry": [
       "src/app/**/page.{ts,tsx}",
