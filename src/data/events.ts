@@ -11,14 +11,14 @@ export const events: Event[] = [
     slug: '2026-05-26-fagdag',
     title: 'Offentlig PaaS Fagdag',
     ingress:
-      'Vi inviterer til fagdag tirsdag 26. mai fra kl 12:00 - 16:00 i Forskningsparken / Oslo. Foreløpig har vi bare satt av tid og auditorium, men håper på godt engasjement og oppmøte.',
+      'Meteorologisk institutt er vertskap for Fagdag - Offentlig PaaS - tirsdag 26. mai 2026, kl 12-16. Fagdagen holdes i Forskningsparkens auditorum Forum og har kapasitet på inntil 160 deltakere.',
     description:
-      'En fagdag hvor vi samles for å dele erfaringer og kunnskap om plattformutvikling i offentlig sektor. Legg gjerne igjen en kommentar på https://offentlig-paas-no.slack.com/archives/CDJ1J491V/p1769703426987569 om det er noe du ønsker å høre om eller presentere! Mer informasjon kommer.',
+      'Forskningsparken er enkelt tilgjengelig med offentlig transport, se https://ruter.no. Parkeringsgarasje finnes i kjelleren og er åpen til kl 17, men man må betale for å parkere der.',
     start: new Date('2026-05-26T12:00+02:00'),
     end: new Date('2026-05-26T16:00+02:00'),
     audience: Audience.PublicSector,
     location: 'Forskningsparken, Oslo',
-    callForPapersEnabled: true,
+    callForPapersEnabled: false,
     registration: {
       attendanceTypes: [AttendanceType.Physical],
     },
@@ -36,7 +36,13 @@ export const events: Event[] = [
     ],
     schedule: [
       {
-        time: '12:00 - 12:45',
+        time: '12:00 - 12:15',
+        title:
+          'Velkommen',
+        type: ItemType.Info,
+      },
+      {
+        time: '12:15 - 13:00',
         title:
           'Dataplattform for Politiet - Utfordringer, hindringer og store muligheter',
         speakers: [
@@ -49,16 +55,74 @@ export const events: Event[] = [
         type: ItemType.Talk,
       },
       {
-        time: '12:45 - 13:30',
+        time: '13:00 - 13:15',
+        title: 'Pause',
+        type: ItemType.Break,
+      },
+      {
+        time: '13:15 - 13:35',
         title:
-          'GPU og utfordringer med å kjøre løsninger som ikke er ment for sky i Kubernetes',
+          'Headlamp - kubernetes sett fra et utviklerteam',
         speakers: [
           {
-            name: 'Team Punkt',
+            name: 'Tonje Kirkholt',
             org: 'MET',
           },
         ],
         type: ItemType.Talk,
+      },
+      {
+        time: '13:35 - 13:50',
+        title:
+          'Teamøvelser for en bedre plattform',
+        speakers: [
+          {
+            name: 'Endre Lervik',
+            org: 'MET',
+          },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '13:50 - 14:10',
+        title: 'Pause',
+        type: ItemType.Break,
+      },
+      {
+        time: '14:05 - 14:50',
+        title:
+          'Datademokratisering og selvbetjening i Posten Brings nye dataplattform',
+        speakers: [
+          {
+            name: 'Anders Thorbeck',
+            org: 'Posten Bring',
+          },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '14:50 - 15:05',
+        title: 'Pause',
+        type: ItemType.Break,
+      },
+      {
+        time: '15:05 - 15:35',
+        title:
+          'Nais APM',
+        speakers: [
+          {
+            name: 'Hans Kristian Flaatten',
+            org: 'NAV',
+          },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '15:35 - 16:00',
+        title: 'Oppsummering og evaluering av dagen',
+        description:
+          'Hva har fungert bra? Hva ønsker du lære/diskutere mer om på neste fagdag? (alle skriver minst én lapp)',
+        type: ItemType.Workshop,
       },
     ],
   },
