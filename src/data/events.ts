@@ -60,7 +60,7 @@ export const events: Event[] = [
         type: ItemType.Break,
       },
       {
-        time: '13:15 - 13:35',
+        time: '13:15 - 13:40',
         title:
           'Headlamp - kubernetes sett fra et utviklerteam',
         speakers: [
@@ -72,7 +72,7 @@ export const events: Event[] = [
         type: ItemType.Talk,
       },
       {
-        time: '13:35 - 13:50',
+        time: '13:40 - 14:00',
         title:
           'Teamøvelser for en bedre plattform',
         speakers: [
@@ -84,12 +84,12 @@ export const events: Event[] = [
         type: ItemType.Talk,
       },
       {
-        time: '13:50 - 14:10',
+        time: '14:00 - 14:15',
         title: 'Pause',
         type: ItemType.Break,
       },
       {
-        time: '14:05 - 14:50',
+        time: '14:15 - 15:00',
         title:
           'Datademokratisering og selvbetjening i Posten Brings nye dataplattform',
         speakers: [
@@ -101,24 +101,25 @@ export const events: Event[] = [
         type: ItemType.Talk,
       },
       {
-        time: '14:50 - 15:05',
+        time: '15:00 - 15:10',
         title: 'Pause',
         type: ItemType.Break,
       },
       {
-        time: '15:05 - 15:35',
+        time: '15:10 - 15:40',
         title:
           'Nais APM',
         speakers: [
           {
             name: 'Hans Kristian Flaatten',
-            org: 'NAV',
+            org: 'Nav',
+            url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
           },
         ],
         type: ItemType.Talk,
       },
       {
-        time: '15:35 - 16:00',
+        time: '15:40 - 16:00',
         title: 'Oppsummering og evaluering av dagen',
         description:
           'Hva har fungert bra? Hva ønsker du lære/diskutere mer om på neste fagdag? (alle skriver minst én lapp)',
