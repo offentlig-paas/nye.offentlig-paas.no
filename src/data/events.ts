@@ -37,8 +37,7 @@ export const events: Event[] = [
     schedule: [
       {
         time: '12:00 - 12:15',
-        title:
-          'Velkommen',
+        title: 'Velkommen',
         type: ItemType.Info,
       },
       {
@@ -61,8 +60,7 @@ export const events: Event[] = [
       },
       {
         time: '13:15 - 13:40',
-        title:
-          'Headlamp - kubernetes sett fra et utviklerteam',
+        title: 'Headlamp - kubernetes sett fra et utviklerteam',
         speakers: [
           {
             name: 'Tonje Kirkholt',
@@ -73,8 +71,7 @@ export const events: Event[] = [
       },
       {
         time: '13:40 - 14:00',
-        title:
-          'Teamøvelser for en bedre plattform',
+        title: 'Teamøvelser for en bedre plattform',
         speakers: [
           {
             name: 'Endre Lervik',
@@ -107,8 +104,7 @@ export const events: Event[] = [
       },
       {
         time: '15:10 - 15:40',
-        title:
-          'Nais APM',
+        title: 'Nais APM',
         speakers: [
           {
             name: 'Hans Kristian Flaatten',
