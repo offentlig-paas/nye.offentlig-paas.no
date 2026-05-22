@@ -2,6 +2,7 @@
 import { article as aiKodeagenterUndersokelse2026 } from '@/app/artikkel/ai-kodeagenter-undersokelse-2026/article'
 import { article as arsberetning2024 } from '@/app/artikkel/arsberetning-2024/article'
 import { article as fagdagDataplattform } from '@/app/artikkel/fagdag-dataplattform-mai-2024/article'
+import { article as kiErfaringsdeling2026 } from '@/app/artikkel/ki-kodeagenter-erfaringsdeling-mai-2026/article'
 import { article as plattformmodenhet2024 } from '@/app/artikkel/plattformmodenhet-2024/article'
 import { article as plattformmodenhetUndersokelse2025 } from '@/app/artikkel/plattformmodenhet-undersokelse-2025/article'
 import { article as stateOfPlatforms2024 } from '@/app/artikkel/state-of-platforms-2024/article'
@@ -26,6 +27,10 @@ const allArticles: ArticleWithSlug[] = [
   },
   { ...arsberetning2024, slug: 'arsberetning-2024' },
   { ...fagdagDataplattform, slug: 'fagdag-dataplattform-mai-2024' },
+  {
+    ...kiErfaringsdeling2026,
+    slug: 'ki-kodeagenter-erfaringsdeling-mai-2026',
+  },
   { ...plattformmodenhet2024, slug: 'plattformmodenhet-2024' },
   {
     ...plattformmodenhetUndersokelse2025,
