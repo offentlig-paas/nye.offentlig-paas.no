@@ -1121,4 +1121,14 @@ export const members: Member[] = [
     slug: 'tet-digital',
     homepage: 'https://www.tetdigital.no',
   }),
+  new Member({
+    name: 'ElBits',
+    type: MemberType.MUNICIPAL_COMPANY,
+    sectors: [Sector.ENERGY, Sector.DIGITAL],
+    logoBackgroundColor: '#ffffff',
+    domains: ['elbits.no'],
+    slug: 'elbits',
+    homepage: 'https://www.elbits.no',
+    linkedinUrl: 'https://www.linkedin.com/company/elbits/',
+  }),
 ]
