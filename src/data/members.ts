@@ -1125,6 +1125,7 @@ export const members: Member[] = [
     name: 'ElBits',
     type: MemberType.MUNICIPAL_COMPANY,
     sectors: [Sector.ENERGY, Sector.DIGITAL],
+    logoBackgroundColor: '#ffffff',
     domains: ['elbits.no'],
     slug: 'elbits',
     homepage: 'https://www.elbits.no',
