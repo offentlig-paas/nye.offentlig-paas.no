@@ -14,6 +14,7 @@ import {
   FunnelIcon,
   ClockIcon,
   ChatBubbleLeftIcon,
+  ChatBubbleLeftRightIcon,
 } from '@heroicons/react/24/outline'
 import { SpeakerMatcher } from '@/components/SpeakerMatcher'
 import { TalkAttachmentManager } from '@/components/TalkAttachmentManager'
@@ -27,13 +28,19 @@ import { trpc } from '@/lib/trpc/client'
 import { ItemType } from '@/lib/events/types'
 import type { EventFeedbackSummary } from '@/domains/event-feedback/types'
 
-type TalkTypeFilter = 'all' | ItemType.Talk | ItemType.Panel | ItemType.Workshop
+type TalkTypeFilter =
+  | 'all'
+  | ItemType.Talk
+  | ItemType.Panel
+  | ItemType.Workshop
+  | ItemType.OpenSpace
 type AttachmentFilter = 'all' | 'with-slides' | 'without-slides'
 
 const TALK_TYPE_ICONS = {
   [ItemType.Talk]: PresentationChartLineIcon,
   [ItemType.Panel]: UserGroupIcon,
   [ItemType.Workshop]: AcademicCapIcon,
+  [ItemType.OpenSpace]: ChatBubbleLeftRightIcon,
 }
 
 const TALK_TYPE_COLORS = {
@@ -43,6 +50,8 @@ const TALK_TYPE_COLORS = {
     'text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30',
   [ItemType.Workshop]:
     'text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30',
+  [ItemType.OpenSpace]:
+    'text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/30',
 }
 
 export function AdminAgendaClient() {
@@ -78,7 +87,8 @@ export function AdminAgendaClient() {
       item =>
         (item.type === ItemType.Talk ||
           item.type === ItemType.Panel ||
-          item.type === ItemType.Workshop) &&
+          item.type === ItemType.Workshop ||
+          item.type === ItemType.OpenSpace) &&
         item.speakers &&
         item.speakers.length > 0
     )
@@ -236,6 +246,7 @@ export function AdminAgendaClient() {
               <option value={ItemType.Talk}>Presentasjoner</option>
               <option value={ItemType.Panel}>Paneler</option>
               <option value={ItemType.Workshop}>Workshops</option>
+              <option value={ItemType.OpenSpace}>Open Space</option>
             </select>
 
             <select

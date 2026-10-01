@@ -114,6 +114,7 @@ export enum AttachmentType {
 export enum ItemType {
   Break = 'Pause',
   Info = 'Informasjon',
+  OpenSpace = 'Open Space',
   Panel = 'Panel',
   Registration = 'Registrering',
   Talk = 'Presentation',

@@ -59,18 +59,18 @@ export const events: Event[] = [
       {
         time: '09:30 - 09:45',
         title: 'Velkommen og kort introduksjon',
-        type: ItemType.Workshop,
+        speakers: [
+          {
+            name: 'Kjetil Hårtveit',
+            org: 'PIT',
+            url: 'https://offentlig-paas-no.slack.com/team/U08STG8LJUB',
+          },
+        ],
+        type: ItemType.Info,
       },
       {
         time: '10:00 - 10:20',
         title: 'Presentasjon 1 (TBA)',
-        speakers: [
-          {
-            name: 'Hans Kristian Flaatten',
-            org: 'Nav',
-            url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
-          },
-        ],
         type: ItemType.Talk,
       },
       {
@@ -118,7 +118,7 @@ export const events: Event[] = [
         title: 'Erfaringsdeling (Open Space)',
         description:
           'Vi diskuterer utvalgte temaer i smågrupper rundt bordene. Det kjøres to runder á 30 minutter, og man kan fritt bytte bord underveis.',
-        type: ItemType.Workshop,
+        type: ItemType.OpenSpace,
       },
       {
         time: '13:30 - 14:00',
@@ -128,17 +128,17 @@ export const events: Event[] = [
         type: ItemType.Workshop,
       },
       {
-        time: '14:00 - 14:30',
-        title: 'Nettverksbygging',
+        time: '14:00 - 15:00',
+        title: 'KI-reise og tilpasning for utvikling med KI hos NAV',
         description:
-          'Tid til å knytte kontakter, fortsette gode diskusjoner fra gruppene og ta en kaffe.',
-        type: ItemType.Break,
-      },
-      {
-        time: '14:30 - 15:00',
-        title: 'Avslutningsforedrag',
-        description:
-          'Et spennende innlegg som runder av fagdagen (detaljer annonseres senere).',
+          'Hans Kristian leder an med å tilby og tilpasse KI-verktøy for NAV sine utviklere på forsvarlig og kostnadseffektivt vis. Han vil blant annet snakke om deres KI-utviklingsportal på https://ki-utvikling.nav.no/ og være innom nav-pilot, tilpasninger/skills, cplt og tiltak for lokal KI.',
+        speakers: [
+          {
+            name: 'Hans Kristian Flaatten',
+            org: 'Nav',
+            url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+          },
+        ],
         type: ItemType.Talk,
       },
     ],

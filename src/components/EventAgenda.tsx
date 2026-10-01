@@ -15,6 +15,7 @@ import {
   PresentationChartLineIcon,
   Battery50Icon,
   InformationCircleIcon,
+  ChatBubbleLeftRightIcon,
 } from '@heroicons/react/20/solid'
 import { ItemType } from '@/lib/events/types'
 import type { Attachment, Item } from '@/lib/events/types'
@@ -45,6 +46,10 @@ function EventIcon({
       )
     case ItemType.Break:
       return <Battery50Icon className={className} aria-hidden="true" />
+    case ItemType.OpenSpace:
+      return (
+        <ChatBubbleLeftRightIcon className={className} aria-hidden="true" />
+      )
     default:
       return <InformationCircleIcon className={className} aria-hidden="true" />
   }
