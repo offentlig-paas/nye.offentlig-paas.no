@@ -70,7 +70,17 @@ export const events: Event[] = [
       },
       {
         time: '10:00 - 10:20',
-        title: 'Presentasjon 1 (TBA)',
+        title:
+          'Hans Kristian Flatten fra NAV snakker om deres KI-reise og hvordan de tilpasser for utvikling med KI hos NAV',
+        description:
+          'Hans Kristian leder an med å tilby og tilpasse KI-verktøy for NAV sine utviklere på forsvarlig og kostnadseffektivt vis. Han vil blant annet snakke om deres KI-utviklingsportal på https://ki-utvikling.nav.no/ og være innom nav-pilot, tilpasninger/skills, cplt og tiltak for lokal KI.',
+        speakers: [
+          {
+            name: 'Hans Kristian Flaatten',
+            org: 'Nav',
+            url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+          },
+        ],
         type: ItemType.Talk,
       },
       {
@@ -128,18 +138,17 @@ export const events: Event[] = [
         type: ItemType.Workshop,
       },
       {
-        time: '14:00 - 15:00',
-        title:
-          'Hans Kristian Flatten fra NAV snakker om deres KI-reise og hvordan de tilpasser for utvikling med KI hos NAV',
+        time: '14:00 - 14:30',
+        title: 'Nettverksbygging',
         description:
-          'Hans Kristian leder an med å tilby og tilpasse KI-verktøy for NAV sine utviklere på forsvarlig og kostnadseffektivt vis. Han vil blant annet snakke om deres KI-utviklingsportal på https://ki-utvikling.nav.no/ og være innom nav-pilot, tilpasninger/skills, cplt og tiltak for lokal KI.',
-        speakers: [
-          {
-            name: 'Hans Kristian Flaatten',
-            org: 'Nav',
-            url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
-          },
-        ],
+          'Tid til å knytte kontakter, fortsette gode diskusjoner fra gruppene og ta en kaffe.',
+        type: ItemType.Break,
+      },
+      {
+        time: '14:30 - 15:00',
+        title: 'Avslutningsforedrag',
+        description:
+          'Et spennende innlegg som runder av fagdagen (detaljer annonseres senere).',
         type: ItemType.Talk,
       },
     ],
