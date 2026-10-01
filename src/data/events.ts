@@ -8,6 +8,142 @@ import {
 
 export const events: Event[] = [
   {
+    slug: '2026-10-20-kripos',
+    title: 'Offentlig PaaS Fagdag Kripos',
+    ingress:
+      'Vi inviterer til fagdag hos Kripos 20. oktober 2026. Det blir faglige presentasjoner og erfaringsdeling i smågrupper.',
+    description:
+      'Bli med på en spennende fagdag der vi deler plattformerfaringer på tvers av offentlig sektor. Programmet består av presentasjoner fra blant annet Nav, Digdir og Telenor før lunsj, etterfulgt av Open Space-diskusjoner rundt bordene på ettermiddagen.',
+    start: new Date('2026-10-20T09:00+02:00'),
+    end: new Date('2026-10-20T15:00+02:00'),
+    audience: Audience.PublicSector,
+    location: 'Kripos',
+    maxCapacity: 90,
+    registration: {
+      attendanceTypes: [AttendanceType.Physical],
+    },
+    participantInfo: {
+      notes:
+        'Husk gyldig legitimasjon (pass, nasjonalt ID-kort eller førerkort – fysisk eller digitalt) for å slippe inn. Påmeldingslisten oversendes Kripos tre dager før arrangementet.',
+    },
+    organizers: [
+      {
+        name: 'Kjetil Hårtveit',
+        org: 'PIT',
+        url: 'https://offentlig-paas-no.slack.com/team/U08STG8LJUB',
+      },
+      {
+        name: 'Norvald Bjarte Algrøy',
+        org: 'Vegvesen',
+        url: 'https://offentlig-paas-no.slack.com/team/U0C2GMA6Y1E',
+      },
+      {
+        name: 'Anders Olsen Sandvik',
+        org: 'SPK',
+        url: 'https://offentlig-paas-no.slack.com/team/U071L6QLNAZ',
+      },
+      {
+        name: 'Hans Kristian Flaatten',
+        org: 'Nav',
+        url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+      },
+    ],
+    schedule: [
+      {
+        time: '09:00 - 09:30',
+        title: 'Mingling og registrering',
+        description:
+          'Finn en plass og benytt sjansen til å bli kjent med folk fra andre organisasjoner.',
+        type: ItemType.Break,
+      },
+      {
+        time: '09:30 - 09:45',
+        title: 'Velkommen og kort introduksjon',
+        type: ItemType.Workshop,
+      },
+      {
+        time: '10:00 - 10:20',
+        title: 'Presentasjon 1 (TBA)',
+        speakers: [
+          {
+            name: 'Hans Kristian Flaatten',
+            org: 'Nav',
+            url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+          },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '10:30 - 10:50',
+        title: 'Kunstig intelligens i Digdir',
+        description:
+          'Hvordan Digdir jobber med KI, tilrettelegging gjennom felles byggeklosser, åpen kildekode og styring.',
+        speakers: [
+          {
+            name: 'Adi Dahl',
+            org: 'Digdir',
+            url: 'https://offentlig-paas-no.slack.com/team/U0A7GQSAFV4',
+          },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '11:00 - 11:20',
+        title: 'Presentasjon 3 (TBA)',
+        speakers: [
+          {
+            name: 'Martin Bergo',
+            org: 'Telenor',
+            url: 'https://offentlig-paas-no.slack.com/team/U088MG9KPEE',
+          },
+        ],
+        type: ItemType.Talk,
+      },
+      {
+        time: '11:20 - 11:30',
+        title: 'Valg av temaer for Open Space',
+        description:
+          'Vi noterer ned hvilke temaer deltakerne ønsker å diskutere i ettermiddagens grupper.',
+        type: ItemType.Workshop,
+      },
+      {
+        time: '11:30 - 12:30',
+        title: 'Lunsj',
+        description:
+          'Styret setter opp rutenett for Open Space-sesjonene basert på forslagene fra plenum.',
+        type: ItemType.Break,
+      },
+      {
+        time: '12:30 - 13:30',
+        title: 'Erfaringsdeling (Open Space)',
+        description:
+          'Vi diskuterer utvalgte temaer i smågrupper rundt bordene. Det kjøres to runder á 30 minutter, og man kan fritt bytte bord underveis.',
+        type: ItemType.Workshop,
+      },
+      {
+        time: '13:30 - 14:00',
+        title: 'Oppsummering i plenum',
+        description:
+          'Hovedpunkter og læring fra gruppediskusjonene deles i plenum for alle.',
+        type: ItemType.Workshop,
+      },
+      {
+        time: '14:00 - 14:30',
+        title: 'Nettverksbygging',
+        description:
+          'Tid til å knytte kontakter, fortsette gode diskusjoner fra gruppene og ta en kaffe.',
+        type: ItemType.Break,
+      },
+      {
+        time: '14:30 - 15:00',
+        title: 'Avslutningsforedrag',
+        description:
+          'Et spennende innlegg som runder av fagdagen (detaljer annonseres senere).',
+        type: ItemType.Talk,
+      },
+    ],
+  },
+  {
     slug: '2026-05-26-fagdag',
     title: 'Offentlig PaaS Fagdag',
     ingress:
