@@ -29,11 +29,7 @@ interface Speaker {
 }
 
 type AutoSearchStatus =
-  | 'idle'
-  | 'searching'
-  | 'found'
-  | 'not-found'
-  | 'duplicate'
+  'idle' | 'searching' | 'found' | 'not-found' | 'duplicate'
 
 interface SpeakerMatch {
   speaker: Speaker

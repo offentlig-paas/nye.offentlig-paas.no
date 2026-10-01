@@ -43,8 +43,7 @@ async function SignInContent({
                 action={async (formData: FormData) => {
                   'use server'
                   const redirectTo = formData.get('callbackUrl') as
-                    | string
-                    | null
+                    string | null
                   await signIn('slack', {
                     redirectTo: redirectTo || undefined,
                   })

@@ -18,11 +18,7 @@ export interface EventRegistration {
 }
 
 export type RegistrationStatus =
-  | 'confirmed'
-  | 'waitlist'
-  | 'cancelled'
-  | 'attended'
-  | 'no-show'
+  'confirmed' | 'waitlist' | 'cancelled' | 'attended' | 'no-show'
 
 interface RegistrationMetadata {
   source?: string

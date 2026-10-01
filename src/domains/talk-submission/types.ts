@@ -1,14 +1,8 @@
 export type TalkSubmissionStatus =
-  | 'submitted'
-  | 'accepted'
-  | 'rejected'
-  | 'withdrawn'
+  'submitted' | 'accepted' | 'rejected' | 'withdrawn'
 
 export type TalkFormat =
-  | 'Presentation'
-  | 'Workshop'
-  | 'Panel'
-  | 'Lightning talk'
+  'Presentation' | 'Workshop' | 'Panel' | 'Lightning talk'
 
 export const TalkFormatDisplay: Record<TalkFormat, string> = {
   Presentation: 'Presentasjon',

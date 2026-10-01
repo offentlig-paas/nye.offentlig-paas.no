@@ -27,8 +27,12 @@ run = "pnpm format"
 description = "Format code with Prettier"
 
 [tasks.check]
-run = ["pnpm typecheck", "pnpm lint"]
-description = "Run all checks (lint, typecheck, format)"
+run = "pnpm run check"
+description = "Run all checks (lint, typecheck, format, tests)"
+
+[tasks.test]
+run = "pnpm run test"
+description = "Run all unit tests"
 
 [tasks.sanity-studio]
 run = "pnpm sanity studio"
@@ -50,3 +54,7 @@ description = "Set up the project for development"
 [tasks.fresh]
 run = ["rm -rf .next", "rm -rf node_modules/.cache", "pnpm dev"]
 description = "Clean build artifacts and restart dev server"
+
+[tasks.all]
+run = ["pnpm run check", "pnpm run build"]
+description = "Run all checks, tests, and build the application for production"
