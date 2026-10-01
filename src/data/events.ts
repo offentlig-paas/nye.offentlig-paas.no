@@ -129,7 +129,8 @@ export const events: Event[] = [
       },
       {
         time: '14:00 - 15:00',
-        title: 'KI-reise og tilpasning for utvikling med KI hos NAV',
+        title:
+          'Hans Kristian Flatten fra NAV snakker om deres KI-reise og hvordan de tilpasser for utvikling med KI hos NAV',
         description:
           'Hans Kristian leder an med å tilby og tilpasse KI-verktøy for NAV sine utviklere på forsvarlig og kostnadseffektivt vis. Han vil blant annet snakke om deres KI-utviklingsportal på https://ki-utvikling.nav.no/ og være innom nav-pilot, tilpasninger/skills, cplt og tiltak for lokal KI.',
         speakers: [
