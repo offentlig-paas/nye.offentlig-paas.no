@@ -11,9 +11,9 @@ export const events: Event[] = [
     slug: '2026-10-20-kripos',
     title: 'Offentlig PaaS Fagdag Kripos',
     ingress:
-      'Vi inviterer til fagdag hos Kripos 20. oktober 2026. Det blir faglige presentasjoner og erfaringsdeling i smågrupper.',
+      'Vi inviterer til fagdag hos Kripos 20. oktober 2026. Arrangementet er spesielt rettet mot deg som har ansvar for å tilgjengeliggjøre og tilrettelegge for KI-agenter for utvikling i din organisasjon.',
     description:
-      'Bli med på en spennende fagdag der vi deler plattformerfaringer på tvers av offentlig sektor. Programmet består av presentasjoner fra blant annet Nav, Digdir og Telenor før lunsj, etterfulgt av Open Space-diskusjoner rundt bordene på ettermiddagen.',
+      'Dette er en interaktiv fagdag som bygger på aktiv deltakelse. Vi forventer at alle bidrar med egne erfaringer, spørsmål og diskusjoner i Open Space-gruppene. Hvis du primært ønsker enveiskommunikasjon og passiv lytting, anbefaler vi heller at du finner gode foredrag på YouTube. For å sikre at vi treffer målgruppen som faktisk jobber med å innføre plattformene (og ikke kun sluttbrukere), og for å få en god bredde i erfaringsdelingen, er det begrenset antall plasser per organisasjon.\n\nProgrammet består av presentasjoner fra blant annet Nav, Digdir og Telenor før lunsj, etterfulgt av dypdykk rundt bordene på ettermiddagen.\n\n**Viktig:** Det kreves gyldig legitimasjon (pass, nasjonalt ID-kort eller førerkort – fysisk eller digitalt) for å komme inn i Kripos sine lokaler. Påmeldingslisten oversendes Kripos tre dager før arrangementet.',
     start: new Date('2026-10-20T09:00+02:00'),
     end: new Date('2026-10-20T15:00+02:00'),
     audience: Audience.PublicSector,
