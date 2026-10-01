@@ -9,22 +9,23 @@ import {
 export const events: Event[] = [
   {
     slug: '2026-10-20-kripos',
-    title: 'Offentlig PaaS Fagdag Kripos',
+    title: 'Offentlig KI-kodeagenter Fagdag',
     ingress:
       'Vi inviterer til fagdag hos Kripos 20. oktober 2026. Arrangementet er spesielt rettet mot deg som har ansvar for å tilgjengeliggjøre og tilrettelegge for KI-agenter for utvikling i din organisasjon.',
     description:
-      'Dette er en interaktiv fagdag som bygger på aktiv deltakelse. Vi forventer at alle bidrar med egne erfaringer, spørsmål og diskusjoner i Open Space-gruppene. Hvis du primært ønsker enveiskommunikasjon og passiv lytting, anbefaler vi heller at du finner gode foredrag på YouTube. For å sikre at vi treffer målgruppen som faktisk jobber med å innføre plattformene (og ikke kun sluttbrukere), og for å få en god bredde i erfaringsdelingen, er det begrenset antall plasser per organisasjon.\n\nProgrammet består av presentasjoner fra blant annet Nav, Digdir og Telenor før lunsj, etterfulgt av dypdykk rundt bordene på ettermiddagen.\n\n**Viktig:** Det kreves gyldig legitimasjon (pass, nasjonalt ID-kort eller førerkort – fysisk eller digitalt) for å komme inn i Kripos sine lokaler. Påmeldingslisten oversendes Kripos tre dager før arrangementet.',
+      'Dette er en interaktiv fagdag som bygger på aktiv deltakelse. Vi forventer at alle bidrar med egne erfaringer, spørsmål og diskusjoner i Open Space-gruppene. Hvis du primært ønsker enveiskommunikasjon og passiv lytting, anbefaler vi heller at du finner gode foredrag på YouTube. For å sikre at vi treffer målgruppen som faktisk jobber med å innføre plattformene (og ikke kun sluttbrukere), og for å få en god bredde i erfaringsdelingen, er det begrenset antall plasser per organisasjon. Maks ca 90 fysiske plasser.\n\nProgrammet består av presentasjoner fra blant annet Nav, Digdir og Telenor før lunsj, etterfulgt av dypdykk rundt bordene på ettermiddagen.\n\nVi prøver å få til digital strømming men fysisk vil bli prioritert skulle det tekniske ikke samarbeide på dagen. Også uklart om vi kommer til å strømme hele dagen.\n\nVIKTIG FOR FYSISKE DELTAKERE:\n- Påmelding her er påkrevd for fysisk deltakelse pga deltakerliste må sendes til arrangøren. Møteinnkallelse er i seg selv ikke nok.\n- Det kreves gyldig legitimasjon (pass, nasjonalt ID-kort eller førerkort – fysisk eller digitalt) for å komme inn i Kripos sine lokaler.',
     start: new Date('2026-10-20T09:00+02:00'),
     end: new Date('2026-10-20T15:00+02:00'),
     audience: Audience.PublicSector,
-    location: 'Kripos',
+    location: 'Kripos, Nils Hansens vei 25, 0667 Oslo',
     maxCapacity: 90,
     registration: {
-      attendanceTypes: [AttendanceType.Physical],
+      attendanceTypes: [AttendanceType.Physical, AttendanceType.Digital],
     },
     participantInfo: {
       notes:
-        'Husk gyldig legitimasjon (pass, nasjonalt ID-kort eller førerkort – fysisk eller digitalt) for å slippe inn. Påmeldingslisten oversendes Kripos tre dager før arrangementet.',
+        'Husk gyldig legitimasjon (pass, nasjonalt ID-kort eller førerkort – fysisk eller digitalt) for å slippe inn.',
+      streamingUrl: 'https://teams.microsoft.com/meet/317863690676179?p=633627969929676367'
     },
     organizers: [
       {
