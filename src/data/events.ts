@@ -18,7 +18,6 @@ export const events: Event[] = [
     end: new Date('2026-10-20T15:00+02:00'),
     audience: Audience.PublicSector,
     location: 'Kripos, Nils Hansens vei 25, 0667 Oslo',
-    maxCapacity: 90,
     registration: {
       attendanceTypes: [AttendanceType.Physical, AttendanceType.Digital],
     },
@@ -100,7 +99,9 @@ export const events: Event[] = [
       },
       {
         time: '11:00 - 11:20',
-        title: 'Presentasjon 3 (TBA)',
+        title: 'Det vi har lært av 500 utviklere med KI-agenter, og hva vi prøver nå',
+        description:
+          'Telenor har 500 utviklere med KI-kodeagenter, og bruken har lært oss mye om hva som fungerer og hva som ikke gjør det. Martin deler erfaringene, utfordringene og hva som er veien videre i Telenor',
         speakers: [
           {
             name: 'Martin Bergo',
