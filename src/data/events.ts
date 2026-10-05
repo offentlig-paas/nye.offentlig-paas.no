@@ -21,6 +21,7 @@ export const events: Event[] = [
     start: new Date('2026-10-20T09:00+02:00'),
     end: new Date('2026-10-20T15:00+02:00'),
     audience: Audience.PublicSector,
+    maxCapacity: 90,
     location: 'Kripos, Nils Hansens vei 25, 0667 Oslo',
     registration: {
       attendanceTypes: [AttendanceType.Physical, AttendanceType.Digital],
