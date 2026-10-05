@@ -548,6 +548,17 @@ export const EventRegistrationForm = memo(function EventRegistrationForm({
             : 'Du må logge inn med Slack for å melde deg på fagdagen.'}
         </p>
         <AuthButton className="w-full" showFullText />
+        <p className="mt-3 text-center text-sm text-gray-600 dark:text-gray-400">
+          Mangler konto?{' '}
+          <a
+            href="https://join.slack.com/t/offentlig-paas-no/signup"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+          >
+            Opprett konto først
+          </a>
+        </p>
       </div>
     )
   }
