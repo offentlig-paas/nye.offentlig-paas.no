@@ -57,7 +57,7 @@ export const events: Event[] = [
         time: '09:00 - 09:30',
         title: 'Mingling og registrering',
         description:
-          'Finn en plass og benytt sjansen til å bli kjent med folk fra andre organisasjoner.',
+          'Finn en plass og benytt sjansen til å bli kjent med folk fra andre organisasjoner. Det vil være servering med mat og drikke allerede fra start.',
         type: ItemType.Break,
       },
       {
