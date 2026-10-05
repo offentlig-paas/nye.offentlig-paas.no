@@ -10,6 +10,10 @@ export const events: Event[] = [
   {
     slug: '2026-10-20-kripos',
     title: 'Offentlig KI-kodeagenter Fagdag',
+    bannerImage: {
+      src: '/images/events/2026-10-20-ki-agent.png',
+      alt: 'Logo for Offentlig KI-kodeagenter: en vennlig robotfigur i hettegenser med smilende øyne, i lysende mintgrønt mot mørk bakgrunn, bak en laptop med teksten «Offentlig KI-kodeagenter».',
+    },
     ingress:
       'Vi inviterer til fagdag hos Kripos 20. oktober 2026. Arrangementet er spesielt rettet mot deg som har ansvar for å tilgjengeliggjøre og tilrettelegge for KI-agenter for utvikling i din organisasjon.',
     description:
