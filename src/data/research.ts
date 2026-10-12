@@ -64,6 +64,17 @@ export const researchProjects: ResearchProject[] = [
     papers: [
       {
         title:
+          'The Evolution of Platform Engineering in the Public Sector: A Longitudinal Study of Adoption, Maturity, and Motivations (2024–2026)',
+        url: '/papers/flaatten-platform-engineering-public-sector-2026.pdf',
+        date: '2026-10-12',
+        status: PaperStatus.Draft,
+        label: 'Les hele artikkelen (PDF)',
+        authors: [{ name: 'Hans Kristian Flaatten', affiliation: 'Nav' }],
+        abstract:
+          'Repeated cross-sectional survey of Norwegian public sector organizations: 35 in 2024 and 45 in 2026, with 60% overlap enabling panel analysis. IDP adoption reached 92% and Kubernetes 83% by 2026. Developer agility remains the primary motivation (91%), while security rose 25 percentage points to 82%, the only change significant at α=0.05. On the CNCF Platform Maturity Model, modal operational maturity shifted from Level 2 to Level 3, while measurement maturity remains at Level 1, with 49% of platform entries reporting ad hoc practices.',
+      },
+      {
+        title:
           'Platform Engineering in the Norwegian Public Sector: A Longitudinal Study of Adoption, Maturity, and Toolchain Convergence (2024–2026)',
         url: '/papers/flaatten-platform-engineering-public-sector-2026-abstract.pdf',
         date: '2026-03-01',
