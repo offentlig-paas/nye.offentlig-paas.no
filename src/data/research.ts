@@ -69,7 +69,7 @@ export const researchProjects: ResearchProject[] = [
         date: '2026-03-01',
         venue: 'KubeCon + CloudNativeCon Europe 2026, Amsterdam',
         venueDate: 'April 2026',
-        status: PaperStatus.UnderReview,
+        status: PaperStatus.Presented,
         authors: [{ name: 'Hans Kristian Flaatten', affiliation: 'NAV' }],
         abstract:
           'We present a longitudinal survey of Internal Developer Platform adoption across 45 Norwegian public sector organizations representing approximately 240,000 employees and 2.5 trillion NOK in organizational budgets. Between 2024 and 2026, Kubernetes adoption rose from 66% to 83%, the toolchain converged around a common stack, and security motivation surged 25 percentage points to 82%. Platform operations maturity advanced to Level 3 on the CNCF model, while measurement remained at Level 1 for 49% of organizations — creating a widening gap as cost optimization pressure grows.',
@@ -89,16 +89,16 @@ export const researchProjects: ResearchProject[] = [
     ],
     datasets: [
       {
-        title: 'State of Platforms 2024 (anonymisert)',
-        url: 'https://github.com/offentlig-paas/forskning/blob/main/projects/state-of-platforms/data/2024/state-of-platforms-2024-anonymous.csv',
+        title: 'State of Platforms 2024 (aggregerte tabeller)',
+        url: 'https://github.com/offentlig-paas/open-data/tree/main/state-of-platforms/2024',
         format: 'CSV',
-        description: '35 organisasjoner, anonymiserte svar',
+        description: 'Aggregerte tabeller fra 35 organisasjoner',
       },
       {
-        title: 'State of Platforms 2026 (anonymisert)',
-        url: 'https://github.com/offentlig-paas/forskning/blob/main/projects/state-of-platforms/data/2026/state-of-platforms-2026-anonymous.csv',
+        title: 'State of Platforms 2026 (aggregerte tabeller)',
+        url: 'https://github.com/offentlig-paas/open-data/tree/main/state-of-platforms/2026',
         format: 'CSV',
-        description: '45 organisasjoner, anonymiserte svar',
+        description: 'Aggregerte tabeller fra 45 organisasjoner',
       },
     ],
     ethics: {
@@ -116,32 +116,41 @@ export const researchProjects: ResearchProject[] = [
     slug: 'state-of-ai-agents',
     title: 'State of AI Agents',
     description:
-      'Studie av hvordan offentlig sektor tar i bruk AI-kodeagenter som GitHub Copilot, Claude Code og Cursor. Undersøker bruk, styring og om organisasjonene har retningslinjer som holder tritt.',
+      'Studie av hvordan offentlig sektor tar i bruk KI-kodeagenter som GitHub Copilot, Claude Code og Cursor. Undersøker bruk, styring og om organisasjonene har retningslinjer som holder tritt.',
     longDescription:
-      'AI-kodeagenter har gått fra nyhet til hverdag på kort tid, men det finnes lite data om hvordan offentlig sektor faktisk tar dem i bruk. Denne studien kartlegger bruken av verktøy som GitHub Copilot, Claude Code, Cursor og Amazon Q i norske offentlige virksomheter. Vi undersøker hvem som bruker hva, om organisasjonene har retningslinjer som holder tritt, og hva som hindrer videre bruk. Studien bygger på samme tilnærming som State of Platforms-undersøkelsene, og følger opp funnet derfra om at sikkerhet ble den nest viktigste motivasjonen for plattformarbeid.',
+      'KI-kodeagenter har gått fra nyhet til hverdag på kort tid, men det finnes lite data om hvordan offentlig sektor faktisk tar dem i bruk. Denne studien kartlegger bruken av verktøy som GitHub Copilot, Claude Code, Cursor og Amazon Q i norske offentlige virksomheter. Vi undersøker hvem som bruker hva, om organisasjonene har retningslinjer som holder tritt, og hva som hindrer videre bruk. Studien bygger på samme tilnærming som State of Platforms-undersøkelsene, og følger opp funnet derfra om at sikkerhet ble den nest viktigste motivasjonen for plattformarbeid.',
     researchQuestions: [
-      'Hvilke AI-kodeagenter brukes i offentlig sektor, og er bruken formell eller uformell?',
-      'Har organisasjonene retningslinjer for AI-generert kode, og hvem har ansvar for sikkerhetsvurderinger og kvalitetskontroll?',
+      'Hvilke KI-kodeagenter brukes i offentlig sektor, og er bruken formell eller uformell?',
+      'Har organisasjonene retningslinjer for KI-generert kode, og hvem har ansvar for sikkerhetsvurderinger og kvalitetskontroll?',
       'Hva hindrer videre bruk — sikkerhet, personvern, kostnader eller andre barrierer?',
     ],
     methodology:
-      'Anonym nettbasert spørreundersøkelse åpen for alle som jobber med utvikling eller teknisk ledelse i offentlig sektor — ikke bare de som bruker AI-verktøy i dag. Distribuert gjennom Offentlig PaaS Slack, LinkedIn og arrangementer.',
-    status: ResearchStatus.DataCollection,
+      'Anonym nettbasert spørreundersøkelse åpen for alle som jobber med utvikling eller teknisk ledelse i offentlig sektor — ikke bare de som bruker KI-verktøy i dag. Distribuert gjennom Offentlig PaaS Slack, LinkedIn og arrangementer. Svarene ble samlet inn i april og mai 2026. Analysen er ferdig, og en foreløpig rapport er under revisjon.',
+    keyFindings: [
+      '115 svar fra 57 organisasjoner. Utvalget er selvselektert, så tallene gjelder utvalget og ikke hele offentlig sektor',
+      '92 % (106 av 115) bruker KI-kodeverktøy selv, og 76 % av brukerne (81 av 106) bruker agenter. Ingen bruker bare autofullføring',
+      '62 % (60 av 96) av dem som oppgir minst ett godkjent verktøy, bruker også verktøy som ikke er godkjent. Holder vi nettleserbaserte språkmodeller og verktøy med åpen kildekode utenfor, er andelen 30 % (29 av 96)',
+      'Styringen henger etter: 83 % har retningslinjer, men bare 8 % har et strukturert støtteprogram og 11 % egne mål på effekt',
+      'Kolleger i samme organisasjon er enige om retningslinjer og leverandøravtaler oftere enn tilfeldighet skulle tilsi. Bare om effektmåling er de uenige oftere enn tilfeldig, og bare så vidt (P≈0,03, én av sju sammenligninger, ikke korrigert for flere tester)',
+    ],
+    status: ResearchStatus.Writing,
     tags: ['state-of-ai-agents'],
     lead: 'Hans Kristian Flaatten',
     team: ['Hans Kristian Flaatten', 'Anders Olsen Sandvik'],
     startDate: '2026-01-01',
-    lastUpdated: '2026-04-05',
-    callout: {
-      headline: 'Kartlegging: AI-kodeagenter i offentlig sektor',
-      subtitle:
-        'Hvordan brukes og styres verktøy som Copilot og Cursor hos dere?',
-      linkText: 'Ta undersøkelsen',
-      linkHref: '/forskning/state-of-ai-agents/undersokelse',
-    },
+    lastUpdated: '2026-10-12',
     surveys: [
       {
         surveySlug: aiAgents2026.slug,
+      },
+    ],
+    datasets: [
+      {
+        title: 'State of AI Agents 2026 (anonymisert datasett)',
+        url: 'https://github.com/offentlig-paas/open-data/tree/main/state-of-ai-agents/2026',
+        format: 'CSV',
+        description:
+          'Anonymiserte svar (115) med kodebok, aggregerte tabeller og analyseskript',
       },
     ],
     ethics: {

@@ -26,7 +26,7 @@ export const aiAgents2026: SurveyDefinition = {
   resultsConfig: {
     published: true,
     heroText:
-      'Foreløpige resultater fra kartleggingen av KI-kodeverktøy i norsk offentlig sektor. Undersøkelsen er fortsatt åpen — tallene oppdateres fortløpende.',
+      'Resultater fra kartleggingen av KI-kodeverktøy i norsk offentlig sektor. Undersøkelsen er avsluttet. Svarene ble samlet inn i april og mai 2026.',
     methodologyNote:
       'Undersøkelsen er distribuert gjennom Offentlig PaaS Slack, LinkedIn og arrangementer. Utvalget er selvselektert og ikke representativt for hele offentlig sektor. Organisasjoner med flere respondenter teller én gang i organisasjonsstatistikken.',
   },
@@ -36,7 +36,7 @@ export const aiAgents2026: SurveyDefinition = {
     dataCollectionText:
       'Vi samler inn svar om organisasjonens og din bruk av KI-kodeverktøy, styring og bekymringer. Vi spør om organisasjonsnavn for å kunne oppdage og slå sammen duplikater — organisasjonen din vil ikke bli navngitt i publikasjoner. Dersom du ønsker å delta i oppfølgingsintervju, ber vi om e-postadresse — denne lagres separat fra svarene dine.',
   },
-  status: SurveyStatus.Open,
+  status: SurveyStatus.Closed,
   sections: [
     {
       id: 'demographics',

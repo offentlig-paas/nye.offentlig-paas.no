@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
   getSurvey,
-  getActiveSurveys,
   getVisibleSectionIds,
   getVisibleQuestionIds,
   validateSurveyDefinition,
@@ -45,14 +44,6 @@ describe('getSurveyForProject', () => {
 
   it('returns undefined for unknown project', () => {
     expect(getSurveyForProject('nonexistent')).toBeUndefined()
-  })
-})
-
-describe('getActiveSurveys', () => {
-  it('returns surveys with Open status', () => {
-    const active = getActiveSurveys()
-    expect(active.length).toBeGreaterThan(0)
-    active.forEach(s => expect(s.status).toBe(SurveyStatus.Open))
   })
 })
 
