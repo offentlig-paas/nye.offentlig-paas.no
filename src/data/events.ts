@@ -29,7 +29,8 @@ export const events: Event[] = [
     participantInfo: {
       notes:
         'Husk gyldig legitimasjon (pass, nasjonalt ID-kort eller førerkort – fysisk eller digitalt) for å slippe inn.',
-      streamingUrl: 'https://teams.microsoft.com/meet/317863690676179?p=633627969929676367'
+      streamingUrl:
+        'https://teams.microsoft.com/meet/317863690676179?p=633627969929676367',
     },
     organizers: [
       {
@@ -104,7 +105,8 @@ export const events: Event[] = [
       },
       {
         time: '11:00 - 11:20',
-        title: 'Det vi har lært av 500 utviklere med KI-agenter, og hva vi prøver nå',
+        title:
+          'Det vi har lært av 500 utviklere med KI-agenter, og hva vi prøver nå',
         description:
           'Telenor har 500 utviklere med KI-kodeagenter, og bruken har lært oss mye om hva som fungerer og hva som ikke gjør det. Martin deler erfaringene, utfordringene og hva som er veien videre i Telenor',
         speakers: [
