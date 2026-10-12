@@ -20,7 +20,8 @@ import { members } from '@/data/members'
  * branching question per section. The three routes (plattformteam,
  * applikasjonsteam, ledelse) are therefore laid out as separate tracks with
  * track-prefixed question IDs (p-, a-, l-). Merge them per Q-number in
- * analysis. Q2 picks which Q2b section is shown; Q2b picks the track.
+ * analysis. Q2 picks which Q2b section is shown; Q2b picks the track. Q2b
+ * and Q3 therefore exist twice (plain and -lead suffix).
  *
  * TODO(engine): Q14c and the Q20 follow-up are conditional on combinations
  * of answers, which the engine cannot express. They are shown to everyone in
@@ -898,8 +899,7 @@ const appTrack: SurveySection[] = [
         type: 'radio',
         title:
           'Hvor ofte satte teamet ditt kode i produksjon for 12 måneder siden?',
-        description:
-          'Svar «Vet ikke» for 12 måneder siden hvis du ikke var i teamet da.',
+        description: 'Svar «Vet ikke» hvis du ikke var i teamet da.',
         required: true,
         options: deployFrequencyOptions,
       },
@@ -983,6 +983,19 @@ const routeQuestion = (id: string, noTarget: string): SurveyQuestion => ({
   ],
 })
 
+// Q3 sits after Q2b, as in the instrument. The section jump fires when the
+// section is submitted, so Q3 can follow the branching question. Q3 is
+// duplicated per route section like Q2b; merge the two IDs in analysis.
+const panelQuestion = (id: string): SurveyQuestion => ({
+  id,
+  type: 'radio',
+  title: 'Svarte du på State of Platforms 2025–2026?',
+  description:
+    'Undersøkelsen om applikasjonsplattformer i offentlig sektor som Offentlig PAAS gjennomførte vinteren 2025–2026. Svar for deg selv, ikke for organisasjonen.',
+  required: true,
+  options: [...yesNo, { label: 'Vet ikke', value: 'unknown' }],
+})
+
 export const platformsAi2026: SurveyDefinition = {
   slug: 'platforms-ai-2026',
   version: 1,
@@ -1003,11 +1016,8 @@ export const platformsAi2026: SurveyDefinition = {
       'Vi kartlegger hvordan KI påvirker plattformteam og applikasjonsteam i norsk offentlig sektor: hvilke KI-verktøy som brukes, hvordan arbeidet endrer seg, og hva plattformene tilbyr. Undersøkelsen er en oppfølging av State of Platforms 2025–2026 og tar 10 til 13 minutter.',
     dataCollectionText:
       'Vi samler inn svar om organisasjonens og din egen bruk av KI-verktøy, hvordan plattformen støtter KI, og hva som hindrer bruk. Vi spør om organisasjonsnavn av to grunner: for å slå sammen flere svar fra samme organisasjon, og for å koble svarene dine til organisasjonens svar i State of Platforms 2025–2026 (runde 2). Organisasjonen din vil ikke bli navngitt i publikasjoner. Hvis du vil delta i et oppfølgingsintervju, ber vi om e-postadresse. Den lagres separat fra svarene dine.',
-    // TODO: instrument says «Svarene lagres i Google Forms», but this survey
-    // stores answers on offentlig-paas.no. Fix in the instrument and here
-    // before opening.
     privacyText:
-      'Behandlingsgrunnlaget er samtykke (GDPR art. 6 nr. 1 bokstav a). Ingen enkeltpersoner eller organisasjoner vil bli identifisert i publikasjoner. Svarene lagres i Google Forms. Vi beholder svar koblet til organisasjonsnavn til runde 3 av State of Platforms er analysert, men ikke lenger enn til 31.12.2027. Deretter erstatter vi organisasjonsnavnet med et pseudonym. Det pseudonymiserte datasettet slettes senest to år etter at studien er avsluttet. E-postadresser til intervju slettes når intervjuene er gjennomført, og senest 31.12.2027. Resultater publiseres bare i sammenstilt form, på offentlig-paas.no og i akademiske tidsskrifter eller på konferanser.',
+      'Behandlingsgrunnlaget er samtykke (GDPR art. 6 nr. 1 bokstav a). Ingen enkeltpersoner eller organisasjoner vil bli identifisert i publikasjoner. Svarene lagres hos Offentlig PAAS (offentlig-paas.no). Vi beholder svar koblet til organisasjonsnavn til runde 3 av State of Platforms er analysert, men ikke lenger enn til 31.12.2027. Deretter erstatter vi organisasjonsnavnet med et pseudonym. Det pseudonymiserte datasettet slettes senest to år etter at studien er avsluttet. E-postadresser til intervju slettes når intervjuene er gjennomført, og senest 31.12.2027. Resultater publiseres bare i sammenstilt form, på offentlig-paas.no og i akademiske tidsskrifter eller på konferanser.',
   },
   status: SurveyStatus.Draft,
   sections: [
@@ -1059,26 +1069,23 @@ export const platformsAi2026: SurveyDefinition = {
             },
           ],
         },
-        {
-          id: 'q3-sop-respondent',
-          type: 'radio',
-          title: 'Svarte du på State of Platforms 2025–2026?',
-          description:
-            'Undersøkelsen om applikasjonsplattformer i offentlig sektor som Offentlig PAAS gjennomførte vinteren 2025–2026. Svar for deg selv, ikke for organisasjonen.',
-          required: true,
-          options: [...yesNo, { label: 'Vet ikke', value: 'unknown' }],
-        },
       ],
     },
     {
       id: 'route-team',
       title: 'Bakgrunn',
-      questions: [routeQuestion('q2b-platform-team', 'a-adoption')],
+      questions: [
+        routeQuestion('q2b-platform-team', 'a-adoption'),
+        panelQuestion('q3-sop-respondent'),
+      ],
     },
     {
       id: 'route-lead',
       title: 'Bakgrunn',
-      questions: [routeQuestion('q2b-platform-team-lead', 'l-adoption')],
+      questions: [
+        routeQuestion('q2b-platform-team-lead', 'l-adoption'),
+        panelQuestion('q3-sop-respondent-lead'),
+      ],
     },
     ...platformTrack,
     ...appTrack,
