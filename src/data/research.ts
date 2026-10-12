@@ -32,7 +32,7 @@ export const researchProjects: ResearchProject[] = [
       'Kubernetes-adopsjon økte fra 66 % til 83 % mellom 2024 og 2026',
       '92 % av organisasjonene har nå en intern utviklerplattform',
       'Teknologistakken konvergerte rundt AKS/GKE/OpenShift, ArgoCD, GitHub Actions og Terraform — uten sentral koordinering',
-      'Sikkerhet som motivasjon økte 25 prosentpoeng til 82 %, den eneste statistisk signifikante endringen (p=0,034)',
+      'Sikkerhet som motivasjon økte 25 prosentpoeng til 82 %, den eneste statistisk signifikante endringen i motivasjon (p=0,034, ikke korrigert for flere tester)',
       'Driftsmodenhet nådde nivå 3 (skalerbar) på CNCF-modellen',
       '49 % av organisasjonene er fortsatt på nivå 1 for måling — et voksende gap ettersom kostnadspress øker',
     ],
