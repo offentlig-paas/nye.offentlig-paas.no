@@ -81,7 +81,7 @@ export const researchProjects: ResearchProject[] = [
         venue: 'KubeCon + CloudNativeCon Europe 2026, Amsterdam',
         venueDate: 'April 2026',
         status: PaperStatus.Presented,
-        authors: [{ name: 'Hans Kristian Flaatten', affiliation: 'NAV' }],
+        authors: [{ name: 'Hans Kristian Flaatten', affiliation: 'Nav' }],
         abstract:
           'We present a longitudinal survey of Internal Developer Platform adoption across 45 Norwegian public sector organizations representing approximately 240,000 employees and 2.5 trillion NOK in organizational budgets. Between 2024 and 2026, Kubernetes adoption rose from 66% to 83%, the toolchain converged around a common stack, and security motivation surged 25 percentage points to 82%. Platform operations maturity advanced to Level 3 on the CNCF model, while measurement remained at Level 1 for 49% of organizations — creating a widening gap as cost optimization pressure grows.',
       },
