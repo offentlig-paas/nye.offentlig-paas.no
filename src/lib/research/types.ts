@@ -15,6 +15,7 @@ export enum PaperStatus {
   Draft = 'Utkast',
   UnderReview = 'Under fagfellevurdering',
   Accepted = 'Akseptert',
+  Presented = 'Presentert',
   Published = 'Publisert',
 }
 

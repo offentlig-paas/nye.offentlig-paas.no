@@ -64,6 +64,7 @@ const paperStatusLabel: Record<PaperStatus, string> = {
   [PaperStatus.Draft]: 'Utkast',
   [PaperStatus.UnderReview]: 'Under fagfellevurdering',
   [PaperStatus.Accepted]: 'Akseptert',
+  [PaperStatus.Presented]: 'Presentert',
   [PaperStatus.Published]: 'Publisert',
 }
 
