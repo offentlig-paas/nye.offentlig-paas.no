@@ -139,6 +139,22 @@ export const researchProjects: ResearchProject[] = [
     team: ['Hans Kristian Flaatten', 'Anders Olsen Sandvik'],
     startDate: '2026-01-01',
     lastUpdated: '2026-10-12',
+    papers: [
+      {
+        title:
+          'AI Coding Agents in the Norwegian Public Sector: Adoption, Governance, and Practitioner Concerns',
+        url: '/papers/flaatten-ai-coding-agents-public-sector-2026-preliminary.pdf',
+        date: '2026-10-12',
+        status: PaperStatus.Draft,
+        label: 'Les den foreløpige rapporten (PDF)',
+        authors: [
+          { name: 'Hans Kristian Flaatten', affiliation: 'Nav' },
+          { name: 'Anders Olsen Sandvik', affiliation: 'SPK' },
+        ],
+        abstract:
+          'Cross-sectional survey of 115 respondents from 57 Norwegian public sector organizations (Q2 2026). We find broad personal adoption of AI coding tools (92%), with 76% of users employing agentic capabilities. GitHub Copilot dominates procurement, while Claude Code shows substantial shadow adoption. Governance lags: 83% have some policy, but only 8% report a structured support program and 11% have own effect metrics. Skill loss is the most frequently selected concern (71%), well ahead of security (34%) and privacy (27%).',
+      },
+    ],
     surveys: [
       {
         surveySlug: aiAgents2026.slug,
