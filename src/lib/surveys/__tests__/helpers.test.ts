@@ -18,6 +18,56 @@ import type {
   ConsentContact,
 } from '../types'
 import { aiAgents2026 } from '@/data/surveys/ai-agents-2026'
+import { platformsAi2026 } from '@/data/surveys/platforms-ai-2026'
+
+describe('platformsAi2026', () => {
+  const visible = (pairs: Record<string, string>) =>
+    getVisibleSectionIds(
+      platformsAi2026.sections,
+      new Map(
+        Object.entries(pairs).map(([questionId, value]) => [
+          questionId,
+          { questionId, value },
+        ])
+      )
+    )
+
+  it('is valid and not open', () => {
+    expect(validateSurveyDefinition(platformsAi2026)).toEqual([])
+    expect(platformsAi2026.status).toBe(SurveyStatus.Draft)
+  })
+
+  it('routes platform, app and leadership respondents to their tracks', () => {
+    const p = visible({
+      'q2-role': 'cto',
+      'q2b-platform-team-lead': 'yes',
+      'p-q30b-interview': 'no',
+    })
+    expect(p).toContain('p-team')
+    expect(p.some(id => id.startsWith('a-') || id.startsWith('l-'))).toBe(false)
+
+    const a = visible({
+      'q2-role': 'developer',
+      'q2b-platform-team': 'no',
+      'a-q7a-personal-use': 'no',
+      'a-q30b-interview': 'yes',
+    })
+    expect(a).toContain('a-delivery')
+    expect(a).not.toContain('a-personal-usage')
+    expect(a.at(-1)).toBe('contact')
+    expect(a.some(id => id.startsWith('p-') || id.startsWith('l-'))).toBe(false)
+
+    const l = visible({
+      'q2-role': 'cto',
+      'q2b-platform-team-lead': 'no',
+      'l-q25-ai-platform': 'no',
+      'l-q30b-interview': 'no',
+    })
+    expect(l).toContain('l-governance')
+    expect(l).not.toContain('l-ai-platform-owner')
+    expect(l.some(id => id.startsWith('p-') || id.startsWith('a-'))).toBe(false)
+  })
+})
 
 describe('getSurvey', () => {
   it('finds a survey by slug', () => {
@@ -38,8 +88,10 @@ describe('getSurveyForProject', () => {
     expect(survey?.slug).toBe('ai-agents-2026')
   })
 
-  it('returns undefined for project without surveySlug', () => {
-    expect(getSurveyForProject('state-of-platforms')).toBeUndefined()
+  it('finds the draft follow-up linked to state-of-platforms', () => {
+    const survey = getSurveyForProject('state-of-platforms')
+    expect(survey?.slug).toBe('platforms-ai-2026')
+    expect(survey?.status).toBe(SurveyStatus.Draft)
   })
 
   it('returns undefined for unknown project', () => {

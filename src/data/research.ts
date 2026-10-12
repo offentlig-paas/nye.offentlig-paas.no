@@ -6,6 +6,7 @@ import {
 import { SurveyStatus } from '@/lib/surveys/types'
 import { type ResearchEthics } from '@/lib/research/types'
 import { aiAgents2026 } from '@/data/surveys/ai-agents-2026'
+import { platformsAi2026 } from '@/data/surveys/platforms-ai-2026'
 
 const sharedEthics = {
   dataController: 'Hans Kristian Flaatten (styreleder, Offentlig PaaS)',
@@ -96,6 +97,10 @@ export const researchProjects: ResearchProject[] = [
         title: 'Plattformmodenhet Wave 2 (2026)',
         status: SurveyStatus.Closed,
         waveName: 'Wave 2',
+      },
+      {
+        surveySlug: platformsAi2026.slug,
+        description: 'Planlagt i fjerde kvartal 2026',
       },
     ],
     datasets: [
