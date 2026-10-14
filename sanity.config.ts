@@ -60,6 +60,14 @@ export default defineConfig({
                   ])
               ),
             S.listItem()
+              .title('Event Photos')
+              .child(
+                S.documentTypeList('eventPhoto')
+                  .title('Event Photos')
+                  .filter('_type == "eventPhoto"')
+                  .defaultOrdering([{ field: 'uploadedAt', direction: 'desc' }])
+              ),
+            S.listItem()
               .title('Talk Submissions')
               .child(
                 S.documentTypeList('talkSubmission')
@@ -78,6 +86,14 @@ export default defineConfig({
                   .defaultOrdering([
                     { field: 'submittedAt', direction: 'desc' },
                   ])
+              ),
+            S.listItem()
+              .title('Survey Contact Info')
+              .child(
+                S.documentTypeList('surveyContactInfo')
+                  .title('Survey Contact Info')
+                  .filter('_type == "surveyContactInfo"')
+                  .defaultOrdering([{ field: 'createdAt', direction: 'desc' }])
               ),
           ]),
     }),

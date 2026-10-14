@@ -18,9 +18,7 @@ import {
 } from '@/lib/slack/channels'
 import { extractSlackIds } from '@/lib/slack/utils'
 import { USER_GROUPS, buildInvitationMessage } from '@/lib/slack/types'
-import { EventRegistrationRepository } from '@/domains/event-registration/repository'
 import { AttendanceType } from '@/lib/events/types'
-import type { SlackUser } from '@/lib/types'
 import { sendBulkDirectMessages } from '@/lib/slack/messaging'
 import { formatDateShort } from '@/lib/formatDate'
 import { getEventParticipantInfo } from '@/lib/sanity/event-participant-info'
@@ -29,6 +27,7 @@ import {
   getAllEvents,
   getDetailedEventInfoFromSlug,
   canUserAccessEvent,
+  getUniqueSpeakers,
 } from '@/lib/events/helpers'
 import { getUniqueCleanedOrganizations } from '@/lib/organization-utils'
 import {
@@ -47,8 +46,6 @@ import {
 } from '../lib/slack-message-builder'
 import { adminSurveyRouter } from './admin-survey'
 import { adminMembersRouter } from './admin-members'
-
-const registrationRepository = new EventRegistrationRepository()
 
 const eventAccessForSlug = createEventAccessMiddleware(
   (input: unknown) => (input as { slug: string }).slug
@@ -380,20 +377,14 @@ export const adminRouter = router({
             }
 
             if (input.userGroups.includes(USER_GROUPS.SPEAKERS)) {
-              const speakers = event.schedule
-                .filter(
-                  (item): item is typeof item & { speakers: SlackUser[] } =>
-                    item.speakers !== undefined && item.speakers.length > 0
-                )
-                .flatMap(item => item.speakers)
+              const speakers = getUniqueSpeakers(event.schedule)
               const speakerIds = extractSlackIds(speakers)
               slackIds.push(...speakerIds)
             }
 
             if (input.userGroups.includes(USER_GROUPS.ATTENDEES)) {
-              const registrations = await registrationRepository.findMany({
-                eventSlug: input.slug,
-              })
+              const registrations =
+                await eventRegistrationService.getEventRegistrations(input.slug)
               const attendeeIds = extractSlackIds(registrations)
               slackIds.push(...attendeeIds)
             }

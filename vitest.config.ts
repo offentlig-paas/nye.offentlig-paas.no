@@ -5,15 +5,20 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    root: './src',
     include: [
-      '**/__tests__/**/*.{test,spec}.{ts,tsx}',
-      '**/*.{test,spec}.{ts,tsx}',
+      'src/**/__tests__/**/*.{test,spec}.{ts,tsx}',
+      'src/**/*.{test,spec}.{ts,tsx}',
     ],
     coverage: {
-      include: ['lib/organization-utils.ts'],
+      include: [
+        'src/lib/organization-utils.ts',
+        'src/lib/csv-utils.ts',
+        'src/lib/formatDate.ts',
+        'src/lib/surveys/validation.ts',
+        'src/lib/surveys/aggregation.ts',
+      ],
       reporter: ['text', 'lcov', 'json-summary', 'html'],
-      reportsDirectory: '../coverage',
+      reportsDirectory: './coverage',
       thresholds: {
         branches: 80,
         functions: 80,
@@ -21,7 +26,7 @@ export default defineConfig({
         statements: 80,
       },
     },
-    setupFiles: ['./test-setup.ts'],
+    setupFiles: ['./src/test-setup.ts'],
   },
   resolve: {
     alias: {
