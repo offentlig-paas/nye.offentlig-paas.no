@@ -114,7 +114,7 @@ export function AdminEventChecklist({
         {checklistWithStatus.map(item => (
           <div
             key={item.id}
-            className="dark:hover:bg-zinc-750/50 flex items-center justify-between px-5 py-3.5 transition-colors hover:bg-zinc-50/70"
+            className="flex items-center justify-between px-5 py-3.5 transition-colors hover:bg-zinc-50/70 dark:hover:bg-zinc-700/40"
           >
             <div className="flex min-w-0 items-center gap-3">
               {item.completed ? (
@@ -137,7 +137,11 @@ export function AdminEventChecklist({
               <div className="shrink-0 pl-3">
                 {item.actionLink ? (
                   <Link
-                    href={`/admin/events/${eventSlug}${item.actionLink}`}
+                    href={
+                      item.actionLink.startsWith('#')
+                        ? item.actionLink
+                        : `/admin/events/${eventSlug}${item.actionLink}`
+                    }
                     className="inline-flex items-center gap-1 rounded-lg border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-xs font-semibold text-zinc-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 dark:border-zinc-700 dark:bg-zinc-700/60 dark:text-zinc-200 dark:hover:border-zinc-600 dark:hover:bg-zinc-700"
                   >
                     <span>{item.actionLabel}</span>

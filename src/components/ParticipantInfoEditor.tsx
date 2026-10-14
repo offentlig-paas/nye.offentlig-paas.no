@@ -136,7 +136,7 @@ export function ParticipantInfoEditor({
                 placeholder="Legg til praktiske beskjeder eller notater om arrangementet..."
               />
             ) : (
-              <div className="dark:bg-zinc-750/30 rounded-xl border border-zinc-100 bg-zinc-50/70 p-3 dark:border-zinc-700/40">
+              <div className="rounded-xl border border-zinc-100 bg-zinc-50/70 p-3 dark:border-zinc-700/50 dark:bg-zinc-900/50">
                 <p className="text-xs leading-relaxed whitespace-pre-wrap text-zinc-600 dark:text-zinc-300">
                   {participantInfo.notes || 'Ingen notater lagt til ennå'}
                 </p>

@@ -295,7 +295,7 @@ interface MetricCardProps {
 
 function MetricCard({ icon: Icon, label, value, subtitle }: MetricCardProps) {
   return (
-    <div className="dark:bg-zinc-750/30 rounded-xl border border-zinc-100 bg-zinc-50/80 p-3 dark:border-zinc-700/50">
+    <div className="rounded-xl border border-zinc-100 bg-zinc-50/80 p-3 dark:border-zinc-700/50 dark:bg-zinc-900/50">
       <div className="flex items-center justify-between">
         <Icon className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
       </div>

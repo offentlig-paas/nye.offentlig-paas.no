@@ -158,7 +158,7 @@ export function AdminEventDetailsClient({
       {/* Bottom Section: 3-column structured operational grid */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Column 1: Participant Info */}
-        <div className="flex flex-col">
+        <div id="participant-info" className="flex flex-col">
           <ParticipantInfoEditor
             slug={slug}
             initialData={participantInfoData}
@@ -210,7 +210,7 @@ export function AdminEventDetailsClient({
                   {eventDetails.organizers.map((organizer, index) => (
                     <div
                       key={index}
-                      className="dark:hover:bg-zinc-750/50 flex items-center justify-between rounded-xl px-2 py-1.5 transition-colors hover:bg-zinc-50/70"
+                      className="flex items-center justify-between rounded-xl px-2 py-1.5 transition-colors hover:bg-zinc-50/70 dark:hover:bg-zinc-700/40"
                     >
                       <div className="flex min-w-0 items-center space-x-2.5">
                         <Avatar
@@ -265,7 +265,7 @@ export function AdminEventDetailsClient({
                   {speakers.map((speaker, index) => (
                     <div
                       key={index}
-                      className="dark:hover:bg-zinc-750/50 flex items-center justify-between rounded-xl px-2 py-1.5 transition-colors hover:bg-zinc-50/70"
+                      className="flex items-center justify-between rounded-xl px-2 py-1.5 transition-colors hover:bg-zinc-50/70 dark:hover:bg-zinc-700/40"
                     >
                       <div className="flex min-w-0 items-center space-x-2.5">
                         <Avatar
@@ -295,7 +295,7 @@ export function AdminEventDetailsClient({
                   ))}
                 </div>
               ) : (
-                <div className="dark:bg-zinc-750/30 rounded-xl bg-zinc-50/80 p-3 text-center">
+                <div className="rounded-xl border border-zinc-100 bg-zinc-50/80 p-3 text-center dark:border-zinc-700/50 dark:bg-zinc-900/50">
                   <p className="text-xs text-zinc-500 dark:text-zinc-400">
                     Ingen foredragsholdere lagt til ennå.{' '}
                     <Link
@@ -312,7 +312,7 @@ export function AdminEventDetailsClient({
         </div>
 
         {/* Column 3: Slack Channel Manager */}
-        <div className="flex flex-col">
+        <div id="slack-channel" className="flex flex-col">
           <AdminSlackChannelManager
             eventSlug={slug}
             channelId={eventDetails.slackChannel?.id}
