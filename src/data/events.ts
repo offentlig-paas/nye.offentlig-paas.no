@@ -155,9 +155,10 @@ export const events: Event[] = [
       },
       {
         time: '14:30 - 15:00',
-        title: 'Avslutningsforedrag',
+        title: 'Kvante – det som skjer etter AI',
         description:
-          'Et spennende innlegg som runder av fagdagen (detaljer annonseres senere).',
+          'Kunstig intelligens stjeler overskriftene i dag, men kvanteteknologi vil redefinere spillereglene i morgen. I dette innlegget gir Andreas Ahlgren en praktisk innføring i hvorfor kvantedatamaskiner ikke lenger er fjerne framtidsscenarier, men en strategisk realitet – med et særskilt blikk på de akutte sikkerhetsutfordringene og hvordan vi må forberede oss på truslene de bringer med seg.',
+        speakers: [{ name: 'Andreas Ahlgren' }],
         type: ItemType.Talk,
       },
     ],
