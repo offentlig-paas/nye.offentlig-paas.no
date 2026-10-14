@@ -12,6 +12,7 @@ import {
   PencilSquareIcon,
   BuildingOfficeIcon,
   ChevronDownIcon,
+  UserPlusIcon,
 } from '@heroicons/react/20/solid'
 import type {
   EventRegistration,
@@ -39,6 +40,7 @@ interface RegistrationListProps {
   isUpdatingStatus: string | null
   isDeleting: string | null
   searchTerm: string
+  onAddRegistration?: () => void
 }
 
 export function AdminRegistrationList({
@@ -53,6 +55,7 @@ export function AdminRegistrationList({
   isUpdatingStatus,
   isDeleting,
   searchTerm,
+  onAddRegistration,
 }: RegistrationListProps) {
   const [editingOrgId, setEditingOrgId] = useState<string | null>(null)
   const [editingOrgValue, setEditingOrgValue] = useState('')
@@ -129,7 +132,18 @@ export function AdminRegistrationList({
             ? 'Prøv å justere søkekriteriene.'
             : 'Det er ingen påmeldinger til denne fagdagen ennå.'
         }
-      />
+      >
+        {!searchTerm && onAddRegistration && (
+          <button
+            type="button"
+            onClick={onAddRegistration}
+            className="inline-flex items-center rounded-xl bg-zinc-900 px-3.5 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
+          >
+            <UserPlusIcon className="mr-1.5 h-4 w-4" />
+            Legg til deltaker
+          </button>
+        )}
+      </AdminEmptyState>
     )
   }
 

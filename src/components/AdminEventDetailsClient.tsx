@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import Link from 'next/link'
 import { useToast } from '@/components/ToastProvider'
 import { generateRegistrationsCSV, downloadCSV } from '@/lib/csv-utils'
@@ -9,6 +9,8 @@ import { AdminSlackChannelManager } from '@/components/AdminSlackChannelManager'
 import { ParticipantInfoEditor } from '@/components/ParticipantInfoEditor'
 import { AdminEventChecklist } from '@/components/AdminEventChecklist'
 import { AdminEventActions } from '@/components/AdminEventActions'
+import { AddRegistrationModal } from '@/components/AddRegistrationModal'
+import { createManualRegistration } from '@/app/admin/events/[slug]/actions'
 import { StatCard } from '@/components/StatCard'
 import { Avatar } from '@/components/Avatar'
 import { AddToSlackChannelButton } from '@/components/AddToSlackChannelButton'
@@ -36,10 +38,28 @@ export function AdminEventDetailsClient({
   const { showSuccess, showError } = useToast()
   const router = useRouter()
   const [, startTransition] = useTransition()
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
 
   const participantInfoData = initialParticipantInfo
 
   const handleRefresh = () => {
+    startTransition(() => {
+      router.refresh()
+    })
+  }
+
+  const handleAddRegistration = async (data: {
+    name: string
+    email: string
+    organisation: string
+    attendanceType: 'physical' | 'digital'
+    attendingSocialEvent?: boolean
+    dietary?: string
+    comments?: string
+    slackUserId?: string
+  }) => {
+    const result = await createManualRegistration(slug, data)
+    showSuccess('Lagt til', result.message)
     startTransition(() => {
       router.refresh()
     })
@@ -127,6 +147,7 @@ export function AdminEventDetailsClient({
             activeRegistrations={eventDetails.stats.activeRegistrations}
             attendedCount={eventDetails.stats.statusBreakdown.attended || 0}
             onExport={handleExportCSV}
+            onAddRegistration={() => setIsAddModalOpen(true)}
             onSuccess={message => showSuccess('Sendt', message)}
             onError={message => showError('Feil', message)}
             variant="card"
@@ -305,6 +326,16 @@ export function AdminEventDetailsClient({
           />
         </div>
       </div>
+
+      <AddRegistrationModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={handleAddRegistration}
+        hasSocialEvent={eventDetails.hasSocialEvent}
+        attendanceTypes={
+          eventDetails.registration?.attendanceTypes || ['physical', 'digital']
+        }
+      />
     </div>
   )
 }

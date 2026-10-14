@@ -308,6 +308,7 @@ export function AdminAttendeesClient() {
         isUpdatingStatus={isUpdatingStatus}
         isDeleting={isDeleting}
         searchTerm={searchTerm}
+        onAddRegistration={() => setIsAddModalOpen(true)}
       />
 
       {/* Add Registration Modal */}

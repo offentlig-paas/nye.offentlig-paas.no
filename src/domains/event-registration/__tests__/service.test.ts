@@ -794,4 +794,158 @@ describe('EventRegistrationService', () => {
       ).rejects.toThrow('Kan bare importere fra foreldreløse arrangementer')
     })
   })
+
+  describe('registerManually', () => {
+    const manualInput = {
+      eventSlug: 'test-event',
+      name: 'Manuel Deltaker',
+      email: 'manuel@example.com',
+      organisation: 'Skatteetaten',
+      attendanceType: AttendanceType.Physical,
+      dietary: 'Glutenfri',
+      comments: 'Kommer litt sent',
+      slackUserId: 'U999999',
+    }
+
+    it('should create confirmed registration with admin source metadata and slackUserId', async () => {
+      mockRepository.findByEventAndEmail.mockResolvedValue(null)
+      mockRepository.getPhysicalAttendeesCount.mockResolvedValue(10)
+      mockRepository.create.mockResolvedValue({
+        ...mockRegistration,
+        ...manualInput,
+        _id: 'reg-manual-1',
+        status: 'confirmed',
+        metadata: { source: 'admin' },
+      })
+
+      const result = await service.registerManually(manualInput, {
+        maxCapacity: 50,
+      })
+
+      expect(result.status).toBe('confirmed')
+      expect(mockRepository.findByEventAndEmail).toHaveBeenCalledWith(
+        'test-event',
+        'manuel@example.com'
+      )
+      expect(mockRepository.create).toHaveBeenCalledWith(
+        {
+          ...manualInput,
+          email: 'manuel@example.com',
+          metadata: { source: 'admin' },
+        },
+        'confirmed'
+      )
+    })
+
+    it('should place registration on waitlist when physical capacity is reached', async () => {
+      mockRepository.findByEventAndEmail.mockResolvedValue(null)
+      mockRepository.getPhysicalAttendeesCount.mockResolvedValue(50)
+      mockRepository.create.mockResolvedValue({
+        ...mockRegistration,
+        ...manualInput,
+        _id: 'reg-manual-waitlist',
+        status: 'waitlist',
+        metadata: { source: 'admin' },
+      })
+
+      const result = await service.registerManually(manualInput, {
+        maxCapacity: 50,
+      })
+
+      expect(result.status).toBe('waitlist')
+      expect(mockRepository.create).toHaveBeenCalledWith(
+        expect.anything(),
+        'waitlist'
+      )
+    })
+
+    it('should keep digital participant confirmed even when maxCapacity is reached', async () => {
+      mockRepository.findByEventAndEmail.mockResolvedValue(null)
+      const digitalInput = {
+        ...manualInput,
+        attendanceType: AttendanceType.Digital,
+      }
+      mockRepository.create.mockResolvedValue({
+        ...mockRegistration,
+        ...digitalInput,
+        status: 'confirmed',
+        metadata: { source: 'admin' },
+      })
+
+      const result = await service.registerManually(digitalInput, {
+        maxCapacity: 10,
+      })
+
+      expect(result.status).toBe('confirmed')
+      expect(mockRepository.getPhysicalAttendeesCount).not.toHaveBeenCalled()
+      expect(mockRepository.create).toHaveBeenCalledWith(
+        expect.anything(),
+        'confirmed'
+      )
+    })
+
+    it('should re-activate cancelled registration', async () => {
+      const cancelledReg = {
+        ...mockRegistration,
+        _id: 'existing-cancelled',
+        email: 'manuel@example.com',
+        status: 'cancelled' as RegistrationStatus,
+      }
+      mockRepository.findByEventAndEmail.mockResolvedValue(cancelledReg)
+      mockRepository.getPhysicalAttendeesCount.mockResolvedValue(5)
+      mockRepository.update.mockResolvedValue({
+        ...cancelledReg,
+        status: 'confirmed',
+      })
+
+      const result = await service.registerManually(manualInput, {
+        maxCapacity: 50,
+      })
+
+      expect(result.status).toBe('confirmed')
+      expect(mockRepository.update).toHaveBeenCalledWith(
+        'existing-cancelled',
+        expect.objectContaining({
+          status: 'confirmed',
+          metadata: expect.objectContaining({
+            source: 'admin',
+            reregisteredAt: expect.any(String),
+          }),
+        })
+      )
+    })
+
+    it('should throw error when email already has active registration', async () => {
+      mockRepository.findByEventAndEmail.mockResolvedValue(mockRegistration)
+
+      await expect(service.registerManually(manualInput)).rejects.toThrow(
+        'En påmelding med denne e-postadressen finnes allerede'
+      )
+    })
+
+    it('should throw error when name is empty', async () => {
+      mockRepository.findByEventAndEmail.mockResolvedValue(null)
+      await expect(
+        service.registerManually({ ...manualInput, name: '   ' })
+      ).rejects.toThrow('Navn er påkrevd')
+    })
+
+    it('should throw error when email is empty or invalid', async () => {
+      mockRepository.findByEventAndEmail.mockResolvedValue(null)
+      await expect(
+        service.registerManually({ ...manualInput, email: '   ' })
+      ).rejects.toThrow('E-post er påkrevd')
+
+      await expect(
+        service.registerManually({ ...manualInput, email: 'invalid-email' })
+      ).rejects.toThrow('Ugyldig e-postformat')
+    })
+
+    it('should throw error when organisation is empty', async () => {
+      mockRepository.findByEventAndEmail.mockResolvedValue(null)
+      await expect(
+        service.registerManually({ ...manualInput, organisation: '   ' })
+      ).rejects.toThrow('Organisasjon er påkrevd')
+    })
+  })
 })

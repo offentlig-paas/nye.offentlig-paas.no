@@ -1,11 +1,26 @@
 // @vitest-environment jsdom
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
+import { vi } from 'vitest'
 import { Badge } from '../Badge'
 import { AdminCard } from '../AdminCard'
 import { AdminEmptyState } from '../AdminEmptyState'
 import { StatusBadge } from '../StatusBadge'
 import { StatCard } from '../StatCard'
+import { AdminEventActions } from '../AdminEventActions'
 import { UsersIcon } from '@heroicons/react/24/outline'
+
+vi.mock('@/lib/trpc/client', () => ({
+  trpc: {
+    admin: {
+      sendReminder: {
+        useMutation: () => ({ mutateAsync: vi.fn(), isPending: false }),
+      },
+      sendFeedbackRequest: {
+        useMutation: () => ({ mutateAsync: vi.fn(), isPending: false }),
+      },
+    },
+  },
+}))
 
 describe('Badge', () => {
   it('renders children text', () => {
@@ -222,5 +237,57 @@ describe('StatCard', () => {
       <StatCard icon={UsersIcon} value={10} label="Test" />
     )
     expect(container.firstChild).toHaveClass('rounded-xl', 'border')
+  })
+})
+
+describe('AdminEventActions', () => {
+  const defaultProps = {
+    eventSlug: 'test-event',
+    eventTitle: 'Test Event',
+    eventDate: '2026-10-20',
+    eventStartTime: '2026-10-20T09:00:00Z',
+    activeRegistrations: 10,
+    attendedCount: 0,
+  }
+
+  it('renders manual registration button in card variant when onAddRegistration is provided', () => {
+    const onAddRegistration = vi.fn()
+    render(
+      <AdminEventActions
+        {...defaultProps}
+        variant="card"
+        onAddRegistration={onAddRegistration}
+      />
+    )
+
+    const addButton = screen.getByRole('button', {
+      name: /Legg til deltaker manuelt/i,
+    })
+    expect(addButton).toBeInTheDocument()
+    fireEvent.click(addButton)
+    expect(onAddRegistration).toHaveBeenCalledTimes(1)
+  })
+
+  it('renders manual registration button in bar variant when onAddRegistration is provided', () => {
+    const onAddRegistration = vi.fn()
+    render(
+      <AdminEventActions
+        {...defaultProps}
+        variant="bar"
+        onAddRegistration={onAddRegistration}
+      />
+    )
+
+    const addButton = screen.getByRole('button', { name: /Legg til deltaker/i })
+    expect(addButton).toBeInTheDocument()
+    fireEvent.click(addButton)
+    expect(onAddRegistration).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not render manual registration button when onAddRegistration is not provided', () => {
+    render(<AdminEventActions {...defaultProps} variant="card" />)
+    expect(
+      screen.queryByRole('button', { name: /Legg til deltaker manuelt/i })
+    ).not.toBeInTheDocument()
   })
 })

@@ -52,6 +52,7 @@ export interface CreateManualRegistrationInput {
   attendingSocialEvent?: boolean
   dietary?: string
   comments?: string
+  slackUserId?: string
 }
 
 // Update type for modifying registrations

@@ -16,6 +16,7 @@ interface AddRegistrationModalProps {
     attendingSocialEvent?: boolean
     dietary?: string
     comments?: string
+    slackUserId?: string
   }) => Promise<void>
   hasSocialEvent: boolean
   attendanceTypes: string[]
@@ -31,6 +32,7 @@ export function AddRegistrationModal({
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [organisation, setOrganisation] = useState('')
+  const [slackUserId, setSlackUserId] = useState('')
   const [attendanceType, setAttendanceType] = useState<'physical' | 'digital'>(
     attendanceTypes.includes('physical') ? 'physical' : 'digital'
   )
@@ -44,6 +46,7 @@ export function AddRegistrationModal({
     setName('')
     setEmail('')
     setOrganisation('')
+    setSlackUserId('')
     setAttendanceType(
       attendanceTypes.includes('physical') ? 'physical' : 'digital'
     )
@@ -74,6 +77,7 @@ export function AddRegistrationModal({
         attendingSocialEvent: hasSocialEvent ? attendingSocialEvent : undefined,
         dietary: dietary.trim() || undefined,
         comments: comments.trim() || undefined,
+        slackUserId: slackUserId.trim() || undefined,
       })
       resetForm()
       onClose()
@@ -152,6 +156,27 @@ export function AddRegistrationModal({
             className={inputClassName}
             labelClassName={labelClassName}
           />
+        </div>
+
+        <div>
+          <label htmlFor="reg-slack-user-id" className={labelClassName}>
+            Slack-bruker-ID{' '}
+            <span className="text-xs font-normal text-zinc-500 dark:text-zinc-400">
+              (valgfritt)
+            </span>
+          </label>
+          <input
+            id="reg-slack-user-id"
+            type="text"
+            value={slackUserId}
+            onChange={e => setSlackUserId(e.target.value)}
+            disabled={isSubmitting}
+            className={inputClassName}
+            placeholder="f.eks. U0123456789"
+          />
+          <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+            Knytter påmeldingen til Slack for avatar og kanalinnslipp.
+          </p>
         </div>
 
         {attendanceTypes.length > 1 ? (

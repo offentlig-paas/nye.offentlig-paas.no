@@ -93,6 +93,7 @@ export async function createManualRegistration(
     attendingSocialEvent?: boolean
     dietary?: string
     comments?: string
+    slackUserId?: string
   }
 ) {
   const session = await auth()
@@ -106,7 +107,7 @@ export async function createManualRegistration(
     ...data,
   })
 
-  revalidatePath(`/admin/events/${slug}`)
+  revalidatePath(`/admin/events/${slug}`, 'layout')
   return result
 }
 

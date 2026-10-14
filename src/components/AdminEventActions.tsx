@@ -102,6 +102,17 @@ export function AdminEventActions({
               </button>
             )}
 
+            {onAddRegistration && (
+              <button
+                type="button"
+                onClick={onAddRegistration}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-semibold text-zinc-900 shadow-2xs transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700/60"
+              >
+                <UserPlusIcon className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
+                <span>Legg til deltaker manuelt</span>
+              </button>
+            )}
+
             {showExport && onExport && (
               <button
                 onClick={onExport}
