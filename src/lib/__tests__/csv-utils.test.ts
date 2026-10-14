@@ -6,7 +6,7 @@ describe('generateRegistrationsCSV', () => {
     const lines = csv.split('\n')
 
     expect(lines[0]).toBe(
-      'Navn,E-post,Organisasjon,Deltakelse,Kommentarer,Påmeldt,Status'
+      'Navn,E-post,Organisasjon,Deltakelse,Allergier/kostholdsbehov,Kommentarer,Påmeldt,Status'
     )
   })
 
@@ -17,6 +17,7 @@ describe('generateRegistrationsCSV', () => {
         email: 'ola@test.no',
         organisation: 'Digdir',
         attendanceType: 'physical',
+        dietary: 'Vegansk',
         comments: 'Ingen',
         registeredAt: '2026-05-01T10:00:00Z',
         status: 'confirmed',
@@ -31,6 +32,7 @@ describe('generateRegistrationsCSV', () => {
     expect(lines[1]).toContain('"ola@test.no"')
     expect(lines[1]).toContain('"Digdir"')
     expect(lines[1]).toContain('"physical"')
+    expect(lines[1]).toContain('"Vegansk"')
     expect(lines[1]).toContain('"confirmed"')
   })
 

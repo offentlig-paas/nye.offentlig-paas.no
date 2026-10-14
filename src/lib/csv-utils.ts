@@ -5,6 +5,7 @@ interface RegistrationForExport {
   email: string
   organisation: string
   attendanceType?: string
+  dietary?: string
   comments?: string
   registeredAt: string
   status: string
@@ -18,6 +19,7 @@ export function generateRegistrationsCSV(
     'E-post',
     'Organisasjon',
     'Deltakelse',
+    'Allergier/kostholdsbehov',
     'Kommentarer',
     'Påmeldt',
     'Status',
@@ -31,6 +33,7 @@ export function generateRegistrationsCSV(
         `"${reg.email}"`,
         `"${reg.organisation}"`,
         `"${reg.attendanceType || ''}"`,
+        `"${reg.dietary || ''}"`,
         `"${reg.comments || ''}"`,
         `"${formatDateTime(reg.registeredAt)}"`,
         `"${reg.status}"`,
