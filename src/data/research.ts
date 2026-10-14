@@ -17,9 +17,53 @@ export const researchProjects: ResearchProject[] = [
     slug: 'state-of-platforms',
     title: 'State of Platforms',
     description:
-      'Undersøkelse over tid som kartlegger utbredelsen av interne utviklerplattformer i offentlig sektor \u2014 modenhet etter CNCF-modellen, motivasjon og teknologivalg.',
+      'Longitudinell studie som kartlegger utbredelse, modenhet etter CNCF-modellen, strategisk motivasjon og teknologivalg for interne utviklerplattformer i offentlig sektor.',
     longDescription:
-      'State of the Platforms er en undersøkelse som følger utviklingen av interne utviklerplattformer i norsk offentlig sektor over tid. Vi bruker CNCFs modenhetsmodell til å måle modenhet på tvers av fem dimensjoner: investering, adopsjon, grensesnitt, drift og måling. Ved å gjenta undersøkelsen med jevne mellomrom kan vi se trender, hvilke teknologivalg som går igjen, og hvordan modenheten utvikler seg. Studien dekker organisasjoner som til sammen representerer omtrent 240 000 ansatte og organisasjonsbudsjetter på 2,5 billioner kroner.',
+      'Vi måler utviklingen av interne utviklerplattformer i norsk offentlig sektor på tvers av fem dimensjoner i CNCFs modenhetsmodell: investering, adopsjon, grensesnitt, drift og måling. Ved å følge de samme virksomhetene over flere bølger kan vi skille reelle endringer fra utvalgseffekter. Bølge 2 (2026) dekker 45 virksomheter (48 plattformer) som til sammen representerer rundt 240 000 ansatte og budsjetter på 2,5 billioner kroner.',
+    stats: [
+      {
+        value: '92 %',
+        label: 'Har intern utviklerplattform',
+        subtext: '44 av 48 plattformer (opp fra 86 % i 2024)',
+      },
+      {
+        value: '83 %',
+        label: 'Bruker Kubernetes',
+        subtext: 'Opp fra 66 % i 2024 (+17 pp, p = 0,074)',
+      },
+      {
+        value: '+25 pp',
+        label: 'Sikkerhet som motivasjon',
+        subtext: '82 % i 2026 (Fisher p = 0,034, panel p = 0,021)',
+      },
+      {
+        value: '49 %',
+        label: 'På nivå 1 for måling',
+        subtext: 'Ad hoc effektmåling (21 av 43 plattformer)',
+      },
+    ],
+    sampleFlow: [
+      {
+        value: '73',
+        label: 'Innsendte svar (2026)',
+        detail: '38 % plattformutviklere, 17 % tech leads, 15 % ledere',
+      },
+      {
+        value: '48',
+        label: 'Plattforminitiativ',
+        detail: 'Analyseenhet etter normalisering av duplikater',
+      },
+      {
+        value: '45',
+        label: 'Unike virksomheter',
+        detail: '54 % svarprosent (~240 000 ansatte)',
+      },
+      {
+        value: '27',
+        label: 'I longitudinelt panel',
+        detail: '60 % deltok også i 2024-bølgen (n = 35)',
+      },
+    ],
     researchQuestions: [
       'Hvordan har adopsjonen og organisatorisk omfang av interne utviklerplattformer utviklet seg over toårsperioden?',
       'Hva er de viktigste organisatoriske driverne for å bygge interne utviklerplattformer, og hvordan har disse endret seg over tid?',
@@ -27,14 +71,14 @@ export const researchProjects: ResearchProject[] = [
       'Hvilke teknologivalg og verktøykjeder dominerer moderne plattformstakker, og hvordan konsoliderer de seg?',
     ],
     methodology:
-      'Gjentatt spørreundersøkelse der mange organisasjoner deltar i flere runder. Populasjon: IT-organisasjoner i norsk offentlig sektor (statlige virksomheter, statsforetak, kommuner). Distribuert via Offentlig PaaS Slack og LinkedIn. Gjennomført i Google Forms på norsk (bokmål). 31 spørsmål fordelt på tre kategorier: plattform, Kubernetes og sky. Analyseenhet er organisasjonen (ett svar per plattforminitiativ). Modenhet selvrapportert etter CNCFs modenhetsmodell (5 aspekter × 4 nivåer). Duplikater filtrert på organisasjonsnivå.',
+      'Gjentatt tverrsnittsundersøkelse med longitudinelt panelutvalg blant offentlige virksomheter i Norge (statlige etater 60 %, statsforetak 25 %, kommuner 8 %, akademia 4 %). Spørreskjema med 35 spørsmål fordelt på plattform, Kubernetes og sky. Analyseenheten er plattforminitiativet: 73 innsendte svar fra 45 virksomheter i 2026 ble normalisert til 48 plattformer etter forhåndsdefinerte regler ( teknisk nærhet ved enkeltvalg, union ved flervalg). Endringer på tvers av bølger testes med Fishers eksakte test, og parede endringer i panelet (n = 24 med plattform i begge bølger) med McNemars eksakte test.',
     keyFindings: [
-      'Kubernetes-adopsjon økte fra 66 % til 83 % mellom 2024 og 2026',
-      '92 % av organisasjonene har nå en intern utviklerplattform',
-      'Teknologistakken konvergerte rundt AKS/GKE/OpenShift, ArgoCD, GitHub Actions og Terraform — uten sentral koordinering',
-      'Sikkerhet som motivasjon økte 25 prosentpoeng til 82 %, den eneste statistisk signifikante endringen i motivasjon (p=0,034, ikke korrigert for flere tester)',
-      'Driftsmodenhet nådde nivå 3 (skalerbar) på CNCF-modellen',
-      '49 % av organisasjonene er fortsatt på nivå 1 for måling — et voksende gap ettersom kostnadspress øker',
+      'Kubernetes-adopsjon økte fra 66 % (23/35) til 83 % (40/48) mellom 2024 og 2026, mens andelen plattformer som betjener over 100 team økte fra 10 % til 18 %',
+      '92 % (44/48) av plattforminitiativene har nå en intern utviklerplattform, og selvbetjening for databaser og meldingskøer økte fra 47 % til 86 % (p < 0,001)',
+      'Teknologistakken konvergerte rundt administrert Kubernetes (AKS 40 %, OpenShift 22 %, GKE 20 %), Terraform (82 %), GitHub Actions (52 %) og ArgoCD (50 %, +24 pp) uten sentral koordinering',
+      'Sikkerhet som motivasjon økte 25 prosentpoeng fra 57 % til 82 % (Fisher p = 0,034 ukorrigert; McNemar p = 0,021 i paret panel der 9 la til sikkerhet og 1 fjernet det)',
+      'Driftsmodenhet skiftet typetall fra nivå 2 til nivå 3 (skalerbar, 47 %) på CNCF-modellen, mens 52 % av enkeltvurderingene i panelet skiftet nivå mellom bølgene',
+      '49 % (21/43) ligger fortsatt på nivå 1 (ad hoc) for måling, som skaper et styringsgap når kostoptimalisering (+15 pp til 52 %) blir viktigere',
     ],
     status: ResearchStatus.Ongoing,
     tags: ['state-of-platforms'],
@@ -49,7 +93,7 @@ export const researchProjects: ResearchProject[] = [
         organizations: 35,
         invited: 65,
         description:
-          'Første kartlegging av plattformmodenhet (Q4 2023). 35 organisasjoner som representerer omtrent 177 000 ansatte. 86 % hadde en intern utviklerplattform, 66 % brukte Kubernetes. Måling var den minst modne dimensjonen med ingen organisasjoner over nivå 2.',
+          'Nullpunktsmåling samlet inn i Q4 2023 blant 35 virksomheter (~177 000 ansatte) med 33 spørsmål.',
       },
       {
         name: 'Wave 2',
@@ -58,7 +102,7 @@ export const researchProjects: ResearchProject[] = [
         organizations: 45,
         invited: 80,
         description:
-          'Undersøkelsen gjentatt i Q4 2025 – Q1 2026 med 45 organisasjoner (~240 000 ansatte). 27 av dem (60 %) deltok også i bølge 1. Plattformadopsjon opp til 92 %, Kubernetes til 83 %. Sikkerhet som motivasjon økte 25 prosentpoeng til 82 %. Driftsmodenhet nådde nivå 3, men måling var fortsatt på nivå 1 for halvparten.',
+          'Oppfølging i Q4 2025 til Q1 2026 blant 45 virksomheter (48 plattformer, ~240 000 ansatte). 27 virksomheter (60 %) deltok i begge bølgene.',
       },
     ],
     papers: [
@@ -103,46 +147,95 @@ export const researchProjects: ResearchProject[] = [
         title: 'State of Platforms 2024 (aggregerte tabeller)',
         url: 'https://github.com/offentlig-paas/open-data/tree/main/state-of-platforms/2024',
         format: 'CSV',
-        description: 'Aggregerte tabeller fra 35 organisasjoner',
+        description: 'Aggregerte tabeller og spørreskjema fra 35 virksomheter',
       },
       {
         title: 'State of Platforms 2026 (aggregerte tabeller)',
         url: 'https://github.com/offentlig-paas/open-data/tree/main/state-of-platforms/2026',
         format: 'CSV',
-        description: 'Aggregerte tabeller fra 45 organisasjoner',
+        description:
+          'Aggregerte tabeller, spørreskjema og analyseskript fra 45 virksomheter (48 plattformer)',
       },
     ],
     ethics: {
       ...sharedEthics,
       legalBasis: 'Samtykke (GDPR art. 6 nr. 1 bokstav a)',
       siktAssessment:
-        'Gjennomført (intern) — sannsynligvis ikke meldepliktig, men grensetilfelle. Undersøkelsen samler fakta om organisasjoner, ikke om enkeltpersoner. Frivillig kontaktinfo (~20 %) kobler noen svar til enkeltpersoner og slettes etter oppfølging.',
+        'Gjennomført (intern). Samler fakta om organisasjoner, ikke enkeltpersoner. Frivillig kontaktinfo (~20 %) er lagret adskilt og slettes etter oppfølging.',
       consentStatus:
-        'Samtykketekst bølge 1–2 var mangelfull. Ny dekkende samtykketekst er utformet for bølge 3+.',
+        'Samtykketekst i bølge 1 og 2 informerte kun om aggregerte resultater. Kun aggregerte frekvenstabeller publiseres (celler < 3 er maskert). Ny samtykketekst etter NESH §15 og GDPR art. 13 er klar for bølge 3.',
       anonymization:
-        'Organisasjonsnavn fjernes. Re-identifiseringsrisiko vurderes for kombinasjoner av sektor, størrelse og teknologivalg (n=35–48 fra kjent populasjon).',
+        'Organisasjonsnavn fjernes og små celler (< 3) maskeres for å hindre bakveisidentifisering.',
     },
   },
   {
     slug: 'state-of-ai-agents',
     title: 'State of AI Agents',
     description:
-      'Studie av hvordan offentlig sektor tar i bruk KI-kodeagenter som GitHub Copilot, Claude Code og Cursor. Undersøker bruk, styring og om organisasjonene har retningslinjer som holder tritt.',
+      'Tverrsnittsstudie av hvordan norske offentlige virksomheter tar i bruk og styrer KI-kodeagenter, med måling av skyggebruk, styringsmodenhet og bekymringer på tvers av roller.',
     longDescription:
-      'KI-kodeagenter har gått fra nyhet til hverdag på kort tid, men det finnes lite data om hvordan offentlig sektor faktisk tar dem i bruk. Denne studien kartlegger bruken av verktøy som GitHub Copilot, Claude Code, Cursor og Amazon Q i norske offentlige virksomheter. Vi undersøker hvem som bruker hva, om organisasjonene har retningslinjer som holder tritt, og hva som hindrer videre bruk. Studien bygger på samme tilnærming som State of Platforms-undersøkelsene, og følger opp funnet derfra om at sikkerhet ble den nest viktigste motivasjonen for plattformarbeid.',
+      'KI-kodeverktøy har på få måneder gått fra autofullføring i editoren til autonome agenter som planlegger, endrer filer og kjører tester på egen hånd. Denne studien kartlegger faktisk verktøybruk, formell godkjenning, styringsmekanismer og bekymringer blant 115 utviklere og tekniske ledere fra 57 offentlige virksomheter i Norge (Q2 2026).',
+    stats: [
+      {
+        value: '92 %',
+        label: 'Bruker KI-kodeverktøy',
+        subtext: '106 av 115 (95 % KI: 86–96 %), 76 % bruker agenter',
+      },
+      {
+        value: '62 %',
+        label: 'Bred skyggebruk',
+        subtext:
+          '30 % smal definisjon (ekskl. nettleser-LLM og åpen kildekode)',
+      },
+      {
+        value: '8 %',
+        label: 'Har strukturert støtteprogram',
+        subtext: 'Til tross for at 83 % har retningslinjer (styringsgap)',
+      },
+      {
+        value: '71 %',
+        label: 'Frykter kompetansetap',
+        subtext:
+          'Rangert i topp 3 langt foran sikkerhet (34 %) og personvern (27 %)',
+      },
+    ],
+    sampleFlow: [
+      {
+        value: '115',
+        label: 'Respondenter (N = 115)',
+        detail:
+          '49 % praktikere, 38 % teknisk ledelse, 13 % virksomhetsledelse',
+      },
+      {
+        value: '106',
+        label: 'Aktive verktøybrukere',
+        detail: '81 bruker lokale/skybaserte agenter, 0 kun autofullføring',
+      },
+      {
+        value: '57',
+        label: 'Identifiserte virksomheter',
+        detail: 'Organisasjonsnivå aggregert med flertallsvotering og union',
+      },
+      {
+        value: '27',
+        label: 'Med flere svar (2–7 svar)',
+        detail: 'Brukt til permutasjonstest (10 000 trekk) av intern enighet',
+      },
+    ],
     researchQuestions: [
-      'Hvilke KI-kodeagenter brukes i offentlig sektor, og er bruken formell eller uformell?',
-      'Har organisasjonene retningslinjer for KI-generert kode, og hvem har ansvar for sikkerhetsvurderinger og kvalitetskontroll?',
-      'Hva hindrer videre bruk — sikkerhet, personvern, kostnader eller andre barrierer?',
+      'Hvordan tar norske offentlige virksomheter i bruk KI-kodeverktøy, og hvor omfattende er uoffisiell skyggebruk?',
+      'Hvilke styringsstrukturer har virksomhetene etablert for KI-kodeverktøy, og hvordan henger disse sammen med adopsjonsmodenhet?',
+      'Hvilke bekymringer og barrierer opplever utøvere, og varierer disse mellom utviklere og ledere?',
     ],
     methodology:
-      'Anonym nettbasert spørreundersøkelse åpen for alle som jobber med utvikling eller teknisk ledelse i offentlig sektor — ikke bare de som bruker KI-verktøy i dag. Distribuert gjennom Offentlig PaaS Slack, LinkedIn og arrangementer. Svarene ble samlet inn i april og mai 2026. Analysen er ferdig, og en foreløpig rapport er under revisjon.',
+      'Anonym tverrsnittsundersøkelse (Q2 2026, april og mai) med 27 spørsmål og tre usikkerhetsindikatorer (sikker, ganske sikker, anslag) på sentrale organisasjonsspørsmål. Individnivå (N = 115) brukes for egen bruk og bekymringer, mens organisasjonsnivå (N = 57) bruker flertallsvotering for enkeltvalg og union for flervalg. Sammenheng mellom styring og adopsjon er testet med Spearmans rangkorrelasjon (ρ = 0,439, permutasjons-p < 0,001). Intern enighet i virksomheter med flere svar (n = 27) er testet mot en permutasjons-nullfordeling med 10 000 trekk.',
     keyFindings: [
-      '115 svar fra 57 organisasjoner. Utvalget er selvselektert, så tallene gjelder utvalget og ikke hele offentlig sektor',
-      '92 % (106 av 115) bruker KI-kodeverktøy selv, og 76 % av brukerne (81 av 106) bruker agenter. Ingen bruker bare autofullføring',
-      '62 % (60 av 96) av dem som oppgir minst ett godkjent verktøy, bruker også verktøy som ikke er godkjent. Holder vi nettleserbaserte språkmodeller og verktøy med åpen kildekode utenfor, er andelen 30 % (29 av 96)',
-      'Styringen henger etter: 83 % har retningslinjer, men bare 8 % har et strukturert støtteprogram og 11 % egne mål på effekt',
-      'Kolleger i samme organisasjon er enige om retningslinjer og leverandøravtaler oftere enn tilfeldighet skulle tilsi. Bare om effektmåling er de uenige oftere enn tilfeldig, og bare så vidt (P≈0,03, én av sju sammenligninger, ikke korrigert for flere tester)',
+      '115 svar fra 57 offentlige virksomheter. Utvalget er selvselektert fra et teknisk engasjert fagmiljø, så adopsjonstallene representerer et øvre anslag for sektoren',
+      '92 % (106/115, 95 % KI: 86–96 %) bruker KI-kodeverktøy personlig, og 76 % av brukerne (81/106) bruker autonome agenter. Ingen bruker bare autofullføring',
+      'GitHub Copilot dominerer anskaffelsene (82 % godkjent), mens Claude Code har tydelig skyggebruk (42 % personlig brukt mot 35 % godkjent). 62 % (60/96) bruker minst ett ikke-godkjent verktøy, og 30 % (29/96) når nettleser-LLM og åpen kildekode holdes utenfor',
+      'Styringen henger etter adopsjonen: 83 % har retningslinjer, men bare 8 % har et strukturert støtteprogram, 11 % har egne effektmål, og 62 % har ingen særskilt kodegjennomgang for KI-generert kode',
+      'Kompetansetap (71 %, 95 % KI: 62–79 %) og kodekvalitet (57 %) er de klart vanligste bekymringene i topp tre, foran hallusinasjoner (40 %), sikkerhet (34 %) og personvern (27 %)',
+      'Mot en permutasjons-nullfordeling (10 000 trekk) er kolleger i samme virksomhet signifikant mer enige enn tilfeldig om retningslinjer (p = 0,001) og leverandøravklaring (p = 0,001), og kun marginalt mer uenige om effektmåling (96 % mot 83 % forventet, P ≈ 0,033)',
     ],
     status: ResearchStatus.Writing,
     tags: ['state-of-ai-agents'],
