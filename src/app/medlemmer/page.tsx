@@ -1,17 +1,21 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { members } from '@/data/members'
 import { MemberType, Sector, type Member } from '@/lib/members'
 import { GitHubIcon, LinkedInIcon } from '@/components/SocialIcons'
 import {
+  ArrowRightIcon,
   ArrowTopRightOnSquareIcon,
   MagnifyingGlassIcon,
   ServerStackIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 import { getInitials, getBackgroundColor } from '@/lib/avatar-utils'
+import { trpc } from '@/lib/trpc/client'
+import type { MemberPlatformSummary } from '@/domains/member-profile/types'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 const sections: { title: string; types: MemberType[] }[] = [
@@ -47,9 +51,11 @@ const sections: { title: string; types: MemberType[] }[] = [
 
 function MemberPopover({
   member,
+  platform,
   onClose,
 }: {
   member: Member
+  platform?: MemberPlatformSummary
   onClose: () => void
 }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -124,15 +130,15 @@ function MemberPopover({
         </div>
 
         <div className="mt-3 flex flex-wrap items-center gap-2">
-          {member.platform && (
+          {platform && (
             <a
-              href={member.platform.href}
+              href={platform.href}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-medium text-teal-700 hover:bg-teal-100 dark:bg-teal-900/30 dark:text-teal-400 dark:hover:bg-teal-900/50"
             >
               <ServerStackIcon className="h-3 w-3" />
-              {member.platform.name}
+              {platform.name}
             </a>
           )}
           {member.homepage && (
@@ -169,6 +175,16 @@ function MemberPopover({
             </a>
           )}
         </div>
+
+        <div className="mt-3 border-t border-gray-100 pt-2.5 dark:border-gray-700">
+          <Link
+            href={`/medlemmer/${member.getSlug()}`}
+            className="inline-flex w-full items-center justify-between rounded-lg bg-gray-50 px-3 py-1.5 text-xs font-medium text-teal-700 transition hover:bg-teal-50 dark:bg-gray-700/60 dark:text-teal-300 dark:hover:bg-teal-900/30"
+          >
+            <span>Se profilside</span>
+            <ArrowRightIcon className="h-3.5 w-3.5" />
+          </Link>
+        </div>
       </div>
     </div>
   )
@@ -176,10 +192,12 @@ function MemberPopover({
 
 function MemberCard({
   member,
+  platform,
   isOpen,
   onToggle,
 }: {
   member: Member
+  platform?: MemberPlatformSummary
   isOpen: boolean
   onToggle: () => void
 }) {
@@ -216,13 +234,15 @@ function MemberCard({
       <span className="mt-1.5 w-20 truncate text-center text-xs text-gray-600 dark:text-gray-400">
         {member.name}
       </span>
-      {member.platform && (
+      {platform && (
         <span className="mt-0.5 inline-flex items-center gap-0.5 text-[10px] font-medium text-teal-600 dark:text-teal-400">
           <ServerStackIcon className="h-2.5 w-2.5" />
-          {member.platform.name}
+          {platform.name}
         </span>
       )}
-      {isOpen && <MemberPopover member={member} onClose={onToggle} />}
+      {isOpen && (
+        <MemberPopover member={member} platform={platform} onClose={onToggle} />
+      )}
     </li>
   )
 }
@@ -265,6 +285,15 @@ export default function MedlemmerPage() {
   const [search, setSearch] = useState('')
   const [selectedSectors, setSelectedSectors] = useState<Set<Sector>>(new Set())
   const searchRef = useRef<HTMLInputElement>(null)
+
+  const { data: platforms } = trpc.memberProfile.listPlatforms.useQuery()
+  const platformBySlug = useMemo(() => {
+    const map = new Map<string, MemberPlatformSummary>()
+    for (const p of platforms ?? []) {
+      map.set(p.slug, p)
+    }
+    return map
+  }, [platforms])
 
   const sectorCounts = useMemo(() => {
     const counts = new Map<Sector, number>()
@@ -409,6 +438,7 @@ export default function MedlemmerPage() {
                   <MemberCard
                     key={member.name}
                     member={member}
+                    platform={platformBySlug.get(member.getSlug())}
                     isOpen={openMember === member.name}
                     onToggle={() =>
                       setOpenMember(prev =>

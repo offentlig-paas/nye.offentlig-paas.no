@@ -1,0 +1,188 @@
+import { vi, type Mocked } from 'vitest'
+import { MemberProfileRepository } from '../repository'
+import type { MemberProfile, UpsertMemberProfileInput } from '../types'
+
+vi.mock('../repository')
+
+const { memberProfileService, getMemberBySlug, canUserEditMemberProfile } =
+  await import('../service')
+
+describe('MemberProfileService & Helpers', () => {
+  let mockRepo: Mocked<MemberProfileRepository>
+
+  const mockProfile: MemberProfile = {
+    _id: 'memberProfile-nav',
+    slug: 'nav',
+    platformName: 'Nais',
+    platformDescription: 'Applikasjonsplattformen til Nav',
+    platformHref: 'https://nais.io',
+    platformLabel: 'nais.io',
+    verifiedUpdated: '2026-04-14',
+    theme: {
+      accentColor: 'teal',
+      heroStyle: 'gradient',
+      sectionOrder: [
+        'capabilities',
+        'cncf',
+        'architecture',
+        'team',
+        'jobs',
+        'talks',
+      ],
+    },
+    tagline: 'Utviklerplattformen som akselererer produktutvikling i Nav',
+    taglineEn: 'The developer platform accelerating product delivery at Nav',
+    about: 'Om Nais',
+    aboutEn: 'About Nais',
+    cncfEndUserMember: true,
+    openSourceFirst: true,
+    cloudProviders: ['Google Cloud Platform (GCP)', 'On-prem Kubernetes'],
+    stats: [],
+    capabilities: [],
+    cncfProjects: [],
+    techStack: [],
+    team: [],
+    openPositions: [],
+    links: [],
+  }
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockRepo =
+      MemberProfileRepository.prototype as Mocked<MemberProfileRepository>
+  })
+
+  describe('getMemberBySlug', () => {
+    it('finds member by canonical slug (case-insensitive)', () => {
+      const nav = getMemberBySlug('NAV')
+      expect(nav).toBeDefined()
+      expect(nav?.name).toBe('Nav')
+    })
+
+    it('returns undefined for unknown slug', () => {
+      expect(getMemberBySlug('non-existent-org')).toBeUndefined()
+    })
+  })
+
+  describe('canUserEditMemberProfile', () => {
+    it('denies unauthenticated users', () => {
+      const nav = getMemberBySlug('nav')!
+      expect(canUserEditMemberProfile(nav, null)).toEqual({
+        canEdit: false,
+        reason: 'unauthenticated',
+      })
+    })
+
+    it('allows site admins regardless of email domain', () => {
+      const nav = getMemberBySlug('nav')!
+      expect(
+        canUserEditMemberProfile(nav, {
+          email: 'admin@other-org.no',
+          isAdmin: true,
+        })
+      ).toEqual({
+        canEdit: true,
+        reason: 'admin',
+      })
+    })
+
+    it('allows users whose email domain matches member domains', () => {
+      const nav = getMemberBySlug('nav')!
+      expect(
+        canUserEditMemberProfile(nav, {
+          email: 'ola.nordmann@nav.no',
+          isAdmin: false,
+        })
+      ).toEqual({
+        canEdit: true,
+        matchedDomain: 'nav.no',
+        reason: 'domain_match',
+      })
+    })
+
+    it('allows users whose email is a subdomain of a member domain', () => {
+      const nav = getMemberBySlug('nav')!
+      expect(
+        canUserEditMemberProfile(nav, {
+          email: 'ola@utvikling.nav.no',
+          isAdmin: false,
+        })
+      ).toEqual({
+        canEdit: true,
+        matchedDomain: 'nav.no',
+        reason: 'domain_match',
+      })
+    })
+
+    it('denies users from a different organization domain', () => {
+      const nav = getMemberBySlug('nav')!
+      expect(
+        canUserEditMemberProfile(nav, {
+          email: 'ola@skatteetaten.no',
+          isAdmin: false,
+        })
+      ).toEqual({
+        canEdit: false,
+        reason: 'domain_mismatch',
+      })
+    })
+  })
+
+  describe('memberProfileService', () => {
+    it('fetches profile by canonical slug', async () => {
+      mockRepo.findBySlug.mockResolvedValue(mockProfile)
+
+      const result = await memberProfileService.getBySlug('NAV')
+
+      expect(result).toEqual(mockProfile)
+      expect(mockRepo.findBySlug).toHaveBeenCalledWith('nav')
+    })
+
+    it('upserts profile with canonical slug and editor metadata', async () => {
+      mockRepo.upsert.mockResolvedValue(mockProfile)
+
+      const input: UpsertMemberProfileInput = {
+        slug: 'NAV',
+        platformName: 'Nais',
+        platformDescription: 'Applikasjonsplattformen til Nav',
+        platformHref: 'https://nais.io',
+        platformLabel: 'nais.io',
+        theme: mockProfile.theme,
+        tagline: mockProfile.tagline,
+        taglineEn: mockProfile.taglineEn,
+        about: mockProfile.about,
+        aboutEn: mockProfile.aboutEn,
+        cncfEndUserMember: true,
+        openSourceFirst: true,
+        cloudProviders: mockProfile.cloudProviders,
+        stats: [],
+        capabilities: [],
+        cncfProjects: [],
+        techStack: [],
+        team: [],
+        openPositions: [],
+        links: [],
+      }
+
+      const result = await memberProfileService.upsert(input, {
+        name: 'Ola Nordmann',
+        email: 'ola@nav.no',
+      })
+
+      expect(result).toEqual(mockProfile)
+      expect(mockRepo.upsert).toHaveBeenCalledWith(
+        expect.objectContaining({ slug: 'nav' }),
+        { name: 'Ola Nordmann', email: 'ola@nav.no' }
+      )
+    })
+
+    it('throws when upserting for unknown member slug', async () => {
+      await expect(
+        memberProfileService.upsert({
+          ...mockProfile,
+          slug: 'unknown-org',
+        } as UpsertMemberProfileInput)
+      ).rejects.toThrow('Member not found for slug: unknown-org')
+    })
+  })
+})

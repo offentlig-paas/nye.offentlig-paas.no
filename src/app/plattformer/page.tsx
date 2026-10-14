@@ -1,15 +1,11 @@
 import React from 'react'
 import { type Metadata } from 'next'
 import Image from 'next/image'
+import { ArrowRightIcon, ServerStackIcon } from '@heroicons/react/24/outline'
 
 import { Card } from '@/components/Card'
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { members } from '@/data/members'
-
-const plattformer = members
-  .filter(m => m.platform)
-  .map(m => m.platform!)
-  .sort((a, b) => a.name.localeCompare(b.name, 'nb-NO'))
+import { memberProfileService, getMemberBySlug } from '@/domains/member-profile'
 
 function LinkIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
@@ -27,39 +23,96 @@ export const metadata: Metadata = {
   description: 'Norske applikasjonsplattformer',
 }
 
-export default function Plattformer() {
+export default async function Plattformer() {
+  const profiles = await memberProfileService.getAll()
+  const plattformer = profiles
+    .map(profile => {
+      const member = getMemberBySlug(profile.slug)
+      if (!member || !profile.platformName) return null
+      return {
+        member,
+        profile,
+      }
+    })
+    .filter(
+      (
+        item
+      ): item is {
+        member: NonNullable<ReturnType<typeof getMemberBySlug>>
+        profile: (typeof profiles)[number]
+      } => item !== null
+    )
+    .sort((a, b) =>
+      a.profile.platformName.localeCompare(b.profile.platformName, 'nb-NO')
+    )
+
   return (
     <SimpleLayout
       title="Norske applikasjonsplattformer"
-      intro="Offentlig sektor i Norge har flere spennende applikasjonsplattformer som gjør det enklere for utviklere å lage og drifte applikasjoner. Her har vi samlet noen av de mest kjente med lenker til mer informasjon."
+      intro="Offentlig sektor i Norge har flere spennende applikasjonsplattformer som gjør det enklere for utviklere å lage og drifte applikasjoner. Klikk på en plattform for å utforske plattformkapabiliteter, CNCF-teknologi og teamet bak."
       gitHubPage="src/app/plattformer/page.tsx"
     >
       <ul
         role="list"
         className="grid grid-cols-1 gap-x-12 gap-y-16 sm:grid-cols-2 lg:grid-cols-3"
       >
-        {plattformer.map(project => (
-          <Card as="li" key={project.name}>
-            <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md ring-1 shadow-zinc-800/5 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
-              <Image
-                src={project.logo}
-                alt=""
-                className="h-8 w-8"
-                width={32}
-                height={32}
-                unoptimized
-              />
-            </div>
-            <h2 className="mt-6 text-base font-semibold text-zinc-800 dark:text-zinc-100">
-              <Card.Link href={project.href}>{project.name}</Card.Link>
-            </h2>
-            <Card.Description>{project.description}</Card.Description>
-            <p className="relative z-10 mt-6 flex text-sm font-medium text-zinc-400 transition group-hover:text-teal-500 dark:text-zinc-200">
-              <LinkIcon className="h-6 w-6 flex-none" />
-              <span className="ml-2">{project.label}</span>
-            </p>
-          </Card>
-        ))}
+        {plattformer.map(({ member, profile }) => {
+          const logo = profile.platformLogo || member.image()
+          return (
+            <Card as="li" key={profile.slug}>
+              <div className="relative z-10 flex w-full items-center justify-between">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md ring-1 shadow-zinc-800/5 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
+                  {logo ? (
+                    <Image
+                      src={logo}
+                      alt=""
+                      className="h-8 w-8 object-contain"
+                      width={32}
+                      height={32}
+                      unoptimized
+                    />
+                  ) : (
+                    <ServerStackIcon className="h-6 w-6 text-teal-600 dark:text-teal-400" />
+                  )}
+                </div>
+                <span className="rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+                  {member.name}
+                </span>
+              </div>
+              <h2 className="mt-6 text-base font-semibold text-zinc-800 dark:text-zinc-100">
+                <Card.Link href={`/medlemmer/${member.getSlug()}`}>
+                  {profile.platformName}
+                </Card.Link>
+              </h2>
+              <Card.Description>{profile.platformDescription}</Card.Description>
+              {(profile.capabilities.length > 0 ||
+                profile.cncfProjects.length > 0) && (
+                <div className="relative z-10 mt-3 flex flex-wrap gap-1.5">
+                  {profile.capabilities.length > 0 && (
+                    <span className="rounded-md bg-teal-50 px-2 py-0.5 text-[11px] font-medium text-teal-700 dark:bg-teal-950/50 dark:text-teal-300">
+                      {profile.capabilities.length} kapabiliteter
+                    </span>
+                  )}
+                  {profile.cncfProjects.length > 0 && (
+                    <span className="rounded-md bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-700 dark:bg-blue-950/50 dark:text-blue-300">
+                      {profile.cncfProjects.length} CNCF-prosjekter
+                    </span>
+                  )}
+                </div>
+              )}
+              <div className="relative z-10 mt-6 flex w-full items-center justify-between text-sm font-medium text-zinc-400 transition group-hover:text-teal-500 dark:text-zinc-200">
+                <span className="inline-flex items-center">
+                  <LinkIcon className="h-6 w-6 flex-none" />
+                  <span className="ml-2">{profile.platformLabel}</span>
+                </span>
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-teal-600 dark:text-teal-400">
+                  Utforsk profil
+                  <ArrowRightIcon className="h-3.5 w-3.5" />
+                </span>
+              </div>
+            </Card>
+          )
+        })}
       </ul>
     </SimpleLayout>
   )

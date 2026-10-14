@@ -7,6 +7,7 @@ import { slackRouter } from './routers/slack'
 import { userRouter } from './routers/user'
 import { talkSubmissionRouter } from './routers/talkSubmission'
 import { surveyRouter } from './routers/survey'
+import { memberProfileRouter } from './routers/memberProfile'
 import { headers } from 'next/headers'
 
 export const appRouter = router({
@@ -15,6 +16,7 @@ export const appRouter = router({
   eventFeedback: eventFeedbackRouter,
   talkSubmission: talkSubmissionRouter,
   survey: surveyRouter,
+  memberProfile: memberProfileRouter,
   admin: adminRouter,
   slack: slackRouter,
   user: userRouter,

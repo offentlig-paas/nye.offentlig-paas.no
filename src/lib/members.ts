@@ -39,14 +39,6 @@ export enum Sector {
   GENERAL = 'Generell forvaltning',
 }
 
-interface MemberPlatform {
-  name: string
-  description: string
-  href: string
-  label: string
-  logo: string
-}
-
 interface iMember {
   name: string
   type: MemberType
@@ -58,7 +50,6 @@ interface iMember {
   github?: string
   homepage?: string
   linkedinUrl?: string
-  platform?: MemberPlatform
 }
 
 export class Member implements iMember {
@@ -72,7 +63,6 @@ export class Member implements iMember {
   github?: string
   homepage?: string
   linkedinUrl?: string
-  platform?: MemberPlatform
 
   constructor({
     name,
@@ -85,7 +75,6 @@ export class Member implements iMember {
     github,
     homepage,
     linkedinUrl,
-    platform,
   }: iMember) {
     this.name = name
     this.type = type
@@ -97,7 +86,17 @@ export class Member implements iMember {
     this.homepage = homepage
     this.linkedinUrl = linkedinUrl
     this.github = github
-    this.platform = platform
+  }
+
+  getSlug(): string {
+    if (this.slug) return this.slug
+    return this.name
+      .toLowerCase()
+      .replace(/æ/g, 'ae')
+      .replace(/ø/g, 'o')
+      .replace(/å/g, 'a')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '')
   }
 
   image(size: number = 200) {
