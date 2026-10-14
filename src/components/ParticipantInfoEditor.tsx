@@ -51,112 +51,120 @@ export function ParticipantInfoEditor({
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
-      <div className="flex items-center justify-between border-b border-zinc-200 px-4 py-4 dark:border-zinc-700">
-        <h3 className="text-base font-semibold text-zinc-900 dark:text-white">
-          Deltakerinformasjon
-        </h3>
-        {!isEditing && (
-          <button
-            onClick={() => setIsEditing(true)}
-            className="cursor-pointer text-sm font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
-          >
-            Rediger
-          </button>
-        )}
-      </div>
-
-      <div className="space-y-4 p-4">
-        <div>
-          <label
-            htmlFor="streamingUrl"
-            className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-          >
-            Streaming URL
-          </label>
-          {isEditing ? (
-            <input
-              type="url"
-              id="streamingUrl"
-              value={participantInfo.streamingUrl}
-              onChange={e =>
-                setParticipantInfo({
-                  ...participantInfo,
-                  streamingUrl: e.target.value,
-                })
-              }
-              className="w-full rounded-md bg-white px-3 py-1.5 text-base text-zinc-900 outline-1 -outline-offset-1 outline-zinc-300 placeholder:text-zinc-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-zinc-500"
-              placeholder="https://..."
-            />
-          ) : (
-            <div className="text-sm text-zinc-900 dark:text-white">
-              {participantInfo.streamingUrl ? (
-                <a
-                  href={participantInfo.streamingUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
-                >
-                  <VideoCameraIcon className="mr-1.5 h-4 w-4" />
-                  Åpne streaming
-                </a>
-              ) : (
-                <span className="text-zinc-500 dark:text-zinc-400">
-                  Ikke satt
-                </span>
-              )}
+    <div className="flex h-full flex-col justify-between rounded-2xl border border-zinc-200/80 bg-white p-5 shadow-xs dark:border-zinc-700/80 dark:bg-zinc-800">
+      <div>
+        <div className="mb-4 flex items-start justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-teal-600 dark:bg-teal-950/60 dark:text-teal-400">
+              <VideoCameraIcon className="h-5 w-5" />
             </div>
-          )}
-        </div>
-
-        <div>
-          <label
-            htmlFor="notes"
-            className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-          >
-            Notater
-          </label>
-          {isEditing ? (
-            <textarea
-              id="notes"
-              value={participantInfo.notes}
-              onChange={e =>
-                setParticipantInfo({
-                  ...participantInfo,
-                  notes: e.target.value,
-                })
-              }
-              rows={4}
-              className="w-full rounded-md bg-white px-3 py-1.5 text-base text-zinc-900 outline-1 -outline-offset-1 outline-zinc-300 placeholder:text-zinc-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-zinc-500"
-              placeholder="Legg til notater om arrangementet..."
-            />
-          ) : (
-            <p className="text-sm whitespace-pre-wrap text-zinc-600 dark:text-zinc-400">
-              {participantInfo.notes || 'Ingen notater'}
-            </p>
-          )}
-        </div>
-
-        {isEditing && (
-          <div className="flex gap-2">
-            <Button onClick={handleSave} disabled={isSaving}>
-              {isSaving ? 'Lagrer...' : 'Lagre'}
-            </Button>
-            <Button
-              variant="secondary"
-              onClick={() => {
-                setIsEditing(false)
-                setParticipantInfo({
-                  streamingUrl: initialData?.streamingUrl || '',
-                  notes: initialData?.notes || '',
-                })
-              }}
-            >
-              Avbryt
-            </Button>
+            <div>
+              <h3 className="text-base font-semibold text-zinc-900 dark:text-white">
+                Deltakerinformasjon
+              </h3>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                Streaming og praktiske beskjeder
+              </p>
+            </div>
           </div>
-        )}
+          {!isEditing && (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="inline-flex items-center rounded-lg border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-xs font-semibold text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-700/60 dark:text-zinc-300 dark:hover:bg-zinc-700"
+            >
+              Rediger
+            </button>
+          )}
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <span className="mb-1 block text-xs font-semibold tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
+              Streaming URL
+            </span>
+            {isEditing ? (
+              <input
+                type="url"
+                id="streamingUrl"
+                value={participantInfo.streamingUrl}
+                onChange={e =>
+                  setParticipantInfo({
+                    ...participantInfo,
+                    streamingUrl: e.target.value,
+                  })
+                }
+                className="w-full rounded-xl bg-white px-3.5 py-2 text-sm text-zinc-900 ring-1 ring-zinc-200 ring-inset placeholder:text-zinc-400 focus:ring-2 focus:ring-blue-500 focus:ring-inset dark:bg-zinc-900/50 dark:text-white dark:ring-zinc-700 dark:placeholder:text-zinc-500"
+                placeholder="https://..."
+              />
+            ) : (
+              <div className="text-sm">
+                {participantInfo.streamingUrl ? (
+                  <a
+                    href={participantInfo.streamingUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50/70 px-3 py-1.5 text-xs font-medium text-blue-700 transition hover:bg-blue-100 dark:border-blue-800/60 dark:bg-blue-950/40 dark:text-blue-300 dark:hover:bg-blue-900/50"
+                  >
+                    <VideoCameraIcon className="h-4 w-4" />
+                    <span>Åpne streaming ({participantInfo.streamingUrl})</span>
+                  </a>
+                ) : (
+                  <span className="text-xs text-zinc-400 dark:text-zinc-500">
+                    Ingen streaming-lenke lagt til ennå
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div>
+            <span className="mb-1 block text-xs font-semibold tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
+              Notater til deltakere
+            </span>
+            {isEditing ? (
+              <textarea
+                id="notes"
+                value={participantInfo.notes}
+                onChange={e =>
+                  setParticipantInfo({
+                    ...participantInfo,
+                    notes: e.target.value,
+                  })
+                }
+                rows={4}
+                className="w-full rounded-xl bg-white px-3.5 py-2 text-sm text-zinc-900 ring-1 ring-zinc-200 ring-inset placeholder:text-zinc-400 focus:ring-2 focus:ring-blue-500 focus:ring-inset dark:bg-zinc-900/50 dark:text-white dark:ring-zinc-700 dark:placeholder:text-zinc-500"
+                placeholder="Legg til praktiske beskjeder eller notater om arrangementet..."
+              />
+            ) : (
+              <div className="dark:bg-zinc-750/30 rounded-xl border border-zinc-100 bg-zinc-50/70 p-3 dark:border-zinc-700/40">
+                <p className="text-xs leading-relaxed whitespace-pre-wrap text-zinc-600 dark:text-zinc-300">
+                  {participantInfo.notes || 'Ingen notater lagt til ennå'}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
+
+      {isEditing && (
+        <div className="mt-4 flex items-center justify-end gap-2 border-t border-zinc-100 pt-3 dark:border-zinc-700/50">
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setIsEditing(false)
+              setParticipantInfo({
+                streamingUrl: initialData?.streamingUrl || '',
+                notes: initialData?.notes || '',
+              })
+            }}
+          >
+            Avbryt
+          </Button>
+          <Button onClick={handleSave} disabled={isSaving}>
+            {isSaving ? 'Lagrer...' : 'Lagre endringer'}
+          </Button>
+        </div>
+      )}
     </div>
   )
 }

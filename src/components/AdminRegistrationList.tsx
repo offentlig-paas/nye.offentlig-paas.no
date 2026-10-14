@@ -134,10 +134,10 @@ export function AdminRegistrationList({
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
+    <div className="overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-xs dark:border-zinc-700/80 dark:bg-zinc-800">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
-          <thead className="bg-zinc-50 dark:bg-zinc-800">
+        <table className="min-w-full divide-y divide-zinc-200/80 dark:divide-zinc-700/80">
+          <thead className="bg-zinc-50/80 dark:bg-zinc-800/80">
             <tr>
               <th className="w-12 px-4 py-3">
                 <input

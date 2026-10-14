@@ -75,33 +75,33 @@ export function AdminEventsClient({ eventsData }: AdminEventsClientProps) {
       </div>
 
       {/* View Toggle */}
-      <div className="mb-4 flex items-center justify-between">
-        <div className="inline-flex rounded-xl border border-zinc-200 bg-white p-1 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
+      <div className="mb-6 flex items-center justify-between">
+        <div className="inline-flex rounded-2xl border border-zinc-200/80 bg-zinc-100/80 p-1 dark:border-zinc-800 dark:bg-zinc-900/80">
           <button
             onClick={() => setView('upcoming')}
-            className={`inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-all ${
               view === 'upcoming'
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-zinc-700 hover:bg-zinc-50 dark:text-zinc-300 dark:hover:bg-zinc-700'
+                ? 'bg-white font-semibold text-zinc-900 shadow-xs dark:bg-zinc-800 dark:text-white'
+                : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200'
             }`}
           >
-            <SparklesIcon className="h-4 w-4" />
+            <SparklesIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
             Kommende ({upcomingEvents.length})
           </button>
           <button
             onClick={() => setView('past')}
-            className={`inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-all ${
               view === 'past'
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-zinc-700 hover:bg-zinc-50 dark:text-zinc-300 dark:hover:bg-zinc-700'
+                ? 'bg-white font-semibold text-zinc-900 shadow-xs dark:bg-zinc-800 dark:text-white'
+                : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200'
             }`}
           >
-            <ArchiveBoxIcon className="h-4 w-4" />
+            <ArchiveBoxIcon className="h-4 w-4 text-zinc-400" />
             Tidligere ({pastEvents.length})
           </button>
         </div>
 
-        <div className="text-sm text-zinc-600 dark:text-zinc-400">
+        <div className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
           {displayedEvents.length} fagdager
         </div>
       </div>
@@ -127,18 +127,18 @@ export function AdminEventsClient({ eventsData }: AdminEventsClientProps) {
             <Link
               key={event.slug}
               href={`/admin/events/${event.slug}`}
-              className="block overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm transition-all hover:border-blue-500 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-blue-500"
+              className="block overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-5 shadow-xs transition hover:border-zinc-300 hover:shadow-md dark:border-zinc-700/80 dark:bg-zinc-800 dark:hover:border-zinc-600"
             >
-              <div className="p-4">
+              <div>
                 {/* Header */}
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-start gap-3">
-                      <div className="mt-1 rounded-xl bg-teal-50 p-2 dark:bg-teal-900/30">
-                        <CalendarIcon className="h-6 w-6 text-teal-600 dark:text-teal-400" />
+                    <div className="flex items-start gap-3.5">
+                      <div className="mt-0.5 rounded-xl bg-blue-50 p-2.5 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400">
+                        <CalendarIcon className="h-5 w-5" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
+                        <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
                           {event.title}
                         </h3>
                         <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-zinc-600 dark:text-zinc-400">
@@ -295,19 +295,19 @@ interface MetricCardProps {
 
 function MetricCard({ icon: Icon, label, value, subtitle }: MetricCardProps) {
   return (
-    <div className="rounded-xl border border-zinc-200 bg-teal-50 p-2 dark:border-zinc-700 dark:bg-teal-900/20">
+    <div className="dark:bg-zinc-750/30 rounded-xl border border-zinc-100 bg-zinc-50/80 p-3 dark:border-zinc-700/50">
       <div className="flex items-center justify-between">
-        <Icon className="h-4 w-4 text-teal-600 dark:text-teal-400" />
+        <Icon className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
       </div>
       <div className="mt-1.5">
-        <div className="text-lg font-bold text-teal-600 dark:text-teal-400">
+        <div className="text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
           {value}
         </div>
-        <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
+        <div className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
           {label}
         </div>
         {subtitle && (
-          <div className="text-xs text-zinc-500 dark:text-zinc-500">
+          <div className="text-xs text-zinc-400 dark:text-zinc-500">
             {subtitle}
           </div>
         )}

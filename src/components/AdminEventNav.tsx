@@ -96,34 +96,37 @@ export function AdminEventNav({
   }
 
   return (
-    <div className="border-b border-zinc-200 dark:border-zinc-700">
-      <nav className="-mb-px flex space-x-8 overflow-x-auto" aria-label="Tabs">
+    <div className="border-b border-zinc-200/80 dark:border-zinc-800">
+      <nav
+        className="-mb-px flex scrollbar-none space-x-1 overflow-x-auto pb-px sm:space-x-2"
+        aria-label="Tabs"
+      >
         {tabs.map(tab => {
           const Icon = tab.icon
           return (
             <Link
               key={tab.name}
               href={tab.href}
-              className={`group inline-flex items-center gap-2 border-b-2 px-1 py-4 text-sm font-medium whitespace-nowrap transition-colors ${
+              className={`group inline-flex items-center gap-2 border-b-2 px-3 py-3 text-sm font-medium whitespace-nowrap transition-all ${
                 tab.current
-                  ? 'border-blue-500 text-blue-600 dark:border-blue-400 dark:text-blue-400'
-                  : 'border-transparent text-zinc-500 hover:border-zinc-300 hover:text-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-300'
+                  ? 'border-blue-600 font-semibold text-blue-600 dark:border-blue-400 dark:text-blue-400'
+                  : 'border-transparent text-zinc-500 hover:border-zinc-300 hover:text-zinc-800 dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:text-zinc-200'
               }`}
             >
               <Icon
-                className={`h-5 w-5 ${
+                className={`h-4.5 w-4.5 transition-colors ${
                   tab.current
-                    ? 'text-blue-500 dark:text-blue-400'
-                    : 'text-zinc-400 group-hover:text-zinc-500 dark:text-zinc-500 dark:group-hover:text-zinc-400'
+                    ? 'text-blue-600 dark:text-blue-400'
+                    : 'text-zinc-400 group-hover:text-zinc-600 dark:text-zinc-500 dark:group-hover:text-zinc-300'
                 }`}
               />
-              {tab.name}
+              <span>{tab.name}</span>
               {tab.badge !== undefined && tab.badge > 0 && (
                 <span
-                  className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+                  className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums transition-colors ${
                     tab.current
-                      ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                      : 'bg-zinc-100 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-300'
+                      ? 'bg-blue-100 text-blue-700 dark:bg-blue-950/70 dark:text-blue-300 dark:ring-1 dark:ring-blue-800/40'
+                      : 'bg-zinc-100 text-zinc-600 group-hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:group-hover:bg-zinc-700'
                   }`}
                 >
                   {tab.badge}
