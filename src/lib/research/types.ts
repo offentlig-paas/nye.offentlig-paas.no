@@ -33,7 +33,7 @@ interface ResearchAuthor {
   affiliation?: string
 }
 
-interface ResearchPaper {
+export interface ResearchPaper {
   title: string
   url?: string
   date: string
@@ -43,6 +43,18 @@ interface ResearchPaper {
   authors?: ResearchAuthor[]
   abstract?: string
   label?: string
+}
+
+interface ResearchStat {
+  value: string
+  label: string
+  subtext?: string
+}
+
+interface ResearchSampleStep {
+  value: string
+  label: string
+  detail?: string
 }
 
 export type ResearchSurvey = InternalSurvey | ExternalSurvey
@@ -85,6 +97,8 @@ export interface ResearchProject {
   title: string
   description: string
   longDescription?: string
+  stats?: ResearchStat[]
+  sampleFlow?: ResearchSampleStep[]
   researchQuestions?: string[]
   methodology?: string
   keyFindings?: string[]

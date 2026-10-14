@@ -40,6 +40,11 @@ export function isSurveyLinkable(survey: ResearchSurvey): boolean {
   return !!survey.url
 }
 
+export function hasPublishedSurveyResults(survey: ResearchSurvey): boolean {
+  if (!isInternalSurvey(survey)) return false
+  return Boolean(getSurvey(survey.surveySlug)?.resultsConfig?.published)
+}
+
 export function getSurveyDescription(
   survey: ResearchSurvey
 ): string | undefined {
