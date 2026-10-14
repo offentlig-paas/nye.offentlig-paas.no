@@ -69,6 +69,7 @@ export const adminRouter = router({
           attendingSocialEvent: z.boolean().optional(),
           dietary: z.string().optional(),
           comments: z.string().optional(),
+          slackUserId: z.string().optional(),
         })
       )
       .mutation(async ({ input, ctx }) => {
@@ -82,6 +83,7 @@ export const adminRouter = router({
             attendingSocialEvent: input.attendingSocialEvent,
             dietary: input.dietary,
             comments: input.comments,
+            slackUserId: input.slackUserId?.trim() || undefined,
           },
           { maxCapacity: ctx.event.maxCapacity }
         )
