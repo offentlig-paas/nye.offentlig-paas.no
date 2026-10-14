@@ -187,8 +187,8 @@ export function AdminAgendaClient() {
       {/* Speaker Matcher - Only in dev */}
       {process.env.NODE_ENV === 'development' &&
         speakersWithoutUrls.length > 0 && (
-          <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
-            <div className="border-b border-zinc-200 px-4 py-4 dark:border-zinc-700">
+          <div className="overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-xs dark:border-zinc-700/80 dark:bg-zinc-800">
+            <div className="border-b border-zinc-200/80 px-5 py-4 dark:border-zinc-700/80">
               <h3 className="text-base font-semibold text-zinc-900 dark:text-white">
                 Koble foredragsholdere til Slack
               </h3>
@@ -228,19 +228,19 @@ export function AdminAgendaClient() {
       </div>
 
       {/* Actions Bar */}
-      <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
+      <div className="rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-xs dark:border-zinc-700/80 dark:bg-zinc-800">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <FunnelIcon className="h-5 w-5 text-zinc-400 dark:text-zinc-500" />
-            <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              Filtrer:
-            </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-1.5 text-xs font-medium text-zinc-500 dark:text-zinc-400">
+              <FunnelIcon className="h-4 w-4" />
+              <span>Filtrer:</span>
+            </div>
             <select
               value={talkTypeFilter}
               onChange={e =>
                 setTalkTypeFilter(e.target.value as TalkTypeFilter)
               }
-              className="rounded-md bg-white px-3 py-1.5 text-base text-zinc-900 outline-1 -outline-offset-1 outline-zinc-300 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10"
+              className="rounded-xl bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 shadow-2xs ring-1 ring-zinc-200 ring-inset focus:ring-2 focus:ring-blue-500 focus:ring-inset dark:bg-zinc-700/50 dark:text-zinc-200 dark:ring-zinc-600"
             >
               <option value="all">Alle typer</option>
               <option value={ItemType.Talk}>Presentasjoner</option>
@@ -254,7 +254,7 @@ export function AdminAgendaClient() {
               onChange={e =>
                 setAttachmentFilter(e.target.value as AttachmentFilter)
               }
-              className="rounded-md bg-white px-3 py-1.5 text-base text-zinc-900 outline-1 -outline-offset-1 outline-zinc-300 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10"
+              className="rounded-xl bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 shadow-2xs ring-1 ring-zinc-200 ring-inset focus:ring-2 focus:ring-blue-500 focus:ring-inset dark:bg-zinc-700/50 dark:text-zinc-200 dark:ring-zinc-600"
             >
               <option value="all">Alle slides-status</option>
               <option value="with-slides">Med slides</option>
@@ -262,7 +262,7 @@ export function AdminAgendaClient() {
             </select>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <Button
               onClick={() => handleBulkNudge(true)}
               disabled={isSendingBulkNudge || stats.withoutSlides === 0}
@@ -284,9 +284,9 @@ export function AdminAgendaClient() {
       </div>
 
       {/* Talks Grid */}
-      <div className="space-y-3">
+      <div className="space-y-3.5">
         {filteredTalks.length === 0 ? (
-          <div className="rounded-xl border border-zinc-200 bg-white p-8 text-center shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
+          <div className="rounded-2xl border border-zinc-200/80 bg-white p-8 text-center shadow-xs dark:border-zinc-700/80 dark:bg-zinc-800">
             <p className="text-sm text-zinc-600 dark:text-zinc-400">
               Ingen foredrag matcher valgte filtre
             </p>
@@ -306,10 +306,10 @@ export function AdminAgendaClient() {
             return (
               <div
                 key={`${talk.title}-${idx}`}
-                className="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-800"
+                className="overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-xs dark:border-zinc-700/80 dark:bg-zinc-800"
               >
                 {/* Talk Header */}
-                <div className="border-b border-zinc-200 px-4 py-4 dark:border-zinc-700">
+                <div className="border-b border-zinc-200/80 px-5 py-4 dark:border-zinc-700/80">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex min-w-0 flex-1 items-start gap-3">
                       <div className={`mt-0.5 rounded-xl p-2 ${colorClass}`}>

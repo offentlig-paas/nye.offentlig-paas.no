@@ -236,13 +236,13 @@ export function AdminAttendeesClient() {
       {statusFilter === 'waitlist' &&
         filteredRegistrations.length > 0 &&
         selectedRegistrations.length === 0 && (
-          <div className="rounded-xl border border-yellow-200 bg-yellow-50 p-4 shadow-sm dark:border-yellow-800 dark:bg-yellow-900/20">
-            <div className="flex items-center justify-between">
+          <div className="rounded-2xl border border-amber-200/80 bg-amber-50/70 p-4 shadow-xs dark:border-amber-900/60 dark:bg-amber-950/30">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h3 className="text-sm font-medium text-yellow-800 dark:text-yellow-300">
+                <h3 className="text-sm font-semibold text-amber-900 dark:text-amber-200">
                   {filteredRegistrations.length} på venteliste
                 </h3>
-                <p className="mt-1 text-sm text-yellow-700 dark:text-yellow-400">
+                <p className="mt-0.5 text-xs text-amber-700 dark:text-amber-300">
                   Velg deltakere du ønsker å bekrefte fra ventelisten
                 </p>
               </div>
@@ -253,7 +253,7 @@ export function AdminAttendeesClient() {
                     .map(r => r._id!)
                   setSelectedRegistrations(waitlistIds)
                 }}
-                className="inline-flex items-center rounded-xl bg-yellow-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-yellow-700 dark:bg-yellow-700 dark:hover:bg-yellow-600"
+                className="inline-flex items-center rounded-xl bg-amber-600 px-3.5 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-amber-700 dark:bg-amber-700 dark:hover:bg-amber-600"
               >
                 Velg alle på venteliste
               </button>

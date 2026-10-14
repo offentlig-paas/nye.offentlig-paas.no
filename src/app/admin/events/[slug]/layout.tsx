@@ -6,12 +6,16 @@ import {
   getEvent,
   getTalksCount,
   canUserAccessEvent,
+  getStatus,
 } from '@/lib/events/helpers'
+import { Status } from '@/lib/events/types'
 import { formatDateTime } from '@/lib/formatDate'
 import { createCaller } from '@/server/root'
 import { AdminEventProvider } from '@/contexts/AdminEventContext'
 import { SHIMMER_CLASS as shimmer } from '@/lib/admin-ui'
 import { requireAuth } from '@/lib/auth-guards'
+import { Badge } from '@/components/Badge'
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid'
 
 interface AdminEventLayoutProps {
   children: React.ReactNode
@@ -100,6 +104,8 @@ export default async function AdminEventLayout({
     notFound()
   }
 
+  const isPast = getStatus(event) === Status.Past
+
   return (
     <AdminLayout
       title={event.title}
@@ -108,6 +114,27 @@ export default async function AdminEventLayout({
         href: '/admin/events',
         label: 'Tilbake til fagdager',
       }}
+      badge={
+        <div className="flex items-center gap-2">
+          <Badge color={isPast ? 'zinc' : 'teal'}>
+            {isPast ? 'Avholdt' : 'Kommende'}
+          </Badge>
+          {!event.registration.disabled && (
+            <Badge color="green">Påmelding åpen</Badge>
+          )}
+        </div>
+      }
+      actions={
+        <a
+          href={`/arrangementer/${event.slug}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 shadow-2xs transition hover:bg-zinc-50 hover:text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white"
+        >
+          <ArrowTopRightOnSquareIcon className="h-3.5 w-3.5 text-zinc-400" />
+          <span>Offentlig side</span>
+        </a>
+      }
     >
       <Suspense fallback={<NavSkeleton />}>
         <AdminEventContent slug={slug} event={event}>

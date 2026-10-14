@@ -12,7 +12,6 @@ import { AdminEventActions } from '@/components/AdminEventActions'
 import { StatCard } from '@/components/StatCard'
 import { Avatar } from '@/components/Avatar'
 import { AddToSlackChannelButton } from '@/components/AddToSlackChannelButton'
-import { formatDateTime } from '@/lib/formatDate'
 import { getUniqueSpeakers, getTalksCount } from '@/lib/events/helpers'
 import {
   StarIcon,
@@ -67,11 +66,49 @@ export function AdminEventDetailsClient({
   }
 
   return (
-    <div className="space-y-4">
-      {/* Top Section: Checklist and Stats */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        {/* Checklist - 2/3 width */}
-        <div className="lg:col-span-2">
+    <div className="space-y-6">
+      {/* Top Section: Key Metrics */}
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <StatCard
+          label="Påmeldte"
+          value={eventDetails.stats.activeRegistrations}
+          subtext={`${eventDetails.stats.uniqueOrganisations} organisasjoner${socialCount > 0 ? ` · ${socialCount} sosialt` : ''}`}
+          icon={UsersIcon}
+        />
+        <StatCard
+          label="Organisasjoner"
+          value={eventDetails.stats.uniqueOrganisations}
+          icon={BuildingOfficeIcon}
+        />
+        <StatCard
+          label="Programposter"
+          value={talksCount}
+          subtext={`${speakers.length} foredragsholdere`}
+          icon={PresentationChartLineIcon}
+        />
+        {isPostEvent && eventDetails.stats.feedbackSummary ? (
+          <StatCard
+            label="Snitt vurdering"
+            value={eventDetails.stats.feedbackSummary.averageEventRating.toFixed(
+              1
+            )}
+            subtext={`${eventDetails.stats.feedbackSummary.totalResponses} svar`}
+            icon={StarIcon}
+          />
+        ) : (
+          <StatCard
+            label="Bidragsytere"
+            value={eventDetails.organizers.length + speakers.length}
+            subtext={`${eventDetails.organizers.length} arrangører · ${speakers.length} talere`}
+            icon={UserGroupIcon}
+          />
+        )}
+      </div>
+
+      {/* Middle Section: Sjekkliste and Hurtighandlinger */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        {/* Checklist */}
+        <div className="lg:col-span-7 xl:col-span-8">
           <AdminEventChecklist
             eventDetails={eventDetails}
             eventSlug={slug}
@@ -80,242 +117,191 @@ export function AdminEventDetailsClient({
           />
         </div>
 
-        {/* Stats Grid - 1/3 width */}
-        <div className="grid grid-cols-2 content-start gap-4">
-          <StatCard
-            label="Påmeldte"
-            value={eventDetails.stats.activeRegistrations}
-            icon={UsersIcon}
+        {/* Quick Actions */}
+        <div className="lg:col-span-5 xl:col-span-4">
+          <AdminEventActions
+            eventSlug={slug}
+            eventTitle={eventDetails.title}
+            eventDate={eventDetails.date}
+            eventStartTime={eventDetails.startTime}
+            activeRegistrations={eventDetails.stats.activeRegistrations}
+            attendedCount={eventDetails.stats.statusBreakdown.attended || 0}
+            onExport={handleExportCSV}
+            onSuccess={message => showSuccess('Sendt', message)}
+            onError={message => showError('Feil', message)}
+            variant="card"
           />
-          <StatCard
-            label="Organisasjoner"
-            value={eventDetails.stats.uniqueOrganisations}
-            icon={BuildingOfficeIcon}
-          />
-          <StatCard
-            label="Foredrag"
-            value={talksCount}
-            icon={PresentationChartLineIcon}
-          />
-          {isPostEvent && eventDetails.stats.feedbackSummary ? (
-            <StatCard
-              label={`${eventDetails.stats.feedbackSummary.totalResponses} svar`}
-              value={eventDetails.stats.feedbackSummary.averageEventRating.toFixed(
-                1
-              )}
-              icon={StarIcon}
-            />
-          ) : (
-            <StatCard
-              label="Foredragsholdere"
-              value={speakers.length}
-              icon={UserGroupIcon}
-            />
-          )}
-          {isPostEvent && (
-            <StatCard
-              label="Sosialt"
-              value={socialCount}
-              icon={UserGroupIcon}
-            />
-          )}
         </div>
       </div>
 
-      {/* Actions */}
-      <AdminEventActions
-        eventSlug={slug}
-        eventTitle={eventDetails.title}
-        eventDate={eventDetails.date}
-        eventStartTime={eventDetails.startTime}
-        activeRegistrations={eventDetails.stats.activeRegistrations}
-        attendedCount={eventDetails.stats.statusBreakdown.attended || 0}
-        onExport={handleExportCSV}
-        onSuccess={message => showSuccess('Sendt', message)}
-        onError={message => showError('Feil', message)}
-      />
-
-      {/* Management Section - Masonry layout */}
-      <div className="columns-1 gap-4 space-y-4 md:columns-2 lg:columns-3">
-        {/* Basic Event Info */}
-        <div className="break-inside-avoid rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
-          <h3 className="mb-3 text-base font-semibold text-zinc-900 dark:text-white">
-            Arrangement
-          </h3>
-          <div className="space-y-2">
-            <div>
-              <dt className="text-xs text-zinc-500 dark:text-zinc-400">Tid</dt>
-              <dd className="text-sm text-zinc-900 dark:text-white">
-                {formatDateTime(eventDetails.startTime)}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs text-zinc-500 dark:text-zinc-400">Sted</dt>
-              <dd className="text-sm text-zinc-900 dark:text-white">
-                {eventDetails.location}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs text-zinc-500 dark:text-zinc-400">
-                Påmelding
-              </dt>
-              <dd className="flex flex-wrap gap-1">
-                <span
-                  className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                    !eventDetails.registration.disabled
-                      ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
-                      : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
-                  }`}
-                >
-                  {!eventDetails.registration.disabled ? 'Åpen' : 'Stengt'}
-                </span>
-              </dd>
-            </div>
-          </div>
-        </div>
-
-        {/* Organizers */}
-        {eventDetails.organizers.length > 0 && (
-          <div className="break-inside-avoid rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
-            <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-base font-semibold text-zinc-900 dark:text-white">
-                Arrangører
-              </h3>
-              {eventDetails.slackChannel && (
-                <AddToSlackChannelButton
-                  eventSlug={slug}
-                  userGroup="organizers"
-                  count={eventDetails.organizers.length}
-                  channelName={eventDetails.slackChannel.name}
-                  onUpdate={handleRefresh}
-                  showError={showError}
-                  showSuccess={showSuccess}
-                />
-              )}
-            </div>
-            <div className="space-y-2">
-              {eventDetails.organizers.map((organizer, index) => (
-                <div key={index} className="flex items-center space-x-2">
-                  <Avatar
-                    name={organizer.name}
-                    slackUrl={organizer.url}
-                    size="xs"
-                  />
-                  <div className="min-w-0 flex-1 text-sm">
-                    {organizer.url ? (
-                      <a
-                        href={organizer.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
-                      >
-                        {organizer.name}
-                      </a>
-                    ) : (
-                      <span className="font-medium text-zinc-900 dark:text-white">
-                        {organizer.name}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Speakers */}
-        <div className="break-inside-avoid rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
-          <div className="mb-3 flex items-center justify-between">
-            <h3 className="text-base font-semibold text-zinc-900 dark:text-white">
-              Foredragsholdere
-            </h3>
-            {eventDetails.slackChannel &&
-              speakers.filter(s => s.url).length > 0 && (
-                <AddToSlackChannelButton
-                  eventSlug={slug}
-                  userGroup="speakers"
-                  count={speakers.filter(s => s.url).length}
-                  channelName={eventDetails.slackChannel.name}
-                  onUpdate={handleRefresh}
-                  showError={showError}
-                  showSuccess={showSuccess}
-                />
-              )}
-          </div>
-          {speakers.filter(s => s.url).length > 0 ? (
-            <div className="space-y-2">
-              {speakers
-                .filter(s => s.url)
-                .map((speaker, index) => (
-                  <div key={index} className="flex items-center space-x-2">
-                    <Avatar
-                      name={speaker.name}
-                      slackUrl={speaker.url}
-                      size="xs"
-                    />
-                    <div className="min-w-0 flex-1 text-sm">
-                      <a
-                        href={speaker.url!}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
-                      >
-                        {speaker.name}
-                      </a>
-                    </div>
-                  </div>
-                ))}
-            </div>
-          ) : (
-            <div className="rounded-xl bg-zinc-50 p-3 dark:bg-zinc-900/50">
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Ingen foredragsholdere lagt til ennå. Gå til{' '}
-                <Link
-                  href={`/admin/events/${slug}/agenda`}
-                  className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
-                >
-                  Program
-                </Link>{' '}
-                for å legge til foredragsholdere.
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* Slack Channel Manager */}
-        {eventDetails.slackChannel && (
-          <div className="break-inside-avoid">
-            <AdminSlackChannelManager
-              eventSlug={slug}
-              channelId={eventDetails.slackChannel.id}
-              channelName={eventDetails.slackChannel.name}
-              organizersCount={eventDetails.organizers.length}
-              speakersCount={
-                eventDetails.schedule
-                  ? eventDetails.schedule
-                      .filter(item => item.speakers && item.speakers.length > 0)
-                      .flatMap(item => item.speakers!)
-                      .filter(
-                        (speaker, index, self) =>
-                          index === self.findIndex(s => s.name === speaker.name)
-                      ).length
-                  : 0
-              }
-              attendeesCount={eventDetails.stats.activeRegistrations}
-              onUpdate={handleRefresh}
-              showError={showError}
-              showSuccess={showSuccess}
-            />
-          </div>
-        )}
-
-        {/* Participant Info */}
-        <div className="break-inside-avoid">
+      {/* Bottom Section: 3-column structured operational grid */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* Column 1: Participant Info */}
+        <div className="flex flex-col">
           <ParticipantInfoEditor
             slug={slug}
             initialData={participantInfoData}
             showSuccess={showSuccess}
             showError={showError}
+          />
+        </div>
+
+        {/* Column 2: Contributors (Organizers & Speakers) */}
+        <div className="flex flex-col justify-between rounded-2xl border border-zinc-200/80 bg-white p-5 shadow-xs dark:border-zinc-700/80 dark:bg-zinc-800">
+          <div>
+            <div className="mb-4 flex items-start justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400">
+                  <UserGroupIcon className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-zinc-900 dark:text-white">
+                    Bidragsytere
+                  </h3>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                    {eventDetails.organizers.length} arrangører ·{' '}
+                    {speakers.length} foredragsholdere
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Organizers Section */}
+            {eventDetails.organizers.length > 0 && (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-semibold tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
+                    Arrangører ({eventDetails.organizers.length})
+                  </h4>
+                  {eventDetails.slackChannel && (
+                    <AddToSlackChannelButton
+                      eventSlug={slug}
+                      userGroup="organizers"
+                      count={eventDetails.organizers.length}
+                      channelName={eventDetails.slackChannel.name}
+                      onUpdate={handleRefresh}
+                      showError={showError}
+                      showSuccess={showSuccess}
+                    />
+                  )}
+                </div>
+                <div className="space-y-2">
+                  {eventDetails.organizers.map((organizer, index) => (
+                    <div
+                      key={index}
+                      className="dark:hover:bg-zinc-750/50 flex items-center justify-between rounded-xl px-2 py-1.5 transition-colors hover:bg-zinc-50/70"
+                    >
+                      <div className="flex min-w-0 items-center space-x-2.5">
+                        <Avatar
+                          name={organizer.name}
+                          slackUrl={organizer.url}
+                          size="xs"
+                        />
+                        <span className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-200">
+                          {organizer.name}
+                        </span>
+                      </div>
+                      {organizer.url && (
+                        <a
+                          href={organizer.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="shrink-0 text-xs font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                        >
+                          Slack
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Divider */}
+            <div className="my-4 border-t border-zinc-100 dark:border-zinc-700/50" />
+
+            {/* Speakers Section */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-semibold tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
+                  Foredragsholdere ({speakers.length})
+                </h4>
+                {eventDetails.slackChannel &&
+                  speakers.filter(s => s.url).length > 0 && (
+                    <AddToSlackChannelButton
+                      eventSlug={slug}
+                      userGroup="speakers"
+                      count={speakers.filter(s => s.url).length}
+                      channelName={eventDetails.slackChannel.name}
+                      onUpdate={handleRefresh}
+                      showError={showError}
+                      showSuccess={showSuccess}
+                    />
+                  )}
+              </div>
+              {speakers.length > 0 ? (
+                <div className="max-h-56 scrollbar-none space-y-2 overflow-y-auto">
+                  {speakers.map((speaker, index) => (
+                    <div
+                      key={index}
+                      className="dark:hover:bg-zinc-750/50 flex items-center justify-between rounded-xl px-2 py-1.5 transition-colors hover:bg-zinc-50/70"
+                    >
+                      <div className="flex min-w-0 items-center space-x-2.5">
+                        <Avatar
+                          name={speaker.name}
+                          slackUrl={speaker.url}
+                          size="xs"
+                        />
+                        <span className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-200">
+                          {speaker.name}
+                        </span>
+                      </div>
+                      {speaker.url ? (
+                        <a
+                          href={speaker.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="shrink-0 text-xs font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                        >
+                          Slack
+                        </a>
+                      ) : (
+                        <span className="shrink-0 text-xs text-zinc-400 dark:text-zinc-500">
+                          Mangler Slack
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="dark:bg-zinc-750/30 rounded-xl bg-zinc-50/80 p-3 text-center">
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                    Ingen foredragsholdere lagt til ennå.{' '}
+                    <Link
+                      href={`/admin/events/${slug}/agenda`}
+                      className="font-medium text-blue-600 hover:underline dark:text-blue-400"
+                    >
+                      Gå til program
+                    </Link>
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Column 3: Slack Channel Manager */}
+        <div className="flex flex-col">
+          <AdminSlackChannelManager
+            eventSlug={slug}
+            channelId={eventDetails.slackChannel?.id}
+            channelName={eventDetails.slackChannel?.name}
+            organizersCount={eventDetails.organizers.length}
+            speakersCount={speakers.length}
+            attendeesCount={eventDetails.stats.activeRegistrations}
+            onUpdate={handleRefresh}
+            showError={showError}
+            showSuccess={showSuccess}
           />
         </div>
       </div>
