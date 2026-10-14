@@ -15,7 +15,7 @@ import { getAllProjects, getOpenSurveys } from '@/lib/research/helpers'
 export const metadata: Metadata = {
   title: 'Forskning',
   description:
-    'Empirisk forskning og undersøkelser fra Offentlig PaaS-nettverket. Studier av plattformmodenhet, KI-kodeagenter, teknologivalg og organisasjonsutvikling i norsk offentlig sektor.',
+    'Undersøkelser og studier fra Offentlig PaaS om utviklerplattformer, KI-kodeverktøy og teknologivalg i norsk offentlig sektor.',
 }
 
 export default async function ResearchPage() {
@@ -25,7 +25,7 @@ export default async function ResearchPage() {
   return (
     <SimpleLayout
       title="Forskning"
-      intro="Vi gjennomfører empiriske studier av plattformutvikling, KI-verktøy, teknologivalg og organisasjonsmodenhet i norsk offentlig sektor. Alle anonymiserte datasett, spørreskjemaer og analyser publiseres åpent."
+      intro="Vi undersøker hvordan norske offentlige virksomheter bygger utviklerplattformer, bruker KI-verktøy og organiserer utviklingsarbeidet. Vi publiserer anonymiserte datasett, spørreskjemaer og analyseskript åpent."
     >
       {openSurveys.length > 0 && (
         <div className="mt-8 space-y-4">
@@ -43,7 +43,7 @@ export default async function ResearchPage() {
           className="inline-flex items-center gap-1.5 font-medium text-zinc-700 hover:text-teal-600 dark:text-zinc-300 dark:hover:text-teal-400"
         >
           <CodeBracketIcon className="h-4 w-4 text-teal-600 dark:text-teal-400" />
-          GitHub-repo og analyse-skript
+          GitHub-repo og analyseskript
           <ArrowTopRightOnSquareIcon className="h-3.5 w-3.5 text-zinc-400" />
         </Link>
         <Link
@@ -63,7 +63,7 @@ export default async function ResearchPage() {
           className="inline-flex items-center gap-1.5 font-medium text-zinc-700 hover:text-teal-600 dark:text-zinc-300 dark:hover:text-teal-400"
         >
           <ShieldCheckIcon className="h-4 w-4 text-teal-600 dark:text-teal-400" />
-          Forskningsetiske retningslinjer (NESH / GDPR)
+          Forskningsetiske retningslinjer (NESH og GDPR)
           <ArrowTopRightOnSquareIcon className="h-3.5 w-3.5 text-zinc-400" />
         </Link>
       </div>

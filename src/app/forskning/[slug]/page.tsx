@@ -86,17 +86,6 @@ const paperStatusColors: Record<PaperStatus, string> = {
     'bg-green-50 text-green-700 ring-green-600/20 dark:bg-green-400/10 dark:text-green-400 dark:ring-green-400/20',
 }
 
-function splitFindingLead(finding: string): { lead: string; rest: string } {
-  const dotIdx = finding.indexOf('. ')
-  if (dotIdx === -1) {
-    return { lead: finding, rest: '' }
-  }
-  return {
-    lead: finding.slice(0, dotIdx + 1),
-    rest: finding.slice(dotIdx + 2),
-  }
-}
-
 export default async function ResearchProjectPage({
   params,
 }: {
@@ -120,6 +109,7 @@ export default async function ResearchProjectPage({
     hasPublishedSurveyResults(s)
   )
   const primaryPaper = project.papers?.[0]
+  const latestDataset = project.datasets?.[project.datasets.length - 1]
 
   const session = await auth()
   const adminSurveySlug = session?.user
@@ -136,7 +126,7 @@ export default async function ResearchProjectPage({
 
   return (
     <Container className="mt-16 lg:mt-28">
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto max-w-4xl">
         <Link
           href="/forskning"
           className="group mb-6 inline-flex items-center gap-2 text-sm text-zinc-500 transition hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300"
@@ -148,7 +138,7 @@ export default async function ResearchProjectPage({
         {/* Project header */}
         <header className="border-b border-zinc-200 pb-8 dark:border-zinc-800">
           <div className="flex flex-wrap items-start justify-between gap-4">
-            <h1 className="max-w-3xl text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl dark:text-zinc-100">
+            <h1 className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl dark:text-zinc-100">
               {project.title}
             </h1>
             <div className="flex shrink-0 items-center gap-2">
@@ -188,12 +178,49 @@ export default async function ResearchProjectPage({
             {project.description}
           </p>
 
+          {(primaryPaper?.url || hasPublishedResults || latestDataset) && (
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              {primaryPaper?.url && (
+                <a
+                  href={primaryPaper.url}
+                  className="inline-flex items-center gap-2 rounded-lg bg-teal-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-teal-700 dark:bg-teal-500 dark:hover:bg-teal-400"
+                >
+                  <DocumentTextIcon className="h-4 w-4" />
+                  {primaryPaper.label ?? 'Les rapporten (PDF)'}
+                </a>
+              )}
+
+              {hasPublishedResults && (
+                <Link
+                  href={`/forskning/${slug}/resultater`}
+                  className="inline-flex items-center gap-2 rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+                >
+                  <ChartBarIcon className="h-4 w-4 text-teal-600 dark:text-teal-400" />
+                  Se alle svarfordelinger
+                </Link>
+              )}
+
+              {latestDataset && (
+                <a
+                  href={latestDataset.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                >
+                  <CircleStackIcon className="h-4 w-4 text-zinc-400" />
+                  Åpne data ({latestDataset.format})
+                  <ArrowTopRightOnSquareIcon className="h-3.5 w-3.5 text-zinc-400" />
+                </a>
+              )}
+            </div>
+          )}
+
           {project.stats && project.stats.length > 0 && (
-            <dl className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <dl className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {project.stats.map(stat => (
                 <div
                   key={stat.label}
-                  className="rounded-xl border border-zinc-200/80 bg-zinc-50/70 px-4 py-3.5 dark:border-zinc-800 dark:bg-zinc-900/50"
+                  className="rounded-xl border border-zinc-200/80 bg-zinc-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-900/50"
                 >
                   <dt className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
                     {stat.label}
@@ -202,7 +229,7 @@ export default async function ResearchProjectPage({
                     {stat.value}
                   </dd>
                   {stat.subtext && (
-                    <dd className="mt-1 text-xs leading-snug text-zinc-500 dark:text-zinc-400">
+                    <dd className="mt-1.5 text-xs leading-snug text-zinc-500 dark:text-zinc-400">
                       {stat.subtext}
                     </dd>
                   )}
@@ -212,268 +239,161 @@ export default async function ResearchProjectPage({
           )}
         </header>
 
-        {/* Two-column academic body */}
-        <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-3">
-          {/* Left main column */}
-          <div className="space-y-12 lg:col-span-2">
-            {project.longDescription && (
-              <section>
-                <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
-                  Om studien
-                </h2>
-                <p className="mt-3 text-base leading-relaxed text-zinc-600 dark:text-zinc-400">
-                  {project.longDescription}
-                </p>
-              </section>
-            )}
+        {/* Main body */}
+        <div className="mt-12 space-y-14">
+          {project.longDescription && (
+            <section>
+              <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                Om studien
+              </h2>
+              <p className="mt-3 max-w-3xl text-base leading-relaxed text-zinc-600 dark:text-zinc-400">
+                {project.longDescription}
+              </p>
+            </section>
+          )}
 
-            {/* Open survey CTA */}
-            {openSurveys.length > 0 && (
-              <div className="space-y-4">
-                {openSurveys.map(survey => {
-                  const description = getSurveyDescription(survey)
-                  return (
-                    <div
-                      key={getSurveyTitle(survey)}
-                      className="rounded-xl border border-teal-200 bg-teal-50 p-5 dark:border-teal-800 dark:bg-teal-950/20"
-                    >
-                      <div className="flex items-center justify-between gap-4">
-                        <div>
-                          <p className="font-semibold text-teal-900 dark:text-teal-100">
-                            {getSurveyTitle(survey)}
+          {/* Open survey CTA */}
+          {openSurveys.length > 0 && (
+            <div className="space-y-4">
+              {openSurveys.map(survey => {
+                const description = getSurveyDescription(survey)
+                return (
+                  <div
+                    key={getSurveyTitle(survey)}
+                    className="rounded-xl border border-teal-200 bg-teal-50 p-5 dark:border-teal-800 dark:bg-teal-950/20"
+                  >
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <p className="font-semibold text-teal-900 dark:text-teal-100">
+                          {getSurveyTitle(survey)}
+                        </p>
+                        {description && (
+                          <p className="mt-1 text-sm text-teal-700 dark:text-teal-300">
+                            {description}
                           </p>
-                          {description && (
-                            <p className="mt-1 text-sm text-teal-700 dark:text-teal-300">
-                              {description}
-                            </p>
-                          )}
-                        </div>
-                        <Link
-                          href={`/forskning/${slug}/undersokelse`}
-                          className="shrink-0 rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-700 dark:bg-teal-500 dark:hover:bg-teal-600"
-                        >
-                          Delta
-                        </Link>
+                        )}
                       </div>
+                      <Link
+                        href={`/forskning/${slug}/undersokelse`}
+                        className="shrink-0 rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-700 dark:bg-teal-500 dark:hover:bg-teal-600"
+                      >
+                        Delta
+                      </Link>
                     </div>
-                  )
-                })}
-              </div>
-            )}
+                  </div>
+                )
+              })}
+            </div>
+          )}
 
-            {/* Key findings */}
-            {project.keyFindings && project.keyFindings.length > 0 && (
-              <section className="border-t border-zinc-100 pt-8 dark:border-zinc-800">
+          {/* Key findings */}
+          {project.keyFindings && project.keyFindings.length > 0 && (
+            <section className="border-t border-zinc-100 pt-10 dark:border-zinc-800">
+              <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                Hovedfunn
+              </h2>
+              <ol className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
+                {project.keyFindings.map((finding, idx) => (
+                  <li
+                    key={finding}
+                    className="flex gap-3.5 rounded-xl border border-zinc-200/80 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900/40"
+                  >
+                    <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-teal-500/10 font-mono text-xs font-semibold text-teal-700 ring-1 ring-teal-500/20 dark:text-teal-300 dark:ring-teal-400/20">
+                      {idx + 1}
+                    </span>
+                    <p className="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+                      {finding}
+                    </p>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )}
+
+          {/* Interactive figures */}
+          <ResearchFigures projectSlug={project.slug} />
+
+          {/* Research questions */}
+          {project.researchQuestions &&
+            project.researchQuestions.length > 0 && (
+              <section className="border-t border-zinc-100 pt-10 dark:border-zinc-800">
                 <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-                  Hovedfunn
+                  Forskningsspørsmål
                 </h2>
                 <ol className="mt-4 space-y-3">
-                  {project.keyFindings.map((finding, idx) => {
-                    const { lead, rest } = splitFindingLead(finding)
-                    return (
-                      <li
-                        key={finding}
-                        className="flex gap-3.5 rounded-xl border border-zinc-200/70 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900/40"
-                      >
-                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-teal-500/10 font-mono text-xs font-semibold text-teal-700 ring-1 ring-teal-500/20 dark:text-teal-300 dark:ring-teal-400/20">
-                          {idx + 1}
-                        </span>
-                        <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
-                          <strong className="font-semibold text-zinc-900 dark:text-zinc-100">
-                            {lead}
-                          </strong>
-                          {rest ? ` ${rest}` : ''}
-                        </p>
-                      </li>
-                    )
-                  })}
+                  {project.researchQuestions.map((q, idx) => (
+                    <li
+                      key={q}
+                      className="flex items-baseline gap-3 text-sm text-zinc-700 dark:text-zinc-300"
+                    >
+                      <span className="shrink-0 rounded bg-zinc-100 px-2 py-0.5 font-mono text-xs font-semibold text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+                        RQ{idx + 1}
+                      </span>
+                      <span className="leading-relaxed">{q}</span>
+                    </li>
+                  ))}
                 </ol>
               </section>
             )}
 
-            {/* Interactive figures */}
-            <div>
-              <ResearchFigures projectSlug={project.slug} />
+          {/* Methodology & unit-of-analysis funnel */}
+          {project.methodology && (
+            <section className="border-t border-zinc-100 pt-10 dark:border-zinc-800">
+              <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                Metode og utvalg
+              </h2>
 
-              {hasPublishedResults && (
-                <div className="mt-4 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-teal-200/80 bg-teal-50/60 px-5 py-4 dark:border-teal-900/50 dark:bg-teal-950/20">
-                  <div>
-                    <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                      Fullstendige spørsmålsfordelinger er publisert
-                    </p>
-                    <p className="mt-0.5 text-xs text-zinc-600 dark:text-zinc-400">
-                      Utforsk aggregerte svarfordelinger for alle spørsmål i
-                      undersøkelsen.
-                    </p>
-                  </div>
-                  <Link
-                    href={`/forskning/${slug}/resultater`}
-                    className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-teal-600 px-3.5 py-2 text-xs font-semibold text-white hover:bg-teal-700 dark:bg-teal-500 dark:hover:bg-teal-400"
-                  >
-                    <ChartBarIcon className="h-4 w-4" />
-                    Se alle svarfordelinger
-                  </Link>
+              {project.sampleFlow && project.sampleFlow.length > 0 && (
+                <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                  {project.sampleFlow.map((step, idx) => (
+                    <div
+                      key={step.label}
+                      className="rounded-xl border border-zinc-200/80 bg-zinc-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-900/50"
+                    >
+                      <span className="font-mono text-xs font-medium text-zinc-400 dark:text-zinc-500">
+                        Steg {idx + 1}
+                      </span>
+                      <p className="mt-1 font-mono text-xl font-bold text-zinc-900 tabular-nums dark:text-zinc-100">
+                        {step.value}
+                      </p>
+                      <p className="mt-0.5 text-xs font-semibold text-zinc-800 dark:text-zinc-200">
+                        {step.label}
+                      </p>
+                      {step.detail && (
+                        <p className="mt-1.5 text-xs leading-snug text-zinc-500 dark:text-zinc-400">
+                          {step.detail}
+                        </p>
+                      )}
+                    </div>
+                  ))}
                 </div>
               )}
-            </div>
 
-            {/* Research questions */}
-            {project.researchQuestions &&
-              project.researchQuestions.length > 0 && (
-                <section className="border-t border-zinc-100 pt-8 dark:border-zinc-800">
-                  <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-                    Forskningsspørsmål
-                  </h2>
-                  <ol className="mt-4 space-y-2.5">
-                    {project.researchQuestions.map((q, idx) => (
-                      <li
-                        key={q}
-                        className="flex items-baseline gap-3 text-sm text-zinc-700 dark:text-zinc-300"
-                      >
-                        <span className="shrink-0 rounded bg-zinc-100 px-2 py-0.5 font-mono text-xs font-semibold text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
-                          RQ{idx + 1}
-                        </span>
-                        <span className="leading-relaxed">{q}</span>
-                      </li>
-                    ))}
-                  </ol>
-                </section>
-              )}
+              <p className="mt-5 max-w-3xl text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                {project.methodology}
+              </p>
+            </section>
+          )}
 
-            {/* Methodology & unit-of-analysis funnel */}
-            {project.methodology && (
-              <section className="border-t border-zinc-100 pt-8 dark:border-zinc-800">
-                <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-                  Metode og analyseenhet
-                </h2>
+          {/* Papers */}
+          <PapersSection papers={project.papers} projectSlug={project.slug} />
 
-                {project.sampleFlow && project.sampleFlow.length > 0 && (
-                  <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                    {project.sampleFlow.map((step, idx) => (
-                      <div
-                        key={step.label}
-                        className="relative rounded-xl border border-zinc-200/80 bg-zinc-50/70 p-3.5 dark:border-zinc-800 dark:bg-zinc-900/50"
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="font-mono text-[11px] font-medium text-zinc-400 dark:text-zinc-500">
-                            Steg {idx + 1}
-                          </span>
-                        </div>
-                        <p className="mt-1 font-mono text-lg font-bold text-zinc-900 tabular-nums dark:text-zinc-100">
-                          {step.value}
-                        </p>
-                        <p className="mt-0.5 text-xs font-medium text-zinc-700 dark:text-zinc-300">
-                          {step.label}
-                        </p>
-                        {step.detail && (
-                          <p className="mt-1 text-[11px] leading-snug text-zinc-500 dark:text-zinc-400">
-                            {step.detail}
-                          </p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                <p className="mt-4 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-                  {project.methodology}
-                </p>
-              </section>
-            )}
-
-            {/* Papers */}
-            <PapersSection papers={project.papers} projectSlug={project.slug} />
-          </div>
-
-          {/* Right sidebar */}
-          <aside className="space-y-6 lg:col-span-1">
-            {/* Quick access & datasets card */}
-            {(primaryPaper?.url ||
-              hasPublishedResults ||
-              (project.datasets && project.datasets.length > 0)) && (
-              <section className="rounded-2xl border border-zinc-200 bg-zinc-50/60 p-5 dark:border-zinc-800 dark:bg-zinc-900/50">
-                <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                  Rapport og åpne data
-                </h2>
-
-                <div className="mt-4 space-y-2.5">
-                  {primaryPaper?.url && (
-                    <a
-                      href={primaryPaper.url}
-                      className="flex w-full items-center justify-center gap-2 rounded-lg bg-teal-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-teal-700 dark:bg-teal-500 dark:hover:bg-teal-400"
-                    >
-                      <DocumentTextIcon className="h-4 w-4" />
-                      {primaryPaper.label ?? 'Les rapport (PDF)'}
-                    </a>
-                  )}
-
-                  {hasPublishedResults && (
-                    <Link
-                      href={`/forskning/${slug}/resultater`}
-                      className="flex w-full items-center justify-center gap-2 rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
-                    >
-                      <ChartBarIcon className="h-4 w-4 text-teal-600 dark:text-teal-400" />
-                      Utforsk alle svarfordelinger
-                    </Link>
-                  )}
-                </div>
-
-                {project.datasets && project.datasets.length > 0 && (
-                  <div className="mt-5 border-t border-zinc-200/80 pt-4 dark:border-zinc-800">
-                    <h3 className="flex items-center gap-1.5 text-xs font-semibold tracking-wide text-zinc-500 uppercase dark:text-zinc-400">
-                      <CircleStackIcon className="h-3.5 w-3.5 text-zinc-400" />
-                      Åpne datasett
-                    </h3>
-                    <ul className="mt-3 space-y-3">
-                      {project.datasets.map(dataset => (
-                        <li key={dataset.title} className="text-xs">
-                          <div className="flex items-baseline justify-between gap-2">
-                            <a
-                              href={dataset.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="font-medium text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300"
-                            >
-                              {dataset.title}
-                              <ArrowTopRightOnSquareIcon className="ml-1 inline h-3 w-3" />
-                            </a>
-                            <span className="shrink-0 rounded bg-zinc-200/70 px-1.5 py-0.5 font-mono text-[10px] text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
-                              {dataset.format}
-                            </span>
-                          </div>
-                          {dataset.description && (
-                            <p className="mt-1 leading-relaxed text-zinc-500 dark:text-zinc-400">
-                              {dataset.description}
-                            </p>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </section>
-            )}
-
-            {/* Waves */}
+          {/* Supporting metadata cards in a balanced 2-column grid */}
+          <div className="grid grid-cols-1 gap-6 border-t border-zinc-200 pt-10 md:grid-cols-2 dark:border-zinc-800">
             <WaveTimeline project={project} />
-
-            {/* Surveys */}
             <SurveysSection
               surveys={project.surveys}
               waves={project.waves}
               projectSlug={project.slug}
             />
-
-            {/* Ethics */}
+            <DatasetsSection datasets={project.datasets} />
             <EthicsSection ethics={project.ethics} />
-
-            {/* Related articles */}
             {articles.length > 0 && (
-              <section className="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900/40">
+              <section className="rounded-2xl border border-zinc-200 bg-white p-5 md:col-span-2 dark:border-zinc-800 dark:bg-zinc-900/40">
                 <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                   Relaterte artikler
                 </h2>
-                <ul className="mt-3 space-y-2.5">
+                <ul className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {articles.map(article => (
                     <li key={article.slug}>
                       <Link
@@ -495,7 +415,7 @@ export default async function ResearchProjectPage({
                 </ul>
               </section>
             )}
-          </aside>
+          </div>
         </div>
       </div>
     </Container>
@@ -507,7 +427,7 @@ function WaveTimeline({ project }: { project: ResearchProject }) {
   return (
     <section className="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900/40">
       <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-        Datainnsamlingsbølger
+        Datainnsamling
       </h2>
       <ol className="mt-4 space-y-4">
         {project.waves.map(wave => {
@@ -524,8 +444,8 @@ function WaveTimeline({ project }: { project: ResearchProject }) {
                 {wave.organizations && (
                   <p className="mt-0.5 font-mono text-xs text-zinc-500 tabular-nums dark:text-zinc-400">
                     {rate != null
-                      ? `${wave.organizations} av ${wave.invited} org. (${rate} %)`
-                      : `${wave.organizations} org.`}
+                      ? `${wave.organizations} av ${wave.invited} virksomheter (${rate} %)`
+                      : `${wave.organizations} virksomheter`}
                   </p>
                 )}
                 {rate != null && (
@@ -550,6 +470,47 @@ function WaveTimeline({ project }: { project: ResearchProject }) {
   )
 }
 
+function DatasetsSection({
+  datasets,
+}: {
+  datasets: ResearchProject['datasets']
+}) {
+  if (!datasets?.length) return null
+  return (
+    <section className="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900/40">
+      <h2 className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+        <CircleStackIcon className="h-4 w-4 text-zinc-400" />
+        Åpne datasett
+      </h2>
+      <ul className="mt-3 space-y-3">
+        {datasets.map(dataset => (
+          <li key={dataset.title} className="text-xs">
+            <div className="flex items-baseline justify-between gap-2">
+              <a
+                href={dataset.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300"
+              >
+                {dataset.title}
+                <ArrowTopRightOnSquareIcon className="ml-1 inline h-3 w-3" />
+              </a>
+              <span className="shrink-0 rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-[10px] text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+                {dataset.format}
+              </span>
+            </div>
+            {dataset.description && (
+              <p className="mt-1 leading-relaxed text-zinc-500 dark:text-zinc-400">
+                {dataset.description}
+              </p>
+            )}
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
 function PapersSection({
   papers,
   projectSlug,
@@ -559,19 +520,19 @@ function PapersSection({
 }) {
   if (!papers?.length) return null
   return (
-    <section className="border-t border-zinc-100 pt-8 dark:border-zinc-800">
+    <section className="border-t border-zinc-100 pt-10 dark:border-zinc-800">
       <h2 className="flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
         <DocumentTextIcon className="h-5 w-5 text-zinc-400" />
         Publikasjoner
       </h2>
-      <div className="mt-4 space-y-6">
+      <div className="mt-5 space-y-6">
         {papers.map(paper => (
           <div
             key={paper.title}
             className="rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900/40"
           >
             <div className="flex flex-wrap items-start justify-between gap-3">
-              <div className="max-w-xl">
+              <div className="max-w-2xl">
                 {paper.url ? (
                   <a
                     href={paper.url}
@@ -619,17 +580,22 @@ function PapersSection({
               </p>
             )}
 
-            <div className="mt-5 flex flex-wrap items-center justify-between gap-4 border-t border-zinc-100 pt-4 dark:border-zinc-800">
-              {paper.url && (
-                <a
-                  href={paper.url}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-teal-600 px-3.5 py-2 text-xs font-semibold text-white hover:bg-teal-700 dark:bg-teal-500 dark:hover:bg-teal-400"
-                >
-                  <DocumentTextIcon className="h-4 w-4" />
-                  {paper.label ?? 'Last ned PDF'}
-                </a>
-              )}
-              <PaperCitationButton paper={paper} projectSlug={projectSlug} />
+            <div className="mt-5 border-t border-zinc-100 pt-4 dark:border-zinc-800">
+              <PaperCitationButton
+                paper={paper}
+                projectSlug={projectSlug}
+                pdfAction={
+                  paper.url ? (
+                    <a
+                      href={paper.url}
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-teal-600 px-3.5 py-2 text-xs font-semibold text-white hover:bg-teal-700 dark:bg-teal-500 dark:hover:bg-teal-400"
+                    >
+                      <DocumentTextIcon className="h-4 w-4" />
+                      {paper.label ?? 'Last ned PDF'}
+                    </a>
+                  ) : undefined
+                }
+              />
             </div>
           </div>
         ))}
@@ -669,7 +635,7 @@ async function SurveysSection({
     <section className="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900/40">
       <h2 className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
         <ClipboardDocumentListIcon className="h-4 w-4 text-zinc-400" />
-        Undersøkelser
+        Spørreundersøkelser
       </h2>
       <ul className="mt-3 space-y-3">
         {surveys.map(survey => {
@@ -735,7 +701,7 @@ async function SurveysSection({
                       href={`/forskning/${projectSlug}/resultater`}
                       className="mt-1 inline-block text-[11px] font-medium text-teal-600 hover:text-teal-700 dark:text-teal-400"
                     >
-                      Se publiserte svarfordelinger →
+                      Se alle svarfordelinger →
                     </Link>
                   )}
                 </div>
@@ -744,7 +710,7 @@ async function SurveysSection({
                 <div className="mt-2 ml-4">
                   <div className="flex items-baseline justify-between text-[11px] text-zinc-500 dark:text-zinc-400">
                     <span>
-                      {responses} av {total} organisasjoner har svart ({rate} %)
+                      {responses} av {total} virksomheter har svart ({rate} %)
                     </span>
                   </div>
                   <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-teal-100 dark:bg-teal-900/30">
@@ -777,10 +743,10 @@ const ethicsLabels: Record<
 function EthicsSection({ ethics }: { ethics: ResearchProject['ethics'] }) {
   if (!ethics) return null
   return (
-    <section className="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900/40">
+    <section className="rounded-2xl border border-zinc-200 bg-white p-5 md:col-span-2 dark:border-zinc-800 dark:bg-zinc-900/40">
       <h2 className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
         <ShieldCheckIcon className="h-4 w-4 text-zinc-400" />
-        Forskningsetikk
+        Personvern og forskningsetikk
       </h2>
       <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
         Behandlingsansvarlig: {ethics.dataController} (
@@ -792,7 +758,7 @@ function EthicsSection({ ethics }: { ethics: ResearchProject['ethics'] }) {
         </a>
         )
       </p>
-      <dl className="mt-3 space-y-2.5">
+      <dl className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
         {(
           Object.entries(ethicsLabels) as [keyof typeof ethicsLabels, string][]
         ).map(([key, label]) => {
@@ -811,17 +777,17 @@ function EthicsSection({ ethics }: { ethics: ResearchProject['ethics'] }) {
         })}
       </dl>
       <p className="mt-4 border-t border-zinc-100 pt-3 text-[11px] leading-relaxed text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
-        Forskningen følger{' '}
+        Arbeidet følger{' '}
         <a
           href="https://github.com/offentlig-paas/forskning/blob/main/ETHICS.md"
           target="_blank"
           rel="noopener noreferrer"
           className="text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300"
         >
-          Offentlig PaaS sine forskningsetiske retningslinjer
+          forskningsetiske retningslinjer for Offentlig PaaS
           <ArrowTopRightOnSquareIcon className="ml-0.5 inline h-3 w-3" />
         </a>
-        , basert på NESHs retningslinjer, GDPR og Forskningsetikkloven.
+        , som bygger på NESHs retningslinjer, GDPR og forskningsetikkloven.
       </p>
     </section>
   )

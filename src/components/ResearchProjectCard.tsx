@@ -66,11 +66,11 @@ export function ResearchProjectCard({ project }: { project: ResearchProject }) {
           </p>
 
           {project.stats && project.stats.length > 0 && (
-            <dl className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <dl className="mt-6 grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
               {project.stats.map(stat => (
                 <div
                   key={stat.label}
-                  className="rounded-xl border border-zinc-100 bg-zinc-50/80 px-3.5 py-3 dark:border-zinc-800 dark:bg-zinc-800/50"
+                  className="rounded-xl border border-zinc-100 bg-zinc-50/80 p-4 dark:border-zinc-800 dark:bg-zinc-800/50"
                 >
                   <dt className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
                     {stat.label}
@@ -79,7 +79,7 @@ export function ResearchProjectCard({ project }: { project: ResearchProject }) {
                     {stat.value}
                   </dd>
                   {stat.subtext && (
-                    <dd className="mt-0.5 text-[11px] leading-tight text-zinc-500 dark:text-zinc-400">
+                    <dd className="mt-1 text-xs leading-snug text-zinc-500 dark:text-zinc-400">
                       {stat.subtext}
                     </dd>
                   )}
@@ -101,7 +101,7 @@ export function ResearchProjectCard({ project }: { project: ResearchProject }) {
               href={`/forskning/${project.slug}`}
               className="inline-flex items-center font-semibold text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300"
             >
-              Utforsk prosjektet
+              Gå til prosjektet
               <span aria-hidden="true" className="ml-1">
                 →
               </span>
@@ -113,7 +113,7 @@ export function ResearchProjectCard({ project }: { project: ResearchProject }) {
                 className="inline-flex items-center gap-1.5 font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
               >
                 <DocumentTextIcon className="h-4 w-4 text-zinc-400" />
-                {primaryPaper.label ?? 'Les rapport (PDF)'}
+                {primaryPaper.label ?? 'Les rapporten (PDF)'}
               </a>
             )}
 
@@ -123,7 +123,7 @@ export function ResearchProjectCard({ project }: { project: ResearchProject }) {
                 className="inline-flex items-center gap-1.5 font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
               >
                 <ChartBarIcon className="h-4 w-4 text-zinc-400" />
-                Se alle svar
+                Se alle svarfordelinger
               </Link>
             )}
 
