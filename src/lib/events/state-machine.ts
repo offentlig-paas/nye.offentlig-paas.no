@@ -57,6 +57,7 @@ const PRE_EVENT_CHECKLIST: ChecklistItem[] = [
     id: 'slack-channel-created',
     label: 'Slack-kanal opprettet',
     isComplete: eventDetails => !!eventDetails.slackChannel?.id,
+    actionLink: '#slack-channel',
     actionLabel: 'Opprett kanal',
   },
   {
@@ -66,6 +67,7 @@ const PRE_EVENT_CHECKLIST: ChecklistItem[] = [
       // This will be evaluated with participantInfo passed separately in component
       return false
     },
+    actionLink: '#participant-info',
     actionLabel: 'Legg til info',
   },
   {
@@ -137,6 +139,7 @@ const POST_EVENT_CHECKLIST: ChecklistItem[] = [
       // Slack doesn't provide archive status easily, so we'll skip this check
       return false // Default to incomplete
     },
+    actionLink: '#slack-channel',
     actionLabel: 'Arkiver kanal',
   },
 ]

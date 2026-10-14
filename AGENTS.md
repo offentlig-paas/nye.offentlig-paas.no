@@ -226,7 +226,7 @@ See **[EDITOR.md](EDITOR.md)** for full documentation: architecture, tool refere
 - Avoid overly verbose or repetitive language
 - Do not create lengthy summaries after coding sessions
 - Clean up comments and unused code before finalizing
-- Always run `yarn run check` after making changes
+- Always run `pnpm run check` after making changes
 - Do not commit code unless the user explicitly asks for it
 - Do not add Co-authored-by or other commit trailers to commit messages
 - Use conventional commits syntax for commit messages (e.g. `fix:`, `feat:`, `docs:`, `refactor:`)

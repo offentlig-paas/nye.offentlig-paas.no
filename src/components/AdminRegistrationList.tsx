@@ -137,7 +137,7 @@ export function AdminRegistrationList({
           <button
             type="button"
             onClick={onAddRegistration}
-            className="inline-flex items-center rounded-xl bg-zinc-900 px-3.5 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
+            className="inline-flex items-center rounded-xl bg-blue-600 px-3.5 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600"
           >
             <UserPlusIcon className="mr-1.5 h-4 w-4" />
             Legg til deltaker

@@ -106,7 +106,7 @@ export function AdminEventActions({
               <button
                 type="button"
                 onClick={onAddRegistration}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-semibold text-zinc-900 shadow-2xs transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700/60"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-700/60 dark:text-zinc-200 dark:hover:bg-zinc-700"
               >
                 <UserPlusIcon className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
                 <span>Legg til deltaker manuelt</span>
@@ -116,9 +116,9 @@ export function AdminEventActions({
             {showExport && onExport && (
               <button
                 onClick={onExport}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-zinc-50/70 px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-700/50 dark:text-zinc-300 dark:hover:bg-zinc-700"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-700/60 dark:text-zinc-200 dark:hover:bg-zinc-700"
               >
-                <DocumentArrowDownIcon className="h-4 w-4 text-zinc-400" />
+                <DocumentArrowDownIcon className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
                 <span>Eksporter deltakere (CSV)</span>
               </button>
             )}
@@ -240,9 +240,9 @@ export function AdminEventActions({
             {onAddRegistration && (
               <button
                 onClick={onAddRegistration}
-                className="inline-flex items-center rounded-xl bg-zinc-900 px-3.5 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
+                className="inline-flex items-center rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-700/60 dark:text-zinc-200 dark:hover:bg-zinc-700"
               >
-                <UserPlusIcon className="mr-1.5 h-4 w-4" />
+                <UserPlusIcon className="mr-1.5 h-4 w-4 text-zinc-500 dark:text-zinc-400" />
                 Legg til deltaker
               </button>
             )}
@@ -250,9 +250,9 @@ export function AdminEventActions({
             {onImportRegistrations && (
               <button
                 onClick={onImportRegistrations}
-                className="inline-flex items-center rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-700/60 dark:text-zinc-300 dark:hover:bg-zinc-700"
+                className="inline-flex items-center rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-700/60 dark:text-zinc-200 dark:hover:bg-zinc-700"
               >
-                <ArrowDownTrayIcon className="mr-1.5 h-4 w-4 text-zinc-400" />
+                <ArrowDownTrayIcon className="mr-1.5 h-4 w-4 text-zinc-500 dark:text-zinc-400" />
                 Importer påmeldinger
               </button>
             )}
@@ -260,9 +260,9 @@ export function AdminEventActions({
             {showExport && onExport && (
               <button
                 onClick={onExport}
-                className="inline-flex items-center rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-700/60 dark:text-zinc-300 dark:hover:bg-zinc-700"
+                className="inline-flex items-center rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-700/60 dark:text-zinc-200 dark:hover:bg-zinc-700"
               >
-                <DocumentArrowDownIcon className="mr-1.5 h-4 w-4 text-zinc-400" />
+                <DocumentArrowDownIcon className="mr-1.5 h-4 w-4 text-zinc-500 dark:text-zinc-400" />
                 Eksporter CSV
               </button>
             )}

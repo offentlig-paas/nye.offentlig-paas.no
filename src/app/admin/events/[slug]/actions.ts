@@ -1,7 +1,6 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { auth } from '@/auth'
 import { createCaller } from '@/server/root'
 import type { RegistrationStatus } from '@/domains/event-registration/types'
 
@@ -9,11 +8,6 @@ export async function updateParticipantInfo(
   slug: string,
   data: { streamingUrl: string; notes: string }
 ) {
-  const session = await auth()
-  if (!session?.user?.isAdmin) {
-    throw new Error('Unauthorized')
-  }
-
   const caller = await createCaller()
   await caller.admin.participantInfo.update({
     slug,
@@ -21,23 +15,18 @@ export async function updateParticipantInfo(
     notes: data.notes,
   })
 
-  revalidatePath(`/admin/events/${slug}`)
+  revalidatePath(`/admin/events/${slug}`, 'layout')
   return { success: true }
 }
 
 export async function deleteRegistration(slug: string, registrationId: string) {
-  const session = await auth()
-  if (!session?.user?.isAdmin) {
-    throw new Error('Unauthorized')
-  }
-
   const caller = await createCaller()
   await caller.admin.registrations.delete({
     slug,
     id: registrationId,
   })
 
-  revalidatePath(`/admin/events/${slug}`)
+  revalidatePath(`/admin/events/${slug}`, 'layout')
   return { success: true }
 }
 
@@ -46,11 +35,6 @@ export async function updateRegistrationStatus(
   registrationId: string,
   status: RegistrationStatus
 ) {
-  const session = await auth()
-  if (!session?.user?.isAdmin) {
-    throw new Error('Unauthorized')
-  }
-
   const caller = await createCaller()
   await caller.admin.registrations.updateStatus({
     slug,
@@ -58,7 +42,7 @@ export async function updateRegistrationStatus(
     status,
   })
 
-  revalidatePath(`/admin/events/${slug}`)
+  revalidatePath(`/admin/events/${slug}`, 'layout')
   return { success: true }
 }
 
@@ -67,11 +51,6 @@ export async function bulkUpdateRegistrationStatus(
   registrationIds: string[],
   status: RegistrationStatus
 ) {
-  const session = await auth()
-  if (!session?.user?.isAdmin) {
-    throw new Error('Unauthorized')
-  }
-
   const caller = await createCaller()
   const result = await caller.admin.registrations.bulkUpdateStatus({
     slug,
@@ -79,7 +58,7 @@ export async function bulkUpdateRegistrationStatus(
     status,
   })
 
-  revalidatePath(`/admin/events/${slug}`)
+  revalidatePath(`/admin/events/${slug}`, 'layout')
   return result
 }
 
@@ -96,11 +75,6 @@ export async function createManualRegistration(
     slackUserId?: string
   }
 ) {
-  const session = await auth()
-  if (!session?.user?.isAdmin) {
-    throw new Error('Unauthorized')
-  }
-
   const caller = await createCaller()
   const result = await caller.admin.registrations.create({
     slug,
@@ -116,11 +90,6 @@ export async function updateRegistrationOrganisation(
   registrationId: string,
   organisation: string
 ) {
-  const session = await auth()
-  if (!session?.user?.isAdmin) {
-    throw new Error('Unauthorized')
-  }
-
   const caller = await createCaller()
   const result = await caller.admin.registrations.updateOrganisation({
     slug,
@@ -128,7 +97,7 @@ export async function updateRegistrationOrganisation(
     organisation,
   })
 
-  revalidatePath(`/admin/events/${slug}`)
+  revalidatePath(`/admin/events/${slug}`, 'layout')
   return result
 }
 
@@ -137,11 +106,6 @@ export async function updateRegistrationAttendanceType(
   registrationId: string,
   attendanceType: 'physical' | 'digital'
 ) {
-  const session = await auth()
-  if (!session?.user?.isAdmin) {
-    throw new Error('Unauthorized')
-  }
-
   const caller = await createCaller()
   const result = await caller.admin.registrations.updateAttendanceType({
     slug,
@@ -149,6 +113,6 @@ export async function updateRegistrationAttendanceType(
     attendanceType,
   })
 
-  revalidatePath(`/admin/events/${slug}`)
+  revalidatePath(`/admin/events/${slug}`, 'layout')
   return result
 }
