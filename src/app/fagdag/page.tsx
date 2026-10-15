@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react'
 import { type Metadata } from 'next'
+import { cacheLife } from 'next/cache'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -108,7 +109,10 @@ export const metadata: Metadata = {
     'Fagdager er Offentlig PaaS nettverket sin helt egen dag hvor vi inviterer til faglig påfyll, erfaringsdeling og nettverksbygging.',
 }
 
-export default function Fagdager() {
+async function getEventsByStatus() {
+  'use cache'
+  cacheLife('hours')
+
   const events = getAllEvents()
   const upcomingEvents = events
     .filter(event => {
@@ -117,6 +121,12 @@ export default function Fagdager() {
     })
     .sort((a, b) => a.start.getTime() - b.start.getTime())
   const pastEvents = events.filter(event => getStatus(event) === Status.Past)
+
+  return { upcomingEvents, pastEvents }
+}
+
+export default async function Fagdager() {
+  const { upcomingEvents, pastEvents } = await getEventsByStatus()
 
   return (
     <SimpleLayout

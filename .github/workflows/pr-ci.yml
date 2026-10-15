@@ -69,6 +69,9 @@ jobs:
     env:
       NEXT_PUBLIC_SANITY_PROJECT_ID: 'your-sanity-project-id'
       NEXT_PUBLIC_SANITY_DATASET: 'production'
+      SANITY_API_TOKEN: 'dummy-token'
+      SLACK_BOT_TOKEN: 'xoxb-dummy'
+      SLACK_SIGNING_SECRET: 'dummy-secret'
     steps:
       - name: Checkout repository
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # ratchet:actions/checkout@v4
@@ -85,4 +88,4 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm build --experimental-build-mode compile
+        run: pnpm build
