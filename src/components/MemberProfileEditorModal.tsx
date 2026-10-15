@@ -509,9 +509,9 @@ export function MemberProfileEditorModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/70 p-3 backdrop-blur-xs sm:p-6">
-      <div className="flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="flex max-h-[92dvh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
         {/* Modal Header */}
-        <div className="flex items-center justify-between gap-4 border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+        <div className="flex items-center justify-between gap-4 border-b border-zinc-200 px-4 py-4 sm:px-6 dark:border-zinc-800">
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
@@ -539,7 +539,7 @@ export function MemberProfileEditorModal({
         </div>
 
         {/* Tabs */}
-        <div className="flex overflow-x-auto border-b border-zinc-200 bg-zinc-50/70 px-6 dark:border-zinc-800 dark:bg-zinc-900/60">
+        <div className="flex overflow-x-auto border-b border-zinc-200 bg-zinc-50/70 px-4 sm:px-6 dark:border-zinc-800 dark:bg-zinc-900/60">
           {(
             [
               {
@@ -592,7 +592,7 @@ export function MemberProfileEditorModal({
         {/* Form Body */}
         <form
           onSubmit={handleSave}
-          className="flex-1 space-y-6 overflow-y-auto p-6"
+          className="flex-1 space-y-6 overflow-y-auto p-4 sm:p-6"
         >
           {errorMsg && (
             <div className="rounded-xl border border-red-300 bg-red-50 p-3.5 text-xs font-medium text-red-800 dark:border-red-800 dark:bg-red-950/50 dark:text-red-200">
@@ -725,7 +725,7 @@ export function MemberProfileEditorModal({
                     value={platformName}
                     onChange={e => setPlatformName(e.target.value)}
                     placeholder="f.eks. NAIS, SKIP, Aurora"
-                    className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-base text-zinc-900 sm:text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                   />
                 </div>
 
@@ -746,7 +746,7 @@ export function MemberProfileEditorModal({
                         ? 'https://docs.nais.io'
                         : 'Valgfritt for intern plattform'
                     }
-                    className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-base text-zinc-900 sm:text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                   />
                 </div>
 
@@ -763,7 +763,7 @@ export function MemberProfileEditorModal({
                         ? 'docs.nais.io'
                         : 'Intern plattform'
                     }
-                    className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-base text-zinc-900 sm:text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                   />
                 </div>
 
@@ -776,7 +776,7 @@ export function MemberProfileEditorModal({
                     value={platformLogo}
                     onChange={e => setPlatformLogo(e.target.value)}
                     placeholder="/images/platforms/nais.svg"
-                    className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-base text-zinc-900 sm:text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                   />
                 </div>
               </div>
@@ -792,7 +792,7 @@ export function MemberProfileEditorModal({
                   value={platformDescription}
                   onChange={e => setPlatformDescription(e.target.value)}
                   placeholder="Applikasjonsplattformen til Nav som gir utviklingsteam autonome verktøy..."
-                  className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                  className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-base text-zinc-900 sm:text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                 />
               </div>
 
@@ -805,7 +805,7 @@ export function MemberProfileEditorModal({
                     rows={2}
                     value={tagline}
                     onChange={e => setTagline(e.target.value)}
-                    className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-base text-zinc-900 sm:text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                   />
                 </div>
                 <div>
@@ -816,7 +816,7 @@ export function MemberProfileEditorModal({
                     rows={2}
                     value={taglineEn}
                     onChange={e => setTaglineEn(e.target.value)}
-                    className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-base text-zinc-900 sm:text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                   />
                 </div>
                 <div>
@@ -827,7 +827,7 @@ export function MemberProfileEditorModal({
                     rows={4}
                     value={about}
                     onChange={e => setAbout(e.target.value)}
-                    className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-base text-zinc-900 sm:text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                   />
                 </div>
                 <div>
@@ -838,7 +838,7 @@ export function MemberProfileEditorModal({
                     rows={4}
                     value={aboutEn}
                     onChange={e => setAboutEn(e.target.value)}
-                    className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-base text-zinc-900 sm:text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                   />
                 </div>
               </div>
@@ -853,7 +853,7 @@ export function MemberProfileEditorModal({
                     value={cloudProvidersText}
                     onChange={e => setCloudProvidersText(e.target.value)}
                     placeholder="Google Cloud Platform (GCP), On-premise datasentre"
-                    className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-base text-zinc-900 sm:text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                   />
                 </div>
                 <div className="flex flex-col justify-end gap-2 pb-1">
@@ -968,7 +968,7 @@ export function MemberProfileEditorModal({
 
           {activeTab === 'capabilities' && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                     Plattformkapabiliteter og Golden Paths
@@ -1047,7 +1047,7 @@ export function MemberProfileEditorModal({
                           setCapabilities(next)
                         }}
                         placeholder="Deklarativ applikasjonsplattform"
-                        className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                        className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                       />
                     </div>
                     <div>
@@ -1063,7 +1063,7 @@ export function MemberProfileEditorModal({
                           setCapabilities(next)
                         }}
                         placeholder="Declarative Application Runtime"
-                        className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                        className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-2">
@@ -1082,7 +1082,7 @@ export function MemberProfileEditorModal({
                             }
                             setCapabilities(next)
                           }}
-                          className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                          className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                         >
                           {CAPABILITY_CATEGORIES.map(cat => (
                             <option key={cat} value={cat}>
@@ -1106,7 +1106,7 @@ export function MemberProfileEditorModal({
                             }
                             setCapabilities(next)
                           }}
-                          className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                          className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                         >
                           <option value="production">Produksjon</option>
                           <option value="beta">Beta</option>
@@ -1129,7 +1129,7 @@ export function MemberProfileEditorModal({
                           next[idx] = { ...cap, description: e.target.value }
                           setCapabilities(next)
                         }}
-                        className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                        className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                       />
                     </div>
                     <div>
@@ -1150,7 +1150,7 @@ export function MemberProfileEditorModal({
                         placeholder={
                           'Automatisk nettverkspolicy\nInnebygd autoskalering'
                         }
-                        className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                        className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                       />
                     </div>
                   </div>
@@ -1195,7 +1195,7 @@ export function MemberProfileEditorModal({
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                   Valgte CNCF-prosjekter ({cncfProjects.length})
                 </h3>
@@ -1240,7 +1240,7 @@ export function MemberProfileEditorModal({
                             next[idx] = { ...proj, name: e.target.value }
                             setCncfProjects(next)
                           }}
-                          className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                          className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                         />
                       </div>
 
@@ -1258,7 +1258,7 @@ export function MemberProfileEditorModal({
                             }
                             setCncfProjects(next)
                           }}
-                          className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                          className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                         >
                           {CNCF_MATURITY_TIERS.map(t => (
                             <option key={t} value={t}>
@@ -1283,7 +1283,7 @@ export function MemberProfileEditorModal({
                             }
                             setCncfProjects(next)
                           }}
-                          className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                          className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                         >
                           {CNCF_PROJECT_CATEGORIES.map(c => (
                             <option key={c} value={c}>
@@ -1312,7 +1312,7 @@ export function MemberProfileEditorModal({
                               setCncfProjects(next)
                             }}
                             placeholder="2020"
-                            className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                            className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                           />
                         </div>
                         <button
@@ -1343,7 +1343,7 @@ export function MemberProfileEditorModal({
                             next[idx] = { ...proj, usage: e.target.value }
                             setCncfProjects(next)
                           }}
-                          className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                          className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                         />
                       </div>
                       <div>
@@ -1362,7 +1362,7 @@ export function MemberProfileEditorModal({
                             setCncfProjects(next)
                           }}
                           placeholder="https://github.com/..."
-                          className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                          className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                         />
                       </div>
                     </div>
@@ -1375,7 +1375,7 @@ export function MemberProfileEditorModal({
           {activeTab === 'stats' && (
             <div className="space-y-6">
               <div>
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <div>
                     <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                       Nøkkeltall (vises i toppen av profilen)
@@ -1415,7 +1415,7 @@ export function MemberProfileEditorModal({
                           setStats(next)
                         }}
                         placeholder="Merkelapp (f.eks. Daglige deploys)"
-                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                       />
                       <input
                         type="text"
@@ -1426,7 +1426,7 @@ export function MemberProfileEditorModal({
                           setStats(next)
                         }}
                         placeholder="Verdi (f.eks. 600+)"
-                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs font-semibold dark:border-zinc-700 dark:bg-zinc-800"
+                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base font-semibold sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                       />
                       <input
                         type="text"
@@ -1437,7 +1437,7 @@ export function MemberProfileEditorModal({
                           setStats(next)
                         }}
                         placeholder="Detalj (f.eks. Fullautomatisert GitOps)"
-                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                       />
                       <div className="flex items-center justify-end">
                         <button
@@ -1479,7 +1479,7 @@ export function MemberProfileEditorModal({
                           value={manifestFilename}
                           onChange={e => setManifestFilename(e.target.value)}
                           placeholder="nais.yaml / skiperator.yaml"
-                          className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 font-mono text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                          className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 font-mono text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                         />
                       </div>
                       <div>
@@ -1490,7 +1490,7 @@ export function MemberProfileEditorModal({
                           type="text"
                           value={manifestTitle}
                           onChange={e => setManifestTitle(e.target.value)}
-                          className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                          className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                         />
                       </div>
                     </div>
@@ -1502,7 +1502,7 @@ export function MemberProfileEditorModal({
                         type="text"
                         value={manifestDescription}
                         onChange={e => setManifestDescription(e.target.value)}
-                        className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                        className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                       />
                     </div>
                     <div>
@@ -1513,7 +1513,7 @@ export function MemberProfileEditorModal({
                         rows={10}
                         value={manifestCode}
                         onChange={e => setManifestCode(e.target.value)}
-                        className="mt-1 w-full rounded-lg border border-zinc-300 bg-zinc-950 p-3 font-mono text-xs text-teal-300 dark:border-zinc-700"
+                        className="mt-1 w-full rounded-lg border border-zinc-300 bg-zinc-950 p-3 font-mono text-base text-teal-300 sm:text-xs dark:border-zinc-700"
                       />
                     </div>
                   </div>
@@ -1526,7 +1526,7 @@ export function MemberProfileEditorModal({
             <div className="space-y-6">
               {/* Tech Stack */}
               <div>
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                     Teknologistabel (kategorier i sidekolonnen)
                   </h3>
@@ -1559,7 +1559,7 @@ export function MemberProfileEditorModal({
                           setTechStack(next)
                         }}
                         placeholder="Kategori (f.eks. Språk og rammeverk)"
-                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                       />
                       <input
                         type="text"
@@ -1573,7 +1573,7 @@ export function MemberProfileEditorModal({
                           setTechStack(next)
                         }}
                         placeholder="Teknologier (komma-separert: Kotlin, Go, Kafka)"
-                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs sm:col-span-2 dark:border-zinc-700 dark:bg-zinc-800"
+                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:col-span-2 sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                       />
                     </div>
                   ))}
@@ -1582,7 +1582,7 @@ export function MemberProfileEditorModal({
 
               {/* Team Members */}
               <div className="border-t border-zinc-200 pt-5 dark:border-zinc-800">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <div>
                     <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                       Nøkkelpersoner / Plattformteam
@@ -1621,7 +1621,7 @@ export function MemberProfileEditorModal({
                           setTeam(next)
                         }}
                         placeholder="Navn"
-                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                       />
                       <input
                         type="text"
@@ -1632,7 +1632,7 @@ export function MemberProfileEditorModal({
                           setTeam(next)
                         }}
                         placeholder="Rolle (f.eks. Plattformarkitekt)"
-                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                       />
                       <input
                         type="text"
@@ -1643,7 +1643,7 @@ export function MemberProfileEditorModal({
                           setTeam(next)
                         }}
                         placeholder="GitHub-brukernavn"
-                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                       />
                       <div className="flex items-center gap-2">
                         <input
@@ -1655,7 +1655,7 @@ export function MemberProfileEditorModal({
                             setTeam(next)
                           }}
                           placeholder="Slack-profil URL"
-                          className="w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                          className="w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                         />
                         <button
                           type="button"
@@ -1674,7 +1674,7 @@ export function MemberProfileEditorModal({
 
               {/* Links */}
               <div className="border-t border-zinc-200 pt-5 dark:border-zinc-800">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                     Relevante lenker
                   </h3>
@@ -1712,7 +1712,7 @@ export function MemberProfileEditorModal({
                           setLinks(next)
                         }}
                         placeholder="Tittel"
-                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                       />
                       <input
                         type="text"
@@ -1723,7 +1723,7 @@ export function MemberProfileEditorModal({
                           setLinks(next)
                         }}
                         placeholder="Kort beskrivelse"
-                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                       />
                       <input
                         type="url"
@@ -1734,7 +1734,7 @@ export function MemberProfileEditorModal({
                           setLinks(next)
                         }}
                         placeholder="https://..."
-                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                       />
                       <div className="flex items-center gap-2">
                         <select
@@ -1747,7 +1747,7 @@ export function MemberProfileEditorModal({
                             }
                             setLinks(next)
                           }}
-                          className="w-full rounded-lg border border-zinc-300 bg-white px-2 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                          className="w-full rounded-lg border border-zinc-300 bg-white px-2 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                         >
                           {PROFILE_LINK_TYPES.map(t => (
                             <option key={t} value={t}>
@@ -1772,7 +1772,7 @@ export function MemberProfileEditorModal({
 
               {/* Open Positions */}
               <div className="border-t border-zinc-200 pt-5 dark:border-zinc-800">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                     Ledige stillinger i plattformteamet
                   </h3>
@@ -1811,7 +1811,7 @@ export function MemberProfileEditorModal({
                           setOpenPositions(next)
                         }}
                         placeholder="Stillingstittel"
-                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                       />
                       <input
                         type="text"
@@ -1822,7 +1822,7 @@ export function MemberProfileEditorModal({
                           setOpenPositions(next)
                         }}
                         placeholder="Avdeling / Team"
-                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                       />
                       <input
                         type="url"
@@ -1833,7 +1833,7 @@ export function MemberProfileEditorModal({
                           setOpenPositions(next)
                         }}
                         placeholder="Lenke til utlysning (https://...)"
-                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                       />
                       <div className="flex items-center gap-2">
                         <input
@@ -1848,7 +1848,7 @@ export function MemberProfileEditorModal({
                             setOpenPositions(next)
                           }}
                           placeholder="Stikkord (Kubernetes, Go)"
-                          className="w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+                          className="w-full rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-base sm:text-xs dark:border-zinc-700 dark:bg-zinc-800"
                         />
                         <button
                           type="button"

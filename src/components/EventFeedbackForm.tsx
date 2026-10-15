@@ -171,8 +171,8 @@ export function EventFeedbackForm({
                 key={talk.title}
                 className="space-y-2 rounded-lg border border-zinc-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-800"
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex flex-1 items-start gap-3">
+                <div className="flex flex-col gap-2.5 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+                  <div className="flex min-w-0 flex-1 items-start gap-3">
                     {talk.speakers && talk.speakers.length > 0 && (
                       <div className="flex -space-x-2 pt-0.5">
                         {talk.speakers.map((speaker, idx) => (
@@ -186,7 +186,7 @@ export function EventFeedbackForm({
                         ))}
                       </div>
                     )}
-                    <div className="flex-1">
+                    <div className="min-w-0 flex-1">
                       <div className="font-medium text-zinc-900 dark:text-white">
                         {talk.title}
                       </div>
@@ -224,7 +224,7 @@ export function EventFeedbackForm({
 
       {/* Event Rating */}
       <div className="space-y-4 rounded-lg border border-zinc-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           {organizers.length > 0 && (
             <div className="flex -space-x-2">
               {organizers.map((organizer, idx) => (

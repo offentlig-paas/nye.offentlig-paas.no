@@ -63,7 +63,7 @@ async function FeedbackContent({ slug }: { slug: string }) {
         <div className="xl:relative">
           <div className="mx-auto max-w-7xl">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
+              <div className="flex min-w-0 items-center gap-3 sm:gap-4">
                 <Link
                   href={`/fagdag/${slug}`}
                   className="group flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-white shadow-md ring-1 shadow-zinc-800/5 ring-zinc-900/5 transition dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0 dark:ring-white/10 dark:hover:border-zinc-700 dark:hover:ring-white/20"
@@ -71,7 +71,7 @@ async function FeedbackContent({ slug }: { slug: string }) {
                 >
                   <ArrowLeftIcon className="h-4 w-4 stroke-zinc-500 transition group-hover:stroke-zinc-700 dark:stroke-zinc-500 dark:group-hover:stroke-zinc-400" />
                 </Link>
-                <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
+                <h1 className="text-2xl font-bold tracking-tight break-words text-zinc-800 sm:text-4xl lg:text-5xl dark:text-zinc-100">
                   Takk for tilbakemeldingen!
                 </h1>
               </div>
@@ -142,7 +142,7 @@ async function FeedbackContent({ slug }: { slug: string }) {
     <Container className="mt-16 lg:mt-32">
       <div className="xl:relative">
         <div className="mx-auto max-w-7xl">
-          <div className="flex items-center gap-4">
+          <div className="flex min-w-0 items-center gap-3 sm:gap-4">
             <Link
               href={`/fagdag/${slug}`}
               className="group flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-white shadow-md ring-1 shadow-zinc-800/5 ring-zinc-900/5 transition dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0 dark:ring-white/10 dark:hover:border-zinc-700 dark:hover:ring-white/20"
@@ -150,7 +150,7 @@ async function FeedbackContent({ slug }: { slug: string }) {
             >
               <ArrowLeftIcon className="h-4 w-4 stroke-zinc-500 transition group-hover:stroke-zinc-700 dark:stroke-zinc-500 dark:group-hover:stroke-zinc-400" />
             </Link>
-            <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
+            <h1 className="text-2xl font-bold tracking-tight break-words text-zinc-800 sm:text-4xl lg:text-5xl dark:text-zinc-100">
               {isQuickFeedback
                 ? 'Utvid tilbakemeldingen din'
                 : 'Gi tilbakemelding'}

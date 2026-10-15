@@ -262,7 +262,7 @@ export function AdminAgendaClient() {
             </select>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Button
               onClick={() => handleBulkNudge(true)}
               disabled={isSendingBulkNudge || stats.withoutSlides === 0}
@@ -355,7 +355,7 @@ export function AdminAgendaClient() {
 
                         {/* Rating */}
                         {talkRating && (
-                          <div className="mt-2 flex items-center gap-3">
+                          <div className="mt-2 flex flex-wrap items-center gap-3">
                             <div className="flex items-center gap-2">
                               <StarRating
                                 rating={talkRating.averageRating}

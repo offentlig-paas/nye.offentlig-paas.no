@@ -212,10 +212,12 @@ export function TalkAttachmentUpload({
                 />
               </div>
               {selectedFile && (
-                <div className="mt-2 flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
-                  <DocumentIcon className="h-4 w-4" />
-                  {selectedFile.name} (
-                  {(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
+                <div className="mt-2 flex min-w-0 items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+                  <DocumentIcon className="h-4 w-4 shrink-0" />
+                  <span className="truncate">{selectedFile.name}</span>
+                  <span className="shrink-0">
+                    ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
+                  </span>
                 </div>
               )}
             </div>

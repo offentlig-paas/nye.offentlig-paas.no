@@ -610,7 +610,7 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
 
                   {/* Hover-only action buttons at bottom */}
                   {!reorderMode && (
-                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3 opacity-0 transition-opacity group-hover:opacity-100">
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
                       <div className="flex justify-end gap-2">
                         <button
                           onClick={() => handleEdit(photo)}

@@ -441,7 +441,7 @@ export function Header() {
                 'var(--header-inner-position)' as React.CSSProperties['position'],
             }}
           >
-            <div className="relative flex gap-4">
+            <div className="relative flex gap-2 sm:gap-4">
               <div className="flex flex-1">
                 {!isHomePage && (
                   <AvatarContainer>
@@ -454,7 +454,7 @@ export function Header() {
                 <DesktopNavigation className="pointer-events-auto hidden md:block" />
               </div>
               <div className="flex justify-end md:flex-1">
-                <div className="pointer-events-auto flex items-center gap-4">
+                <div className="pointer-events-auto flex items-center gap-2 sm:gap-4">
                   <AuthButton />
                   <ThemeToggle />
                 </div>

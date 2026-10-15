@@ -71,14 +71,14 @@ function ToastComponent({ toast, onDismiss }: ToastProps) {
 
   return (
     <div
-      className={`pointer-events-auto w-full max-w-96 min-w-80 rounded-lg border shadow-xl ring-1 ring-black/5 backdrop-blur-sm dark:ring-white/10 ${style.container}`}
+      className={`pointer-events-auto w-full max-w-96 rounded-lg border shadow-xl ring-1 ring-black/5 backdrop-blur-sm sm:min-w-80 dark:ring-white/10 ${style.container}`}
     >
       <div className="p-4">
         <div className="flex items-start">
           <div className="flex-shrink-0">
             <Icon className={`h-6 w-6 ${style.icon}`} aria-hidden="true" />
           </div>
-          <div className="ml-3 flex-1 pt-0.5">
+          <div className="ml-3 min-w-0 flex-1 pt-0.5 break-words">
             <p className={`text-sm leading-6 font-medium ${style.title}`}>
               {toast.title}
             </p>
@@ -113,9 +113,9 @@ export function ToastContainer({ toasts, onDismiss }: ToastContainerProps) {
   return (
     <div
       aria-live="assertive"
-      className="pointer-events-none fixed right-0 bottom-0 z-50 p-6"
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-50 p-4 sm:inset-x-auto sm:right-0 sm:p-6"
     >
-      <div className="flex w-auto flex-col items-end space-y-4">
+      <div className="flex w-full flex-col items-end space-y-4 sm:w-auto">
         {toasts.map(toast => (
           <Transition
             key={toast.id}

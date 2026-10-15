@@ -100,7 +100,7 @@ export function AdminSurveyResponsesClient({
         </button>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700">
+      <div className="overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-700">
         <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
           <thead className="bg-zinc-50 dark:bg-zinc-800">
             <tr>
@@ -287,7 +287,7 @@ function ResponseRowView({
                         return (
                           <div
                             key={questionId}
-                            className="grid grid-cols-[minmax(200px,1fr)_2fr] gap-2 text-sm"
+                            className="grid grid-cols-1 gap-0.5 text-sm sm:grid-cols-[minmax(200px,1fr)_2fr] sm:gap-2"
                           >
                             <span className="text-zinc-500 dark:text-zinc-400">
                               {meta?.title ?? questionId}

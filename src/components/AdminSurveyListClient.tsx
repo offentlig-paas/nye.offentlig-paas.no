@@ -51,7 +51,7 @@ export function AdminSurveyListClient({
                   </h3>
                   <Badge color={status.color}>{status.label}</Badge>
                 </div>
-                <div className="mt-2 flex items-center gap-6 text-sm text-zinc-500 dark:text-zinc-400">
+                <div className="mt-2 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-zinc-500 dark:text-zinc-400">
                   <span className="flex items-center gap-1.5">
                     <UsersIcon className="h-4 w-4" />
                     {survey.responseCount} svar

@@ -27,7 +27,7 @@ export function SimpleLayout({
     <Container className="mt-16 sm:mt-32">
       <div className="xl:relative">
         <div className="mx-auto max-w-7xl">
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
             {backButton && (
               <Link
                 href={backButton.href}
@@ -37,7 +37,7 @@ export function SimpleLayout({
                 <ArrowLeftIcon className="h-4 w-4 stroke-zinc-500 transition group-hover:stroke-zinc-700 dark:stroke-zinc-500 dark:group-hover:stroke-zinc-400" />
               </Link>
             )}
-            <header className="w-full">
+            <header className="w-full min-w-0">
               {lastUpdated && (
                 <time
                   dateTime={lastUpdated}

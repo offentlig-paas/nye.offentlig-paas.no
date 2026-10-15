@@ -81,7 +81,7 @@ export function EventFeedbackSummary({
       </div>
 
       <div className="space-y-3">
-        <div className="flex items-center justify-between rounded-lg bg-zinc-50 p-4 dark:bg-zinc-900/50">
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-zinc-50 p-4 dark:bg-zinc-900/50">
           <div>
             <div className="text-sm font-medium text-zinc-900 dark:text-white">
               Samlet vurdering
@@ -113,9 +113,9 @@ export function EventFeedbackSummary({
               .map(talk => (
                 <div
                   key={talk.talkTitle}
-                  className="flex items-start justify-between gap-4 rounded-lg border border-zinc-200 p-3 dark:border-zinc-700"
+                  className="flex flex-col gap-2 rounded-lg border border-zinc-200 p-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4 dark:border-zinc-700"
                 >
-                  <div className="flex-1">
+                  <div className="min-w-0 flex-1">
                     <div className="text-sm font-medium text-zinc-900 dark:text-white">
                       {talk.talkTitle}
                     </div>

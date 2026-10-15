@@ -75,7 +75,7 @@ export function AdminEventsClient({ eventsData }: AdminEventsClientProps) {
       </div>
 
       {/* View Toggle */}
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-2">
         <div className="inline-flex rounded-2xl border border-zinc-200/80 bg-zinc-100/80 p-1 dark:border-zinc-800 dark:bg-zinc-900/80">
           <button
             onClick={() => setView('upcoming')}

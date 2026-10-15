@@ -7,22 +7,22 @@ interface ProfileHeaderProps {
 
 export function ProfileHeader({ user }: ProfileHeaderProps) {
   return (
-    <div className="flex items-center gap-6 pb-8">
+    <div className="flex flex-col items-start gap-4 pb-8 sm:flex-row sm:items-center sm:gap-6">
       {user.image && (
         <Image
           src={user.image}
           alt={user.name || 'Bruker'}
           width={120}
           height={120}
-          className="rounded-full bg-zinc-100 dark:bg-zinc-800"
+          className="h-20 w-20 shrink-0 rounded-full bg-zinc-100 sm:h-[120px] sm:w-[120px] dark:bg-zinc-800"
         />
       )}
-      <div className="flex-1">
-        <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
+      <div className="min-w-0 flex-1">
+        <h1 className="text-2xl font-bold tracking-tight break-words text-zinc-800 sm:text-5xl dark:text-zinc-100">
           {user.name}
         </h1>
         {user.email && (
-          <p className="mt-2 text-lg text-zinc-600 dark:text-zinc-400">
+          <p className="mt-2 text-base break-all text-zinc-600 sm:text-lg dark:text-zinc-400">
             {user.email}
           </p>
         )}

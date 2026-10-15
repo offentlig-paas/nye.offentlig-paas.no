@@ -103,10 +103,12 @@ export function ParticipantInfoEditor({
                     href={participantInfo.streamingUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50/70 px-3 py-1.5 text-xs font-medium text-blue-700 transition hover:bg-blue-100 dark:border-blue-800/60 dark:bg-blue-950/40 dark:text-blue-300 dark:hover:bg-blue-900/50"
+                    className="inline-flex max-w-full min-w-0 items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50/70 px-3 py-1.5 text-xs font-medium text-blue-700 transition hover:bg-blue-100 dark:border-blue-800/60 dark:bg-blue-950/40 dark:text-blue-300 dark:hover:bg-blue-900/50"
                   >
-                    <VideoCameraIcon className="h-4 w-4" />
-                    <span>Åpne streaming ({participantInfo.streamingUrl})</span>
+                    <VideoCameraIcon className="h-4 w-4 shrink-0" />
+                    <span className="truncate">
+                      Åpne streaming ({participantInfo.streamingUrl})
+                    </span>
                   </a>
                 ) : (
                   <span className="text-xs text-zinc-400 dark:text-zinc-500">

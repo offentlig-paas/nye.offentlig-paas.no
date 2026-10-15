@@ -270,8 +270,8 @@ async function FagdagContent({ params }: { params: Params }) {
       <Container className="mt-16 lg:mt-32">
         <div className="xl:relative">
           <div className="mx-auto max-w-7xl">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-start justify-between gap-3 sm:items-center">
+              <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
                 <Link
                   href="/fagdag"
                   className="group flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white shadow-md ring-1 shadow-zinc-800/5 ring-zinc-900/5 transition dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0 dark:ring-white/10 dark:hover:border-zinc-700 dark:hover:ring-white/20"
@@ -279,7 +279,7 @@ async function FagdagContent({ params }: { params: Params }) {
                 >
                   <ArrowLeftIcon className="h-4 w-4 stroke-zinc-500 transition group-hover:stroke-zinc-700 dark:stroke-zinc-500 dark:group-hover:stroke-zinc-400" />
                 </Link>
-                <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
+                <h1 className="text-2xl font-bold tracking-tight break-words text-zinc-800 sm:text-4xl lg:text-5xl dark:text-zinc-100">
                   {event.title}
                 </h1>
               </div>
@@ -357,7 +357,7 @@ async function FagdagContent({ params }: { params: Params }) {
 
                   {isCallForPapersOpen(event) && (
                     <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950/20">
-                      <div className="flex items-center justify-between gap-4">
+                      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                         <div className="flex items-start">
                           <PresentationChartLineIcon
                             className="mt-1 mr-3 h-6 w-6 shrink-0 text-blue-600 dark:text-blue-400"
@@ -386,7 +386,7 @@ async function FagdagContent({ params }: { params: Params }) {
                               ? `/fagdag/${slug}/cfp`
                               : event.callForPapersUrl
                           }
-                          className="shrink-0"
+                          className="w-full shrink-0 sm:w-auto"
                         >
                           Foreslå foredrag
                         </Button>

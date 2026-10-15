@@ -462,13 +462,13 @@ function StateOfPlatformsFigures() {
                 </>
               )}
             </div>
-            <div className="inline-flex rounded-lg border border-zinc-200 p-0.5 text-xs dark:border-zinc-700">
+            <div className="flex flex-col rounded-lg border border-zinc-200 p-0.5 text-xs sm:inline-flex sm:flex-row dark:border-zinc-700">
               <button
                 type="button"
                 aria-pressed={maturityMode === 'cross'}
                 onClick={() => setMaturityMode('cross')}
                 className={clsx(
-                  'cursor-pointer rounded-md px-3 py-1.5 font-medium whitespace-nowrap transition',
+                  'cursor-pointer rounded-md px-3 py-1.5 font-medium transition sm:whitespace-nowrap',
                   maturityMode === 'cross'
                     ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
                     : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400'
@@ -481,7 +481,7 @@ function StateOfPlatformsFigures() {
                 aria-pressed={maturityMode === 'panel'}
                 onClick={() => setMaturityMode('panel')}
                 className={clsx(
-                  'cursor-pointer rounded-md px-3 py-1.5 font-medium whitespace-nowrap transition',
+                  'cursor-pointer rounded-md px-3 py-1.5 font-medium transition sm:whitespace-nowrap',
                   maturityMode === 'panel'
                     ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
                     : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400'
@@ -1075,13 +1075,13 @@ function StateOfAiAgentsFigures() {
                 Brukt selv (n = 106 brukere)
               </span>
             </div>
-            <div className="inline-flex rounded-lg border border-zinc-200 p-0.5 text-xs dark:border-zinc-700">
+            <div className="flex flex-col rounded-lg border border-zinc-200 p-0.5 text-xs sm:inline-flex sm:flex-row dark:border-zinc-700">
               <button
                 type="button"
                 aria-pressed={shadowDef === 'broad'}
                 onClick={() => setShadowDef('broad')}
                 className={clsx(
-                  'cursor-pointer rounded-md px-3 py-1.5 font-medium whitespace-nowrap transition',
+                  'cursor-pointer rounded-md px-3 py-1.5 font-medium transition sm:whitespace-nowrap',
                   shadowDef === 'broad'
                     ? 'bg-amber-600 text-white'
                     : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400'
@@ -1094,7 +1094,7 @@ function StateOfAiAgentsFigures() {
                 aria-pressed={shadowDef === 'narrow'}
                 onClick={() => setShadowDef('narrow')}
                 className={clsx(
-                  'cursor-pointer rounded-md px-3 py-1.5 font-medium whitespace-nowrap transition',
+                  'cursor-pointer rounded-md px-3 py-1.5 font-medium transition sm:whitespace-nowrap',
                   shadowDef === 'narrow'
                     ? 'bg-rose-600 text-white'
                     : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400'
@@ -1498,7 +1498,7 @@ export function PaperCitationButton({
               )}
             </button>
           </div>
-          <p className="mt-1 font-mono text-[11px] text-zinc-600 dark:text-zinc-400">
+          <p className="mt-1 font-mono text-[11px] break-words text-zinc-600 dark:text-zinc-400">
             {apa}
           </p>
 

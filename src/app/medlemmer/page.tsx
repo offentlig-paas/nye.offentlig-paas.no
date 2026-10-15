@@ -82,17 +82,16 @@ function MemberPopover({
   return (
     <div
       ref={ref}
-      className="absolute left-1/2 z-20 w-72 -translate-x-1/2 rounded-xl bg-white shadow-xl ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700"
-      style={{ bottom: '100%', marginBottom: '8px' }}
+      className="fixed inset-x-4 bottom-4 z-50 rounded-xl bg-white shadow-xl ring-1 ring-gray-200 sm:absolute sm:inset-x-auto sm:bottom-full sm:left-1/2 sm:z-20 sm:mb-2 sm:w-72 sm:-translate-x-1/2 dark:bg-gray-800 dark:ring-gray-700"
     >
       {/* Arrow */}
-      <div className="absolute -bottom-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 bg-white ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700" />
+      <div className="absolute -bottom-1.5 left-1/2 hidden h-3 w-3 -translate-x-1/2 rotate-45 bg-white ring-1 ring-gray-200 sm:block dark:bg-gray-800 dark:ring-gray-700" />
 
       <div className="relative rounded-xl bg-white p-4 dark:bg-gray-800">
         <button
           onClick={onClose}
           aria-label="Lukk"
-          className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+          className="absolute top-2 right-2 -m-1 p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
         >
           <XMarkIcon className="h-4 w-4" />
         </button>
@@ -122,7 +121,7 @@ function MemberPopover({
               </div>
             )}
           </div>
-          <div className="min-w-0">
+          <div className="min-w-0 pr-6">
             <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
               {member.name}
             </h3>
@@ -162,7 +161,7 @@ function MemberPopover({
               href={member.homepage}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              className="-m-1 p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
               title="Nettside"
             >
               <ArrowTopRightOnSquareIcon className="h-4 w-4" />
@@ -173,7 +172,7 @@ function MemberPopover({
               href={`https://github.com/${member.github}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              className="-m-1 p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
               title="GitHub"
             >
               <GitHubIcon className="h-4 w-4" />
@@ -184,7 +183,7 @@ function MemberPopover({
               href={member.linkedinUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+              className="-m-1 p-1.5 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
               title="LinkedIn"
             >
               <LinkedInIcon className="h-4 w-4" />

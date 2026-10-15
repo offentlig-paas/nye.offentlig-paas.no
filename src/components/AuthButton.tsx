@@ -87,7 +87,7 @@ export function AuthButton({
               className="ring-1 ring-white/20"
             />
           )}
-          <span className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
+          <span className="hidden max-w-[8rem] truncate text-sm font-medium text-zinc-800 sm:inline dark:text-zinc-200">
             {firstName}
           </span>
           <svg
@@ -110,14 +110,14 @@ export function AuthButton({
         {isDropdownOpen && (
           <div className="absolute right-0 mt-2 w-64 rounded-lg bg-white shadow-lg ring-1 ring-black/5 dark:bg-zinc-900 dark:ring-white/10">
             <div className="border-b border-zinc-100 p-4 dark:border-zinc-800">
-              <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+              <p className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
                 {session.user.name}
               </p>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
+              <p className="truncate text-sm text-zinc-600 dark:text-zinc-400">
                 {session.user.email}
               </p>
               {session.user.title && (
-                <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                <p className="truncate text-xs text-zinc-500 dark:text-zinc-500">
                   {session.user.title}
                 </p>
               )}

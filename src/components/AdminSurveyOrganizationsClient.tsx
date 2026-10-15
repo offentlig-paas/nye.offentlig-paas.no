@@ -102,7 +102,7 @@ export function AdminSurveyOrganizationsClient({
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
-                      <div className="h-2 w-24 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-600">
+                      <div className="hidden h-2 w-24 overflow-hidden rounded-full bg-zinc-200 sm:block dark:bg-zinc-600">
                         <div
                           className="h-full rounded-full bg-teal-500 transition-all dark:bg-teal-400"
                           style={{ width: `${sector.percentage}%` }}
@@ -149,11 +149,11 @@ export function AdminSurveyOrganizationsClient({
       </section>
 
       <section>
-        <div className="mb-3 flex items-center justify-between">
+        <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <h3 className="text-sm font-semibold tracking-wide text-zinc-500 uppercase dark:text-zinc-400">
             Alle svar per organisasjon
           </h3>
-          <div className="flex gap-1 rounded-lg border border-zinc-200 p-0.5 dark:border-zinc-700">
+          <div className="flex flex-wrap gap-1 rounded-lg border border-zinc-200 p-0.5 dark:border-zinc-700">
             {(
               [
                 { key: 'all', label: 'Alle' },

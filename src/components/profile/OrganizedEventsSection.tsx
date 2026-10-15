@@ -27,23 +27,23 @@ export function OrganizedEventsSection({
               className="group relative rounded-lg border border-zinc-200 bg-white p-4 transition hover:border-zinc-300 hover:shadow-sm dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-600"
             >
               <Link href={`/fagdag/${event.slug}`} className="block">
-                <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">
+                <h3 className="pr-8 font-semibold text-zinc-900 dark:text-zinc-100">
                   {event.title}
                 </h3>
-                <div className="mt-2 flex items-center gap-4 text-sm text-zinc-600 dark:text-zinc-400">
+                <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-zinc-600 dark:text-zinc-400">
                   <span className="flex items-center gap-1">
-                    <CalendarIcon className="h-4 w-4" />
+                    <CalendarIcon className="h-4 w-4 shrink-0" />
                     {formatDateLong(event.start)}
                   </span>
                   <span className="flex items-center gap-1">
-                    <MapPinIcon className="h-4 w-4" />
+                    <MapPinIcon className="h-4 w-4 shrink-0" />
                     {event.location}
                   </span>
                 </div>
               </Link>
               <Link
                 href={`/admin/events/${event.slug}`}
-                className="absolute top-4 right-4 rounded-md p-1.5 text-zinc-400 opacity-0 transition group-hover:opacity-100 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-zinc-300"
+                className="absolute top-4 right-4 rounded-md p-1.5 text-zinc-400 opacity-100 transition hover:bg-zinc-100 hover:text-zinc-600 sm:opacity-0 sm:group-hover:opacity-100 dark:hover:bg-zinc-700 dark:hover:text-zinc-300"
                 title="Administrer fagdag"
               >
                 <Cog6ToothIcon className="h-5 w-5" />

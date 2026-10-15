@@ -144,7 +144,7 @@ export default async function Plattformer() {
       </div>
 
       {plattformer.length === 0 ? (
-        <div className="rounded-2xl border border-zinc-200 bg-zinc-50/70 p-8 text-center dark:border-zinc-800 dark:bg-zinc-900/50">
+        <div className="rounded-2xl border border-zinc-200 bg-zinc-50/70 p-6 text-center sm:p-8 dark:border-zinc-800 dark:bg-zinc-900/50">
           <LockClosedIcon className="mx-auto h-8 w-8 text-teal-600 dark:text-teal-400" />
           <h2 className="mt-3 text-base font-semibold text-zinc-900 dark:text-zinc-100">
             Plattformprofilene er tilgjengelige for innloggede medlemmer
@@ -155,7 +155,7 @@ export default async function Plattformer() {
             plattformprofiler, eller for å publisere din virksomhets profil
             offentlig.
           </p>
-          <div className="mt-5 flex justify-center gap-3">
+          <div className="mt-5 flex flex-wrap justify-center gap-3">
             <Link
               href="/auth/signin?callbackUrl=/plattformer"
               className="inline-flex items-center gap-1.5 rounded-lg bg-teal-600 px-4 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-teal-500"
@@ -230,7 +230,7 @@ export default async function Plattformer() {
                     )}
                   </div>
                 )}
-                <div className="relative z-10 mt-6 flex w-full items-center justify-between text-sm font-medium text-zinc-400 transition group-hover:text-teal-500 dark:text-zinc-200">
+                <div className="relative z-10 mt-6 flex w-full items-center justify-between gap-2 text-sm font-medium text-zinc-400 transition group-hover:text-teal-500 dark:text-zinc-200">
                   {profile.platformAccess === 'internal' ||
                   !profile.platformLabel ? (
                     <span className="inline-flex items-center text-xs text-zinc-500 dark:text-zinc-400">
@@ -238,12 +238,14 @@ export default async function Plattformer() {
                       <span className="ml-1.5">Intern plattform</span>
                     </span>
                   ) : (
-                    <span className="inline-flex items-center">
+                    <span className="inline-flex min-w-0 items-center">
                       <LinkIcon className="h-6 w-6 flex-none" />
-                      <span className="ml-2">{profile.platformLabel}</span>
+                      <span className="ml-2 truncate">
+                        {profile.platformLabel}
+                      </span>
                     </span>
                   )}
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-teal-600 dark:text-teal-400">
+                  <span className="inline-flex shrink-0 items-center gap-1 text-xs font-semibold text-teal-600 dark:text-teal-400">
                     Utforsk profil
                     <ArrowRightIcon className="h-3.5 w-3.5" />
                   </span>

@@ -49,52 +49,79 @@ export function HorizontalBarChart({
           </p>
         )}
       </div>
-      <ResponsiveContainer width="100%" height={chartHeight}>
-        <BarChart
-          data={visibleOptions}
-          layout="vertical"
-          margin={{ top: 0, right: 60, left: 0, bottom: 0 }}
-        >
-          <XAxis type="number" hide />
-          <YAxis
-            type="category"
-            dataKey="label"
-            width={yAxisWidth}
-            tick={{ fontSize: 12, fill: 'currentColor' }}
-            tickLine={false}
-            axisLine={false}
-            className="text-zinc-600 dark:text-zinc-400"
-          />
-          <Tooltip
-            cursor={{ fill: 'rgba(255,255,255,0.06)' }}
-            formatter={(value, _name, props) => [
-              `${value} (${(props.payload as AggregatedOption).percentage}%)`,
-              'Antall',
-            ]}
-            contentStyle={{
-              backgroundColor: '#27272a',
-              border: '1px solid #3f3f46',
-              borderRadius: '8px',
-              color: '#e4e4e7',
-              fontSize: '12px',
-            }}
-          />
-          <Bar
-            dataKey="count"
-            radius={[0, 4, 4, 0]}
-            barSize={20}
-            label={<BarLabel />}
-          >
-            {visibleOptions.map((_, i) => (
-              <Cell
-                key={i}
-                className="fill-teal-500 dark:fill-teal-400"
-                fill={BAR_COLOR}
+      <div className="space-y-2.5 sm:hidden">
+        {visibleOptions.map((option, i) => (
+          <div key={option.value} className="space-y-1">
+            <div className="flex items-baseline justify-between gap-2 text-xs">
+              <span className="min-w-0 break-words text-zinc-700 dark:text-zinc-300">
+                {option.label}
+              </span>
+              <span className="shrink-0 font-mono text-zinc-500 dark:text-zinc-400">
+                {option.count} ({option.percentage}%)
+              </span>
+            </div>
+            <div className="h-2.5 w-full overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
+              <div
+                className="h-full rounded-full transition-all"
+                style={{
+                  width: `${Math.max(option.percentage, 2)}%`,
+                  backgroundColor: BAR_COLOR,
+                  opacity:
+                    1 - (i / Math.max(visibleOptions.length - 1, 1)) * 0.35,
+                }}
               />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="hidden sm:block">
+        <ResponsiveContainer width="100%" height={chartHeight}>
+          <BarChart
+            data={visibleOptions}
+            layout="vertical"
+            margin={{ top: 0, right: 60, left: 0, bottom: 0 }}
+          >
+            <XAxis type="number" hide />
+            <YAxis
+              type="category"
+              dataKey="label"
+              width={yAxisWidth}
+              tick={{ fontSize: 12, fill: 'currentColor' }}
+              tickLine={false}
+              axisLine={false}
+              className="text-zinc-600 dark:text-zinc-400"
+            />
+            <Tooltip
+              cursor={{ fill: 'rgba(255,255,255,0.06)' }}
+              formatter={(value, _name, props) => [
+                `${value} (${(props.payload as AggregatedOption).percentage}%)`,
+                'Antall',
+              ]}
+              contentStyle={{
+                backgroundColor: '#27272a',
+                border: '1px solid #3f3f46',
+                borderRadius: '8px',
+                color: '#e4e4e7',
+                fontSize: '12px',
+              }}
+            />
+            <Bar
+              dataKey="count"
+              radius={[0, 4, 4, 0]}
+              barSize={20}
+              label={<BarLabel />}
+            >
+              {visibleOptions.map((_, i) => (
+                <Cell
+                  key={i}
+                  className="fill-teal-500 dark:fill-teal-400"
+                  fill={BAR_COLOR}
+                />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   )
 }

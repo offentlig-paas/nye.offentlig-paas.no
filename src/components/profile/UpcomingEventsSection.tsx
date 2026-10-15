@@ -99,7 +99,7 @@ export function UpcomingEventsSection({
                 {item.isOrganizer && (
                   <Link
                     href={`/admin/events/${item.event.slug}`}
-                    className="absolute top-6 right-6 rounded-md p-1.5 text-zinc-400 opacity-0 transition group-hover:opacity-100 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-zinc-300"
+                    className="absolute top-6 right-6 rounded-md p-1.5 text-zinc-400 opacity-100 transition hover:bg-zinc-100 hover:text-zinc-600 sm:opacity-0 sm:group-hover:opacity-100 dark:hover:bg-zinc-700 dark:hover:text-zinc-300"
                     title="Administrer fagdag"
                   >
                     <Cog6ToothIcon className="h-5 w-5" />
@@ -138,7 +138,7 @@ export function UpcomingEventsSection({
                       >
                         <div className="flex items-start gap-2">
                           <PresentationChartLineIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
-                          <div className="flex-1">
+                          <div className="min-w-0 flex-1">
                             <h4 className="font-medium text-zinc-900 dark:text-zinc-100">
                               {talk.title}
                             </h4>

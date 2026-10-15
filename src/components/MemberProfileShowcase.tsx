@@ -428,7 +428,7 @@ export function MemberProfileShowcase({
                 className="flex flex-col justify-between rounded-xl border border-zinc-200/90 bg-white p-5 transition hover:border-zinc-300 dark:border-zinc-800 dark:bg-zinc-900/50 dark:hover:border-zinc-700"
               >
                 <div>
-                  <div className="flex items-center justify-between gap-2">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
                     <span
                       className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${accent.badge}`}
                     >
@@ -1269,18 +1269,18 @@ export function MemberProfileShowcase({
 
           {/* Clean Border-Divided Key Figures Strip */}
           {profile && profile.stats.length > 0 && (
-            <dl className="mt-8 grid grid-cols-2 divide-y divide-zinc-200 border-y border-zinc-200 py-5 sm:grid-cols-4 sm:divide-x sm:divide-y-0 dark:divide-zinc-800 dark:border-zinc-800">
+            <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 border-y border-zinc-200 py-5 sm:grid-cols-4 sm:gap-0 sm:divide-x sm:divide-zinc-200 dark:border-zinc-800 dark:sm:divide-zinc-800">
               {profile.stats.map((stat, idx) => (
                 <div
                   key={stat.label}
                   className={`${
                     idx === 0
-                      ? 'pb-4 sm:pr-6 sm:pb-0'
+                      ? 'sm:pr-6'
                       : idx === 1
-                        ? 'pb-4 sm:px-6 sm:pb-0'
+                        ? 'sm:px-6'
                         : idx === 2
-                          ? 'pt-4 sm:px-6 sm:pt-0'
-                          : 'pt-4 sm:pt-0 sm:pl-6'
+                          ? 'border-t border-zinc-200 pt-4 sm:border-t-0 sm:px-6 sm:pt-0 dark:border-zinc-800'
+                          : 'border-t border-zinc-200 pt-4 sm:border-t-0 sm:pt-0 sm:pl-6 dark:border-zinc-800'
                   }`}
                 >
                   <dt className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
@@ -1323,7 +1323,7 @@ export function MemberProfileShowcase({
             </div>
 
             <Link
-              href={`/signin?callbackUrl=/medlemmer/${member.slug}`}
+              href={`/auth/signin?callbackUrl=/medlemmer/${member.slug}`}
               className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-teal-600 px-4 py-2.5 text-xs font-semibold text-white shadow-xs transition hover:bg-teal-500"
             >
               <SlackIcon className="h-4 w-4" />

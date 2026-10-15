@@ -97,7 +97,7 @@ export function UserTalksSection({
               >
                 <div className="flex items-start gap-3">
                   <PresentationChartLineIcon className="mt-1 h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
-                  <div className="flex-1">
+                  <div className="min-w-0 flex-1">
                     <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">
                       {item.talk.title}
                     </h3>

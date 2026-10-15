@@ -119,15 +119,15 @@ export function EventAgenda({
         return (
           <li
             key={item.time}
-            className="relative flex space-x-6 border-t border-gray-200 py-6 first:border-t-0 dark:border-gray-700"
+            className="relative flex space-x-3 border-t border-gray-200 py-6 first:border-t-0 sm:space-x-6 dark:border-gray-700"
           >
             <EventIcon
               type={item.type}
-              className="h-9 w-9 flex-none text-gray-400 dark:text-gray-500"
+              className="h-6 w-6 flex-none text-gray-400 sm:h-9 sm:w-9 dark:text-gray-500"
             />
 
-            <div className="flex-auto">
-              <h3 className="pr-10 text-lg font-semibold text-gray-900 dark:text-gray-100">
+            <div className="min-w-0 flex-auto">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                 {item.title}
               </h3>
               <p className="mt-2 text-base text-gray-600 dark:text-gray-400">

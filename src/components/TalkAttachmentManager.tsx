@@ -115,11 +115,11 @@ export function TalkAttachmentManager({
               return (
                 <div
                   key={attachment.id}
-                  className="flex items-center justify-between rounded-md border border-zinc-200 bg-white p-3 dark:border-zinc-700 dark:bg-zinc-800"
+                  className="flex items-center justify-between gap-2 rounded-md border border-zinc-200 bg-white p-3 dark:border-zinc-700 dark:bg-zinc-800"
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex min-w-0 flex-1 items-center gap-3">
                     <Icon className="h-5 w-5 flex-shrink-0 text-zinc-400" />
-                    <div className="flex-1">
+                    <div className="min-w-0 flex-1 break-words">
                       {displayUrl ? (
                         <a
                           href={displayUrl}
@@ -146,7 +146,7 @@ export function TalkAttachmentManager({
                     <button
                       onClick={() => handleDelete(attachment.id)}
                       disabled={isDeleting === attachment.id}
-                      className="text-red-600 hover:text-red-700 disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
+                      className="shrink-0 p-1.5 text-red-600 hover:text-red-700 disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
                     >
                       <TrashIcon className="h-5 w-5" />
                     </button>
