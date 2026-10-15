@@ -18,6 +18,10 @@ import { OrganizedEventsSection } from '@/components/profile/OrganizedEventsSect
 import { UserTalksSection } from '@/components/profile/UserTalksSection'
 import { PastRegistrationsSection } from '@/components/profile/PastRegistrationsSection'
 import { ProfileSidebar } from '@/components/profile/ProfileSidebar'
+import {
+  getMemberByUserEmail,
+  memberProfileService,
+} from '@/domains/member-profile'
 
 function ProfileSkeleton() {
   return (
@@ -119,6 +123,13 @@ async function ProfileContent() {
 
   const userTalks = user.slackId ? getUserTalksFromEvents(user.slackId) : []
 
+  const matchedMember = getMemberByUserEmail(user.email)
+  const matchedProfile = matchedMember
+    ? await memberProfileService.getBySlug(matchedMember.getSlug(), {
+        includeInternal: true,
+      })
+    : null
+
   return (
     <Container className="mt-16 sm:mt-24">
       <div className="max-w-7xl">
@@ -135,7 +146,19 @@ async function ProfileContent() {
             <PastRegistrationsSection events={pastEvents} />
           </div>
 
-          <ProfileSidebar user={user} />
+          <ProfileSidebar
+            user={user}
+            organization={
+              matchedMember
+                ? {
+                    slug: matchedMember.getSlug(),
+                    name: matchedMember.name,
+                    platformName: matchedProfile?.platformName,
+                    visibility: matchedProfile?.visibility,
+                  }
+                : undefined
+            }
+          />
         </div>
       </div>
     </Container>

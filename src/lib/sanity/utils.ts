@@ -54,9 +54,13 @@ export function prepareSanityDocument<T extends Record<string, unknown>>(
 
   for (const [key, value] of Object.entries(result)) {
     if (Array.isArray(value)) {
-      // Add keys to array items
-      result[key as keyof T] = addKeysToArrayItems(
-        value as Record<string, unknown>[]
+      result[key as keyof T] = value.map(item =>
+        item && typeof item === 'object' && !isDate(item)
+          ? {
+              ...prepareSanityDocument(item as Record<string, unknown>),
+              _key: generateSanityKey(),
+            }
+          : item
       ) as T[keyof T]
     } else if (value && typeof value === 'object' && !isDate(value)) {
       // Recursively process nested objects

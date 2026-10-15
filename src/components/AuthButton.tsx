@@ -4,9 +4,10 @@ import { signIn, signOut, useSession } from 'next-auth/react'
 import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Cog6ToothIcon } from '@heroicons/react/24/outline'
+import { Cog6ToothIcon, ServerStackIcon } from '@heroicons/react/24/outline'
 import { Button } from '@/components/Button'
 import { Avatar } from '@/components/Avatar'
+import { trpc } from '@/lib/trpc/client'
 
 interface AuthButtonProps {
   className?: string
@@ -21,6 +22,10 @@ export function AuthButton({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const { data: myMembership } = trpc.memberProfile.getMyMembership.useQuery(
+    undefined,
+    { enabled: Boolean(session?.user?.email) }
+  )
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -138,6 +143,26 @@ export function AuthButton({
                 </svg>
                 Min profil
               </Link>
+              {myMembership && (
+                <Link
+                  href={
+                    myMembership.hasProfile
+                      ? `/medlemmer/${myMembership.slug}`
+                      : `/medlemmer/${myMembership.slug}?edit=1`
+                  }
+                  onClick={() => setIsDropdownOpen(false)}
+                  className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm text-zinc-700 transition hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                >
+                  <span className="flex min-w-0 items-center">
+                    <ServerStackIcon className="mr-3 h-4 w-4 shrink-0 text-teal-600 dark:text-teal-400" />
+                    <span className="truncate">
+                      {myMembership.hasProfile
+                        ? `Plattform (${myMembership.platformName})`
+                        : `Opprett plattform (${myMembership.name})`}
+                    </span>
+                  </span>
+                </Link>
+              )}
               {session.user.isAdmin && (
                 <Link
                   href="/admin"

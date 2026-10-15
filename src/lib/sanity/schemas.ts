@@ -920,6 +920,306 @@ const surveyContactInfoSchema = defineType({
   },
 })
 
+const memberProfileSchema = defineType({
+  name: 'memberProfile',
+  title: 'Member Platform Profile',
+  type: 'document',
+  fields: [
+    {
+      name: 'slug',
+      title: 'Member Slug',
+      type: 'string',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'visibility',
+      title: 'Profile Visibility',
+      type: 'string',
+      initialValue: 'public',
+      options: {
+        list: [
+          { title: 'Offentlig (alle)', value: 'public' },
+          { title: 'Kun for innloggede medlemmer', value: 'internal' },
+        ],
+      },
+    },
+    {
+      name: 'platformAccess',
+      title: 'Platform Access Type',
+      type: 'string',
+      initialValue: 'public',
+      options: {
+        list: [
+          { title: 'Åpen / ekstern lenke', value: 'public' },
+          { title: 'Intern plattform', value: 'internal' },
+        ],
+      },
+    },
+    {
+      name: 'platformName',
+      title: 'Platform Name',
+      type: 'string',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'platformDescription',
+      title: 'Platform Description',
+      type: 'text',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'platformHref',
+      title: 'Platform URL',
+      type: 'url',
+    },
+    {
+      name: 'platformLabel',
+      title: 'Platform URL Label',
+      type: 'string',
+    },
+    {
+      name: 'platformLogo',
+      title: 'Platform Logo Path/URL',
+      type: 'string',
+    },
+    {
+      name: 'verifiedUpdated',
+      title: 'Verified Updated Date',
+      type: 'string',
+    },
+    {
+      name: 'updatedBy',
+      title: 'Updated By',
+      type: 'object',
+      fields: [
+        { name: 'name', title: 'Name', type: 'string' },
+        { name: 'email', title: 'Email', type: 'string' },
+        { name: 'slackId', title: 'Slack ID', type: 'string' },
+      ],
+    },
+    {
+      name: 'theme',
+      title: 'Profile Theme',
+      type: 'object',
+      fields: [
+        { name: 'accentColor', title: 'Accent Color', type: 'string' },
+        { name: 'heroStyle', title: 'Hero Style', type: 'string' },
+        {
+          name: 'sectionOrder',
+          title: 'Section Order',
+          type: 'array',
+          of: [{ type: 'string' }],
+        },
+      ],
+    },
+    {
+      name: 'tagline',
+      title: 'Tagline (Norwegian)',
+      type: 'text',
+    },
+    {
+      name: 'taglineEn',
+      title: 'Tagline (English)',
+      type: 'text',
+    },
+    {
+      name: 'about',
+      title: 'About (Norwegian)',
+      type: 'text',
+    },
+    {
+      name: 'aboutEn',
+      title: 'About (English)',
+      type: 'text',
+    },
+    {
+      name: 'cncfEndUserMember',
+      title: 'CNCF End User Member',
+      type: 'boolean',
+    },
+    {
+      name: 'openSourceFirst',
+      title: 'Open Source First',
+      type: 'boolean',
+    },
+    {
+      name: 'cloudProviders',
+      title: 'Cloud Providers',
+      type: 'array',
+      of: [{ type: 'string' }],
+    },
+    {
+      name: 'stats',
+      title: 'Key Metrics / Stats',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'label', title: 'Label (NO)', type: 'string' },
+            { name: 'labelEn', title: 'Label (EN)', type: 'string' },
+            { name: 'value', title: 'Value', type: 'string' },
+            { name: 'detail', title: 'Detail', type: 'string' },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'manifestExample',
+      title: 'Declarative Manifest Example',
+      type: 'object',
+      fields: [
+        { name: 'title', title: 'Title (NO)', type: 'string' },
+        { name: 'titleEn', title: 'Title (EN)', type: 'string' },
+        { name: 'filename', title: 'Filename', type: 'string' },
+        { name: 'description', title: 'Description (NO)', type: 'text' },
+        { name: 'descriptionEn', title: 'Description (EN)', type: 'text' },
+        { name: 'code', title: 'YAML / Manifest Code', type: 'text' },
+      ],
+    },
+    {
+      name: 'capabilities',
+      title: 'Platform Capabilities',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'id', title: 'ID', type: 'string' },
+            { name: 'title', title: 'Title (NO)', type: 'string' },
+            { name: 'titleEn', title: 'Title (EN)', type: 'string' },
+            { name: 'category', title: 'Category', type: 'string' },
+            { name: 'maturity', title: 'Maturity', type: 'string' },
+            { name: 'selfService', title: 'Self-Service', type: 'boolean' },
+            { name: 'description', title: 'Description (NO)', type: 'text' },
+            { name: 'descriptionEn', title: 'Description (EN)', type: 'text' },
+            {
+              name: 'highlights',
+              title: 'Highlights (NO)',
+              type: 'array',
+              of: [{ type: 'string' }],
+            },
+            {
+              name: 'highlightsEn',
+              title: 'Highlights (EN)',
+              type: 'array',
+              of: [{ type: 'string' }],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'cncfProjects',
+      title: 'CNCF Projects',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'name', title: 'Project Name', type: 'string' },
+            { name: 'tier', title: 'Maturity Tier', type: 'string' },
+            { name: 'category', title: 'Category', type: 'string' },
+            { name: 'usage', title: 'Usage (NO)', type: 'text' },
+            { name: 'usageEn', title: 'Usage (EN)', type: 'text' },
+            { name: 'cncfUrl', title: 'CNCF URL', type: 'url' },
+            { name: 'sourceRepoUrl', title: 'Source Repo URL', type: 'url' },
+            { name: 'sinceYear', title: 'Adopted Since Year', type: 'number' },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'techStack',
+      title: 'Tech Stack Groups',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'category', title: 'Category (NO)', type: 'string' },
+            { name: 'categoryEn', title: 'Category (EN)', type: 'string' },
+            {
+              name: 'items',
+              title: 'Items',
+              type: 'array',
+              of: [{ type: 'string' }],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'team',
+      title: 'Platform Team Contacts',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'name', title: 'Name', type: 'string' },
+            { name: 'role', title: 'Role (NO)', type: 'string' },
+            { name: 'roleEn', title: 'Role (EN)', type: 'string' },
+            { name: 'slackUrl', title: 'Slack Profile URL', type: 'url' },
+            { name: 'github', title: 'GitHub Username', type: 'string' },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'openPositions',
+      title: 'Open Positions',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'title', title: 'Job Title', type: 'string' },
+            { name: 'department', title: 'Department', type: 'string' },
+            { name: 'location', title: 'Location', type: 'string' },
+            { name: 'deadline', title: 'Deadline', type: 'string' },
+            { name: 'url', title: 'Application URL', type: 'url' },
+            {
+              name: 'tags',
+              title: 'Tags',
+              type: 'array',
+              of: [{ type: 'string' }],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'links',
+      title: 'External Links',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'title', title: 'Title', type: 'string' },
+            { name: 'description', title: 'Description', type: 'string' },
+            { name: 'url', title: 'URL', type: 'url' },
+            { name: 'type', title: 'Link Type', type: 'string' },
+          ],
+        },
+      ],
+    },
+  ],
+  preview: {
+    select: {
+      title: 'platformName',
+      subtitle: 'slug',
+    },
+    prepare(selection: Record<string, string>) {
+      return {
+        title: selection.title || selection.subtitle,
+        subtitle: `Member: ${selection.subtitle}`,
+      }
+    },
+  },
+})
+
 export const schemas = [
   eventRegistrationSchema,
   eventParticipantInfoSchema,
@@ -929,4 +1229,5 @@ export const schemas = [
   talkSubmissionSchema,
   surveyResponseSchema,
   surveyContactInfoSchema,
+  memberProfileSchema,
 ]
