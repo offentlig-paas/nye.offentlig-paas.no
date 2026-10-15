@@ -7,6 +7,7 @@
     "prebuild": "tsx scripts/generate-logo-manifest.ts",
     "build": "next build",
     "generate:logos": "tsx scripts/generate-logo-manifest.ts",
+    "bootstrap:platforms": "tsx --conditions=react-server scripts/bootstrap-member-profiles.ts",
     "start": "next start",
     "test": "vitest run",
     "test:watch": "vitest",
