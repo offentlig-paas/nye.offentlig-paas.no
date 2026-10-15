@@ -43,9 +43,11 @@ export class MemberProfileRepository {
       slug,
       "name": platformName,
       "description": platformDescription,
-      "href": platformHref,
-      "label": platformLabel,
-      "logo": platformLogo
+      "href": coalesce(platformHref, ""),
+      "label": coalesce(platformLabel, ""),
+      "logo": platformLogo,
+      "visibility": coalesce(visibility, "public"),
+      "platformAccess": coalesce(platformAccess, select(defined(platformHref) && platformHref != "" => "public", "internal"))
     }`
     try {
       const results = await sanityClient.fetch<MemberPlatformSummary[]>(
@@ -71,10 +73,12 @@ export class MemberProfileRepository {
       _id: docId,
       _type: 'memberProfile',
       slug,
+      visibility: input.visibility ?? 'public',
+      platformAccess: input.platformAccess ?? 'public',
       platformName: input.platformName,
       platformDescription: input.platformDescription,
-      platformHref: input.platformHref,
-      platformLabel: input.platformLabel,
+      platformHref: input.platformHref || '',
+      platformLabel: input.platformLabel || '',
       platformLogo: input.platformLogo || undefined,
       verifiedUpdated,
       updatedBy: updatedBy
@@ -120,13 +124,20 @@ export class MemberProfileRepository {
   private mapToMemberProfile(doc: Record<string, unknown>): MemberProfile {
     const themeRaw = (doc.theme as Record<string, unknown> | undefined) ?? {}
     const updatedByRaw = doc.updatedBy as { name?: string } | undefined
+    const platformHref = (doc.platformHref as string) ?? ''
 
     return {
       _id: doc._id as string | undefined,
       slug: (doc.slug as string) ?? '',
+      visibility: doc.visibility === 'internal' ? 'internal' : 'public',
+      platformAccess:
+        doc.platformAccess === 'internal' ||
+        (!doc.platformAccess && !platformHref)
+          ? 'internal'
+          : 'public',
       platformName: (doc.platformName as string) ?? '',
       platformDescription: (doc.platformDescription as string) ?? '',
-      platformHref: (doc.platformHref as string) ?? '',
+      platformHref,
       platformLabel: (doc.platformLabel as string) ?? '',
       platformLogo: (doc.platformLogo as string) || undefined,
       verifiedUpdated:

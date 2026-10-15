@@ -1,11 +1,23 @@
 import React from 'react'
 import { type Metadata } from 'next'
 import Image from 'next/image'
-import { ArrowRightIcon, ServerStackIcon } from '@heroicons/react/24/outline'
+import Link from 'next/link'
+import {
+  ArrowRightIcon,
+  LockClosedIcon,
+  PencilSquareIcon,
+  PlusCircleIcon,
+  ServerStackIcon,
+} from '@heroicons/react/24/outline'
 
+import { auth } from '@/auth'
 import { Card } from '@/components/Card'
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { memberProfileService, getMemberBySlug } from '@/domains/member-profile'
+import {
+  memberProfileService,
+  getMemberBySlug,
+  getMemberByUserEmail,
+} from '@/domains/member-profile'
 
 function LinkIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
@@ -24,7 +36,15 @@ export const metadata: Metadata = {
 }
 
 export default async function Plattformer() {
-  const profiles = await memberProfileService.getAll()
+  const session = await auth()
+  const profiles = await memberProfileService.getAll({
+    includeInternal: Boolean(session?.user),
+  })
+  const myMember = getMemberByUserEmail(session?.user?.email)
+  const myProfile = myMember
+    ? profiles.find(p => p.slug === myMember.getSlug())
+    : undefined
+
   const plattformer = profiles
     .map(profile => {
       const member = getMemberBySlug(profile.slug)
@@ -52,6 +72,77 @@ export default async function Plattformer() {
       intro="Offentlig sektor i Norge har flere spennende applikasjonsplattformer som gjør det enklere for utviklere å lage og drifte applikasjoner. Klikk på en plattform for å utforske plattformkapabiliteter, CNCF-teknologi og teamet bak."
       gitHubPage="src/app/plattformer/page.tsx"
     >
+      <div className="mb-12 rounded-2xl border border-teal-500/20 bg-teal-50/50 p-5 dark:border-teal-500/20 dark:bg-teal-950/20">
+        {myMember && myProfile ? (
+          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+            <div>
+              <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                Din virksomhet: {myMember.name} ({myProfile.platformName})
+              </p>
+              <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
+                Du kan når som helst oppdatere kapabiliteter, teknologistabel og
+                styre om profilen er offentlig eller kun synlig for medlemmer.
+              </p>
+            </div>
+            <div className="flex shrink-0 items-center gap-2.5">
+              <Link
+                href={`/medlemmer/${myMember.getSlug()}?edit=1`}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-teal-600 px-3.5 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-teal-500"
+              >
+                <PencilSquareIcon className="h-4 w-4" />
+                Rediger plattform
+              </Link>
+              <Link
+                href={`/medlemmer/${myMember.getSlug()}`}
+                className="inline-flex items-center gap-1 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-xs font-medium text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+              >
+                Se profil
+              </Link>
+            </div>
+          </div>
+        ) : myMember ? (
+          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+            <div>
+              <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                Har {myMember.name} en applikasjonsplattform?
+              </p>
+              <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
+                Publiser virksomhetens plattformprofil på 2 minutter med ferdige
+                maler. Du velger selv om profilen skal være offentlig eller kun
+                synlig for innloggede medlemmer.
+              </p>
+            </div>
+            <Link
+              href={`/medlemmer/${myMember.getSlug()}?edit=1`}
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-teal-600 px-4 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-teal-500"
+            >
+              <PlusCircleIcon className="h-4 w-4" />
+              Opprett plattformprofil
+            </Link>
+          </div>
+        ) : (
+          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+            <div>
+              <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                Savner du virksomheten din sin plattform?
+              </p>
+              <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
+                Ansatte i medlemsvirksomheter kan logge inn med Slack og
+                opprette eller redigere sin plattformprofil direkte i
+                nettleseren — både åpne og interne plattformer.
+              </p>
+            </div>
+            <Link
+              href="/medlemmer"
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-teal-600/30 bg-white px-3.5 py-2 text-xs font-semibold text-teal-700 transition hover:bg-teal-50 dark:border-teal-400/30 dark:bg-zinc-900 dark:text-teal-300 dark:hover:bg-zinc-800"
+            >
+              Finn din virksomhet
+              <ArrowRightIcon className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+        )}
+      </div>
+
       <ul
         role="list"
         className="grid grid-cols-1 gap-x-12 gap-y-16 sm:grid-cols-2 lg:grid-cols-3"
@@ -60,7 +151,7 @@ export default async function Plattformer() {
           const logo = profile.platformLogo || member.image()
           return (
             <Card as="li" key={profile.slug}>
-              <div className="relative z-10 flex w-full items-center justify-between">
+              <div className="relative z-10 flex w-full items-center justify-between gap-2">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md ring-1 shadow-zinc-800/5 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
                   {logo ? (
                     <Image
@@ -75,9 +166,17 @@ export default async function Plattformer() {
                     <ServerStackIcon className="h-6 w-6 text-teal-600 dark:text-teal-400" />
                   )}
                 </div>
-                <span className="rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
-                  {member.name}
-                </span>
+                <div className="flex flex-wrap items-center justify-end gap-1.5">
+                  {profile.visibility === 'internal' && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-800 ring-1 ring-amber-500/20 dark:bg-amber-950/50 dark:text-amber-300">
+                      <LockClosedIcon className="h-3 w-3" />
+                      Kun medlemmer
+                    </span>
+                  )}
+                  <span className="rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+                    {member.name}
+                  </span>
+                </div>
               </div>
               <h2 className="mt-6 text-base font-semibold text-zinc-800 dark:text-zinc-100">
                 <Card.Link href={`/medlemmer/${member.getSlug()}`}>
@@ -94,17 +193,25 @@ export default async function Plattformer() {
                     </span>
                   )}
                   {profile.cncfProjects.length > 0 && (
-                    <span className="rounded-md bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-700 dark:bg-blue-950/50 dark:text-blue-300">
+                    <span className="rounded-md bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-700 dark:bg-teal-950/50 dark:text-blue-300">
                       {profile.cncfProjects.length} CNCF-prosjekter
                     </span>
                   )}
                 </div>
               )}
               <div className="relative z-10 mt-6 flex w-full items-center justify-between text-sm font-medium text-zinc-400 transition group-hover:text-teal-500 dark:text-zinc-200">
-                <span className="inline-flex items-center">
-                  <LinkIcon className="h-6 w-6 flex-none" />
-                  <span className="ml-2">{profile.platformLabel}</span>
-                </span>
+                {profile.platformAccess === 'internal' ||
+                !profile.platformLabel ? (
+                  <span className="inline-flex items-center text-xs text-zinc-500 dark:text-zinc-400">
+                    <LockClosedIcon className="h-4 w-4 flex-none" />
+                    <span className="ml-1.5">Intern plattform</span>
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center">
+                    <LinkIcon className="h-6 w-6 flex-none" />
+                    <span className="ml-2">{profile.platformLabel}</span>
+                  </span>
+                )}
                 <span className="inline-flex items-center gap-1 text-xs font-semibold text-teal-600 dark:text-teal-400">
                   Utforsk profil
                   <ArrowRightIcon className="h-3.5 w-3.5" />

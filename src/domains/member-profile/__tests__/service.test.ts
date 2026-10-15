@@ -8,8 +8,12 @@ import {
 
 vi.mock('../repository')
 
-const { memberProfileService, getMemberBySlug, canUserEditMemberProfile } =
-  await import('../service')
+const {
+  memberProfileService,
+  getMemberBySlug,
+  getMemberByUserEmail,
+  canUserEditMemberProfile,
+} = await import('../service')
 
 describe('MemberProfileService & Helpers', () => {
   let mockRepo: Mocked<MemberProfileRepository>
@@ -17,6 +21,8 @@ describe('MemberProfileService & Helpers', () => {
   const mockProfile: MemberProfile = {
     _id: 'memberProfile-nav',
     slug: 'nav',
+    visibility: 'public',
+    platformAccess: 'public',
     platformName: 'Nais',
     platformDescription: 'Applikasjonsplattformen til Nav',
     platformHref: 'https://nais.io',
@@ -65,6 +71,20 @@ describe('MemberProfileService & Helpers', () => {
 
     it('returns undefined for unknown slug', () => {
       expect(getMemberBySlug('non-existent-org')).toBeUndefined()
+    })
+  })
+
+  describe('getMemberByUserEmail', () => {
+    it('finds member matching exact or subdomain email', () => {
+      expect(getMemberByUserEmail('ola@nav.no')?.getSlug()).toBe('nav')
+      expect(getMemberByUserEmail('ola@utvikling.nav.no')?.getSlug()).toBe(
+        'nav'
+      )
+    })
+
+    it('returns undefined for unmatched or invalid emails', () => {
+      expect(getMemberByUserEmail('ola@unknown.example')).toBeUndefined()
+      expect(getMemberByUserEmail(null)).toBeUndefined()
     })
   })
 
@@ -157,6 +177,8 @@ describe('MemberProfileService & Helpers', () => {
   describe('upsertMemberProfileSchema', () => {
     const validInput: UpsertMemberProfileInput = {
       slug: 'nav',
+      visibility: 'public',
+      platformAccess: 'public',
       platformName: 'Nais',
       platformDescription: 'Applikasjonsplattformen til Nav',
       platformHref: 'https://nais.io',
@@ -177,6 +199,26 @@ describe('MemberProfileService & Helpers', () => {
       openPositions: [],
       links: [],
     }
+
+    it('allows empty platformHref and platformLabel when platformAccess is internal', () => {
+      expect(
+        upsertMemberProfileSchema.safeParse({
+          ...validInput,
+          platformAccess: 'internal',
+          platformHref: undefined,
+          platformLabel: undefined,
+        }).success
+      ).toBe(true)
+
+      expect(
+        upsertMemberProfileSchema.safeParse({
+          ...validInput,
+          platformAccess: 'public',
+          platformHref: undefined,
+          platformLabel: undefined,
+        }).success
+      ).toBe(false)
+    })
 
     it('rejects javascript: and data: URLs in link fields', () => {
       expect(
@@ -247,11 +289,26 @@ describe('MemberProfileService & Helpers', () => {
       expect(mockRepo.findBySlug).toHaveBeenCalledWith('nav')
     })
 
+    it('hides internal profiles by default unless includeInternal is true', async () => {
+      const internalProfile: MemberProfile = {
+        ...mockProfile,
+        visibility: 'internal',
+      }
+      mockRepo.findBySlug.mockResolvedValue(internalProfile)
+
+      expect(await memberProfileService.getBySlug('nav')).toBeNull()
+      expect(
+        await memberProfileService.getBySlug('nav', { includeInternal: true })
+      ).toEqual(internalProfile)
+    })
+
     it('upserts profile with canonical slug and editor metadata', async () => {
       mockRepo.upsert.mockResolvedValue(mockProfile)
 
       const input: UpsertMemberProfileInput = {
         slug: 'NAV',
+        visibility: 'public',
+        platformAccess: 'public',
         platformName: 'Nais',
         platformDescription: 'Applikasjonsplattformen til Nav',
         platformHref: 'https://nais.io',

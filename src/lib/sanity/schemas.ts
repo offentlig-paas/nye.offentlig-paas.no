@@ -932,6 +932,30 @@ const memberProfileSchema = defineType({
       validation: Rule => Rule.required(),
     },
     {
+      name: 'visibility',
+      title: 'Profile Visibility',
+      type: 'string',
+      initialValue: 'public',
+      options: {
+        list: [
+          { title: 'Offentlig (alle)', value: 'public' },
+          { title: 'Kun for innloggede medlemmer', value: 'internal' },
+        ],
+      },
+    },
+    {
+      name: 'platformAccess',
+      title: 'Platform Access Type',
+      type: 'string',
+      initialValue: 'public',
+      options: {
+        list: [
+          { title: 'Åpen / ekstern lenke', value: 'public' },
+          { title: 'Intern plattform', value: 'internal' },
+        ],
+      },
+    },
+    {
       name: 'platformName',
       title: 'Platform Name',
       type: 'string',
@@ -947,13 +971,11 @@ const memberProfileSchema = defineType({
       name: 'platformHref',
       title: 'Platform URL',
       type: 'url',
-      validation: Rule => Rule.required(),
     },
     {
       name: 'platformLabel',
       title: 'Platform URL Label',
       type: 'string',
-      validation: Rule => Rule.required(),
     },
     {
       name: 'platformLogo',

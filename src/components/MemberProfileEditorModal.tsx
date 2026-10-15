@@ -8,6 +8,8 @@ import {
   ChevronRightIcon,
   CodeBracketIcon,
   CubeTransparentIcon,
+  GlobeAltIcon,
+  LockClosedIcon,
   PlusIcon,
   ServerStackIcon,
   SparklesIcon,
@@ -28,12 +30,14 @@ import {
   type CncfProjectUsage,
   type MemberProfile,
   type OpenPosition,
+  type PlatformAccessType,
   type PlatformCapability,
   type ProfileAccentColor,
   type ProfileHeroStyle,
   type ProfileLink,
   type ProfileSectionId,
   type ProfileStat,
+  type ProfileVisibility,
   type TeamMember,
   type TechStackGroup,
 } from '@/domains/member-profile/types'
@@ -83,6 +87,18 @@ export function MemberProfileEditorModal({
 }: MemberProfileEditorModalProps) {
   const [activeTab, setActiveTab] = useState<EditorTab>('general')
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
+
+  const [visibility, setVisibility] = useState<ProfileVisibility>(
+    initialProfile?.visibility ?? 'public'
+  )
+  const [platformAccess, setPlatformAccess] = useState<PlatformAccessType>(
+    initialProfile?.platformAccess ??
+      (initialProfile
+        ? initialProfile.platformHref
+          ? 'public'
+          : 'internal'
+        : 'public')
+  )
 
   const [platformName, setPlatformName] = useState(
     initialProfile?.platformName ?? ''
@@ -177,6 +193,7 @@ export function MemberProfileEditorModal({
     onSuccess: data => {
       utils.memberProfile.getBySlug.invalidate({ slug: memberSlug })
       utils.memberProfile.listPlatforms.invalidate()
+      utils.memberProfile.getMyMembership.invalidate()
       onSaved(data)
       onClose()
     },
@@ -186,6 +203,140 @@ export function MemberProfileEditorModal({
   })
 
   if (!isOpen) return null
+
+  const applyStarterTemplate = (
+    templateId: 'cloud-k8s' | 'hybrid-k8s' | 'internal'
+  ) => {
+    const pName = platformName.trim() || `${memberName} Plattform`
+    if (!platformName.trim()) {
+      setPlatformName(pName)
+    }
+    if (!platformDescription.trim()) {
+      setPlatformDescription(
+        `Applikasjonsplattformen til ${memberName} for effektiv og sikker utvikling og drift av digitale tjenester.`
+      )
+    }
+    if (!tagline.trim()) {
+      setTagline(
+        `Felles applikasjonsplattform og golden paths for produktteam i ${memberName}.`
+      )
+    }
+    if (!about.trim()) {
+      setAbout(
+        `Plattformen reduserer kognitiv belastning for utviklingsteamene i ${memberName} gjennom standardisert utrulling, innebygd sikkerhet og ferdig oppsatt observability.`
+      )
+    }
+
+    if (templateId === 'cloud-k8s') {
+      setCloudProvidersText('Google Cloud Platform (GCP), Microsoft Azure')
+      setOpenSourceFirst(true)
+    } else if (templateId === 'hybrid-k8s') {
+      setCloudProvidersText('On-premise datasentre, Microsoft Azure / GCP')
+      setOpenSourceFirst(true)
+    } else if (templateId === 'internal') {
+      setPlatformAccess('internal')
+      setOpenSourceFirst(false)
+      if (!cloudProvidersText.trim()) {
+        setCloudProvidersText('Internt datasenter / Privat sky')
+      }
+    }
+
+    const defaultCaps: PlatformCapability[] = [
+      {
+        id: 'cap-deploy',
+        category: 'dx',
+        title: 'GitOps og automatisert utrulling',
+        titleEn: 'GitOps & Automated Deployment',
+        description:
+          'Deklarativ utrulling fra Git til test- og produksjonsmiljøer.',
+        descriptionEn:
+          'Declarative deployment from Git to test and production environments.',
+        maturity: 'production',
+        selfService: true,
+        highlights: [
+          'Automatisk synkronisering av miljøer via GitOps',
+          'Standardiserte bygge- og utrullingspipelines',
+        ],
+      },
+      {
+        id: 'cap-security',
+        category: 'security',
+        title: 'Innebygd sikkerhet og tilgangsstyring',
+        titleEn: 'Built-in Security & Access Control',
+        description:
+          'Automatisk sertifikathåndtering, nettverkspolicyer og hemmelighetshåndtering.',
+        descriptionEn:
+          'Automated certificate management, network policies, and secrets management.',
+        maturity: 'production',
+        selfService: true,
+        highlights: [
+          'Zero-trust nettverksisolasjon mellom applikasjoner',
+          'Automatisk rotasjon av hemmeligheter og sertifikater',
+        ],
+      },
+      {
+        id: 'cap-obs',
+        category: 'observability',
+        title: 'Ferdig oppsatt logging, metrikker og sporing',
+        titleEn: 'Turnkey Logging, Metrics & Tracing',
+        description:
+          'Standardiserte dashboards, alarmer og distribuert sporing ut av boksen.',
+        descriptionEn:
+          'Standardized dashboards, alerts, and distributed tracing out of the box.',
+        maturity: 'production',
+        selfService: true,
+        highlights: [
+          'Prometheus-metrikker og ferdige Grafana-dashboards',
+          'OpenTelemetry-basert sporing og sentralisert loggsøk',
+        ],
+      },
+    ]
+
+    if (capabilities.length === 0) {
+      setCapabilities(defaultCaps)
+    }
+
+    if (cncfProjects.length === 0) {
+      const starterNames =
+        templateId === 'internal'
+          ? ['Kubernetes', 'Prometheus', 'OpenTelemetry', 'Cert-Manager']
+          : [
+              'Kubernetes',
+              'Argo CD',
+              'Prometheus',
+              'Cilium',
+              'OpenTelemetry',
+              'Cert-Manager',
+              'Kyverno',
+            ]
+      const selected = CNCF_PROJECT_CATALOG.filter(item =>
+        starterNames.includes(item.name)
+      ).map(item => ({
+        name: item.name,
+        tier: item.tier,
+        category: item.category,
+        cncfUrl: item.cncfUrl,
+        usage: `Brukes i ${pName}.`,
+        usageEn: `Used in ${pName}.`,
+      }))
+      setCncfProjects(selected)
+    }
+
+    if (techStack.length === 0) {
+      setTechStack([
+        {
+          category: 'Kjøremiljø & Leveranse',
+          categoryEn: 'Runtime & Delivery',
+          items: ['Kubernetes', 'GitHub Actions', 'Argo CD', 'Terraform'],
+        },
+        {
+          category: 'Observability & Sikkerhet',
+          categoryEn: 'Observability & Security',
+          items: ['Prometheus', 'Grafana', 'OpenTelemetry', 'Kyverno'],
+        },
+      ])
+    }
+  }
 
   const moveSection = (index: number, direction: -1 | 1) => {
     const target = index + direction
@@ -224,13 +375,17 @@ export function MemberProfileEditorModal({
     e.preventDefault()
     setErrorMsg(null)
 
-    if (
-      !platformName.trim() ||
-      !platformDescription.trim() ||
-      !platformHref.trim()
-    ) {
+    if (!platformName.trim() || !platformDescription.trim()) {
       setErrorMsg(
-        'Fyll ut plattformnavn, kort beskrivelse og dokumentasjons-URL under Grunninfo.'
+        'Fyll ut plattformnavn og kort beskrivelse under Grunninfo & Utseende.'
+      )
+      setActiveTab('general')
+      return
+    }
+
+    if (platformAccess === 'public' && !platformHref.trim()) {
+      setErrorMsg(
+        'Fyll ut dokumentasjons-URL eller velg «Intern plattform» dersom plattformen ikke har en åpen nettside.'
       )
       setActiveTab('general')
       return
@@ -252,17 +407,21 @@ export function MemberProfileEditorModal({
       j => j.title.trim() && j.department.trim() && j.url.trim()
     )
 
+    const trimmedHref = platformHref.trim()
+    const computedLabel =
+      platformLabel.trim() ||
+      (trimmedHref
+        ? trimmedHref.replace(/^https?:\/\//, '').replace(/\/$/, '')
+        : '')
+
     upsertMutation.mutate({
       slug: memberSlug,
+      visibility,
+      platformAccess,
       platformName: platformName.trim(),
       platformDescription: platformDescription.trim(),
-      platformHref: platformHref.trim(),
-      platformLabel:
-        platformLabel.trim() ||
-        platformHref
-          .trim()
-          .replace(/^https?:\/\//, '')
-          .replace(/\/$/, ''),
+      platformHref: trimmedHref,
+      platformLabel: computedLabel,
       platformLogo: platformLogo.trim() || undefined,
       theme: {
         accentColor,
@@ -443,6 +602,118 @@ export function MemberProfileEditorModal({
 
           {activeTab === 'general' && (
             <div className="space-y-6">
+              {/* Starter Templates */}
+              <div className="rounded-xl border border-teal-500/20 bg-teal-50/50 p-4 dark:border-teal-500/20 dark:bg-teal-950/20">
+                <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+                  <div>
+                    <h3 className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+                      Hurtigstart med mal (1-klikk)
+                    </h3>
+                    <p className="mt-0.5 text-xs text-zinc-600 dark:text-zinc-400">
+                      Fyller automatisk inn vanlige kapabiliteter,
+                      CNCF-prosjekter og teknologistabel som utgangspunkt.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => applyStarterTemplate('cloud-k8s')}
+                      className="rounded-lg border border-teal-600/30 bg-white px-2.5 py-1.5 text-xs font-semibold text-teal-700 transition hover:bg-teal-50 dark:border-teal-400/30 dark:bg-zinc-900 dark:text-teal-300 dark:hover:bg-zinc-800"
+                    >
+                      Skybasert Kubernetes
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => applyStarterTemplate('hybrid-k8s')}
+                      className="rounded-lg border border-teal-600/30 bg-white px-2.5 py-1.5 text-xs font-semibold text-teal-700 transition hover:bg-teal-50 dark:border-teal-400/30 dark:bg-zinc-900 dark:text-teal-300 dark:hover:bg-zinc-800"
+                    >
+                      Hybrid / On-prem
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => applyStarterTemplate('internal')}
+                      className="rounded-lg border border-teal-600/30 bg-white px-2.5 py-1.5 text-xs font-semibold text-teal-700 transition hover:bg-teal-50 dark:border-teal-400/30 dark:bg-zinc-900 dark:text-teal-300 dark:hover:bg-zinc-800"
+                    >
+                      Intern plattform
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Visibility & Platform Access Controls */}
+              <div className="grid grid-cols-1 gap-4 rounded-xl border border-zinc-200 bg-zinc-50/60 p-4 sm:grid-cols-2 dark:border-zinc-800 dark:bg-zinc-800/40">
+                <div>
+                  <label className="block text-xs font-semibold text-zinc-800 dark:text-zinc-200">
+                    Profilsynlighet på offentlig-paas.no
+                  </label>
+                  <p className="mt-0.5 text-[11px] text-zinc-500 dark:text-zinc-400">
+                    Velg hvem som kan se plattformprofilen.
+                  </p>
+                  <div className="mt-2 grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setVisibility('public')}
+                      className={`flex items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition ${
+                        visibility === 'public'
+                          ? 'border-teal-600 bg-teal-600 text-white dark:border-teal-500 dark:bg-teal-500 dark:text-zinc-950'
+                          : 'border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300'
+                      }`}
+                    >
+                      <GlobeAltIcon className="h-4 w-4" />
+                      Offentlig
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setVisibility('internal')}
+                      className={`flex items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition ${
+                        visibility === 'internal'
+                          ? 'border-amber-600 bg-amber-600 text-white dark:border-amber-500 dark:bg-amber-500 dark:text-zinc-950'
+                          : 'border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300'
+                      }`}
+                    >
+                      <LockClosedIcon className="h-4 w-4" />
+                      Kun medlemmer
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-zinc-800 dark:text-zinc-200">
+                    Plattformtilgang og dokumentasjon
+                  </label>
+                  <p className="mt-0.5 text-[11px] text-zinc-500 dark:text-zinc-400">
+                    Har plattformen en åpen dokumentasjonsside eller er den kun
+                    intern?
+                  </p>
+                  <div className="mt-2 grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setPlatformAccess('public')}
+                      className={`flex items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition ${
+                        platformAccess === 'public'
+                          ? 'border-teal-600 bg-teal-600 text-white dark:border-teal-500 dark:bg-teal-500 dark:text-zinc-950'
+                          : 'border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300'
+                      }`}
+                    >
+                      <GlobeAltIcon className="h-4 w-4" />
+                      Åpen nettside / docs
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPlatformAccess('internal')}
+                      className={`flex items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition ${
+                        platformAccess === 'internal'
+                          ? 'border-zinc-800 bg-zinc-800 text-white dark:border-zinc-200 dark:bg-zinc-200 dark:text-zinc-900'
+                          : 'border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300'
+                      }`}
+                    >
+                      <LockClosedIcon className="h-4 w-4" />
+                      Intern plattform
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
@@ -460,14 +731,21 @@ export function MemberProfileEditorModal({
 
                 <div>
                   <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                    Dokumentasjons- / plattform-URL *
+                    Dokumentasjons- / plattform-URL{' '}
+                    {platformAccess === 'public'
+                      ? '*'
+                      : '(valgfri for intern plattform)'}
                   </label>
                   <input
                     type="url"
-                    required
+                    required={platformAccess === 'public'}
                     value={platformHref}
                     onChange={e => setPlatformHref(e.target.value)}
-                    placeholder="https://docs.nais.io"
+                    placeholder={
+                      platformAccess === 'public'
+                        ? 'https://docs.nais.io'
+                        : 'Valgfritt for intern plattform'
+                    }
                     className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                   />
                 </div>
@@ -480,7 +758,11 @@ export function MemberProfileEditorModal({
                     type="text"
                     value={platformLabel}
                     onChange={e => setPlatformLabel(e.target.value)}
-                    placeholder="docs.nais.io"
+                    placeholder={
+                      platformAccess === 'public'
+                        ? 'docs.nais.io'
+                        : 'Intern plattform'
+                    }
                     className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                   />
                 </div>

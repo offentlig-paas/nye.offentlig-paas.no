@@ -67,6 +67,8 @@ export interface SerializedMember {
 interface MemberProfileShowcaseProps {
   member: SerializedMember
   profile?: MemberProfile
+  isInternalRestricted?: boolean
+  autoOpenEditor?: boolean
   talks: MemberTalkContribution[]
   organizedEventsCount: number
   uniqueSpeakers: { name: string; url?: string }[]
@@ -224,6 +226,8 @@ const DEFAULT_SECTION_ORDER: ProfileSectionId[] = [
 export function MemberProfileShowcase({
   member,
   profile: initialProfile,
+  isInternalRestricted = false,
+  autoOpenEditor = false,
   talks,
   organizedEventsCount,
   uniqueSpeakers,
@@ -233,7 +237,7 @@ export function MemberProfileShowcase({
   const [profile, setProfile] = useState<MemberProfile | undefined>(
     initialProfile
   )
-  const [editorOpen, setEditorOpen] = useState(false)
+  const [editorOpen, setEditorOpen] = useState(Boolean(autoOpenEditor))
   const [lang, setLang] = useState<'no' | 'en'>('no')
   const [manifestExpanded, setManifestExpanded] = useState(false)
   const [showAllTalks, setShowAllTalks] = useState(false)
@@ -1125,6 +1129,20 @@ export function MemberProfileShowcase({
                 <span className="rounded-md bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
                   {member.type}
                 </span>
+                {profile?.visibility === 'internal' && (
+                  <span className="inline-flex items-center gap-1 rounded-md bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-800 ring-1 ring-amber-600/20 ring-inset dark:bg-amber-950/60 dark:text-amber-300 dark:ring-amber-400/30">
+                    <LockClosedIcon className="h-3.5 w-3.5" />
+                    {lang === 'en'
+                      ? 'Members only'
+                      : 'Kun for innloggede medlemmer'}
+                  </span>
+                )}
+                {profile?.platformAccess === 'internal' && (
+                  <span className="inline-flex items-center gap-1 rounded-md bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-700 ring-1 ring-zinc-300/60 ring-inset dark:bg-zinc-800 dark:text-zinc-300 dark:ring-zinc-700">
+                    <LockClosedIcon className="h-3.5 w-3.5" />
+                    {lang === 'en' ? 'Internal platform' : 'Intern plattform'}
+                  </span>
+                )}
                 {profile?.cncfEndUserMember && (
                   <span className="inline-flex items-center gap-1 rounded-md bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-blue-600/20 ring-inset dark:bg-blue-950/60 dark:text-blue-300 dark:ring-blue-400/30">
                     <CheckBadgeIcon className="h-3.5 w-3.5" />
@@ -1184,7 +1202,7 @@ export function MemberProfileShowcase({
           {/* Action Bar & Cloud Footprint */}
           <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-2.5">
-              {platformInfo?.href && (
+              {platformInfo?.href && profile?.platformAccess !== 'internal' && (
                 <a
                   href={platformInfo.href}
                   target="_blank"
@@ -1285,71 +1303,100 @@ export function MemberProfileShowcase({
         </div>
       </header>
 
-      {/* Notice for members without a rich curated profile yet */}
-      {!profile && (
-        <div className="rounded-2xl border border-dashed border-zinc-300 bg-zinc-50/60 p-6 dark:border-zinc-700 dark:bg-zinc-800/30">
+      {/* Notice for internal member-only profiles or members without a profile yet */}
+      {!profile && isInternalRestricted ? (
+        <div className="rounded-2xl border border-amber-500/30 bg-amber-50/60 p-6 dark:border-amber-500/20 dark:bg-amber-950/20">
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-            <div>
-              <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
-                Dette er en automatisk generert basisprofil for {member.name}
-              </h2>
-              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                Virksomheten har ikke lagt inn utvidet plattformprofil med
-                CNCF-prosjekter og kapabiliteter ennå. Se fullstendige
-                eksempelprofiler for{' '}
-                <Link
-                  href="/medlemmer/nav"
-                  className="font-semibold text-teal-600 underline dark:text-teal-400"
-                >
-                  Nav (NAIS)
-                </Link>
-                ,{' '}
-                <Link
-                  href="/medlemmer/kartverket"
-                  className="font-semibold text-teal-600 underline dark:text-teal-400"
-                >
-                  Kartverket (SKIP)
-                </Link>
-                ,{' '}
-                <Link
-                  href="/medlemmer/skatteetaten"
-                  className="font-semibold text-teal-600 underline dark:text-teal-400"
-                >
-                  Skatteetaten (Aurora)
-                </Link>{' '}
-                eller{' '}
-                <Link
-                  href="/medlemmer/equinor"
-                  className="font-semibold text-teal-600 underline dark:text-teal-400"
-                >
-                  Equinor (Omnia Radix)
-                </Link>
-                .
-              </p>
-              {member.domains.length > 0 && !canEdit && (
-                <p className="mt-2 inline-flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
-                  <LockClosedIcon className="h-3.5 w-3.5 shrink-0" />
-                  <span>
-                    Jobber du i {member.name}? Logg inn med Slack (
-                    {member.domains.map(d => `@${d}`).join(', ')}) for å
-                    opprette og redigere plattformprofilen direkte.
-                  </span>
+            <div className="flex items-start gap-3">
+              <LockClosedIcon className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
+              <div>
+                <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
+                  Plattformprofilen for {member.name} er kun synlig for
+                  innloggede medlemmer
+                </h2>
+                <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                  {member.name} har valgt å dele sin plattformprofil internt i
+                  Offentlig PaaS-nettverket. Logg inn med Slack for å se
+                  kapabiliteter, teknologistabel og team.
                 </p>
-              )}
+              </div>
             </div>
 
-            {canEdit && (
-              <button
-                type="button"
-                onClick={() => setEditorOpen(true)}
-                className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-teal-600 px-4 py-2.5 text-xs font-semibold text-white shadow-xs transition hover:bg-teal-500"
-              >
-                <PencilSquareIcon className="h-4 w-4" />
-                <span>Opprett plattformprofil</span>
-              </button>
-            )}
+            <Link
+              href={`/signin?callbackUrl=/medlemmer/${member.slug}`}
+              className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-teal-600 px-4 py-2.5 text-xs font-semibold text-white shadow-xs transition hover:bg-teal-500"
+            >
+              <SlackIcon className="h-4 w-4" />
+              <span>Logg inn med Slack</span>
+            </Link>
           </div>
         </div>
+      ) : (
+        !profile && (
+          <div className="rounded-2xl border border-dashed border-zinc-300 bg-zinc-50/60 p-6 dark:border-zinc-700 dark:bg-zinc-800/30">
+            <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+              <div>
+                <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
+                  Dette er en automatisk generert basisprofil for {member.name}
+                </h2>
+                <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                  Virksomheten har ikke lagt inn utvidet plattformprofil med
+                  CNCF-prosjekter og kapabiliteter ennå. Se fullstendige
+                  eksempelprofiler for{' '}
+                  <Link
+                    href="/medlemmer/nav"
+                    className="font-semibold text-teal-600 underline dark:text-teal-400"
+                  >
+                    Nav (NAIS)
+                  </Link>
+                  ,{' '}
+                  <Link
+                    href="/medlemmer/kartverket"
+                    className="font-semibold text-teal-600 underline dark:text-teal-400"
+                  >
+                    Kartverket (SKIP)
+                  </Link>
+                  ,{' '}
+                  <Link
+                    href="/medlemmer/skatteetaten"
+                    className="font-semibold text-teal-600 underline dark:text-teal-400"
+                  >
+                    Skatteetaten (Aurora)
+                  </Link>{' '}
+                  eller{' '}
+                  <Link
+                    href="/medlemmer/equinor"
+                    className="font-semibold text-teal-600 underline dark:text-teal-400"
+                  >
+                    Equinor (Omnia Radix)
+                  </Link>
+                  .
+                </p>
+                {member.domains.length > 0 && !canEdit && (
+                  <p className="mt-2 inline-flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
+                    <LockClosedIcon className="h-3.5 w-3.5 shrink-0" />
+                    <span>
+                      Jobber du i {member.name}? Logg inn med Slack (
+                      {member.domains.map(d => `@${d}`).join(', ')}) for å
+                      opprette og redigere plattformprofilen direkte.
+                    </span>
+                  </p>
+                )}
+              </div>
+
+              {canEdit && (
+                <button
+                  type="button"
+                  onClick={() => setEditorOpen(true)}
+                  className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-teal-600 px-4 py-2.5 text-xs font-semibold text-white shadow-xs transition hover:bg-teal-500"
+                >
+                  <PencilSquareIcon className="h-4 w-4" />
+                  <span>Opprett plattformprofil</span>
+                </button>
+              )}
+            </div>
+          </div>
+        )
       )}
 
       {/* Asymmetric 2-Column Profile Body */}

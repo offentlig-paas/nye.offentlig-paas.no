@@ -5,19 +5,43 @@ import { revalidatePath } from 'next/cache'
 import {
   memberProfileService,
   getMemberBySlug,
+  getMemberByUserEmail,
   canUserEditMemberProfile,
   upsertMemberProfileSchema,
 } from '@/domains/member-profile'
 
 export const memberProfileRouter = router({
   getBySlug: publicProcedure
-    .input(z.object({ slug: z.string() }))
-    .query(async ({ input }) => {
-      return await memberProfileService.getBySlug(input.slug)
+    .input(z.object({ slug: z.string().min(1).max(80) }))
+    .query(async ({ input, ctx }) => {
+      return await memberProfileService.getBySlug(input.slug, {
+        includeInternal: Boolean(ctx.session?.user),
+      })
     }),
 
-  listPlatforms: publicProcedure.query(async () => {
-    return await memberProfileService.listPlatformSummaries()
+  listPlatforms: publicProcedure.query(async ({ ctx }) => {
+    return await memberProfileService.listPlatformSummaries({
+      includeInternal: Boolean(ctx.session?.user),
+    })
+  }),
+
+  getMyMembership: publicProcedure.query(async ({ ctx }) => {
+    const email = ctx.session?.user?.email
+    if (!email) return null
+    const member = getMemberByUserEmail(email)
+    if (!member) return null
+    const slug = member.getSlug()
+    const profile = await memberProfileService.getBySlug(slug, {
+      includeInternal: true,
+    })
+    return {
+      slug,
+      name: member.name,
+      hasProfile: Boolean(profile?.platformName),
+      platformName: profile?.platformName ?? null,
+      visibility: profile?.visibility ?? null,
+      platformAccess: profile?.platformAccess ?? null,
+    }
   }),
 
   getPermissions: publicProcedure

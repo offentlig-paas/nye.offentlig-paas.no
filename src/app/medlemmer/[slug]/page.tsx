@@ -1,5 +1,6 @@
 import { type Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { auth } from '@/auth'
 import { Container } from '@/components/Container'
 import { members } from '@/data/members'
 import {
@@ -14,6 +15,7 @@ import {
 
 type Props = {
   params: Promise<{ slug: string }>
+  searchParams?: Promise<{ edit?: string }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -37,19 +39,32 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function MemberProfilePage({ params }: Props) {
+export default async function MemberProfilePage({
+  params,
+  searchParams,
+}: Props) {
   const { slug } = await params
+  const resolvedSearchParams = searchParams ? await searchParams : undefined
+  const autoOpenEditor = resolvedSearchParams?.edit === '1'
   const member = getMemberBySlug(slug)
 
   if (!member) {
     notFound()
   }
 
+  const session = await auth()
+  const isAuthenticated = Boolean(session?.user)
   const canonicalSlug = member.getSlug()
-  const [profile, platformSummaries] = await Promise.all([
-    memberProfileService.getBySlug(canonicalSlug),
-    memberProfileService.listPlatformSummaries(),
+  const [rawProfile, platformSummaries] = await Promise.all([
+    memberProfileService.getBySlug(canonicalSlug, { includeInternal: true }),
+    memberProfileService.listPlatformSummaries({
+      includeInternal: isAuthenticated,
+    }),
   ])
+
+  const isInternalRestricted =
+    rawProfile?.visibility === 'internal' && !isAuthenticated
+  const profile = isInternalRestricted ? null : rawProfile
 
   const { talks, organizedEventsCount, uniqueSpeakers } =
     getMemberEventContributions(member)
@@ -101,6 +116,8 @@ export default async function MemberProfilePage({ params }: Props) {
       <MemberProfileShowcase
         member={serializedMember}
         profile={profile ?? undefined}
+        isInternalRestricted={isInternalRestricted}
+        autoOpenEditor={autoOpenEditor}
         talks={talks}
         organizedEventsCount={organizedEventsCount}
         uniqueSpeakers={uniqueSpeakers}

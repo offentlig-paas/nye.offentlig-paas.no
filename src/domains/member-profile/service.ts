@@ -35,6 +35,34 @@ export function getMemberBySlug(slug: string): Member | undefined {
 const VALID_DOMAIN_REGEX =
   /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+$/
 
+function extractValidEmailDomain(email?: string | null): string | null {
+  const parts = email?.toLowerCase().trim().split('@')
+  if (!parts || parts.length !== 2 || !parts[0] || !parts[1]) {
+    return null
+  }
+  const emailDomain = parts[1]
+  return VALID_DOMAIN_REGEX.test(emailDomain) ? emailDomain : null
+}
+
+function findMatchingMemberDomain(
+  member: Member,
+  emailDomain: string
+): string | undefined {
+  return member.domains.find(d => {
+    const normalized = d.toLowerCase().trim()
+    if (!VALID_DOMAIN_REGEX.test(normalized)) return false
+    return emailDomain === normalized || emailDomain.endsWith(`.${normalized}`)
+  })
+}
+
+export function getMemberByUserEmail(
+  email?: string | null
+): Member | undefined {
+  const emailDomain = extractValidEmailDomain(email)
+  if (!emailDomain) return undefined
+  return members.find(m => Boolean(findMatchingMemberDomain(m, emailDomain)))
+}
+
 export function canUserEditMemberProfile(
   member: Member,
   user?: { email?: string | null; isAdmin?: boolean | null } | null
@@ -49,21 +77,12 @@ export function canUserEditMemberProfile(
   if (user.isAdmin) {
     return { canEdit: true, reason: 'admin' }
   }
-  const parts = user.email?.toLowerCase().trim().split('@')
-  if (!parts || parts.length !== 2 || !parts[0] || !parts[1]) {
-    return { canEdit: false, reason: 'domain_mismatch' }
-  }
-  const emailDomain = parts[1]
-  if (!VALID_DOMAIN_REGEX.test(emailDomain)) {
+  const emailDomain = extractValidEmailDomain(user.email)
+  if (!emailDomain) {
     return { canEdit: false, reason: 'domain_mismatch' }
   }
 
-  const matchedDomain = member.domains.find(d => {
-    const normalized = d.toLowerCase().trim()
-    if (!VALID_DOMAIN_REGEX.test(normalized)) return false
-    return emailDomain === normalized || emailDomain.endsWith(`.${normalized}`)
-  })
-
+  const matchedDomain = findMatchingMemberDomain(member, emailDomain)
   if (matchedDomain) {
     return { canEdit: true, matchedDomain, reason: 'domain_match' }
   }
@@ -157,18 +176,34 @@ class MemberProfileService {
     this.repository = repository ?? new MemberProfileRepository()
   }
 
-  async getBySlug(slug: string): Promise<MemberProfile | null> {
+  async getBySlug(
+    slug: string,
+    options?: { includeInternal?: boolean }
+  ): Promise<MemberProfile | null> {
     const member = getMemberBySlug(slug)
     const canonicalSlug = member ? member.getSlug() : slug.toLowerCase()
-    return await this.repository.findBySlug(canonicalSlug)
+    const profile = await this.repository.findBySlug(canonicalSlug)
+    if (!profile) return null
+    if (profile.visibility === 'internal' && !options?.includeInternal) {
+      return null
+    }
+    return profile
   }
 
-  async getAll(): Promise<MemberProfile[]> {
-    return await this.repository.findAll()
+  async getAll(options?: {
+    includeInternal?: boolean
+  }): Promise<MemberProfile[]> {
+    const all = await this.repository.findAll()
+    if (options?.includeInternal) return all
+    return all.filter(p => p.visibility !== 'internal')
   }
 
-  async listPlatformSummaries(): Promise<MemberPlatformSummary[]> {
-    return await this.repository.listPlatformSummaries()
+  async listPlatformSummaries(options?: {
+    includeInternal?: boolean
+  }): Promise<MemberPlatformSummary[]> {
+    const summaries = await this.repository.listPlatformSummaries()
+    if (options?.includeInternal) return summaries
+    return summaries.filter(s => s.visibility !== 'internal')
   }
 
   async upsert(

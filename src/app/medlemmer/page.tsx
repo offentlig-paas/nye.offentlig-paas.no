@@ -9,7 +9,10 @@ import { GitHubIcon, LinkedInIcon } from '@/components/SocialIcons'
 import {
   ArrowRightIcon,
   ArrowTopRightOnSquareIcon,
+  LockClosedIcon,
   MagnifyingGlassIcon,
+  PencilSquareIcon,
+  PlusCircleIcon,
   ServerStackIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
@@ -130,17 +133,30 @@ function MemberPopover({
         </div>
 
         <div className="mt-3 flex flex-wrap items-center gap-2">
-          {platform && (
-            <a
-              href={platform.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-medium text-teal-700 hover:bg-teal-100 dark:bg-teal-900/30 dark:text-teal-400 dark:hover:bg-teal-900/50"
-            >
-              <ServerStackIcon className="h-3 w-3" />
-              {platform.name}
-            </a>
-          )}
+          {platform &&
+            (platform.href && platform.platformAccess !== 'internal' ? (
+              <a
+                href={platform.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-medium text-teal-700 hover:bg-teal-100 dark:bg-teal-900/30 dark:text-teal-400 dark:hover:bg-teal-900/50"
+              >
+                <ServerStackIcon className="h-3 w-3" />
+                {platform.name}
+              </a>
+            ) : (
+              <Link
+                href={`/medlemmer/${member.getSlug()}`}
+                className="inline-flex items-center gap-1 rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-medium text-teal-700 hover:bg-teal-100 dark:bg-teal-900/30 dark:text-teal-400 dark:hover:bg-teal-900/50"
+              >
+                {platform.visibility === 'internal' ? (
+                  <LockClosedIcon className="h-3 w-3" />
+                ) : (
+                  <ServerStackIcon className="h-3 w-3" />
+                )}
+                {platform.name}
+              </Link>
+            ))}
           {member.homepage && (
             <a
               href={member.homepage}
@@ -287,6 +303,7 @@ export default function MedlemmerPage() {
   const searchRef = useRef<HTMLInputElement>(null)
 
   const { data: platforms } = trpc.memberProfile.listPlatforms.useQuery()
+  const { data: myMembership } = trpc.memberProfile.getMyMembership.useQuery()
   const platformBySlug = useMemo(() => {
     const map = new Map<string, MemberPlatformSummary>()
     for (const p of platforms ?? []) {
@@ -359,6 +376,62 @@ export default function MedlemmerPage() {
       gitHubPage="src/data/members.ts"
     >
       <div className="mx-auto max-w-7xl space-y-6">
+        {myMembership && (
+          <div className="flex flex-col justify-between gap-3 rounded-xl border border-teal-500/20 bg-teal-50/50 p-4 sm:flex-row sm:items-center dark:border-teal-500/20 dark:bg-teal-950/20">
+            <div className="flex items-center gap-3">
+              <ServerStackIcon className="h-5 w-5 shrink-0 text-teal-600 dark:text-teal-400" />
+              <div className="text-xs text-gray-700 dark:text-gray-300">
+                <span className="font-semibold text-gray-900 dark:text-white">
+                  Din virksomhet: {myMembership.name}
+                </span>
+                {myMembership.hasProfile && myMembership.platformName ? (
+                  <span>
+                    {' '}
+                    — plattformprofilen{' '}
+                    <span className="font-medium">
+                      {myMembership.platformName}
+                    </span>{' '}
+                    er publisert (
+                    {myMembership.visibility === 'internal'
+                      ? 'kun for medlemmer'
+                      : 'offentlig'}
+                    ).
+                  </span>
+                ) : (
+                  <span>
+                    {' '}
+                    — virksomheten har ikke publisert en plattformprofil ennå.
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="flex shrink-0 items-center gap-2">
+              <Link
+                href={`/medlemmer/${myMembership.slug}?edit=1`}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-teal-500"
+              >
+                {myMembership.hasProfile ? (
+                  <>
+                    <PencilSquareIcon className="h-3.5 w-3.5" />
+                    Rediger plattform
+                  </>
+                ) : (
+                  <>
+                    <PlusCircleIcon className="h-3.5 w-3.5" />
+                    Opprett plattformprofil
+                  </>
+                )}
+              </Link>
+              <Link
+                href={`/medlemmer/${myMembership.slug}`}
+                className="inline-flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+              >
+                Se profil
+              </Link>
+            </div>
+          </div>
+        )}
+
         <div className="space-y-3">
           <div className="relative">
             <MagnifyingGlassIcon className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />

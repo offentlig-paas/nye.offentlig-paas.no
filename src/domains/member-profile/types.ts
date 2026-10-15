@@ -13,6 +13,12 @@ export type ProfileAccentColor = (typeof PROFILE_ACCENT_COLORS)[number]
 export const PROFILE_HERO_STYLES = ['gradient', 'grid', 'minimal'] as const
 export type ProfileHeroStyle = (typeof PROFILE_HERO_STYLES)[number]
 
+const PROFILE_VISIBILITY_OPTIONS = ['public', 'internal'] as const
+export type ProfileVisibility = (typeof PROFILE_VISIBILITY_OPTIONS)[number]
+
+const PLATFORM_ACCESS_TYPES = ['public', 'internal'] as const
+export type PlatformAccessType = (typeof PLATFORM_ACCESS_TYPES)[number]
+
 const PROFILE_SECTION_IDS = [
   'capabilities',
   'cncf',
@@ -134,6 +140,8 @@ interface DeclarativeManifestExample {
 export interface MemberProfile {
   _id?: string
   slug: string
+  visibility: ProfileVisibility
+  platformAccess: PlatformAccessType
   platformName: string
   platformDescription: string
   platformHref: string
@@ -172,6 +180,8 @@ export interface MemberPlatformSummary {
   href: string
   label: string
   logo?: string
+  visibility: ProfileVisibility
+  platformAccess: PlatformAccessType
 }
 
 export interface MemberTalkContribution {
@@ -437,39 +447,60 @@ const manifestExampleSchema = z.object({
   code: z.string().min(1).max(10000),
 })
 
-export const upsertMemberProfileSchema = z.object({
-  slug: z.string().min(1).max(80),
-  platformName: z.string().min(1).max(150),
-  platformDescription: z.string().min(1).max(1000),
-  platformHref: httpUrlSchema,
-  platformLabel: z.string().min(1).max(150),
-  platformLogo: safeLogoSchema.optional(),
-  theme: z.object({
-    accentColor: z.enum(PROFILE_ACCENT_COLORS),
-    heroStyle: z.enum(PROFILE_HERO_STYLES),
-    sectionOrder: z
-      .array(z.enum(PROFILE_SECTION_IDS))
-      .min(1)
-      .max(PROFILE_SECTION_IDS.length)
-      .refine(items => new Set(items).size === items.length, {
-        message: 'Dupliserte seksjoner er ikke tillatt',
-      }),
-  }),
-  tagline: z.string().max(500).default(''),
-  taglineEn: z.string().max(500).default(''),
-  about: z.string().max(4000).default(''),
-  aboutEn: z.string().max(4000).default(''),
-  cncfEndUserMember: z.boolean().default(false),
-  openSourceFirst: z.boolean().default(true),
-  cloudProviders: z.array(z.string().max(120)).max(15).default([]),
-  stats: z.array(profileStatSchema).max(8).default([]),
-  manifestExample: manifestExampleSchema.optional(),
-  capabilities: z.array(platformCapabilitySchema).max(30).default([]),
-  cncfProjects: z.array(cncfProjectUsageSchema).max(40).default([]),
-  techStack: z.array(techStackGroupSchema).max(15).default([]),
-  team: z.array(teamMemberSchema).max(40).default([]),
-  openPositions: z.array(openPositionSchema).max(20).default([]),
-  links: z.array(profileLinkSchema).max(20).default([]),
-})
+export const upsertMemberProfileSchema = z
+  .object({
+    slug: z.string().min(1).max(80),
+    visibility: z.enum(PROFILE_VISIBILITY_OPTIONS).default('public'),
+    platformAccess: z.enum(PLATFORM_ACCESS_TYPES).default('public'),
+    platformName: z.string().min(1).max(150),
+    platformDescription: z.string().min(1).max(1000),
+    platformHref: httpUrlSchema.optional().or(z.literal('')).default(''),
+    platformLabel: z.string().max(150).default(''),
+    platformLogo: safeLogoSchema.optional(),
+    theme: z.object({
+      accentColor: z.enum(PROFILE_ACCENT_COLORS),
+      heroStyle: z.enum(PROFILE_HERO_STYLES),
+      sectionOrder: z
+        .array(z.enum(PROFILE_SECTION_IDS))
+        .min(1)
+        .max(PROFILE_SECTION_IDS.length)
+        .refine(items => new Set(items).size === items.length, {
+          message: 'Dupliserte seksjoner er ikke tillatt',
+        }),
+    }),
+    tagline: z.string().max(500).default(''),
+    taglineEn: z.string().max(500).default(''),
+    about: z.string().max(4000).default(''),
+    aboutEn: z.string().max(4000).default(''),
+    cncfEndUserMember: z.boolean().default(false),
+    openSourceFirst: z.boolean().default(true),
+    cloudProviders: z.array(z.string().max(120)).max(15).default([]),
+    stats: z.array(profileStatSchema).max(8).default([]),
+    manifestExample: manifestExampleSchema.optional(),
+    capabilities: z.array(platformCapabilitySchema).max(30).default([]),
+    cncfProjects: z.array(cncfProjectUsageSchema).max(40).default([]),
+    techStack: z.array(techStackGroupSchema).max(15).default([]),
+    team: z.array(teamMemberSchema).max(40).default([]),
+    openPositions: z.array(openPositionSchema).max(20).default([]),
+    links: z.array(profileLinkSchema).max(20).default([]),
+  })
+  .superRefine((data, ctx) => {
+    if (data.platformAccess === 'public') {
+      if (!data.platformHref || !data.platformHref.trim()) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['platformHref'],
+          message: 'URL må oppgis for åpne plattformer',
+        })
+      }
+      if (!data.platformLabel || !data.platformLabel.trim()) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['platformLabel'],
+          message: 'Lenke-etikett må oppgis for åpne plattformer',
+        })
+      }
+    }
+  })
 
 export type UpsertMemberProfileInput = z.infer<typeof upsertMemberProfileSchema>
