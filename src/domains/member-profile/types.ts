@@ -88,6 +88,7 @@ export interface CncfProjectUsage {
   usageEn: string
   cncfUrl: string
   sourceRepoUrl?: string
+  logoUrl?: string
   sinceYear?: number
 }
 
@@ -206,127 +207,411 @@ export const CAPABILITY_CATEGORY_LABELS: Record<
   ai: { no: 'KI & Agenter', en: 'AI & Agentic Enablement' },
 }
 
-export const CNCF_PROJECT_CATALOG: Array<{
+export interface CncfCatalogItem {
   name: string
+  aliases?: string[]
   tier: CncfMaturityTier
   category: CncfProjectCategory
   cncfUrl: string
-}> = [
+  sourceRepoUrl: string
+  logoUrl: string
+  description: string
+}
+
+export const CNCF_PROJECT_CATALOG: CncfCatalogItem[] = [
   {
     name: 'Kubernetes',
     tier: 'Graduated',
     category: 'Orchestration & GitOps',
     cncfUrl: 'https://www.cncf.io/projects/kubernetes/',
+    sourceRepoUrl: 'https://github.com/kubernetes/kubernetes',
+    logoUrl:
+      'https://landscape.cncf.io/logos/e0303fdc381c96c1b4461ad1a2437c8f050cfb856fcb8710c9104367ca60f316.svg',
+    description:
+      'Kjerneorkestrering for applikasjonsklynger med deklarative API-er.',
   },
   {
     name: 'Argo CD',
+    aliases: ['Argo'],
     tier: 'Graduated',
     category: 'Orchestration & GitOps',
     cncfUrl: 'https://www.cncf.io/projects/argo/',
+    sourceRepoUrl: 'https://github.com/argoproj/argo-cd',
+    logoUrl:
+      'https://landscape.cncf.io/logos/ba71fd50cbc06c7bad3554de23cbca4298593141df3842003a94065c209610f4.svg',
+    description:
+      'Deklarativ GitOps kontinuerlig leveranse og utrulling til Kubernetes.',
   },
   {
     name: 'Flux',
     tier: 'Graduated',
     category: 'Orchestration & GitOps',
     cncfUrl: 'https://www.cncf.io/projects/flux/',
+    sourceRepoUrl: 'https://github.com/fluxcd/flux2',
+    logoUrl:
+      'https://landscape.cncf.io/logos/c513f673e1c90ff7826a7aa6065452b4bade9bd731db2e05675b74d6f5940d49.svg',
+    description:
+      'Kontinuerlig leveranse og GitOps-synkronisering for Kubernetes-klynger.',
   },
   {
     name: 'Cilium',
     tier: 'Graduated',
     category: 'Networking & Service Mesh',
     cncfUrl: 'https://www.cncf.io/projects/cilium/',
+    sourceRepoUrl: 'https://github.com/cilium/cilium',
+    logoUrl:
+      'https://landscape.cncf.io/logos/6b052d96054bbe311b0429d2267d60b92b1c5e6527e6646c0bf2fc06a55e2f43.svg',
+    description:
+      'eBPF-basert nettverk (CNI), nettverkspolicy og trafikkobservability.',
   },
   {
     name: 'Istio',
     tier: 'Graduated',
     category: 'Networking & Service Mesh',
     cncfUrl: 'https://www.cncf.io/projects/istio/',
+    sourceRepoUrl: 'https://github.com/istio/istio',
+    logoUrl:
+      'https://landscape.cncf.io/logos/2d881599f6faed0a16840a675049bd10ce7096134d93df3f533aaf91972a9689.svg',
+    description:
+      'Service mesh for mTLS, trafikkstyring og telemetri mellom tjenester.',
   },
   {
     name: 'Linkerd',
     tier: 'Graduated',
     category: 'Networking & Service Mesh',
     cncfUrl: 'https://www.cncf.io/projects/linkerd/',
+    sourceRepoUrl: 'https://github.com/linkerd/linkerd2',
+    logoUrl:
+      'https://landscape.cncf.io/logos/f1940543e59719e7ce1929d7bf6004b9fc56db3a6a59a2dc6f0db16c789b28ac.svg',
+    description:
+      'Lettvekts service mesh for automatisk mTLS, telemetri og pålitelighet.',
   },
   {
     name: 'Envoy',
     tier: 'Graduated',
     category: 'Networking & Service Mesh',
     cncfUrl: 'https://www.cncf.io/projects/envoy/',
+    sourceRepoUrl: 'https://github.com/envoyproxy/envoy',
+    logoUrl:
+      'https://landscape.cncf.io/logos/1cb1ec893e39b60f7d14dc76c6cc1e597b24be0161c0bdf9f97442fcb8d331f9.svg',
+    description:
+      'Høyytelses edge- og tjenesteproxy for skybaserte plattformer.',
+  },
+  {
+    name: 'CoreDNS',
+    tier: 'Graduated',
+    category: 'Networking & Service Mesh',
+    cncfUrl: 'https://www.cncf.io/projects/coredns/',
+    sourceRepoUrl: 'https://github.com/coredns/coredns',
+    logoUrl:
+      'https://landscape.cncf.io/logos/9f366c2d009f0fc6fa4dd5fbfc4dbb462f3d20a09c534d3e4ced67dcb9b092b1.svg',
+    description:
+      'Fleksibel DNS-tjener og tjenesteoppslag i Kubernetes-klynger.',
   },
   {
     name: 'Prometheus',
     tier: 'Graduated',
     category: 'Observability',
     cncfUrl: 'https://www.cncf.io/projects/prometheus/',
+    sourceRepoUrl: 'https://github.com/prometheus/prometheus',
+    logoUrl:
+      'https://landscape.cncf.io/logos/4d6a2b87a6c9a01ed1b82cef5db978e273adb99fda44d47e5dae48f75207147c.svg',
+    description:
+      'Innsamling av tidsseriemetrikker og varsling for infrastruktur og applikasjoner.',
   },
   {
     name: 'OpenTelemetry',
-    tier: 'Incubating',
+    tier: 'Graduated',
     category: 'Observability',
     cncfUrl: 'https://www.cncf.io/projects/opentelemetry/',
+    sourceRepoUrl: 'https://github.com/open-telemetry/community',
+    logoUrl:
+      'https://landscape.cncf.io/logos/52818595352a47637721976b546e0a2a1d0da186a0eb97ec203bd7e5248eb4fc.svg',
+    description:
+      'Standardisert instrumentering og innsamling av spor, metrikker og logger.',
+  },
+  {
+    name: 'Jaeger',
+    tier: 'Graduated',
+    category: 'Observability',
+    cncfUrl: 'https://www.cncf.io/projects/jaeger/',
+    sourceRepoUrl: 'https://github.com/jaegertracing/jaeger',
+    logoUrl:
+      'https://landscape.cncf.io/logos/5877af58428f6cd35e6dc2df2afe82af3b90853bd191670a60111e6e8c01ea54.svg',
+    description:
+      'Distribuert sporing og feilsøking av mikrotjenestearkitektur.',
+  },
+  {
+    name: 'Fluentd',
+    tier: 'Graduated',
+    category: 'Observability',
+    cncfUrl: 'https://www.cncf.io/projects/fluentd/',
+    sourceRepoUrl: 'https://github.com/fluent/fluentd',
+    logoUrl:
+      'https://landscape.cncf.io/logos/af80830c567373db3566d11fc8f42f7a2648a58db4f11163fa143042ce515b04.svg',
+    description:
+      'Innsamling og videresending av applikasjons- og klyngelogger.',
+  },
+  {
+    name: 'Thanos',
+    tier: 'Incubating',
+    category: 'Observability',
+    cncfUrl: 'https://www.cncf.io/projects/thanos/',
+    sourceRepoUrl: 'https://github.com/thanos-io/thanos',
+    logoUrl:
+      'https://landscape.cncf.io/logos/0246c435a220238574280479dfd919e033309178693f308b8c14bbb088eb0ac1.svg',
+    description:
+      'Høytilgjengelig Prometheus-oppsett med langtidslagring på tvers av klynger.',
   },
   {
     name: 'Cert-Manager',
+    aliases: ['cert-manager'],
     tier: 'Graduated',
     category: 'Security & Policy',
     cncfUrl: 'https://www.cncf.io/projects/cert-manager/',
+    sourceRepoUrl: 'https://github.com/cert-manager/cert-manager',
+    logoUrl:
+      'https://landscape.cncf.io/logos/781162dfd40606ace7e76f727bb24f3222ac6878f7bdb129a1082b533f3f8be7.svg',
+    description:
+      'Automatisk utstedelse og fornyelse av TLS-sertifikater i Kubernetes.',
   },
   {
     name: 'Kyverno',
-    tier: 'Incubating',
+    tier: 'Graduated',
     category: 'Security & Policy',
     cncfUrl: 'https://www.cncf.io/projects/kyverno/',
+    sourceRepoUrl: 'https://github.com/kyverno/kyverno',
+    logoUrl:
+      'https://landscape.cncf.io/logos/cd16e4a1d4b1b2b785530124b090d2fe64cbe2ce0f4d80e1bb968c45bb35af0b.svg',
+    description:
+      'Kubernetes-native policy-motor for validering, mutering og sikring av laster.',
+  },
+  {
+    name: 'Open Policy Agent (OPA)',
+    aliases: ['OPA', 'Gatekeeper'],
+    tier: 'Graduated',
+    category: 'Security & Policy',
+    cncfUrl: 'https://www.cncf.io/projects/open-policy-agent-opa/',
+    sourceRepoUrl: 'https://github.com/open-policy-agent/opa',
+    logoUrl:
+      'https://landscape.cncf.io/logos/c6d473cc6a37ca7850f1f787e5e1eefd1c898c0b288b1c895e663561aa3de387.svg',
+    description:
+      'Deklarativ policy-motor for tilgangskontroll og admission control.',
   },
   {
     name: 'External Secrets Operator',
-    tier: 'Incubating',
+    aliases: ['external-secrets'],
+    tier: 'Sandbox',
     category: 'Security & Policy',
     cncfUrl: 'https://www.cncf.io/projects/external-secrets-operator/',
+    sourceRepoUrl: 'https://github.com/external-secrets/external-secrets',
+    logoUrl:
+      'https://landscape.cncf.io/logos/07686e3ac9335c6071c003bba42cc984b1bbef6feaa1b6ed02626937968d6e3b.svg',
+    description:
+      'Synkroniserer hemmeligheter fra eksterne hvelv til Kubernetes Secrets.',
   },
   {
     name: 'Harbor',
     tier: 'Graduated',
     category: 'Security & Policy',
     cncfUrl: 'https://www.cncf.io/projects/harbor/',
+    sourceRepoUrl: 'https://github.com/goharbor/harbor',
+    logoUrl:
+      'https://landscape.cncf.io/logos/de4f2dfd628db72e7d482ff0d9d22f0615f800a222ce7c8d6d2b5a147da77883.svg',
+    description:
+      'Container-register med sårbarhetsskanning og signering av artefakter.',
   },
   {
     name: 'Falco',
     tier: 'Graduated',
     category: 'Security & Policy',
     cncfUrl: 'https://www.cncf.io/projects/falco/',
+    sourceRepoUrl: 'https://github.com/falcosecurity/falco',
+    logoUrl:
+      'https://landscape.cncf.io/logos/4b03a845c7d926abfb00df4ed9c16fc5a024b700fa1aea4984b1d8393550d46d.svg',
+    description:
+      'Kjøretidssikkerhet og sanntids trusseldeteksjon for containere og kjerne.',
+  },
+  {
+    name: 'Keycloak',
+    tier: 'Incubating',
+    category: 'Security & Policy',
+    cncfUrl: 'https://www.cncf.io/projects/keycloak/',
+    sourceRepoUrl: 'https://github.com/keycloak/keycloak',
+    logoUrl:
+      'https://landscape.cncf.io/logos/e7ec76aed9cec7e65927f9f8cf4e675d49e79154c45c504a5cd6da1fdaecfc2d.svg',
+    description:
+      'Identitets- og tilgangsstyring (IAM) med OIDC, OAuth 2.0 og SAML.',
+  },
+  {
+    name: 'SPIFFE',
+    tier: 'Graduated',
+    category: 'Security & Policy',
+    cncfUrl: 'https://www.cncf.io/projects/spiffe/',
+    sourceRepoUrl: 'https://github.com/spiffe/spiffe',
+    logoUrl:
+      'https://landscape.cncf.io/logos/e649cd82385a7f0758eb272631b7d91493001b6864a6538b73cbee6.svg',
+    description:
+      'Kryptografisk tjenesteidentitet for Zero Trust mellom arbeidsbelastninger.',
   },
   {
     name: 'Backstage',
     tier: 'Incubating',
     category: 'Platform & App Definition',
     cncfUrl: 'https://www.cncf.io/projects/backstage/',
+    sourceRepoUrl: 'https://github.com/backstage/backstage',
+    logoUrl:
+      'https://landscape.cncf.io/logos/041229aa6e716c8d0beb5752747b4789f42dc3239c245c6cf3af8d5cf651b1ee.svg',
+    description:
+      'Utviklerportal med tjenestekatalog, dokumentasjon og selvbetjeningsmaler.',
   },
   {
     name: 'Crossplane',
-    tier: 'Incubating',
+    tier: 'Graduated',
     category: 'Platform & App Definition',
     cncfUrl: 'https://www.cncf.io/projects/crossplane/',
+    sourceRepoUrl: 'https://github.com/crossplane/crossplane',
+    logoUrl:
+      'https://landscape.cncf.io/logos/c43855293d114dcad77461e7e5af20cf26023e365619f5d4abb54942b51ffc8a.svg',
+    description:
+      'Kubernetes-basert kontrollplan for deklarativ provisjonering av skyressurser.',
   },
   {
     name: 'Helm',
     tier: 'Graduated',
     category: 'Platform & App Definition',
     cncfUrl: 'https://www.cncf.io/projects/helm/',
+    sourceRepoUrl: 'https://github.com/helm/helm',
+    logoUrl:
+      'https://landscape.cncf.io/logos/caf58dcdb373502573c954e0aa3e03e725c12ffec5f8fe183c7f174b71357dd5.svg',
+    description: 'Pakkehåndtering for utrulling av plattformkomponenter.',
+  },
+  {
+    name: 'Tekton',
+    tier: 'Incubating',
+    category: 'Platform & App Definition',
+    cncfUrl: 'https://www.cncf.io/projects/tekton/',
+    sourceRepoUrl: 'https://github.com/tektoncd/pipeline',
+    logoUrl:
+      'https://landscape.cncf.io/logos/6435e589e94c6cef2a892324f822f41cf57da43dfb6a4d7c6ef8bfd537086d20.svg',
+    description:
+      'Kubernetes-native rammeverk for CI/CD-bygg og leveransepipelines.',
+  },
+  {
+    name: 'Dapr',
+    tier: 'Graduated',
+    category: 'Platform & App Definition',
+    cncfUrl: 'https://www.cncf.io/projects/dapr/',
+    sourceRepoUrl: 'https://github.com/dapr/dapr',
+    logoUrl:
+      'https://landscape.cncf.io/logos/5b3a3f211aae4c129ca1aa9bf3cf52cf12fc7fe5a3c6bc44744ca45ccd697597.svg',
+    description:
+      'Portabel runtime for hendelsesdrevne og distribuerte applikasjoner.',
   },
   {
     name: 'KEDA',
     tier: 'Graduated',
     category: 'Orchestration & GitOps',
     cncfUrl: 'https://www.cncf.io/projects/keda/',
+    sourceRepoUrl: 'https://github.com/kedacore/keda',
+    logoUrl:
+      'https://landscape.cncf.io/logos/c87a77d52e0b19e58b98012864dbd5d963a4c4d97c767b15e074d30077104b12.svg',
+    description: 'Hendelsesdrevet autoskalering av containere i Kubernetes.',
+  },
+  {
+    name: 'Knative',
+    tier: 'Graduated',
+    category: 'Orchestration & GitOps',
+    cncfUrl: 'https://www.cncf.io/projects/knative/',
+    sourceRepoUrl: 'https://github.com/knative/serving',
+    logoUrl:
+      'https://landscape.cncf.io/logos/6a1b7572490f95cada1836b3e0f932e5ff10c683bc1167b08ff868fb7867cfd5.svg',
+    description:
+      'Serverless-applikasjonslag med skalering til null og hendelsesruting.',
+  },
+  {
+    name: 'containerd',
+    tier: 'Graduated',
+    category: 'Orchestration & GitOps',
+    cncfUrl: 'https://www.cncf.io/projects/containerd/',
+    sourceRepoUrl: 'https://github.com/containerd/containerd',
+    logoUrl:
+      'https://landscape.cncf.io/logos/f26381b645b2f14293a2a597bc98b5bbe1e5e086029de41830ba7c667353bf3e.svg',
+    description: 'Standard container-runtime på klyngenoder.',
   },
   {
     name: 'CloudNativePG',
     tier: 'Sandbox',
     category: 'Storage & Data',
     cncfUrl: 'https://www.cncf.io/projects/cloudnativepg/',
+    sourceRepoUrl: 'https://github.com/cloudnative-pg/cloudnative-pg',
+    logoUrl:
+      'https://landscape.cncf.io/logos/d795f87b2810954c88802c0b4bd6b3eee5a840c32cbee7276b25831cfb09e1cd.svg',
+    description:
+      'Kubernetes-operator for høytilgjengelige PostgreSQL-databaser.',
+  },
+  {
+    name: 'NATS',
+    tier: 'Incubating',
+    category: 'Storage & Data',
+    cncfUrl: 'https://www.cncf.io/projects/nats/',
+    sourceRepoUrl: 'https://github.com/nats-io/nats-server',
+    logoUrl:
+      'https://landscape.cncf.io/logos/96862eb7542174f9ffeca0d2965f0c30d45675896983d9c4e17e9b8f4306f2c5.svg',
+    description:
+      'Sanntids meldingsbuss og strømming for distribuerte tjenester.',
+  },
+  {
+    name: 'Strimzi',
+    tier: 'Incubating',
+    category: 'Storage & Data',
+    cncfUrl: 'https://www.cncf.io/projects/strimzi/',
+    sourceRepoUrl: 'https://github.com/strimzi/strimzi-kafka-operator',
+    logoUrl:
+      'https://landscape.cncf.io/logos/7d10ac8a7224e5d1cce99d7e0c16ea0f48b434c0461139c48a4f8b1477b5400a.svg',
+    description: 'Deklarativ drift av Apache Kafka-klynger på Kubernetes.',
+  },
+  {
+    name: 'Rook',
+    tier: 'Graduated',
+    category: 'Storage & Data',
+    cncfUrl: 'https://www.cncf.io/projects/rook/',
+    sourceRepoUrl: 'https://github.com/rook/rook',
+    logoUrl:
+      'https://landscape.cncf.io/logos/d08d5a49647bd660e74f90a4ff4f46524f35a4463b65090f4bcc513e577922b2.svg',
+    description: 'Lagringsorkestrering av Ceph på Kubernetes.',
+  },
+  {
+    name: 'Longhorn',
+    tier: 'Incubating',
+    category: 'Storage & Data',
+    cncfUrl: 'https://www.cncf.io/projects/longhorn/',
+    sourceRepoUrl: 'https://github.com/longhorn/longhorn',
+    logoUrl:
+      'https://landscape.cncf.io/logos/acd3d31cbdf0aa2ef2d695fa4a3571e6d232a96214ec33fe0b2022b9719c244c.svg',
+    description: 'Distribuert blokklagring for Kubernetes.',
+  },
+  {
+    name: 'etcd',
+    tier: 'Graduated',
+    category: 'Storage & Data',
+    cncfUrl: 'https://www.cncf.io/projects/etcd/',
+    sourceRepoUrl: 'https://github.com/etcd-io/etcd',
+    logoUrl:
+      'https://landscape.cncf.io/logos/0d8c081f2c074582caafefe4b135388d3e62c6e64ca1faf2058743c9d784f14f.svg',
+    description: 'Distribuert nøkkel-verdi-lager for klyngetilstand.',
   },
 ]
+
+export function getCncfProjectMeta(name: string): CncfCatalogItem | undefined {
+  const normalized = name.trim().toLowerCase()
+  if (!normalized) return undefined
+  return CNCF_PROJECT_CATALOG.find(
+    item =>
+      item.name.toLowerCase() === normalized ||
+      item.aliases?.some(alias => alias.toLowerCase() === normalized)
+  )
+}
 
 const httpUrlSchema = z
   .string()
@@ -430,6 +715,7 @@ const cncfProjectUsageSchema = z.object({
   usageEn: z.string().max(1000).default(''),
   cncfUrl: httpUrlSchema,
   sourceRepoUrl: httpUrlSchema.optional().or(z.literal('')),
+  logoUrl: safeLogoSchema.optional().or(z.literal('')),
   sinceYear: z.number().int().min(2014).max(2035).optional(),
 })
 

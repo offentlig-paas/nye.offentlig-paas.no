@@ -1,10 +1,12 @@
-import { router, adminProcedure, publicProcedure } from '../trpc'
+import { router, protectedProcedure, publicProcedure } from '../trpc'
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import {
   aggregateSlackUsersByDomain,
   getSlackUserCount,
 } from '@/lib/slack/users'
+import { hasAnyEventAccess } from '@/lib/events/helpers'
+import { members } from '@/data/members'
 
 export const slackRouter = router({
   userCount: publicProcedure.query(async () => {
@@ -17,13 +19,13 @@ export const slackRouter = router({
     }
   }),
 
-  searchUsers: adminProcedure
+  searchUsers: protectedProcedure
     .input(z.object({ query: z.string().min(2) }))
-    .query(async ({ input }) => {
-      if (process.env.NODE_ENV !== 'development') {
+    .query(async ({ input, ctx }) => {
+      if (!ctx.user.isAdmin && !hasAnyEventAccess(ctx.user)) {
         throw new TRPCError({
           code: 'FORBIDDEN',
-          message: 'This endpoint is only available in development mode',
+          message: 'Ikke autorisert',
         })
       }
 
@@ -36,6 +38,13 @@ export const slackRouter = router({
         })
       }
 
+      const domainToMemberName = new Map<string, string>()
+      for (const m of members) {
+        for (const d of m.domains) {
+          domainToMemberName.set(d.toLowerCase(), m.name)
+        }
+      }
+
       const query = input.query.toLowerCase()
       const matchingUsers: {
         id: string
@@ -44,18 +53,25 @@ export const slackRouter = router({
         displayName: string
         email?: string
         avatar?: string
+        title?: string
+        organisation?: string
         url: string
       }[] = []
 
-      for (const bucket of domains.values()) {
+      for (const [domain, bucket] of domains.entries()) {
+        const orgName = domainToMemberName.get(domain)
         for (const user of bucket.users) {
           if (matchingUsers.length >= 50) break
-          const searchFields = [user.name, user.realName, user.displayName].map(
-            f => f.toLowerCase()
-          )
+          const searchFields = [
+            user.name,
+            user.realName,
+            user.displayName,
+            user.email ?? '',
+          ].map(f => f.toLowerCase())
           if (searchFields.some(f => f.includes(query))) {
             matchingUsers.push({
               ...user,
+              organisation: orgName,
               url: `https://offentlig-paas-no.slack.com/team/${user.id}`,
             })
           }

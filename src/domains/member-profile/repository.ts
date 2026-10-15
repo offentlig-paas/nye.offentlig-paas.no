@@ -105,6 +105,7 @@ export class MemberProfileRepository {
       cncfProjects: (input.cncfProjects ?? []).map(p => ({
         ...p,
         sourceRepoUrl: p.sourceRepoUrl || undefined,
+        logoUrl: p.logoUrl || undefined,
       })),
       techStack: input.techStack ?? [],
       team: (input.team ?? []).map(t => ({

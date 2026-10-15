@@ -128,19 +128,24 @@ export function canUserEditMemberProfile(
   }
 
   if (user.slackId) {
-    const inProfileTeam = profile?.team.some(t =>
-      matchesSlackIdentifier(t.slackUrl, user.slackId)
+    const hasCuratedTeam = Boolean(
+      profile && (profile.team.length > 0 || profile.updatedBy)
     )
-    if (inProfileTeam) {
-      return { canEdit: true, reason: 'team_member' }
-    }
-
-    const { uniqueSpeakers } = getMemberEventContributions(member)
-    const inEventSpeakers = uniqueSpeakers.some(s =>
-      matchesSlackIdentifier(s.url, user.slackId)
-    )
-    if (inEventSpeakers) {
-      return { canEdit: true, reason: 'team_member' }
+    if (hasCuratedTeam && profile) {
+      const inProfileTeam = profile.team.some(t =>
+        matchesSlackIdentifier(t.slackUrl, user.slackId)
+      )
+      if (inProfileTeam) {
+        return { canEdit: true, reason: 'team_member' }
+      }
+    } else {
+      const { uniqueSpeakers } = getMemberEventContributions(member)
+      const inEventSpeakers = uniqueSpeakers.some(s =>
+        matchesSlackIdentifier(s.url, user.slackId)
+      )
+      if (inEventSpeakers) {
+        return { canEdit: true, reason: 'team_member' }
+      }
     }
   }
 
@@ -290,15 +295,19 @@ class MemberProfileService {
         }
       }
 
-      const matchedBySpeaker = members.find(m =>
-        getMemberEventContributions(m).uniqueSpeakers.some(s =>
+      const matchedBySpeaker = members.find(m => {
+        const existing = allProfiles.find(p => p.slug === m.getSlug())
+        if (existing && (existing.team.length > 0 || existing.updatedBy)) {
+          return false
+        }
+        return getMemberEventContributions(m).uniqueSpeakers.some(s =>
           matchesSlackIdentifier(s.url, user.slackId)
         )
-      )
+      })
       if (matchedBySpeaker) {
-        const profile =
+        const existingProfile =
           allProfiles.find(p => p.slug === matchedBySpeaker.getSlug()) ?? null
-        return { member: matchedBySpeaker, profile }
+        return { member: matchedBySpeaker, profile: existingProfile }
       }
     }
 

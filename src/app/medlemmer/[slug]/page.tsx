@@ -1,5 +1,5 @@
 import { type Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { auth } from '@/auth'
 import { Container } from '@/components/Container'
 import {
@@ -44,16 +44,19 @@ export default async function MemberProfilePage({
 }: Props) {
   const { slug } = await params
   const resolvedSearchParams = searchParams ? await searchParams : undefined
-  const autoOpenEditor = resolvedSearchParams?.edit === '1'
   const member = getMemberBySlug(slug)
 
   if (!member) {
     notFound()
   }
 
+  const canonicalSlug = member.getSlug()
+  if (resolvedSearchParams?.edit === '1') {
+    redirect(`/medlemmer/${canonicalSlug}/rediger`)
+  }
+
   const session = await auth()
   const isAuthenticated = Boolean(session?.user)
-  const canonicalSlug = member.getSlug()
   const rawProfile = await memberProfileService.getBySlug(canonicalSlug, {
     includeInternal: true,
   })
@@ -93,7 +96,6 @@ export default async function MemberProfilePage({
         member={serializedMember}
         profile={profile ?? undefined}
         isInternalRestricted={isInternalRestricted}
-        autoOpenEditor={autoOpenEditor}
         talks={talks}
         organizedEventsCount={organizedEventsCount}
         uniqueSpeakers={uniqueSpeakers}

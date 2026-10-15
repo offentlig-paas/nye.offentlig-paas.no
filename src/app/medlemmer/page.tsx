@@ -412,7 +412,7 @@ export default function MedlemmerPage() {
             </div>
             <div className="flex shrink-0 flex-wrap items-center gap-2">
               <Link
-                href={`/medlemmer/${myMembership.slug}?edit=1`}
+                href={`/medlemmer/${myMembership.slug}/rediger`}
                 className="inline-flex items-center gap-1.5 rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-teal-500"
               >
                 {myMembership.hasProfile ? (

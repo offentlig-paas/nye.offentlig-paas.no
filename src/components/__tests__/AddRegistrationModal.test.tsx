@@ -4,6 +4,16 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { AddRegistrationModal } from '../AddRegistrationModal'
 
+vi.mock('@/lib/trpc/client', () => ({
+  trpc: {
+    slack: {
+      searchUsers: {
+        useQuery: () => ({ data: [], isFetching: false }),
+      },
+    },
+  },
+}))
+
 // Mock OrganisationTypeahead
 vi.mock('@/components/OrganisationTypeahead', () => ({
   OrganisationTypeahead: ({
