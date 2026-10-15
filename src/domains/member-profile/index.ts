@@ -1,7 +1,6 @@
 export {
   memberProfileService,
   getMemberBySlug,
-  getMemberByUserEmail,
   canUserEditMemberProfile,
   getMemberEventContributions,
 } from './service'

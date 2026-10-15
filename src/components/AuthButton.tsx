@@ -4,7 +4,11 @@ import { signIn, signOut, useSession } from 'next-auth/react'
 import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Cog6ToothIcon, ServerStackIcon } from '@heroicons/react/24/outline'
+import {
+  BuildingOffice2Icon,
+  Cog6ToothIcon,
+  PencilSquareIcon,
+} from '@heroicons/react/24/outline'
 import { Button } from '@/components/Button'
 import { Avatar } from '@/components/Avatar'
 import { trpc } from '@/lib/trpc/client'
@@ -24,7 +28,7 @@ export function AuthButton({
   const dropdownRef = useRef<HTMLDivElement>(null)
   const { data: myMembership } = trpc.memberProfile.getMyMembership.useQuery(
     undefined,
-    { enabled: Boolean(session?.user?.email) }
+    { enabled: Boolean(session?.user) }
   )
 
   useEffect(() => {
@@ -129,7 +133,7 @@ export function AuthButton({
                 className="flex w-full items-center rounded-md px-3 py-2 text-sm text-zinc-700 transition hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
               >
                 <svg
-                  className="mr-3 h-4 w-4"
+                  className="mr-3 h-4 w-4 shrink-0"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -143,33 +147,64 @@ export function AuthButton({
                 </svg>
                 Min profil
               </Link>
-              {myMembership && (
-                <Link
-                  href={
-                    myMembership.hasProfile
-                      ? `/medlemmer/${myMembership.slug}`
-                      : `/medlemmer/${myMembership.slug}?edit=1`
-                  }
-                  onClick={() => setIsDropdownOpen(false)}
-                  className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm text-zinc-700 transition hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
-                >
-                  <span className="flex min-w-0 items-center">
-                    <ServerStackIcon className="mr-3 h-4 w-4 shrink-0 text-teal-600 dark:text-teal-400" />
+            </div>
+
+            <div className="border-t border-zinc-100 p-1 dark:border-zinc-800">
+              <p className="px-3 pt-1.5 pb-1 text-[11px] font-semibold tracking-wider text-zinc-400 uppercase dark:text-zinc-500">
+                Min organisasjon
+              </p>
+              {myMembership ? (
+                <>
+                  <Link
+                    href={`/medlemmer/${myMembership.slug}`}
+                    onClick={() => setIsDropdownOpen(false)}
+                    className="flex w-full items-center justify-between gap-2 rounded-md px-3 py-2 text-sm text-zinc-700 transition hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                  >
+                    <span className="flex min-w-0 items-center">
+                      <BuildingOffice2Icon className="mr-3 h-4 w-4 shrink-0 text-teal-600 dark:text-teal-400" />
+                      <span className="truncate font-medium">
+                        {myMembership.name}
+                      </span>
+                    </span>
+                    {myMembership.platformName && (
+                      <span className="shrink-0 rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-semibold text-teal-700 dark:bg-teal-950/60 dark:text-teal-300">
+                        {myMembership.platformName}
+                      </span>
+                    )}
+                  </Link>
+                  <Link
+                    href={`/medlemmer/${myMembership.slug}?edit=1`}
+                    onClick={() => setIsDropdownOpen(false)}
+                    className="flex w-full items-center rounded-md px-3 py-2 text-sm text-zinc-700 transition hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                  >
+                    <PencilSquareIcon className="mr-3 h-4 w-4 shrink-0 text-zinc-500 dark:text-zinc-400" />
                     <span className="truncate">
                       {myMembership.hasProfile
-                        ? `Plattform (${myMembership.platformName})`
-                        : `Opprett plattform (${myMembership.name})`}
+                        ? `Rediger ${myMembership.platformName}`
+                        : 'Opprett plattformprofil'}
                     </span>
-                  </span>
+                  </Link>
+                </>
+              ) : (
+                <Link
+                  href="/medlemmer"
+                  onClick={() => setIsDropdownOpen(false)}
+                  className="flex w-full items-center rounded-md px-3 py-2 text-sm text-zinc-700 transition hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                >
+                  <BuildingOffice2Icon className="mr-3 h-4 w-4 shrink-0 text-zinc-500 dark:text-zinc-400" />
+                  <span className="truncate">Finn din virksomhet</span>
                 </Link>
               )}
+            </div>
+
+            <div className="border-t border-zinc-100 p-1 dark:border-zinc-800">
               {session.user.isAdmin && (
                 <Link
                   href="/admin"
                   onClick={() => setIsDropdownOpen(false)}
                   className="flex w-full items-center rounded-md px-3 py-2 text-sm text-zinc-700 transition hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
                 >
-                  <Cog6ToothIcon className="mr-3 h-4 w-4" />
+                  <Cog6ToothIcon className="mr-3 h-4 w-4 shrink-0" />
                   Admin
                 </Link>
               )}
@@ -181,7 +216,7 @@ export function AuthButton({
                 className="flex w-full items-center rounded-md px-3 py-2 text-sm text-zinc-700 transition hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
               >
                 <svg
-                  className="mr-3 h-4 w-4"
+                  className="mr-3 h-4 w-4 shrink-0"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"

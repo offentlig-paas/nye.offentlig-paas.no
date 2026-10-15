@@ -72,7 +72,6 @@ interface MemberProfileShowcaseProps {
   talks: MemberTalkContribution[]
   organizedEventsCount: number
   uniqueSpeakers: { name: string; url?: string }[]
-  showcaseSlugs: { slug: string; name: string; platformName?: string }[]
 }
 
 const ACCENT_STYLES: Record<
@@ -231,13 +230,27 @@ export function MemberProfileShowcase({
   talks,
   organizedEventsCount,
   uniqueSpeakers,
-  showcaseSlugs,
 }: MemberProfileShowcaseProps) {
   const router = useRouter()
   const [profile, setProfile] = useState<MemberProfile | undefined>(
     initialProfile
   )
+  const [prevAutoOpen, setPrevAutoOpen] = useState(Boolean(autoOpenEditor))
   const [editorOpen, setEditorOpen] = useState(Boolean(autoOpenEditor))
+  if (Boolean(autoOpenEditor) !== prevAutoOpen) {
+    setPrevAutoOpen(Boolean(autoOpenEditor))
+    if (autoOpenEditor) {
+      setEditorOpen(true)
+    }
+  }
+
+  const handleCloseEditor = () => {
+    setEditorOpen(false)
+    if (autoOpenEditor) {
+      router.replace(`/medlemmer/${member.slug}`, { scroll: false })
+    }
+  }
+
   const [lang, setLang] = useState<'no' | 'en'>('no')
   const [manifestExpanded, setManifestExpanded] = useState(false)
   const [showAllTalks, setShowAllTalks] = useState(false)
@@ -1018,28 +1031,6 @@ export function MemberProfileShowcase({
         </Link>
 
         <div className="flex flex-wrap items-center gap-2">
-          <div className="hidden items-center gap-1 text-xs text-zinc-500 sm:flex dark:text-zinc-400">
-            <span>{lang === 'en' ? 'Showcase:' : 'Eksempelprofiler:'}</span>
-            {showcaseSlugs.map(item => {
-              const isCurrent = item.slug === member.slug
-              return (
-                <Link
-                  key={item.slug}
-                  href={`/medlemmer/${item.slug}`}
-                  className={`rounded-md px-2 py-1 font-medium transition ${
-                    isCurrent
-                      ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
-                      : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
-                  }`}
-                >
-                  {item.name}
-                </Link>
-              )
-            })}
-          </div>
-
-          <div className="hidden h-4 w-px bg-zinc-200 sm:block dark:bg-zinc-800" />
-
           {/* Language toggle */}
           <div className="inline-flex rounded-lg border border-zinc-200 bg-zinc-50 p-0.5 dark:border-zinc-700 dark:bg-zinc-800">
             <button
@@ -1337,38 +1328,17 @@ export function MemberProfileShowcase({
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
               <div>
                 <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
-                  Dette er en automatisk generert basisprofil for {member.name}
+                  {member.name} har ikke publisert en utvidet plattformprofil
+                  ennå
                 </h2>
                 <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                  Virksomheten har ikke lagt inn utvidet plattformprofil med
-                  CNCF-prosjekter og kapabiliteter ennå. Se fullstendige
-                  eksempelprofiler for{' '}
+                  Her vises organisasjonens bidrag på fagdager og offentlige
+                  lenker. Utforsk delte plattformprofiler i nettverket på{' '}
                   <Link
-                    href="/medlemmer/nav"
+                    href="/plattformer"
                     className="font-semibold text-teal-600 underline dark:text-teal-400"
                   >
-                    Nav (NAIS)
-                  </Link>
-                  ,{' '}
-                  <Link
-                    href="/medlemmer/kartverket"
-                    className="font-semibold text-teal-600 underline dark:text-teal-400"
-                  >
-                    Kartverket (SKIP)
-                  </Link>
-                  ,{' '}
-                  <Link
-                    href="/medlemmer/skatteetaten"
-                    className="font-semibold text-teal-600 underline dark:text-teal-400"
-                  >
-                    Skatteetaten (Aurora)
-                  </Link>{' '}
-                  eller{' '}
-                  <Link
-                    href="/medlemmer/equinor"
-                    className="font-semibold text-teal-600 underline dark:text-teal-400"
-                  >
-                    Equinor (Omnia Radix)
+                    plattformoversikten
                   </Link>
                   .
                 </p>
@@ -1378,7 +1348,7 @@ export function MemberProfileShowcase({
                     <span>
                       Jobber du i {member.name}? Logg inn med Slack (
                       {member.domains.map(d => `@${d}`).join(', ')}) for å
-                      opprette og redigere plattformprofilen direkte.
+                      opprette og administrere plattformprofilen.
                     </span>
                   </p>
                 )}
@@ -1434,15 +1404,18 @@ export function MemberProfileShowcase({
         </aside>
       </div>
 
-      {canEdit && (
+      {canEdit && editorOpen && (
         <MemberProfileEditorModal
           isOpen={editorOpen}
-          onClose={() => setEditorOpen(false)}
+          onClose={handleCloseEditor}
           memberName={member.name}
           memberSlug={member.slug}
           memberDomains={member.domains}
           userEmailDomain={permissions?.emailDomain}
           isAdmin={permissions?.isAdmin}
+          accessReason={permissions?.reason}
+          currentUser={permissions?.currentUser ?? undefined}
+          uniqueSpeakers={uniqueSpeakers}
           initialProfile={profile}
           onSaved={updated => {
             setProfile(updated)

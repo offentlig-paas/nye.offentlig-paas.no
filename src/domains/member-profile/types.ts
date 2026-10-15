@@ -377,6 +377,38 @@ const githubHandleSchema = z
     'Ugyldig GitHub-brukernavn'
   )
 
+const slackProfileUrlSchema = z
+  .string()
+  .trim()
+  .max(500)
+  .transform(val => {
+    if (!val) return ''
+    if (/^[UW][A-Z0-9]{6,}$/i.test(val)) {
+      return `https://offentlig-paas-no.slack.com/team/${val.toUpperCase()}`
+    }
+    return val.replace(/\/+$/, '')
+  })
+  .refine(
+    val => {
+      if (!val) return true
+      try {
+        const parsed = new URL(val)
+        return (
+          parsed.protocol === 'https:' &&
+          (parsed.hostname === 'slack.com' ||
+            parsed.hostname.endsWith('.slack.com')) &&
+          /^\/team\/[UW][A-Z0-9]{6,}$/i.test(parsed.pathname)
+        )
+      } catch {
+        return false
+      }
+    },
+    {
+      message:
+        'Oppgi en gyldig Slack-ID (f.eks. U0123ABC) eller Slack-profil-URL (https://offentlig-paas-no.slack.com/team/...)',
+    }
+  )
+
 const platformCapabilitySchema = z.object({
   id: z.string().min(1).max(100),
   title: z.string().min(1).max(200),
@@ -411,7 +443,7 @@ const teamMemberSchema = z.object({
   name: z.string().min(1).max(150),
   role: z.string().min(1).max(150),
   roleEn: z.string().max(150).optional(),
-  slackUrl: httpUrlSchema.optional().or(z.literal('')),
+  slackUrl: slackProfileUrlSchema.optional().or(z.literal('')),
   github: githubHandleSchema.optional().or(z.literal('')),
 })
 

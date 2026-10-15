@@ -5,7 +5,6 @@ import { revalidatePath } from 'next/cache'
 import {
   memberProfileService,
   getMemberBySlug,
-  getMemberByUserEmail,
   canUserEditMemberProfile,
   upsertMemberProfileSchema,
 } from '@/domains/member-profile'
@@ -26,14 +25,12 @@ export const memberProfileRouter = router({
   }),
 
   getMyMembership: publicProcedure.query(async ({ ctx }) => {
-    const email = ctx.session?.user?.email
-    if (!email) return null
-    const member = getMemberByUserEmail(email)
-    if (!member) return null
+    const matched = await memberProfileService.findMemberForUser(
+      ctx.session?.user
+    )
+    if (!matched) return null
+    const { member, profile } = matched
     const slug = member.getSlug()
-    const profile = await memberProfileService.getBySlug(slug, {
-      includeInternal: true,
-    })
     return {
       slug,
       name: member.name,
@@ -46,7 +43,7 @@ export const memberProfileRouter = router({
 
   getPermissions: publicProcedure
     .input(z.object({ slug: z.string().min(1).max(80) }))
-    .query(({ input, ctx }) => {
+    .query(async ({ input, ctx }) => {
       const user = ctx.session?.user
       const emailParts = user?.email?.toLowerCase().trim().split('@')
       const emailDomain =
@@ -54,6 +51,14 @@ export const memberProfileRouter = router({
           ? emailParts[1]
           : undefined
       const isAdmin = Boolean(user?.isAdmin)
+      const currentUser = user
+        ? {
+            name: user.name ?? '',
+            email: user.email ?? '',
+            slackId: user.slackId ?? '',
+            title: user.title ?? '',
+          }
+        : null
       const member = getMemberBySlug(input.slug)
       if (!member) {
         return {
@@ -64,15 +69,22 @@ export const memberProfileRouter = router({
           emailDomain,
           matchedDomain: undefined as string | undefined,
           requiredDomains: [] as string[],
+          currentUser,
         }
       }
-      const perm = canUserEditMemberProfile(member, user)
+      const existingProfile = user
+        ? await memberProfileService.getBySlug(member.getSlug(), {
+            includeInternal: true,
+          })
+        : null
+      const perm = canUserEditMemberProfile(member, user, existingProfile)
       return {
         ...perm,
         isAuthenticated: Boolean(user),
         isAdmin,
         emailDomain,
         requiredDomains: member.domains,
+        currentUser,
       }
     }),
 
@@ -87,11 +99,15 @@ export const memberProfileRouter = router({
         })
       }
 
-      const perm = canUserEditMemberProfile(member, ctx.user)
+      const existingProfile = await memberProfileService.getBySlug(
+        member.getSlug(),
+        { includeInternal: true }
+      )
+      const perm = canUserEditMemberProfile(member, ctx.user, existingProfile)
       if (!perm.canEdit) {
         throw new TRPCError({
           code: 'FORBIDDEN',
-          message: `Du må være innlogget med en e-postadresse fra ${member.domains.join(' eller ')} for å redigere plattformprofilen til ${member.name}`,
+          message: `Du må være innlogget med en e-postadresse fra ${member.domains.join(' eller ')} eller være registrert i plattformteamet for å redigere plattformprofilen til ${member.name}`,
         })
       }
 

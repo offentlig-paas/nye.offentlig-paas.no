@@ -172,6 +172,62 @@ describe('MemberProfileService & Helpers', () => {
         reason: 'domain_mismatch',
       })
     })
+
+    it('allows users listed in the platform team by Slack ID even with a different email domain', () => {
+      const nav = getMemberBySlug('nav')!
+      const profileWithTeam: MemberProfile = {
+        ...mockProfile,
+        team: [
+          {
+            name: 'Kari Konsulent',
+            role: 'Plattformutvikler',
+            slackUrl: 'https://offentlig-paas-no.slack.com/team/U12345678/',
+          },
+        ],
+      }
+      expect(
+        canUserEditMemberProfile(
+          nav,
+          {
+            email: 'kari@konsulenthus.no',
+            isAdmin: false,
+            slackId: 'u12345678',
+          },
+          profileWithTeam
+        )
+      ).toEqual({
+        canEdit: true,
+        reason: 'team_member',
+      })
+    })
+
+    it('rejects non-Slack URLs or malformed Slack IDs in team matching', () => {
+      const nav = getMemberBySlug('nav')!
+      const spoofedProfile: MemberProfile = {
+        ...mockProfile,
+        team: [
+          {
+            name: 'Attacker',
+            role: 'Lead',
+            slackUrl: 'https://evil.example.com/team/U12345678',
+          },
+        ],
+      }
+      expect(
+        canUserEditMemberProfile(
+          nav,
+          {
+            email: 'attacker@konsulenthus.no',
+            isAdmin: false,
+            slackId: 'U12345678',
+          },
+          spoofedProfile
+        )
+      ).toEqual({
+        canEdit: false,
+        reason: 'domain_mismatch',
+      })
+    })
   })
 
   describe('upsertMemberProfileSchema', () => {
@@ -277,6 +333,39 @@ describe('MemberProfileService & Helpers', () => {
         }).success
       ).toBe(false)
     })
+
+    it('normalizes bare Slack IDs and rejects non-Slack URLs in team.slackUrl', () => {
+      const parsed = upsertMemberProfileSchema.safeParse({
+        ...validInput,
+        team: [{ name: 'Ola', role: 'Lead', slackUrl: 'u12345678' }],
+      })
+      expect(parsed.success).toBe(true)
+      if (parsed.success) {
+        expect(parsed.data.team[0]?.slackUrl).toBe(
+          'https://offentlig-paas-no.slack.com/team/U12345678'
+        )
+      }
+
+      expect(
+        upsertMemberProfileSchema.safeParse({
+          ...validInput,
+          team: [
+            {
+              name: 'Ola',
+              role: 'Lead',
+              slackUrl: 'https://evil.com/team/U12345678',
+            },
+          ],
+        }).success
+      ).toBe(false)
+
+      expect(
+        upsertMemberProfileSchema.safeParse({
+          ...validInput,
+          team: [{ name: 'Ola', role: 'Lead', slackUrl: '@ola' }],
+        }).success
+      ).toBe(false)
+    })
   })
 
   describe('memberProfileService', () => {
@@ -349,6 +438,40 @@ describe('MemberProfileService & Helpers', () => {
           slug: 'unknown-org',
         } as UpsertMemberProfileInput)
       ).rejects.toThrow('Member not found for slug: unknown-org')
+    })
+
+    it('skips orphaned profiles in findMemberForUser and finds valid member by Slack ID', async () => {
+      const orphanedProfile: MemberProfile = {
+        ...mockProfile,
+        slug: 'deleted-non-existent-org',
+        team: [
+          {
+            name: 'Kari',
+            role: 'Dev',
+            slackUrl: 'https://offentlig-paas-no.slack.com/team/U99999999',
+          },
+        ],
+      }
+      const validNavProfile: MemberProfile = {
+        ...mockProfile,
+        slug: 'nav',
+        team: [
+          {
+            name: 'Kari',
+            role: 'Dev',
+            slackUrl: 'https://offentlig-paas-no.slack.com/team/U99999999',
+          },
+        ],
+      }
+      mockRepo.findAll.mockResolvedValue([orphanedProfile, validNavProfile])
+
+      const found = await memberProfileService.findMemberForUser({
+        email: 'kari@konsulent.no',
+        slackId: 'U99999999',
+      })
+
+      expect(found?.member.getSlug()).toBe('nav')
+      expect(found?.profile).toEqual(validNavProfile)
     })
   })
 })
