@@ -32,6 +32,9 @@ export function getMemberBySlug(slug: string): Member | undefined {
   )
 }
 
+const VALID_DOMAIN_REGEX =
+  /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+$/
+
 export function canUserEditMemberProfile(
   member: Member,
   user?: { email?: string | null; isAdmin?: boolean | null } | null
@@ -46,17 +49,18 @@ export function canUserEditMemberProfile(
   if (user.isAdmin) {
     return { canEdit: true, reason: 'admin' }
   }
-  const email = user.email?.toLowerCase().trim()
-  if (!email || !email.includes('@')) {
+  const parts = user.email?.toLowerCase().trim().split('@')
+  if (!parts || parts.length !== 2 || !parts[0] || !parts[1]) {
     return { canEdit: false, reason: 'domain_mismatch' }
   }
-  const emailDomain = email.split('@')[1]
-  if (!emailDomain) {
+  const emailDomain = parts[1]
+  if (!VALID_DOMAIN_REGEX.test(emailDomain)) {
     return { canEdit: false, reason: 'domain_mismatch' }
   }
 
   const matchedDomain = member.domains.find(d => {
     const normalized = d.toLowerCase().trim()
+    if (!VALID_DOMAIN_REGEX.test(normalized)) return false
     return emailDomain === normalized || emailDomain.endsWith(`.${normalized}`)
   })
 

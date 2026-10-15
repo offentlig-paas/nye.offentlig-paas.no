@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation'
 import {
   ArrowLeftIcon,
   ArrowTopRightOnSquareIcon,
-  ArrowsUpDownIcon,
   BriefcaseIcon,
   CheckBadgeIcon,
   CheckCircleIcon,
@@ -24,7 +23,6 @@ import {
   PencilSquareIcon,
   ServerStackIcon,
   SparklesIcon,
-  SwatchIcon,
   UserGroupIcon,
 } from '@heroicons/react/24/outline'
 import { GitHubIcon, LinkedInIcon, SlackIcon } from '@/components/SocialIcons'
@@ -42,7 +40,6 @@ import {
   type MemberProfile,
   type MemberTalkContribution,
   type ProfileAccentColor,
-  type ProfileHeroStyle,
   type ProfileSectionId,
 } from '@/domains/member-profile/types'
 import type { MemberType, Sector } from '@/lib/members'
@@ -209,20 +206,20 @@ const CNCF_CATEGORY_LABELS: Record<
   },
 }
 
-const SECTION_LABELS: Record<ProfileSectionId, { no: string; en: string }> = {
-  capabilities: { no: 'Plattformkapabiliteter', en: 'Platform Capabilities' },
-  cncf: { no: 'CNCF-økosystem', en: 'CNCF Ecosystem' },
-  talks: { no: 'Foredrag på fagdager', en: 'Community Talks' },
-  team: { no: 'Menneskene bak', en: 'People & Team' },
-  architecture: { no: 'Teknologi og lenker', en: 'Tech Stack & Links' },
-  jobs: { no: 'Ledige stillinger', en: 'Open Positions' },
-}
-
 const MAIN_COLUMN_SECTIONS = new Set<ProfileSectionId>([
   'capabilities',
   'cncf',
   'talks',
 ])
+
+const DEFAULT_SECTION_ORDER: ProfileSectionId[] = [
+  'capabilities',
+  'cncf',
+  'talks',
+  'team',
+  'architecture',
+  'jobs',
+]
 
 export function MemberProfileShowcase({
   member,
@@ -238,25 +235,12 @@ export function MemberProfileShowcase({
   )
   const [editorOpen, setEditorOpen] = useState(false)
   const [lang, setLang] = useState<'no' | 'en'>('no')
-  const [customizerOpen, setCustomizerOpen] = useState(false)
   const [manifestExpanded, setManifestExpanded] = useState(false)
   const [showAllTalks, setShowAllTalks] = useState(false)
-  const [accentColor, setAccentColor] = useState<ProfileAccentColor>(
-    initialProfile?.theme.accentColor ?? 'teal'
-  )
-  const [heroStyle, setHeroStyle] = useState<ProfileHeroStyle>(
-    initialProfile?.theme.heroStyle ?? 'gradient'
-  )
-  const [sectionOrder, setSectionOrder] = useState<ProfileSectionId[]>(
-    initialProfile?.theme.sectionOrder ?? [
-      'capabilities',
-      'cncf',
-      'talks',
-      'team',
-      'architecture',
-      'jobs',
-    ]
-  )
+
+  const accentColor = profile?.theme.accentColor ?? 'teal'
+  const heroStyle = profile?.theme.heroStyle ?? 'gradient'
+  const sectionOrder = profile?.theme.sectionOrder ?? DEFAULT_SECTION_ORDER
 
   const { data: permissions } = trpc.memberProfile.getPermissions.useQuery({
     slug: member.slug,
@@ -376,16 +360,6 @@ export function MemberProfileShowcase({
     return people
   }, [profile, uniqueSpeakers, lang])
 
-  const moveSection = (index: number, direction: -1 | 1) => {
-    const targetIndex = index + direction
-    if (targetIndex < 0 || targetIndex >= sectionOrder.length) return
-    const next = [...sectionOrder]
-    const temp = next[index]!
-    next[index] = next[targetIndex]!
-    next[targetIndex] = temp
-    setSectionOrder(next)
-  }
-
   const renderCapabilitiesSection = () => {
     if (!profile || profile.capabilities.length === 0) return null
 
@@ -440,7 +414,7 @@ export function MemberProfileShowcase({
         <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
           {filteredCapabilities.map(cap => {
             const highlights =
-              lang === 'en' && cap.highlightsEn
+              lang === 'en' && cap.highlightsEn && cap.highlightsEn.length > 0
                 ? cap.highlightsEn
                 : cap.highlights
 
@@ -472,10 +446,12 @@ export function MemberProfileShowcase({
                   </div>
 
                   <h3 className="mt-3 text-base font-semibold text-zinc-900 dark:text-zinc-100">
-                    {lang === 'en' ? cap.titleEn : cap.title}
+                    {lang === 'en' && cap.titleEn ? cap.titleEn : cap.title}
                   </h3>
                   <p className="mt-1.5 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-                    {lang === 'en' ? cap.descriptionEn : cap.description}
+                    {lang === 'en' && cap.descriptionEn
+                      ? cap.descriptionEn
+                      : cap.description}
                   </p>
                 </div>
 
@@ -507,7 +483,7 @@ export function MemberProfileShowcase({
                 </span>
                 <span className="hidden text-xs text-zinc-400 sm:inline">
                   ·{' '}
-                  {lang === 'en'
+                  {lang === 'en' && profile.manifestExample.titleEn
                     ? profile.manifestExample.titleEn
                     : profile.manifestExample.title}
                 </span>
@@ -534,7 +510,7 @@ export function MemberProfileShowcase({
             </div>
             <div className="border-b border-zinc-800/80 bg-zinc-900/40 px-4 py-2.5">
               <p className="text-xs leading-relaxed text-zinc-300">
-                {lang === 'en'
+                {lang === 'en' && profile.manifestExample.descriptionEn
                   ? profile.manifestExample.descriptionEn
                   : profile.manifestExample.description}
               </p>
@@ -638,7 +614,9 @@ export function MemberProfileShowcase({
                         )}
                       </div>
                       <p className="mt-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-                        {lang === 'en' ? project.usageEn : project.usage}
+                        {lang === 'en' && project.usageEn
+                          ? project.usageEn
+                          : project.usage}
                       </p>
                     </div>
 
@@ -877,7 +855,12 @@ export function MemberProfileShowcase({
   }
 
   const renderArchitectureSection = () => {
-    if (!profile) return null
+    if (
+      !profile ||
+      (profile.techStack.length === 0 && profile.links.length === 0)
+    ) {
+      return null
+    }
 
     return (
       <section
@@ -893,25 +876,29 @@ export function MemberProfileShowcase({
           </h2>
         </div>
 
-        <div className="mt-4 space-y-4">
-          {profile.techStack.map(group => (
-            <div key={group.category}>
-              <h3 className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
-                {lang === 'en' ? group.categoryEn : group.category}
-              </h3>
-              <div className="mt-1.5 flex flex-wrap gap-1.5">
-                {group.items.map(item => (
-                  <span
-                    key={item}
-                    className="inline-flex items-center rounded-md bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200"
-                  >
-                    {item}
-                  </span>
-                ))}
+        {profile.techStack.length > 0 && (
+          <div className="mt-4 space-y-4">
+            {profile.techStack.map(group => (
+              <div key={group.category}>
+                <h3 className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+                  {lang === 'en' && group.categoryEn
+                    ? group.categoryEn
+                    : group.category}
+                </h3>
+                <div className="mt-1.5 flex flex-wrap gap-1.5">
+                  {group.items.map(item => (
+                    <span
+                      key={item}
+                      className="inline-flex items-center rounded-md bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {profile.links.length > 0 && (
           <div className="mt-5 border-t border-zinc-100 pt-4 dark:border-zinc-800">
@@ -1075,21 +1062,6 @@ export function MemberProfileShowcase({
             </button>
           </div>
 
-          {profile && (
-            <button
-              type="button"
-              onClick={() => setCustomizerOpen(prev => !prev)}
-              className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-medium transition ${
-                customizerOpen
-                  ? 'border-teal-500 bg-teal-50 text-teal-800 dark:border-teal-400 dark:bg-teal-950/60 dark:text-teal-200'
-                  : 'border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700'
-              }`}
-            >
-              <SwatchIcon className="h-3.5 w-3.5" />
-              <span>{lang === 'en' ? 'Customize' : 'Tilpass'}</span>
-            </button>
-          )}
-
           {canEdit && (
             <button
               type="button"
@@ -1110,129 +1082,6 @@ export function MemberProfileShowcase({
           )}
         </div>
       </div>
-
-      {/* Collapsible Self-Service Profile Customizer */}
-      {profile && customizerOpen && (
-        <div className="rounded-xl border border-teal-500/30 bg-teal-50/40 p-4 dark:border-teal-400/20 dark:bg-teal-950/20">
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-teal-500/20 pb-3">
-            <div>
-              <h3 className="text-xs font-semibold tracking-wider text-teal-900 uppercase dark:text-teal-200">
-                {lang === 'en'
-                  ? 'Member Profile Customization (#144)'
-                  : 'Tilpasning av virksomhetsprofil (#144)'}
-              </h3>
-              <p className="text-xs text-zinc-600 dark:text-zinc-400">
-                {lang === 'en'
-                  ? 'Test accent color, header style, and section priority.'
-                  : 'Test hvordan hver virksomhet kan tilpasse fargetema, toppstil og rekkefølge på seksjoner.'}
-              </p>
-            </div>
-            {canEdit && (
-              <button
-                type="button"
-                onClick={() => setEditorOpen(true)}
-                className="inline-flex items-center gap-1 rounded-md bg-teal-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-teal-500"
-              >
-                <PencilSquareIcon className="h-3.5 w-3.5" />
-                <span>
-                  {lang === 'en' ? 'Open full editor' : 'Åpne full redigering'}
-                </span>
-              </button>
-            )}
-          </div>
-
-          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div>
-              <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                {lang === 'en' ? 'Brand Accent' : 'Profilfarge'}
-              </label>
-              <div className="mt-1.5 flex flex-wrap gap-1.5">
-                {(
-                  [
-                    'rose',
-                    'emerald',
-                    'blue',
-                    'indigo',
-                    'teal',
-                    'amber',
-                  ] as const
-                ).map(color => (
-                  <button
-                    key={color}
-                    type="button"
-                    onClick={() => setAccentColor(color)}
-                    className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium capitalize transition ${
-                      accentColor === color
-                        ? 'border-zinc-900 bg-zinc-900 text-white dark:border-white dark:bg-white dark:text-zinc-900'
-                        : 'border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300'
-                    }`}
-                  >
-                    <span
-                      className={`h-2 w-2 rounded-full ${ACCENT_STYLES[color].dot}`}
-                    />
-                    {color}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                {lang === 'en' ? 'Header Background' : 'Toppstil'}
-              </label>
-              <div className="mt-1.5 flex flex-wrap gap-1.5">
-                {(['gradient', 'grid', 'minimal'] as const).map(style => (
-                  <button
-                    key={style}
-                    type="button"
-                    onClick={() => setHeroStyle(style)}
-                    className={`rounded-md border px-2.5 py-1 text-xs font-medium capitalize transition ${
-                      heroStyle === style
-                        ? 'border-zinc-900 bg-zinc-900 text-white dark:border-white dark:bg-white dark:text-zinc-900'
-                        : 'border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300'
-                    }`}
-                  >
-                    {style}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label className="flex items-center gap-1 text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                <ArrowsUpDownIcon className="h-3.5 w-3.5" />
-                {lang === 'en' ? 'Section Order' : 'Seksjonsrekkefølge'}
-              </label>
-              <div className="mt-1.5 flex flex-wrap gap-1">
-                {sectionOrder.map((secId, index) => (
-                  <div
-                    key={secId}
-                    className="inline-flex items-center gap-1 rounded border border-zinc-200 bg-white px-2 py-0.5 text-[11px] font-medium text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
-                  >
-                    <span>{SECTION_LABELS[secId][lang]}</span>
-                    <button
-                      type="button"
-                      disabled={index === 0}
-                      onClick={() => moveSection(index, -1)}
-                      className="text-zinc-400 hover:text-zinc-900 disabled:opacity-30 dark:hover:text-white"
-                    >
-                      ←
-                    </button>
-                    <button
-                      type="button"
-                      disabled={index === sectionOrder.length - 1}
-                      onClick={() => moveSection(index, 1)}
-                      className="text-zinc-400 hover:text-zinc-900 disabled:opacity-30 dark:hover:text-white"
-                    >
-                      →
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Editorial Hero Header (No Box-Inside-Box) */}
       <header
@@ -1317,7 +1166,7 @@ export function MemberProfileShowcase({
           <div className="mt-6 max-w-3xl space-y-3">
             <p className="text-lg leading-snug font-medium text-zinc-900 sm:text-xl dark:text-zinc-100">
               {profile
-                ? lang === 'en'
+                ? lang === 'en' && profile.taglineEn
                   ? profile.taglineEn
                   : profile.tagline
                 : (platformInfo?.description ??
@@ -1325,7 +1174,9 @@ export function MemberProfileShowcase({
             </p>
             {profile && (
               <p className="text-base leading-relaxed text-zinc-600 dark:text-zinc-400">
-                {lang === 'en' ? profile.aboutEn : profile.about}
+                {lang === 'en' && profile.aboutEn
+                  ? profile.aboutEn
+                  : profile.about}
               </p>
             )}
           </div>
@@ -1415,7 +1266,7 @@ export function MemberProfileShowcase({
                   }`}
                 >
                   <dt className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
-                    {lang === 'en' ? stat.labelEn : stat.label}
+                    {lang === 'en' && stat.labelEn ? stat.labelEn : stat.label}
                   </dt>
                   <dd
                     className={`mt-1 text-2xl font-bold tracking-tight tabular-nums sm:text-3xl ${accent.statHighlight}`}
@@ -1548,9 +1399,6 @@ export function MemberProfileShowcase({
           initialProfile={profile}
           onSaved={updated => {
             setProfile(updated)
-            setAccentColor(updated.theme.accentColor)
-            setHeroStyle(updated.theme.heroStyle)
-            setSectionOrder(updated.theme.sectionOrder)
             router.refresh()
           }}
         />

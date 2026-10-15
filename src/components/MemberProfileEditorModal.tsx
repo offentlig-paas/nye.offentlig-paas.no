@@ -4,6 +4,8 @@ import { useState } from 'react'
 import {
   ArrowsUpDownIcon,
   CheckCircleIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
   CodeBracketIcon,
   CubeTransparentIcon,
   PlusIcon,
@@ -659,17 +661,19 @@ export function MemberProfileEditorModal({
                             type="button"
                             disabled={index === 0}
                             onClick={() => moveSection(index, -1)}
+                            aria-label="Flytt seksjon opp"
                             className="text-zinc-400 hover:text-zinc-900 disabled:opacity-30 dark:hover:text-white"
                           >
-                            ←
+                            <ChevronLeftIcon className="h-3 w-3" />
                           </button>
                           <button
                             type="button"
                             disabled={index === sectionOrder.length - 1}
                             onClick={() => moveSection(index, 1)}
+                            aria-label="Flytt seksjon ned"
                             className="text-zinc-400 hover:text-zinc-900 disabled:opacity-30 dark:hover:text-white"
                           >
-                            →
+                            <ChevronRightIcon className="h-3 w-3" />
                           </button>
                         </div>
                       ))}

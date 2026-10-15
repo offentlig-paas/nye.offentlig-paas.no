@@ -142,8 +142,6 @@ export interface MemberProfile {
   verifiedUpdated: string
   updatedBy?: {
     name: string
-    email?: string
-    slackId?: string
   }
   theme: {
     accentColor: ProfileAccentColor
@@ -320,103 +318,158 @@ export const CNCF_PROJECT_CATALOG: Array<{
   },
 ]
 
+const httpUrlSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(500)
+  .refine(
+    val => {
+      try {
+        const parsed = new URL(val)
+        return parsed.protocol === 'http:' || parsed.protocol === 'https:'
+      } catch {
+        return false
+      }
+    },
+    { message: 'URL må starte med http:// eller https://' }
+  )
+
+const safeLogoSchema = z
+  .string()
+  .trim()
+  .max(500)
+  .refine(
+    val => {
+      if (!val) return true
+      if (val.startsWith('/') && !val.startsWith('//') && !val.includes('..')) {
+        return true
+      }
+      try {
+        const parsed = new URL(val)
+        return parsed.protocol === 'https:'
+      } catch {
+        return false
+      }
+    },
+    {
+      message:
+        'Logo må være en lokal sti (/images/...) eller en gyldig https:// URL',
+    }
+  )
+
+const githubHandleSchema = z
+  .string()
+  .trim()
+  .max(39)
+  .regex(
+    /^[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}$/,
+    'Ugyldig GitHub-brukernavn'
+  )
+
 const platformCapabilitySchema = z.object({
-  id: z.string().min(1),
-  title: z.string().min(1),
-  titleEn: z.string().default(''),
+  id: z.string().min(1).max(100),
+  title: z.string().min(1).max(200),
+  titleEn: z.string().max(200).default(''),
   category: z.enum(CAPABILITY_CATEGORIES),
   maturity: z.enum(['production', 'beta', 'planned']),
   selfService: z.boolean().default(true),
-  description: z.string().min(1),
-  descriptionEn: z.string().default(''),
-  highlights: z.array(z.string()).default([]),
-  highlightsEn: z.array(z.string()).optional(),
+  description: z.string().min(1).max(1000),
+  descriptionEn: z.string().max(1000).default(''),
+  highlights: z.array(z.string().max(250)).max(15).default([]),
+  highlightsEn: z.array(z.string().max(250)).max(15).optional(),
 })
 
 const cncfProjectUsageSchema = z.object({
-  name: z.string().min(1),
+  name: z.string().min(1).max(100),
   tier: z.enum(CNCF_MATURITY_TIERS),
   category: z.enum(CNCF_PROJECT_CATEGORIES),
-  usage: z.string().min(1),
-  usageEn: z.string().default(''),
-  cncfUrl: z.string().url(),
-  sourceRepoUrl: z.string().url().optional().or(z.literal('')),
+  usage: z.string().min(1).max(1000),
+  usageEn: z.string().max(1000).default(''),
+  cncfUrl: httpUrlSchema,
+  sourceRepoUrl: httpUrlSchema.optional().or(z.literal('')),
   sinceYear: z.number().int().min(2014).max(2035).optional(),
 })
 
 const techStackGroupSchema = z.object({
-  category: z.string().min(1),
-  categoryEn: z.string().default(''),
-  items: z.array(z.string()).default([]),
+  category: z.string().min(1).max(150),
+  categoryEn: z.string().max(150).default(''),
+  items: z.array(z.string().max(100)).max(40).default([]),
 })
 
 const teamMemberSchema = z.object({
-  name: z.string().min(1),
-  role: z.string().min(1),
-  roleEn: z.string().optional(),
-  slackUrl: z.string().url().optional().or(z.literal('')),
-  github: z.string().optional(),
+  name: z.string().min(1).max(150),
+  role: z.string().min(1).max(150),
+  roleEn: z.string().max(150).optional(),
+  slackUrl: httpUrlSchema.optional().or(z.literal('')),
+  github: githubHandleSchema.optional().or(z.literal('')),
 })
 
 const openPositionSchema = z.object({
-  title: z.string().min(1),
-  department: z.string().min(1),
-  location: z.string().min(1),
-  deadline: z.string().optional(),
-  url: z.string().url(),
-  tags: z.array(z.string()).default([]),
+  title: z.string().min(1).max(200),
+  department: z.string().min(1).max(150),
+  location: z.string().min(1).max(150),
+  deadline: z.string().max(100).optional(),
+  url: httpUrlSchema,
+  tags: z.array(z.string().max(60)).max(15).default([]),
 })
 
 const profileLinkSchema = z.object({
-  title: z.string().min(1),
-  description: z.string().default(''),
-  url: z.string().url(),
+  title: z.string().min(1).max(150),
+  description: z.string().max(400).default(''),
+  url: httpUrlSchema,
   type: z.enum(PROFILE_LINK_TYPES),
 })
 
 const profileStatSchema = z.object({
-  label: z.string().min(1),
-  labelEn: z.string().default(''),
-  value: z.string().min(1),
-  detail: z.string().optional(),
+  label: z.string().min(1).max(150),
+  labelEn: z.string().max(150).default(''),
+  value: z.string().min(1).max(100),
+  detail: z.string().max(200).optional(),
 })
 
 const manifestExampleSchema = z.object({
-  title: z.string().min(1),
-  titleEn: z.string().default(''),
-  filename: z.string().min(1),
-  description: z.string().default(''),
-  descriptionEn: z.string().default(''),
-  code: z.string().min(1),
+  title: z.string().min(1).max(200),
+  titleEn: z.string().max(200).default(''),
+  filename: z.string().min(1).max(100),
+  description: z.string().max(600).default(''),
+  descriptionEn: z.string().max(600).default(''),
+  code: z.string().min(1).max(10000),
 })
 
 export const upsertMemberProfileSchema = z.object({
-  slug: z.string().min(1),
-  platformName: z.string().min(1),
-  platformDescription: z.string().min(1),
-  platformHref: z.string().url(),
-  platformLabel: z.string().min(1),
-  platformLogo: z.string().optional(),
+  slug: z.string().min(1).max(80),
+  platformName: z.string().min(1).max(150),
+  platformDescription: z.string().min(1).max(1000),
+  platformHref: httpUrlSchema,
+  platformLabel: z.string().min(1).max(150),
+  platformLogo: safeLogoSchema.optional(),
   theme: z.object({
     accentColor: z.enum(PROFILE_ACCENT_COLORS),
     heroStyle: z.enum(PROFILE_HERO_STYLES),
-    sectionOrder: z.array(z.enum(PROFILE_SECTION_IDS)).min(1),
+    sectionOrder: z
+      .array(z.enum(PROFILE_SECTION_IDS))
+      .min(1)
+      .max(PROFILE_SECTION_IDS.length)
+      .refine(items => new Set(items).size === items.length, {
+        message: 'Dupliserte seksjoner er ikke tillatt',
+      }),
   }),
-  tagline: z.string().default(''),
-  taglineEn: z.string().default(''),
-  about: z.string().default(''),
-  aboutEn: z.string().default(''),
+  tagline: z.string().max(500).default(''),
+  taglineEn: z.string().max(500).default(''),
+  about: z.string().max(4000).default(''),
+  aboutEn: z.string().max(4000).default(''),
   cncfEndUserMember: z.boolean().default(false),
   openSourceFirst: z.boolean().default(true),
-  cloudProviders: z.array(z.string()).default([]),
-  stats: z.array(profileStatSchema).default([]),
+  cloudProviders: z.array(z.string().max(120)).max(15).default([]),
+  stats: z.array(profileStatSchema).max(8).default([]),
   manifestExample: manifestExampleSchema.optional(),
-  capabilities: z.array(platformCapabilitySchema).default([]),
-  cncfProjects: z.array(cncfProjectUsageSchema).default([]),
-  techStack: z.array(techStackGroupSchema).default([]),
-  team: z.array(teamMemberSchema).default([]),
-  openPositions: z.array(openPositionSchema).default([]),
-  links: z.array(profileLinkSchema).default([]),
+  capabilities: z.array(platformCapabilitySchema).max(30).default([]),
+  cncfProjects: z.array(cncfProjectUsageSchema).max(40).default([]),
+  techStack: z.array(techStackGroupSchema).max(15).default([]),
+  team: z.array(teamMemberSchema).max(40).default([]),
+  openPositions: z.array(openPositionSchema).max(20).default([]),
+  links: z.array(profileLinkSchema).max(20).default([]),
 })
 
 export type UpsertMemberProfileInput = z.infer<typeof upsertMemberProfileSchema>

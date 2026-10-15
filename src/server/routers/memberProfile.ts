@@ -21,12 +21,14 @@ export const memberProfileRouter = router({
   }),
 
   getPermissions: publicProcedure
-    .input(z.object({ slug: z.string() }))
+    .input(z.object({ slug: z.string().min(1).max(80) }))
     .query(({ input, ctx }) => {
       const user = ctx.session?.user
-      const emailDomain = user?.email?.includes('@')
-        ? user.email.toLowerCase().trim().split('@')[1]
-        : undefined
+      const emailParts = user?.email?.toLowerCase().trim().split('@')
+      const emailDomain =
+        emailParts?.length === 2 && emailParts[0] && emailParts[1]
+          ? emailParts[1]
+          : undefined
       const isAdmin = Boolean(user?.isAdmin)
       const member = getMemberBySlug(input.slug)
       if (!member) {
@@ -37,7 +39,6 @@ export const memberProfileRouter = router({
           isAdmin,
           emailDomain,
           matchedDomain: undefined as string | undefined,
-          userEmail: user?.email ?? undefined,
           requiredDomains: [] as string[],
         }
       }
@@ -47,7 +48,6 @@ export const memberProfileRouter = router({
         isAuthenticated: Boolean(user),
         isAdmin,
         emailDomain,
-        userEmail: user?.email ?? undefined,
         requiredDomains: member.domains,
       }
     }),

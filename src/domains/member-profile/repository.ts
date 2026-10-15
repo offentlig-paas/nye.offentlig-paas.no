@@ -12,22 +12,30 @@ export class MemberProfileRepository {
   async findBySlug(slug: string): Promise<MemberProfile | null> {
     const normalized = slug.toLowerCase()
     const query = groq`*[_type == "memberProfile" && slug == $slug][0]`
-    const result = await sanityClient.fetch<Record<string, unknown> | null>(
-      query,
-      { slug: normalized },
-      { cache: 'no-store', next: { revalidate: 0 } }
-    )
-    return result ? this.mapToMemberProfile(result) : null
+    try {
+      const result = await sanityClient.fetch<Record<string, unknown> | null>(
+        query,
+        { slug: normalized },
+        { cache: 'no-store', next: { revalidate: 0 } }
+      )
+      return result ? this.mapToMemberProfile(result) : null
+    } catch {
+      return null
+    }
   }
 
   async findAll(): Promise<MemberProfile[]> {
     const query = groq`*[_type == "memberProfile"] | order(platformName asc)`
-    const results = await sanityClient.fetch<Record<string, unknown>[]>(
-      query,
-      {},
-      { cache: 'no-store', next: { revalidate: 0 } }
-    )
-    return (results ?? []).map(r => this.mapToMemberProfile(r))
+    try {
+      const results = await sanityClient.fetch<Record<string, unknown>[]>(
+        query,
+        {},
+        { cache: 'no-store', next: { revalidate: 0 } }
+      )
+      return (results ?? []).map(r => this.mapToMemberProfile(r))
+    } catch {
+      return []
+    }
   }
 
   async listPlatformSummaries(): Promise<MemberPlatformSummary[]> {
@@ -39,12 +47,16 @@ export class MemberProfileRepository {
       "label": platformLabel,
       "logo": platformLogo
     }`
-    const results = await sanityClient.fetch<MemberPlatformSummary[]>(
-      query,
-      {},
-      { cache: 'no-store', next: { revalidate: 0 } }
-    )
-    return results ?? []
+    try {
+      const results = await sanityClient.fetch<MemberPlatformSummary[]>(
+        query,
+        {},
+        { cache: 'no-store', next: { revalidate: 0 } }
+      )
+      return results ?? []
+    } catch {
+      return []
+    }
   }
 
   async upsert(
@@ -107,8 +119,7 @@ export class MemberProfileRepository {
 
   private mapToMemberProfile(doc: Record<string, unknown>): MemberProfile {
     const themeRaw = (doc.theme as Record<string, unknown> | undefined) ?? {}
-    const updatedByRaw = doc.updatedBy as
-      { name?: string; email?: string; slackId?: string } | undefined
+    const updatedByRaw = doc.updatedBy as { name?: string } | undefined
 
     return {
       _id: doc._id as string | undefined,
@@ -121,13 +132,7 @@ export class MemberProfileRepository {
       verifiedUpdated:
         (doc.verifiedUpdated as string) ??
         new Date().toISOString().slice(0, 10),
-      updatedBy: updatedByRaw?.name
-        ? {
-            name: updatedByRaw.name,
-            email: updatedByRaw.email,
-            slackId: updatedByRaw.slackId,
-          }
-        : undefined,
+      updatedBy: updatedByRaw?.name ? { name: updatedByRaw.name } : undefined,
       theme: {
         accentColor:
           (themeRaw.accentColor as MemberProfile['theme']['accentColor']) ??

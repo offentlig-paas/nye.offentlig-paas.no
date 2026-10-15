@@ -1,6 +1,10 @@
 import { vi, type Mocked } from 'vitest'
 import { MemberProfileRepository } from '../repository'
-import type { MemberProfile, UpsertMemberProfileInput } from '../types'
+import {
+  upsertMemberProfileSchema,
+  type MemberProfile,
+  type UpsertMemberProfileInput,
+} from '../types'
 
 vi.mock('../repository')
 
@@ -125,6 +129,111 @@ describe('MemberProfileService & Helpers', () => {
         canEdit: false,
         reason: 'domain_mismatch',
       })
+    })
+
+    it('denies multi-@ email spoofing and lookalike domain prefixes', () => {
+      const nav = getMemberBySlug('nav')!
+      expect(
+        canUserEditMemberProfile(nav, {
+          email: 'user@evil.com@nav.no',
+          isAdmin: false,
+        })
+      ).toEqual({
+        canEdit: false,
+        reason: 'domain_mismatch',
+      })
+      expect(
+        canUserEditMemberProfile(nav, {
+          email: 'user@evil-nav.no',
+          isAdmin: false,
+        })
+      ).toEqual({
+        canEdit: false,
+        reason: 'domain_mismatch',
+      })
+    })
+  })
+
+  describe('upsertMemberProfileSchema', () => {
+    const validInput: UpsertMemberProfileInput = {
+      slug: 'nav',
+      platformName: 'Nais',
+      platformDescription: 'Applikasjonsplattformen til Nav',
+      platformHref: 'https://nais.io',
+      platformLabel: 'nais.io',
+      theme: mockProfile.theme,
+      tagline: mockProfile.tagline,
+      taglineEn: mockProfile.taglineEn,
+      about: mockProfile.about,
+      aboutEn: mockProfile.aboutEn,
+      cncfEndUserMember: true,
+      openSourceFirst: true,
+      cloudProviders: mockProfile.cloudProviders,
+      stats: [],
+      capabilities: [],
+      cncfProjects: [],
+      techStack: [],
+      team: [],
+      openPositions: [],
+      links: [],
+    }
+
+    it('rejects javascript: and data: URLs in link fields', () => {
+      expect(
+        upsertMemberProfileSchema.safeParse({
+          ...validInput,
+          platformHref: 'javascript:alert(1)',
+        }).success
+      ).toBe(false)
+
+      expect(
+        upsertMemberProfileSchema.safeParse({
+          ...validInput,
+          links: [
+            {
+              title: 'XSS',
+              url: 'data:text/html,<script>alert(1)</script>',
+              type: 'docs',
+            },
+          ],
+        }).success
+      ).toBe(false)
+    })
+
+    it('rejects invalid GitHub handles and protocol-relative logo paths', () => {
+      expect(
+        upsertMemberProfileSchema.safeParse({
+          ...validInput,
+          team: [{ name: 'Ola', role: 'Lead', github: '../../evil?x=1' }],
+        }).success
+      ).toBe(false)
+
+      expect(
+        upsertMemberProfileSchema.safeParse({
+          ...validInput,
+          cncfProjects: [
+            {
+              name: 'Kubernetes',
+              category: 'Orchestration',
+              maturity: 'graduated',
+              usageNote: 'Core',
+              logo: '//evil.com/payload.svg',
+            },
+          ],
+        }).success
+      ).toBe(false)
+    })
+
+    it('rejects duplicate section IDs in theme.sectionOrder', () => {
+      expect(
+        upsertMemberProfileSchema.safeParse({
+          ...validInput,
+          theme: {
+            ...validInput.theme,
+            sectionOrder: ['cncf', 'cncf'],
+          },
+        }).success
+      ).toBe(false)
     })
   })
 
