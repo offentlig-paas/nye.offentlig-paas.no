@@ -13,11 +13,7 @@ import {
 import { auth } from '@/auth'
 import { Card } from '@/components/Card'
 import { SimpleLayout } from '@/components/SimpleLayout'
-import {
-  memberProfileService,
-  getMemberBySlug,
-  getMemberByUserEmail,
-} from '@/domains/member-profile'
+import { memberProfileService, getMemberBySlug } from '@/domains/member-profile'
 
 function LinkIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
@@ -37,13 +33,16 @@ export const metadata: Metadata = {
 
 export default async function Plattformer() {
   const session = await auth()
-  const profiles = await memberProfileService.getAll({
-    includeInternal: Boolean(session?.user),
-  })
-  const myMember = getMemberByUserEmail(session?.user?.email)
-  const myProfile = myMember
-    ? profiles.find(p => p.slug === myMember.getSlug())
-    : undefined
+  const [profiles, matchedOrg] = await Promise.all([
+    memberProfileService.getAll({
+      includeInternal: Boolean(session?.user),
+    }),
+    memberProfileService.findMemberForUser(session?.user),
+  ])
+  const myMember = matchedOrg?.member
+  const myProfile =
+    matchedOrg?.profile ??
+    (myMember ? profiles.find(p => p.slug === myMember.getSlug()) : undefined)
 
   const plattformer = profiles
     .map(profile => {

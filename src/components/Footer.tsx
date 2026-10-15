@@ -32,6 +32,7 @@ export function Footer() {
                 <NavLink href="/artikkel">Artikler</NavLink>
                 <NavLink href="/fagdag">Fagdager</NavLink>
                 <NavLink href="/medlemmer">Medlemmer</NavLink>
+                <NavLink href="/plattformer">Plattformer</NavLink>
               </div>
               <div className="flex gap-x-6 text-sm text-zinc-400 dark:text-zinc-500">
                 <NavLink href="/personvern">Personvern</NavLink>

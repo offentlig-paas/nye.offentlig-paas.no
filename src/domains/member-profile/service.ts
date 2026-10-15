@@ -63,13 +63,55 @@ export function getMemberByUserEmail(
   return members.find(m => Boolean(findMatchingMemberDomain(m, emailDomain)))
 }
 
+function matchesSlackIdentifier(
+  slackUrlOrId?: string | null,
+  userSlackId?: string | null
+): boolean {
+  if (!slackUrlOrId || !userSlackId) return false
+  const normalizedTarget = userSlackId.trim().toUpperCase()
+  if (!/^[UW][A-Z0-9]{6,}$/.test(normalizedTarget)) return false
+
+  const trimmed = slackUrlOrId.trim().replace(/\/+$/, '')
+  if (/^[UW][A-Z0-9]{6,}$/i.test(trimmed)) {
+    return trimmed.toUpperCase() === normalizedTarget
+  }
+
+  try {
+    const parsed = new URL(trimmed)
+    if (
+      parsed.protocol !== 'https:' ||
+      (parsed.hostname !== 'slack.com' &&
+        !parsed.hostname.endsWith('.slack.com'))
+    ) {
+      return false
+    }
+  } catch {
+    return false
+  }
+
+  const extracted =
+    extractSlackUserId(trimmed) ??
+    trimmed.match(/\/team\/([UW][A-Z0-9]{6,})$/i)?.[1]
+  return Boolean(extracted && extracted.toUpperCase() === normalizedTarget)
+}
+
 export function canUserEditMemberProfile(
   member: Member,
-  user?: { email?: string | null; isAdmin?: boolean | null } | null
+  user?: {
+    email?: string | null
+    isAdmin?: boolean | null
+    slackId?: string | null
+  } | null,
+  profile?: MemberProfile | null
 ): {
   canEdit: boolean
   matchedDomain?: string
-  reason: 'admin' | 'domain_match' | 'unauthenticated' | 'domain_mismatch'
+  reason:
+    | 'admin'
+    | 'domain_match'
+    | 'team_member'
+    | 'unauthenticated'
+    | 'domain_mismatch'
 } {
   if (!user) {
     return { canEdit: false, reason: 'unauthenticated' }
@@ -78,13 +120,28 @@ export function canUserEditMemberProfile(
     return { canEdit: true, reason: 'admin' }
   }
   const emailDomain = extractValidEmailDomain(user.email)
-  if (!emailDomain) {
-    return { canEdit: false, reason: 'domain_mismatch' }
+  if (emailDomain) {
+    const matchedDomain = findMatchingMemberDomain(member, emailDomain)
+    if (matchedDomain) {
+      return { canEdit: true, matchedDomain, reason: 'domain_match' }
+    }
   }
 
-  const matchedDomain = findMatchingMemberDomain(member, emailDomain)
-  if (matchedDomain) {
-    return { canEdit: true, matchedDomain, reason: 'domain_match' }
+  if (user.slackId) {
+    const inProfileTeam = profile?.team.some(t =>
+      matchesSlackIdentifier(t.slackUrl, user.slackId)
+    )
+    if (inProfileTeam) {
+      return { canEdit: true, reason: 'team_member' }
+    }
+
+    const { uniqueSpeakers } = getMemberEventContributions(member)
+    const inEventSpeakers = uniqueSpeakers.some(s =>
+      matchesSlackIdentifier(s.url, user.slackId)
+    )
+    if (inEventSpeakers) {
+      return { canEdit: true, reason: 'team_member' }
+    }
   }
 
   return { canEdit: false, reason: 'domain_mismatch' }
@@ -204,6 +261,48 @@ class MemberProfileService {
     const summaries = await this.repository.listPlatformSummaries()
     if (options?.includeInternal) return summaries
     return summaries.filter(s => s.visibility !== 'internal')
+  }
+
+  async findMemberForUser(
+    user?: { email?: string | null; slackId?: string | null } | null
+  ): Promise<{ member: Member; profile: MemberProfile | null } | null> {
+    if (!user) return null
+
+    const byEmail = getMemberByUserEmail(user.email)
+    if (byEmail) {
+      const profile = await this.getBySlug(byEmail.getSlug(), {
+        includeInternal: true,
+      })
+      return { member: byEmail, profile }
+    }
+
+    if (user.slackId) {
+      const allProfiles = await this.repository.findAll()
+      for (const p of allProfiles) {
+        if (
+          !p.team.some(t => matchesSlackIdentifier(t.slackUrl, user.slackId))
+        ) {
+          continue
+        }
+        const member = getMemberBySlug(p.slug)
+        if (member) {
+          return { member, profile: p }
+        }
+      }
+
+      const matchedBySpeaker = members.find(m =>
+        getMemberEventContributions(m).uniqueSpeakers.some(s =>
+          matchesSlackIdentifier(s.url, user.slackId)
+        )
+      )
+      if (matchedBySpeaker) {
+        const profile =
+          allProfiles.find(p => p.slug === matchedBySpeaker.getSlug()) ?? null
+        return { member: matchedBySpeaker, profile }
+      }
+    }
+
+    return null
   }
 
   async upsert(

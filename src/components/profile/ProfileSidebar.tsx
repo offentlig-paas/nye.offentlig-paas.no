@@ -33,7 +33,7 @@ interface ProfileSidebarProps {
 export function ProfileSidebar({ user, organization }: ProfileSidebarProps) {
   return (
     <div className="lg:col-span-1">
-      {organization && (
+      {organization ? (
         <div className="mb-6 rounded-2xl border border-teal-200 bg-teal-50/40 p-6 dark:border-teal-800/60 dark:bg-teal-950/20">
           <div className="flex items-center gap-2 text-xs font-semibold tracking-wide text-teal-700 uppercase dark:text-teal-300">
             <ServerStackIcon className="h-4 w-4" />
@@ -57,14 +57,14 @@ export function ProfileSidebar({ user, organization }: ProfileSidebarProps) {
             </p>
           )}
           <div className="mt-4 flex flex-wrap gap-2">
-            {organization.platformName && (
-              <Link
-                href={`/medlemmer/${organization.slug}`}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-zinc-800 ring-1 ring-zinc-200 transition hover:bg-zinc-50 dark:bg-zinc-800 dark:text-zinc-100 dark:ring-zinc-700 dark:hover:bg-zinc-700"
-              >
-                Se plattformprofil
-              </Link>
-            )}
+            <Link
+              href={`/medlemmer/${organization.slug}`}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-zinc-800 ring-1 ring-zinc-200 transition hover:bg-zinc-50 dark:bg-zinc-800 dark:text-zinc-100 dark:ring-zinc-700 dark:hover:bg-zinc-700"
+            >
+              {organization.platformName
+                ? 'Se plattformprofil'
+                : 'Se medlemsside'}
+            </Link>
             <Link
               href={`/medlemmer/${organization.slug}?edit=1`}
               className="inline-flex items-center gap-1.5 rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-teal-500"
@@ -73,6 +73,42 @@ export function ProfileSidebar({ user, organization }: ProfileSidebarProps) {
               {organization.platformName
                 ? 'Rediger plattform'
                 : 'Opprett plattformprofil'}
+            </Link>
+          </div>
+        </div>
+      ) : (
+        <div className="mb-6 rounded-2xl border border-zinc-200 bg-zinc-50/60 p-6 dark:border-zinc-700/60 dark:bg-zinc-800/30">
+          <div className="flex items-center gap-2 text-xs font-semibold tracking-wide text-zinc-600 uppercase dark:text-zinc-400">
+            <ServerStackIcon className="h-4 w-4 text-teal-600 dark:text-teal-400" />
+            Din virksomhet
+          </div>
+          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+            Virksomheten din kobles automatisk ut fra e-postdomenet på
+            Slack-kontoen din. Både ansatte og innleide konsulenter skal bruke
+            oppdragsgivers e-postadresse (f.eks.{' '}
+            <code className="rounded bg-zinc-200/70 px-1 py-0.5 font-mono text-xs text-zinc-900 dark:bg-zinc-700 dark:text-zinc-100">
+              @nav.no
+            </code>{' '}
+            eller{' '}
+            <code className="rounded bg-zinc-200/70 px-1 py-0.5 font-mono text-xs text-zinc-900 dark:bg-zinc-700 dark:text-zinc-100">
+              @skatteetaten.no
+            </code>
+            ) i Offentlig PaaS Slack-workspacet fremfor konsulent- eller
+            privatadresse. Oppdater e-posten din i Slack og logg inn på nytt for
+            å få tilgang.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Link
+              href="/medlemmer"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-zinc-800 ring-1 ring-zinc-200 transition hover:bg-zinc-50 dark:bg-zinc-800 dark:text-zinc-100 dark:ring-zinc-700 dark:hover:bg-zinc-700"
+            >
+              Finn virksomhet
+            </Link>
+            <Link
+              href="/plattformer"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-teal-500"
+            >
+              Utforsk plattformer
             </Link>
           </div>
         </div>

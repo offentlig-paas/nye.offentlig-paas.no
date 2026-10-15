@@ -2,7 +2,6 @@ import { type Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { auth } from '@/auth'
 import { Container } from '@/components/Container'
-import { members } from '@/data/members'
 import {
   memberProfileService,
   getMemberBySlug,
@@ -55,12 +54,9 @@ export default async function MemberProfilePage({
   const session = await auth()
   const isAuthenticated = Boolean(session?.user)
   const canonicalSlug = member.getSlug()
-  const [rawProfile, platformSummaries] = await Promise.all([
-    memberProfileService.getBySlug(canonicalSlug, { includeInternal: true }),
-    memberProfileService.listPlatformSummaries({
-      includeInternal: isAuthenticated,
-    }),
-  ])
+  const rawProfile = await memberProfileService.getBySlug(canonicalSlug, {
+    includeInternal: true,
+  })
 
   const isInternalRestricted =
     rawProfile?.visibility === 'internal' && !isAuthenticated
@@ -91,26 +87,6 @@ export default async function MemberProfilePage({
       : undefined,
   }
 
-  const showcaseSlugs = platformSummaries
-    .map(summary => {
-      const m = members.find(item => item.getSlug() === summary.slug)
-      if (!m) return null
-      return {
-        slug: summary.slug,
-        name: m.name,
-        platformName: summary.name,
-      }
-    })
-    .filter(
-      (
-        item
-      ): item is {
-        slug: string
-        name: string
-        platformName: string
-      } => item !== null
-    )
-
   return (
     <Container className="mt-12 sm:mt-16">
       <MemberProfileShowcase
@@ -121,7 +97,6 @@ export default async function MemberProfilePage({
         talks={talks}
         organizedEventsCount={organizedEventsCount}
         uniqueSpeakers={uniqueSpeakers}
-        showcaseSlugs={showcaseSlugs}
       />
     </Container>
   )
