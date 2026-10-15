@@ -8,6 +8,7 @@ import type {
   RegistrationStatus,
 } from './types'
 import { getAllEvents } from '@/lib/events/helpers'
+import { sendDirectMessage } from '@/lib/slack/messaging'
 
 interface OrphanedRegistrationGroup {
   eventSlug: string
@@ -141,14 +142,58 @@ export class EventRegistrationService {
 
   async updateRegistration(
     id: string,
-    input: UpdateEventRegistrationInput
+    input: UpdateEventRegistrationInput,
+    event?: { maxCapacity?: number; title?: string; end?: Date }
   ): Promise<EventRegistration> {
     const existingRegistration = await this.repository.findById(id)
     if (!existingRegistration) {
       throw new Error('Registration not found')
     }
 
-    return await this.repository.update(id, input)
+    const resolvedEvent =
+      event ??
+      getAllEvents().find(e => e.slug === existingRegistration.eventSlug)
+    const updatePayload: UpdateEventRegistrationInput = { ...input }
+
+    if (
+      input.attendanceType === 'physical' &&
+      existingRegistration.attendanceType !== 'physical'
+    ) {
+      if (resolvedEvent?.maxCapacity !== undefined) {
+        const currentPhysicalCount =
+          (await this.repository.getPhysicalAttendeesCount(
+            existingRegistration.eventSlug
+          )) ?? 0
+        if (currentPhysicalCount >= resolvedEvent.maxCapacity) {
+          updatePayload.status = 'waitlist'
+        } else if (existingRegistration.status === 'waitlist') {
+          updatePayload.status = 'confirmed'
+        }
+      } else if (existingRegistration.status === 'waitlist') {
+        updatePayload.status = 'confirmed'
+      }
+    } else if (
+      input.attendanceType === 'digital' &&
+      existingRegistration.attendanceType !== 'digital' &&
+      existingRegistration.status === 'waitlist'
+    ) {
+      updatePayload.status = 'confirmed'
+    }
+
+    const updated = await this.repository.update(id, updatePayload)
+
+    if (
+      input.attendanceType === 'digital' &&
+      existingRegistration.attendanceType === 'physical' &&
+      existingRegistration.status === 'confirmed'
+    ) {
+      await this.promoteNextFromWaitlist(
+        existingRegistration.eventSlug,
+        resolvedEvent
+      )
+    }
+
+    return updated
   }
 
   async updateRegistrationStatus(
@@ -160,7 +205,17 @@ export class EventRegistrationService {
       throw new Error('Registration not found')
     }
 
-    return await this.repository.update(id, { status })
+    const updated = await this.repository.update(id, { status })
+
+    if (
+      status === 'cancelled' &&
+      existingRegistration.status === 'confirmed' &&
+      existingRegistration.attendanceType === 'physical'
+    ) {
+      await this.promoteNextFromWaitlist(existingRegistration.eventSlug)
+    }
+
+    return updated
   }
 
   async confirmFromWaitlist(id: string): Promise<EventRegistration> {
@@ -212,8 +267,81 @@ export class EventRegistrationService {
     ).length
   }
 
-  async cancelRegistration(id: string): Promise<EventRegistration> {
-    return await this.updateRegistrationStatus(id, 'cancelled')
+  async cancelRegistration(
+    id: string,
+    event?: { maxCapacity?: number; title?: string; end?: Date }
+  ): Promise<EventRegistration> {
+    const existing = await this.repository.findById(id)
+    if (!existing) {
+      throw new Error('Registration not found')
+    }
+
+    const cancelled = await this.repository.update(id, { status: 'cancelled' })
+
+    if (
+      existing.status === 'confirmed' &&
+      existing.attendanceType === 'physical'
+    ) {
+      await this.promoteNextFromWaitlist(existing.eventSlug, event)
+    }
+
+    return cancelled
+  }
+
+  async promoteNextFromWaitlist(
+    eventSlug: string,
+    event?: { maxCapacity?: number; title?: string; end?: Date }
+  ): Promise<EventRegistration | null> {
+    const resolvedEvent =
+      event ?? getAllEvents().find(e => e.slug === eventSlug)
+    if (resolvedEvent?.end && new Date() > resolvedEvent.end) {
+      return null
+    }
+
+    const waitlisted =
+      (await this.repository.findMany({
+        eventSlug,
+        status: 'waitlist',
+      })) ?? []
+
+    const physicalWaitlisted = waitlisted
+      .filter(r => r.attendanceType === 'physical' && r._id)
+      .sort(
+        (a, b) =>
+          new Date(a.metadata?.reregisteredAt ?? a.registeredAt).getTime() -
+          new Date(b.metadata?.reregisteredAt ?? b.registeredAt).getTime()
+      )
+
+    const nextInLine = physicalWaitlisted[0]
+    if (!nextInLine?._id) {
+      return null
+    }
+
+    if (resolvedEvent?.maxCapacity !== undefined) {
+      const currentPhysicalCount =
+        (await this.repository.getPhysicalAttendeesCount(eventSlug)) ?? 0
+      if (currentPhysicalCount >= resolvedEvent.maxCapacity) {
+        return null
+      }
+    }
+
+    const promoted = await this.repository.update(nextInLine._id, {
+      status: 'confirmed',
+    })
+
+    if (promoted?.slackUserId) {
+      try {
+        const title = resolvedEvent?.title || eventSlug
+        await sendDirectMessage(
+          promoted.slackUserId,
+          `🎉 En fysisk plass har blitt ledig på *${title}*, og du har nå fått bekreftet plass fra ventelisten!`
+        )
+      } catch (error) {
+        console.error('Failed to send waitlist promotion DM:', error)
+      }
+    }
+
+    return promoted
   }
 
   async deleteRegistration(id: string): Promise<void> {
@@ -222,7 +350,14 @@ export class EventRegistrationService {
       throw new Error('Registration not found')
     }
 
-    return await this.repository.delete(id)
+    await this.repository.delete(id)
+
+    if (
+      existingRegistration.status === 'confirmed' &&
+      existingRegistration.attendanceType === 'physical'
+    ) {
+      await this.promoteNextFromWaitlist(existingRegistration.eventSlug)
+    }
   }
 
   async isUserRegistered(

@@ -51,7 +51,10 @@ async function ProfileContent() {
 
   const upcomingRegistrationsByEvent = new Map(
     userRegistrations
-      .filter((r: EventRegistration) => r.status === 'confirmed')
+      .filter(
+        (r: EventRegistration) =>
+          r.status === 'confirmed' || r.status === 'waitlist'
+      )
       .map((r: EventRegistration) => [r.eventSlug, r])
   )
 
@@ -95,8 +98,6 @@ async function ProfileContent() {
       return a.event.start.getTime() - b.event.start.getTime()
     })
 
-  const nextUpcomingEvents = upcomingEventsWithPriority.slice(0, 1)
-
   const allRegistrationsByEvent = new Map(
     userRegistrations.map((r: EventRegistration) => [r.eventSlug, r])
   )
@@ -132,7 +133,7 @@ async function ProfileContent() {
         <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
           <div className="space-y-12 lg:col-span-2">
             <UpcomingEventsSection
-              events={nextUpcomingEvents}
+              events={upcomingEventsWithPriority}
               userSlackId={user.slackId}
             />
             <OrganizedEventsSection events={organizedEvents} />

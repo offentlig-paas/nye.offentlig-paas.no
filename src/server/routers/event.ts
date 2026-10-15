@@ -61,6 +61,7 @@ export async function enrichEventWithDynamicData(
           attendingSocialEvent: userRegistration.attendingSocialEvent,
           comments: userRegistration.comments,
           dietary: userRegistration.dietary,
+          organisation: userRegistration.organisation,
           registeredAt: userRegistration.registeredAt,
         }
       : null

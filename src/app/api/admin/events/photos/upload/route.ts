@@ -1,18 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
-import { sanityClient } from '@/lib/sanity/config'
 import { canUserAccessEvent, getEvent } from '@/lib/events/helpers'
+import {
+  uploadEventPhoto,
+  validateEventPhotoFile,
+} from '@/lib/sanity/event-photos'
 
 export async function POST(request: NextRequest) {
   try {
     const session = await auth()
 
-    if (!session?.user) {
+    if (!session?.user?.slackId) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-    }
-
-    if (!session.user.isAdmin) {
-      return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
 
     const formData = await request.formData()
@@ -54,31 +53,21 @@ export async function POST(request: NextRequest) {
 
     for (const file of files) {
       try {
-        const buffer = await file.arrayBuffer()
-        const asset = await sanityClient.assets.upload(
-          'image',
-          Buffer.from(buffer),
-          {
-            filename: file.name,
-          }
-        )
-
-        const doc = {
-          _type: 'eventPhoto',
-          eventSlug,
-          image: {
-            _type: 'image',
-            asset: {
-              _type: 'reference',
-              _ref: asset._id,
-            },
-          },
-          uploadedAt: new Date().toISOString(),
-          uploadedBy: session.user.slackId,
-          order: 0,
+        const buffer = Buffer.from(await file.arrayBuffer())
+        const validationError = validateEventPhotoFile(file, buffer)
+        if (validationError) {
+          errors.push({ filename: file.name, error: validationError })
+          continue
         }
 
-        const result = await sanityClient.create(doc)
+        const result = await uploadEventPhoto({
+          eventSlug,
+          buffer,
+          filename: file.name,
+          contentType: file.type,
+          uploadedBy: session.user.slackId,
+          order: 0,
+        })
         results.push(result)
       } catch (error) {
         console.error(`Upload error for ${file.name}:`, error)

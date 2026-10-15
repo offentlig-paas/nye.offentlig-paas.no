@@ -133,5 +133,22 @@ describe('Event State Machine', () => {
         } as never)
       ).toBe(false)
     })
+
+    it('post-event recording-added checks recordingUrl', () => {
+      const items = getChecklistForState('POST_EVENT' as never)
+      const recItem = items.find(i => i.id === 'recording-added')!
+
+      expect(
+        recItem.isComplete({
+          recordingUrl: 'https://example.com/video',
+        } as never)
+      ).toBe(true)
+
+      expect(
+        recItem.isComplete({
+          recordingUrl: undefined,
+        } as never)
+      ).toBe(false)
+    })
   })
 })

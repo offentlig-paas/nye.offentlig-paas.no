@@ -56,8 +56,9 @@ export function buildReminderMessage(
   const actionButtons: Array<{
     type: 'button'
     text: { type: 'plain_text'; text: string; emoji: boolean }
-    url: string
+    url?: string
     action_id: string
+    style?: 'primary' | 'danger'
   }> = [
     {
       type: 'button',
@@ -95,6 +96,17 @@ export function buildReminderMessage(
     action_id: 'view_profile',
   })
 
+  actionButtons.push({
+    type: 'button',
+    text: {
+      type: 'plain_text',
+      text: '❌ Meld meg av',
+      emoji: true,
+    },
+    action_id: 'cancel_registration',
+    style: 'danger',
+  })
+
   blocks.push({
     type: 'actions',
     elements: actionButtons,
@@ -103,6 +115,12 @@ export function buildReminderMessage(
   return {
     text: `${customMessage} - ${event.title}`,
     blocks,
+    metadata: {
+      event_type: 'event_reminder',
+      event_payload: {
+        eventSlug,
+      },
+    },
   }
 }
 
@@ -163,6 +181,15 @@ export function buildFeedbackRequestMessage(
           },
           url: feedbackUrl,
           action_id: 'full_feedback',
+        },
+        {
+          type: 'button',
+          text: {
+            type: 'plain_text',
+            text: '🚫 Jeg deltok ikke',
+            emoji: true,
+          },
+          action_id: 'mark_not_attended',
         },
       ],
     },

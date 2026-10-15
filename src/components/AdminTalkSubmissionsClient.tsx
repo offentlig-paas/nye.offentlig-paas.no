@@ -11,7 +11,10 @@ import {
   TalkFormatDisplay,
   TalkSubmissionStatusDisplay,
 } from '@/domains/talk-submission/types'
-import type { TalkSubmissionStatus } from '@/domains/talk-submission/types'
+import type {
+  TalkSubmission,
+  TalkSubmissionStatus,
+} from '@/domains/talk-submission/types'
 import {
   CheckCircleIcon,
   XCircleIcon,
@@ -20,6 +23,7 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
   TrashIcon,
+  ClipboardDocumentIcon,
 } from '@heroicons/react/20/solid'
 
 const statusConfig: Record<
@@ -114,6 +118,39 @@ export function AdminTalkSubmissionsClient() {
         'Feil',
         error instanceof Error ? error.message : 'Noe gikk galt'
       )
+    }
+  }
+
+  const handleCopyAsScheduleItem = async (submission: TalkSubmission) => {
+    const itemType =
+      submission.format === 'Panel'
+        ? 'ItemType.Panel'
+        : submission.format === 'Workshop'
+          ? 'ItemType.Workshop'
+          : 'ItemType.Talk'
+
+    const speakerUrl = submission.speakerSlackId
+      ? `\n            url: 'https://offentlig-paas-no.slack.com/team/${submission.speakerSlackId}',`
+      : ''
+
+    const snippet = `{
+        type: ${itemType},
+        time: '00:00 - 00:00',
+        title: ${JSON.stringify(submission.title)},
+        description: ${JSON.stringify(submission.abstract)},
+        speakers: [
+          {
+            name: ${JSON.stringify(submission.speakerName)},
+            org: ${JSON.stringify(submission.speakerOrganisation)},${speakerUrl}
+          },
+        ],
+      },`
+
+    try {
+      await navigator.clipboard.writeText(snippet)
+      showSuccess('Kopiert', 'Programpost-kode kopiert til utklippstavlen')
+    } catch {
+      showError('Feil', 'Kunne ikke kopiere til utklippstavlen')
     }
   }
 
@@ -296,6 +333,13 @@ export function AdminTalkSubmissionsClient() {
                           Tilbakestill
                         </button>
                       )}
+                      <button
+                        onClick={() => handleCopyAsScheduleItem(submission)}
+                        className="rounded-md bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30"
+                      >
+                        <ClipboardDocumentIcon className="inline h-3.5 w-3.5" />{' '}
+                        Kopier som programpost
+                      </button>
                       <button
                         onClick={() => handleDelete(submission._id)}
                         disabled={deleteMutation.isPending}

@@ -4,6 +4,8 @@ import { eventFeedbackService } from '@/domains/event-feedback/service'
 import type { CreateEventFeedbackInput } from '@/domains/event-feedback/types'
 import { revalidatePath } from 'next/cache'
 import { eventRegistrationService } from '@/domains/event-registration/service'
+import { getEvent, getStatus } from '@/lib/events/helpers'
+import { Status } from '@/lib/events/types'
 import { TRPCError } from '@trpc/server'
 
 const talkRatingSchema = z.object({
@@ -51,17 +53,40 @@ export const eventFeedbackRouter = router({
         })
       }
 
+      const event = getEvent(slug)
+      if (!event) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Fagdag ikke funnet',
+        })
+      }
+
+      if (getStatus(event) === Status.Upcoming) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Kan ikke gi tilbakemelding før fagdagen har startet',
+        })
+      }
+
       const registrations = await eventRegistrationService.getUserRegistrations(
         ctx.user.slackId
       )
 
       const registration = registrations.find(r => r.eventSlug === slug)
 
-      if (!registration || registration.status !== 'attended') {
+      if (
+        !registration ||
+        (registration.status !== 'attended' &&
+          registration.status !== 'confirmed')
+      ) {
         throw new TRPCError({
           code: 'FORBIDDEN',
-          message: 'You must have attended this event to submit feedback',
+          message: 'Du må være påmeldt og ha deltatt for å gi tilbakemelding',
         })
+      }
+
+      if (registration.status === 'confirmed' && registration._id) {
+        await eventRegistrationService.markAsAttended(registration._id)
       }
 
       const feedbackInput: CreateEventFeedbackInput = {

@@ -129,7 +129,7 @@ const POST_EVENT_CHECKLIST: ChecklistItem[] = [
   {
     id: 'recording-added',
     label: 'Opptak-lenke lagt til',
-    isComplete: _eventDetails => false,
+    isComplete: eventDetails => !!eventDetails.recordingUrl,
     actionLabel: 'Legg til opptak',
   },
   {

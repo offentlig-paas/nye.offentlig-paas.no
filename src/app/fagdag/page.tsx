@@ -7,13 +7,13 @@ import { Card } from '@/components/Card'
 import { Section } from '@/components/Section'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { EventThumbnailGallery } from '@/components/EventThumbnailGallery'
-import { getAllEvents } from '@/lib/events/helpers'
+import { getAllEvents, getStatus } from '@/lib/events/helpers'
 import {
   getEventPhotos,
   prepareEventThumbnailUrls,
 } from '@/lib/sanity/event-photos'
 import { formatDate } from '@/lib/formatDate'
-import { type Event } from '@/lib/events/types'
+import { Status, type Event } from '@/lib/events/types'
 
 import rssLogo from '@/images/rss.svg'
 import calendarIcon from '@/images/calendar.png'
@@ -110,22 +110,61 @@ export const metadata: Metadata = {
 
 export default function Fagdager() {
   const events = getAllEvents()
+  const upcomingEvents = events
+    .filter(event => {
+      const status = getStatus(event)
+      return status === Status.Upcoming || status === Status.Current
+    })
+    .sort((a, b) => a.start.getTime() - b.start.getTime())
+  const pastEvents = events.filter(event => getStatus(event) === Status.Past)
 
   return (
     <SimpleLayout
       title="Offentlig PaaS Fagdager"
-      intro="Fagdager er Offentlig PaaS nettverket sin helt egen dag hvor vi inviterer til faglig påfyll, erfaringsdeling og nettverksbygging. Her finner du en oversikt over neste og tidligere arrangementer. Denne siden er fortsatt under utvikling og vi jobber med å lage en enda bedre oversikt over kommende fagdager."
+      intro="Fagdager er Offentlig PaaS-nettverkets egne samlinger for faglig påfyll, erfaringsdeling og nettverksbygging på tvers av offentlig sektor."
     >
+      <div className="mb-12 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-zinc-200 bg-zinc-50/70 px-5 py-4 text-sm text-zinc-700 dark:border-zinc-700/80 dark:bg-zinc-800/40 dark:text-zinc-300">
+        <span>
+          Har din virksomhet lyst til å være vertskap eller medarrangør for en
+          fagdag?
+        </span>
+        <Link
+          href="/fagdag/arrangere"
+          className="font-semibold text-blue-600 hover:underline dark:text-blue-400"
+        >
+          Se veiledning for arrangører &rarr;
+        </Link>
+      </div>
+
       <div className="space-y-20">
-        <SpeakingSection title="Fagdager">
-          {events.map(event => (
+        {upcomingEvents.length > 0 && (
+          <SpeakingSection title="Kommende fagdager">
+            {upcomingEvents.map(event => (
+              <EventCardShell
+                key={event.slug}
+                href={`/fagdag/${event.slug}`}
+                title={event.title}
+                description={event.ingress}
+                date={`${formatDate(event.start)} • ${event.location}`}
+                cta="Påmelding og program"
+              >
+                <Suspense fallback={<EventCardPhotosFallback event={event} />}>
+                  <EventCardPhotos event={event} />
+                </Suspense>
+              </EventCardShell>
+            ))}
+          </SpeakingSection>
+        )}
+
+        <SpeakingSection title="Tidligere fagdager">
+          {pastEvents.map(event => (
             <EventCardShell
               key={event.slug}
               href={`/fagdag/${event.slug}`}
               title={event.title}
               description={event.ingress}
-              date={formatDate(event.start)}
-              cta="Mer informasjon"
+              date={`${formatDate(event.start)} • ${event.location}`}
+              cta="Se program og oppsummering"
             >
               <Suspense fallback={<EventCardPhotosFallback event={event} />}>
                 <EventCardPhotos event={event} />

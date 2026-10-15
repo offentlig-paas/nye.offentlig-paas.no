@@ -4,9 +4,14 @@ import {
   BanknotesIcon,
   UserGroupIcon,
   UsersIcon,
+  ChatBubbleLeftRightIcon,
 } from '@heroicons/react/20/solid'
 import { formatDateTime } from '@/lib/formatDate'
-import { Status, AttendanceTypeDisplay } from '@/lib/events/types'
+import {
+  Status,
+  AttendanceType,
+  AttendanceTypeDisplay,
+} from '@/lib/events/types'
 import type { Event } from '@/lib/events/types'
 import clsx from 'clsx'
 
@@ -52,6 +57,10 @@ interface EventSummaryProps {
 }
 
 export function EventSummary({ event, status, className }: EventSummaryProps) {
+  const hasPhysicalLocation =
+    event.registration.attendanceTypes.includes(AttendanceType.Physical) &&
+    !/^digitalt$/i.test(event.location.trim())
+
   return (
     <div
       className={clsx(
@@ -59,7 +68,7 @@ export function EventSummary({ event, status, className }: EventSummaryProps) {
         className
       )}
     >
-      <dl className="flex flex-wrap">
+      <dl className="flex flex-wrap pb-6">
         <div className="flex-auto px-6 pt-6">
           <dd className="text-base font-semibold text-gray-900 dark:text-gray-100">
             Fagdag
@@ -78,7 +87,18 @@ export function EventSummary({ event, status, className }: EventSummaryProps) {
             />
           </dt>
           <dd className="text-base leading-6 font-medium text-gray-900 dark:text-gray-100">
-            {event.location}
+            {hasPhysicalLocation ? (
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-gray-300 underline-offset-2 transition hover:text-blue-600 hover:decoration-blue-600 dark:decoration-gray-600 dark:hover:text-blue-400 dark:hover:decoration-blue-400"
+              >
+                {event.location}
+              </a>
+            ) : (
+              event.location
+            )}
           </dd>
         </div>
         <div className="mt-4 flex w-full flex-none gap-x-4 px-6">
@@ -130,7 +150,7 @@ export function EventSummary({ event, status, className }: EventSummaryProps) {
               .join(', ')}
           </dd>
         </div>
-        <div className="mt-4 flex w-full flex-none gap-x-4 px-6 pb-6">
+        <div className="mt-4 flex w-full flex-none gap-x-4 px-6">
           <dt className="flex-none">
             <span className="sr-only">Pris</span>
             <BanknotesIcon
@@ -142,6 +162,31 @@ export function EventSummary({ event, status, className }: EventSummaryProps) {
             {event.price ?? 'Ingen deltakeravgift'}
           </dd>
         </div>
+        {event.slackChannel && (
+          <div className="mt-4 flex w-full flex-none gap-x-4 px-6">
+            <dt className="flex-none">
+              <span className="sr-only">Slack-kanal</span>
+              <ChatBubbleLeftRightIcon
+                className="h-6 w-5 text-gray-400 dark:text-gray-500"
+                aria-hidden="true"
+              />
+            </dt>
+            <dd className="text-sm leading-6 text-gray-500 dark:text-gray-400">
+              {event.slackChannel.id ? (
+                <a
+                  href={`https://offentlig-paas-no.slack.com/archives/${event.slackChannel.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-blue-600 transition hover:underline dark:text-blue-400"
+                >
+                  {event.slackChannel.name}
+                </a>
+              ) : (
+                <span>{event.slackChannel.name}</span>
+              )}
+            </dd>
+          </div>
+        )}
       </dl>
     </div>
   )
