@@ -364,7 +364,8 @@ function inferLinkMetaFromUrl(rawUrl: string): {
       }
     }
     if (
-      host.includes('medium.com') ||
+      host === 'medium.com' ||
+      host.endsWith('.medium.com') ||
       host.includes('blogg') ||
       path.includes('blogg') ||
       path.includes('blog')
