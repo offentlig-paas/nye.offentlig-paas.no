@@ -8,6 +8,7 @@ import {
   BuildingOffice2Icon,
   Cog6ToothIcon,
   PencilSquareIcon,
+  ServerStackIcon,
 } from '@heroicons/react/24/outline'
 import { Button } from '@/components/Button'
 import { Avatar } from '@/components/Avatar'
@@ -195,6 +196,14 @@ export function AuthButton({
                   <span className="truncate">Finn din virksomhet</span>
                 </Link>
               )}
+              <Link
+                href="/plattformer"
+                onClick={() => setIsDropdownOpen(false)}
+                className="flex w-full items-center rounded-md px-3 py-2 text-sm text-zinc-700 transition hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              >
+                <ServerStackIcon className="mr-3 h-4 w-4 shrink-0 text-zinc-500 dark:text-zinc-400" />
+                <span className="truncate">Alle plattformer</span>
+              </Link>
             </div>
 
             <div className="border-t border-zinc-100 p-1 dark:border-zinc-800">

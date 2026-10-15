@@ -783,7 +783,7 @@ export function MemberProfileShowcase({
   }
 
   const renderTeamSection = () => {
-    if (combinedPeople.length === 0) return null
+    if (combinedPeople.length === 0 && !profile) return null
 
     return (
       <section
@@ -797,9 +797,11 @@ export function MemberProfileShowcase({
               {lang === 'en' ? 'People & Contributors' : 'Menneskene bak'}
             </h2>
           </div>
-          <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
-            {combinedPeople.length}
-          </span>
+          {combinedPeople.length > 0 && (
+            <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+              {combinedPeople.length}
+            </span>
+          )}
         </div>
         <p className="mt-1 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
           {lang === 'en'
@@ -807,66 +809,117 @@ export function MemberProfileShowcase({
             : 'Plattformutviklere, arkitekter og foredragsholdere i nettverket.'}
         </p>
 
-        <ul className="mt-4 divide-y divide-zinc-100 dark:divide-zinc-800/80">
-          {combinedPeople.map(person => (
-            <li
-              key={person.name}
-              className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"
-            >
-              <div className="flex min-w-0 items-center gap-3">
-                {person.slackUrl ? (
-                  <Avatar
-                    name={person.name}
-                    slackUrl={person.slackUrl}
-                    size="sm"
-                    className="shrink-0"
-                  />
-                ) : (
-                  <div
-                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white ${getBackgroundColor(
-                      person.name
-                    )}`}
-                  >
-                    {getInitials(person.name)}
+        {combinedPeople.length > 0 && (
+          <ul className="mt-4 divide-y divide-zinc-100 dark:divide-zinc-800/80">
+            {combinedPeople.map(person => (
+              <li
+                key={person.name}
+                className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"
+              >
+                <div className="flex min-w-0 items-center gap-3">
+                  {person.slackUrl ? (
+                    <Avatar
+                      name={person.name}
+                      slackUrl={person.slackUrl}
+                      size="sm"
+                      className="shrink-0"
+                    />
+                  ) : (
+                    <div
+                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white ${getBackgroundColor(
+                        person.name
+                      )}`}
+                    >
+                      {getInitials(person.name)}
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                      {person.name}
+                    </p>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                      {person.role}
+                    </p>
                   </div>
-                )}
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                    {person.name}
-                  </p>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                    {person.role}
-                  </p>
                 </div>
-              </div>
 
-              <div className="flex shrink-0 items-center gap-1.5">
-                {person.slackUrl && (
-                  <a
-                    href={person.slackUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title="Slack"
-                    className="rounded-md p-1.5 text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
-                  >
-                    <SlackIcon className="h-4 w-4" />
-                  </a>
-                )}
-                {person.github && (
-                  <a
-                    href={`https://github.com/${person.github}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title="GitHub"
-                    className="rounded-md p-1.5 text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
-                  >
-                    <GitHubIcon className="h-4 w-4 fill-current" />
-                  </a>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
+                <div className="flex shrink-0 items-center gap-1.5">
+                  {person.slackUrl && (
+                    <a
+                      href={person.slackUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title="Slack"
+                      className="rounded-md p-1.5 text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+                    >
+                      <SlackIcon className="h-4 w-4" />
+                    </a>
+                  )}
+                  {person.github && (
+                    <a
+                      href={`https://github.com/${person.github}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title="GitHub"
+                      className="rounded-md p-1.5 text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+                    >
+                      <GitHubIcon className="h-4 w-4 fill-current" />
+                    </a>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <div className="mt-4 border-t border-zinc-100 pt-3.5 dark:border-zinc-800/80">
+          {canEdit ? (
+            <button
+              type="button"
+              onClick={() => setEditorOpen(true)}
+              className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs font-semibold text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+            >
+              <PencilSquareIcon className="h-3.5 w-3.5" />
+              <span>
+                {lang === 'en'
+                  ? 'Manage platform team & access'
+                  : 'Administrer team og tilgang'}
+              </span>
+            </button>
+          ) : permissions?.isAuthenticated ? (
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              <span className="font-medium text-zinc-700 dark:text-zinc-300">
+                Jobber du med plattform i {member.name}?
+              </span>{' '}
+              {member.domains.length > 0 ? (
+                <>
+                  Ansatte og innleide konsulenter skal bruke virksomhetens
+                  e-postadresse (
+                  <span className="font-mono">
+                    {member.domains.map(d => `@${d}`).join(', ')}
+                  </span>
+                  ) på Slack-kontoen i Offentlig PaaS fremfor konsulentadresse
+                  for å få automatisk redigeringstilgang.
+                </>
+              ) : (
+                <>
+                  Bruk virksomhetens e-postadresse i Offentlig PaaS
+                  Slack-workspacet for å få redigeringstilgang.
+                </>
+              )}
+            </p>
+          ) : (
+            <div className="flex items-center justify-between gap-2 text-xs text-zinc-500 dark:text-zinc-400">
+              <span>Jobber du med plattform i {member.name}?</span>
+              <Link
+                href={`/auth/signin?callbackUrl=/medlemmer/${member.slug}`}
+                className="shrink-0 font-semibold text-teal-600 hover:underline dark:text-teal-400"
+              >
+                Logg inn for å redigere
+              </Link>
+            </div>
+          )}
+        </div>
       </section>
     )
   }
@@ -1294,6 +1347,39 @@ export function MemberProfileShowcase({
         </div>
       </header>
 
+      {/* Editor banner when profile is currently internal */}
+      {canEdit && profile?.visibility === 'internal' && (
+        <div className="rounded-2xl border border-amber-500/30 bg-amber-50/60 p-4 sm:p-5 dark:border-amber-500/20 dark:bg-amber-950/20">
+          <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+            <div className="flex items-start gap-3">
+              <LockClosedIcon className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
+              <div className="text-xs leading-relaxed text-zinc-700 sm:text-sm dark:text-zinc-300">
+                <span className="font-semibold text-zinc-900 dark:text-zinc-100">
+                  {lang === 'en'
+                    ? 'This profile is currently only visible to logged-in members.'
+                    : 'Denne plattformprofilen er foreløpig kun synlig for innloggede medlemmer.'}
+                </span>{' '}
+                {lang === 'en'
+                  ? 'You can review and update the content, or change visibility to Public in the editor whenever you are ready.'
+                  : 'Du kan gå gjennom og oppdatere innholdet, eller endre synlighet til Offentlig inne i redigeringsvinduet når dere ønsker.'}
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setEditorOpen(true)}
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-amber-600 px-3.5 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-amber-500"
+            >
+              <PencilSquareIcon className="h-4 w-4" />
+              <span>
+                {lang === 'en'
+                  ? 'Review & publish'
+                  : 'Gå gjennom og administrer'}
+              </span>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Notice for internal member-only profiles or members without a profile yet */}
       {!profile && isInternalRestricted ? (
         <div className="rounded-2xl border border-amber-500/30 bg-amber-50/60 p-6 dark:border-amber-500/20 dark:bg-amber-950/20">
@@ -1342,14 +1428,35 @@ export function MemberProfileShowcase({
                   </Link>
                   .
                 </p>
-                {member.domains.length > 0 && !canEdit && (
-                  <p className="mt-2 inline-flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
+                {!canEdit && (
+                  <p className="mt-2 inline-flex flex-wrap items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
                     <LockClosedIcon className="h-3.5 w-3.5 shrink-0" />
-                    <span>
-                      Jobber du i {member.name}? Logg inn med Slack (
-                      {member.domains.map(d => `@${d}`).join(', ')}) for å
-                      opprette og administrere plattformprofilen.
-                    </span>
+                    {permissions?.isAuthenticated ? (
+                      <span>
+                        Jobber du med plattform i {member.name}? Både ansatte og
+                        innleide konsulenter skal bruke{' '}
+                        {member.domains.length > 0
+                          ? member.domains.map(d => `@${d}`).join(', ')
+                          : 'virksomhetens e-postdomene'}{' '}
+                        på Slack-kontoen i Offentlig PaaS fremfor
+                        konsulentadresse for å opprette og administrere
+                        plattformprofilen.
+                      </span>
+                    ) : (
+                      <span>
+                        Jobber du med plattform i {member.name}?{' '}
+                        <Link
+                          href={`/auth/signin?callbackUrl=/medlemmer/${member.slug}`}
+                          className="font-semibold text-teal-600 underline dark:text-teal-400"
+                        >
+                          Logg inn med Slack
+                        </Link>
+                        {member.domains.length > 0
+                          ? ` (${member.domains.map(d => `@${d}`).join(', ')})`
+                          : ''}{' '}
+                        for å opprette og administrere plattformprofilen.
+                      </span>
+                    )}
                   </p>
                 )}
               </div>

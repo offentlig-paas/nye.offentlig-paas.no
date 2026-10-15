@@ -132,30 +132,19 @@ function MemberPopover({
         </div>
 
         <div className="mt-3 flex flex-wrap items-center gap-2">
-          {platform &&
-            (platform.href && platform.platformAccess !== 'internal' ? (
-              <a
-                href={platform.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-medium text-teal-700 hover:bg-teal-100 dark:bg-teal-900/30 dark:text-teal-400 dark:hover:bg-teal-900/50"
-              >
+          {platform && (
+            <Link
+              href={`/medlemmer/${member.getSlug()}`}
+              className="inline-flex items-center gap-1 rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-medium text-teal-700 hover:bg-teal-100 dark:bg-teal-900/30 dark:text-teal-400 dark:hover:bg-teal-900/50"
+            >
+              {platform.visibility === 'internal' ? (
+                <LockClosedIcon className="h-3 w-3" />
+              ) : (
                 <ServerStackIcon className="h-3 w-3" />
-                {platform.name}
-              </a>
-            ) : (
-              <Link
-                href={`/medlemmer/${member.getSlug()}`}
-                className="inline-flex items-center gap-1 rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-medium text-teal-700 hover:bg-teal-100 dark:bg-teal-900/30 dark:text-teal-400 dark:hover:bg-teal-900/50"
-              >
-                {platform.visibility === 'internal' ? (
-                  <LockClosedIcon className="h-3 w-3" />
-                ) : (
-                  <ServerStackIcon className="h-3 w-3" />
-                )}
-                {platform.name}
-              </Link>
-            ))}
+              )}
+              {platform.name}
+            </Link>
+          )}
           {member.homepage && (
             <a
               href={member.homepage}
@@ -196,7 +185,11 @@ function MemberPopover({
             href={`/medlemmer/${member.getSlug()}`}
             className="inline-flex w-full items-center justify-between rounded-lg bg-gray-50 px-3 py-1.5 text-xs font-medium text-teal-700 transition hover:bg-teal-50 dark:bg-gray-700/60 dark:text-teal-300 dark:hover:bg-teal-900/30"
           >
-            <span>Se profilside</span>
+            <span>
+              {platform
+                ? `Se plattformprofil (${platform.name})`
+                : 'Se medlemsside'}
+            </span>
             <ArrowRightIcon className="h-3.5 w-3.5" />
           </Link>
         </div>
@@ -299,6 +292,7 @@ export default function MedlemmerPage() {
   const [openMember, setOpenMember] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const [selectedSectors, setSelectedSectors] = useState<Set<Sector>>(new Set())
+  const [onlyWithPlatform, setOnlyWithPlatform] = useState(false)
   const searchRef = useRef<HTMLInputElement>(null)
 
   const { data: platforms } = trpc.memberProfile.listPlatforms.useQuery()
@@ -324,7 +318,17 @@ export default function MedlemmerPage() {
 
     if (search) {
       const q = search.toLowerCase()
-      result = result.filter(m => m.name.toLowerCase().includes(q))
+      result = result.filter(m => {
+        const p = platformBySlug.get(m.getSlug())
+        return (
+          m.name.toLowerCase().includes(q) ||
+          Boolean(p?.name.toLowerCase().includes(q))
+        )
+      })
+    }
+
+    if (onlyWithPlatform) {
+      result = result.filter(m => platformBySlug.has(m.getSlug()))
     }
 
     if (selectedSectors.size > 0) {
@@ -332,9 +336,10 @@ export default function MedlemmerPage() {
     }
 
     return result
-  }, [search, selectedSectors])
+  }, [search, onlyWithPlatform, selectedSectors, platformBySlug])
 
-  const isFiltered = search !== '' || selectedSectors.size > 0
+  const isFiltered =
+    search !== '' || selectedSectors.size > 0 || onlyWithPlatform
 
   const toggleSector = (sector: Sector) => {
     setSelectedSectors(prev => {
@@ -348,6 +353,7 @@ export default function MedlemmerPage() {
   const clearFilters = () => {
     setSearch('')
     setSelectedSectors(new Set())
+    setOnlyWithPlatform(false)
     searchRef.current?.focus()
   }
 
@@ -375,7 +381,7 @@ export default function MedlemmerPage() {
       gitHubPage="src/data/members.ts"
     >
       <div className="mx-auto max-w-7xl space-y-6">
-        {myMembership && (
+        {myMembership ? (
           <div className="flex flex-col justify-between gap-3 rounded-xl border border-teal-500/20 bg-teal-50/50 p-4 sm:flex-row sm:items-center dark:border-teal-500/20 dark:bg-teal-950/20">
             <div className="flex items-center gap-3">
               <ServerStackIcon className="h-5 w-5 shrink-0 text-teal-600 dark:text-teal-400" />
@@ -404,7 +410,7 @@ export default function MedlemmerPage() {
                 )}
               </div>
             </div>
-            <div className="flex shrink-0 items-center gap-2">
+            <div className="flex shrink-0 flex-wrap items-center gap-2">
               <Link
                 href={`/medlemmer/${myMembership.slug}?edit=1`}
                 className="inline-flex items-center gap-1.5 rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-teal-500"
@@ -427,7 +433,33 @@ export default function MedlemmerPage() {
               >
                 Se profil
               </Link>
+              <Link
+                href="/plattformer"
+                className="inline-flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+              >
+                Alle plattformer
+              </Link>
             </div>
+          </div>
+        ) : (
+          <div className="flex flex-col justify-between gap-3 rounded-xl border border-teal-500/20 bg-teal-50/40 p-4 sm:flex-row sm:items-center dark:border-teal-500/20 dark:bg-teal-950/20">
+            <div className="flex items-start gap-3 sm:items-center">
+              <ServerStackIcon className="mt-0.5 h-5 w-5 shrink-0 text-teal-600 sm:mt-0 dark:text-teal-400" />
+              <p className="text-xs text-gray-700 dark:text-gray-300">
+                <span className="font-semibold text-gray-900 dark:text-white">
+                  Norske applikasjonsplattformer:
+                </span>{' '}
+                Klikk på en virksomhet for å se foredrag og plattformprofil,
+                eller utforsk fellesoversikten over plattformer i nettverket.
+              </p>
+            </div>
+            <Link
+              href="/plattformer"
+              className="inline-flex shrink-0 items-center gap-1.5 self-start rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-teal-500 sm:self-auto"
+            >
+              <span>Utforsk plattformer</span>
+              <ArrowRightIcon className="h-3.5 w-3.5" />
+            </Link>
           </div>
         )}
 
@@ -439,7 +471,7 @@ export default function MedlemmerPage() {
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Søk etter medlemmer…"
+              placeholder="Søk etter medlemmer eller plattform…"
               className="w-full rounded-lg border border-gray-200 bg-white py-2 pr-8 pl-9 text-sm text-gray-900 placeholder:text-gray-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-teal-500 dark:focus:ring-teal-500"
             />
             {search && (
@@ -458,6 +490,29 @@ export default function MedlemmerPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-1.5">
+            {(platforms?.length ?? 0) > 0 && (
+              <button
+                type="button"
+                onClick={() => setOnlyWithPlatform(v => !v)}
+                className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${
+                  onlyWithPlatform
+                    ? 'bg-teal-600 text-white dark:bg-teal-500 dark:text-zinc-950'
+                    : 'border border-teal-500/30 bg-teal-50/70 text-teal-800 hover:bg-teal-100 dark:border-teal-500/30 dark:bg-teal-950/40 dark:text-teal-300 dark:hover:bg-teal-900/50'
+                }`}
+              >
+                <ServerStackIcon className="h-3 w-3" />
+                <span>Har plattform</span>
+                <span
+                  className={`text-[10px] ${
+                    onlyWithPlatform
+                      ? 'text-teal-100 dark:text-zinc-800'
+                      : 'text-teal-600 dark:text-teal-400'
+                  }`}
+                >
+                  {platforms?.length ?? 0}
+                </span>
+              </button>
+            )}
             {allSectors.map(sector => (
               <SectorPill
                 key={sector}

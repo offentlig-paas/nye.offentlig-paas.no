@@ -186,6 +186,7 @@ export function MemberProfileEditorModal({
 }: MemberProfileEditorModalProps) {
   const [activeTab, setActiveTab] = useState<EditorTab>('general')
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
+  const [templateNotice, setTemplateNotice] = useState<string | null>(null)
   const [showStarterTemplates, setShowStarterTemplates] = useState(
     !initialProfile ||
       (initialProfile.capabilities.length === 0 &&
@@ -441,6 +442,10 @@ export function MemberProfileEditorModal({
         },
       ])
     }
+
+    setTemplateNotice(
+      'Malen er fylt inn! Se gjerne gjennom fanene Kapabiliteter, CNCF-prosjekter og Teknologi, Team & Lenker før du lagrer.'
+    )
   }
 
   const moveSection = (index: number, direction: -1 | 1) => {
@@ -720,7 +725,8 @@ export function MemberProfileEditorModal({
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <h2 className="text-base font-bold text-zinc-900 sm:text-lg dark:text-zinc-100">
-                Rediger plattformprofil for {memberName}
+                {initialProfile ? 'Rediger' : 'Opprett'} plattformprofil for{' '}
+                {memberName}
               </h2>
               <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700 ring-1 ring-emerald-600/20 ring-inset dark:bg-emerald-950/60 dark:text-emerald-300 dark:ring-emerald-400/30">
                 <CheckCircleIcon className="h-3.5 w-3.5" />
@@ -728,8 +734,8 @@ export function MemberProfileEditorModal({
               </span>
             </div>
             <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
-              Endringer lagres direkte i Sanity og oppdaterer både medlemssiden
-              og plattformoversikten umiddelbart.
+              Endringer publiseres umiddelbart på medlemssiden og i
+              plattformoversikten.
             </p>
           </div>
           <button
@@ -869,6 +875,13 @@ export function MemberProfileEditorModal({
                         </button>
                       </div>
                     </div>
+                  )}
+
+                  {templateNotice && (
+                    <p className="mt-2.5 flex items-center gap-1.5 text-xs font-medium text-teal-700 dark:text-teal-300">
+                      <CheckCircleIcon className="h-4 w-4 shrink-0" />
+                      <span>{templateNotice}</span>
+                    </p>
                   )}
                 </div>
 
@@ -2003,27 +2016,27 @@ export function MemberProfileEditorModal({
                           </strong>{' '}
                           {memberDomains.length > 0 ? (
                             <>
-                              Alle som logger inn med Slack-konto knyttet til{' '}
+                              Alle i teamet (inkludert innleide konsulenter) bør
+                              bruke virksomhetens e-postdomene (
                               <span className="font-mono font-medium text-zinc-800 dark:text-zinc-200">
                                 {memberDomains.map(d => `@${d}`).join(', ')}
-                              </span>{' '}
-                              får automatisk tilgang. I tillegg får personer du
-                              legger til her med{' '}
+                              </span>
+                              ) på Slack-kontoen sin i Offentlig PaaS for å få
+                              automatisk redigeringstilgang. Legg inn{' '}
                               <strong className="font-medium text-zinc-800 dark:text-zinc-200">
                                 Slack-ID eller Slack-URL
                               </strong>{' '}
-                              (f.eks. innleide konsulenter med annet
-                              e-postdomene) full tilgang til å redigere profilen
-                              under «Min organisasjon».
+                              på kontaktpersonene under for å koble profilbilde
+                              og direkte Slack-lenke til profilen.
                             </>
                           ) : (
                             <>
-                              Personer du legger til her med{' '}
+                              Legg inn{' '}
                               <strong className="font-medium text-zinc-800 dark:text-zinc-200">
                                 Slack-ID eller Slack-URL
                               </strong>{' '}
-                              får automatisk tilgang til å redigere profilen
-                              under «Min organisasjon».
+                              på kontaktpersonene under for å gi dem
+                              redigeringstilgang og vise profilbilde fra Slack.
                             </>
                           )}
                         </p>
@@ -2501,7 +2514,7 @@ export function MemberProfileEditorModal({
                 className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-teal-600 px-4 text-xs font-semibold text-white shadow-xs transition hover:bg-teal-500 disabled:opacity-50"
               >
                 {upsertMutation.isPending
-                  ? 'Lagrer i Sanity...'
+                  ? 'Lagrer...'
                   : 'Lagre plattformprofil'}
               </button>
             </div>
