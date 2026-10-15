@@ -1,9 +1,16 @@
 'use client'
 
 import { useState } from 'react'
-import { UserPlusIcon } from '@heroicons/react/24/outline'
+import {
+  CheckCircleIcon,
+  MagnifyingGlassIcon,
+  UserPlusIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline'
 import { AdminModal } from '@/components/AdminModal'
+import { Avatar } from '@/components/Avatar'
 import { OrganisationTypeahead } from '@/components/OrganisationTypeahead'
+import { trpc } from '@/lib/trpc/client'
 
 interface AddRegistrationModalProps {
   isOpen: boolean
@@ -29,6 +36,7 @@ export function AddRegistrationModal({
   hasSocialEvent,
   attendanceTypes,
 }: AddRegistrationModalProps) {
+  const [slackSearch, setSlackSearch] = useState('')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [organisation, setOrganisation] = useState('')
@@ -42,7 +50,15 @@ export function AddRegistrationModal({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const trimmedSlackQuery = slackSearch.trim()
+  const { data: slackResults, isFetching: isSearchingSlack } =
+    trpc.slack.searchUsers.useQuery(
+      { query: trimmedSlackQuery },
+      { enabled: isOpen && trimmedSlackQuery.length >= 2 }
+    )
+
   const resetForm = () => {
+    setSlackSearch('')
     setName('')
     setEmail('')
     setOrganisation('')
@@ -101,7 +117,7 @@ export function AddRegistrationModal({
       isOpen={isOpen}
       onClose={handleClose}
       title="Legg til deltaker manuelt"
-      description="Registrer en deltaker som ikke bruker Slack."
+      description="Søk opp deltaker fra Slack for automatisk utfylling, eller fyll ut feltene manuelt."
       icon={UserPlusIcon}
       closeDisabled={isSubmitting}
     >
@@ -112,6 +128,102 @@ export function AddRegistrationModal({
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="rounded-lg border border-blue-200/70 bg-blue-50/40 p-3 dark:border-blue-900/40 dark:bg-blue-950/20">
+          <div className="mb-1 flex items-baseline justify-between gap-2">
+            <label
+              htmlFor="reg-slack-lookup"
+              className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+            >
+              Hent profil fra Slack
+            </label>
+            <span
+              id="reg-slack-lookup-hint"
+              className="text-xs text-zinc-500 dark:text-zinc-400"
+            >
+              Autofyller skjemaet
+            </span>
+          </div>
+          <div className="relative">
+            <MagnifyingGlassIcon className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+            <input
+              id="reg-slack-lookup"
+              aria-describedby="reg-slack-lookup-hint"
+              type="text"
+              value={slackSearch}
+              onChange={e => setSlackSearch(e.target.value)}
+              disabled={isSubmitting}
+              placeholder="Søk på navn eller e-post i Slack..."
+              className={`${inputClassName} pl-9`}
+            />
+          </div>
+
+          {trimmedSlackQuery.length >= 2 && (
+            <div className="mt-2 max-h-48 overflow-y-auto rounded-md border border-zinc-200 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
+              {isSearchingSlack ? (
+                <p className="px-3 py-2 text-xs text-zinc-500">
+                  Søker i Slack...
+                </p>
+              ) : slackResults?.users && slackResults.users.length > 0 ? (
+                slackResults.users.map(u => (
+                  <button
+                    key={u.id}
+                    type="button"
+                    onClick={() => {
+                      setName(u.realName)
+                      if (u.email) setEmail(u.email)
+                      if (u.organisation) setOrganisation(u.organisation)
+                      setSlackUserId(u.id)
+                      setSlackSearch('')
+                    }}
+                    className="flex w-full items-center justify-between gap-2 border-b border-zinc-100 px-3 py-2 text-left text-xs transition last:border-b-0 hover:bg-blue-50 dark:border-zinc-800 dark:hover:bg-blue-950/40"
+                  >
+                    <div className="flex min-w-0 items-center gap-2.5">
+                      <Avatar name={u.realName} slackUserId={u.id} size="xs" />
+                      <div className="min-w-0">
+                        <div className="truncate font-semibold text-zinc-900 dark:text-zinc-100">
+                          {u.realName}
+                        </div>
+                        <div className="truncate text-[11px] text-zinc-500 dark:text-zinc-400">
+                          {[u.organisation, u.email]
+                            .filter(Boolean)
+                            .join(' · ')}
+                        </div>
+                      </div>
+                    </div>
+                    <span className="shrink-0 rounded bg-blue-100 px-2 py-0.5 text-[11px] font-medium text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">
+                      Velg
+                    </span>
+                  </button>
+                ))
+              ) : (
+                <p className="px-3 py-2 text-xs text-zinc-500">
+                  Ingen Slack-brukere funnet for «{trimmedSlackQuery}».
+                </p>
+              )}
+            </div>
+          )}
+
+          {slackUserId && (
+            <div className="mt-2 flex items-center justify-between rounded-md bg-white/80 px-2.5 py-1.5 text-xs text-zinc-700 ring-1 ring-zinc-200 dark:bg-zinc-900/60 dark:text-zinc-300 dark:ring-zinc-700">
+              <span className="inline-flex items-center gap-1.5">
+                <CheckCircleIcon className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                <span>
+                  Koblet til Slack-ID{' '}
+                  <code className="font-mono font-semibold">{slackUserId}</code>
+                </span>
+              </span>
+              <button
+                type="button"
+                onClick={() => setSlackUserId('')}
+                className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200"
+                title="Fjern Slack-kobling"
+              >
+                <XMarkIcon className="h-4 w-4" />
+              </button>
+            </div>
+          )}
+        </div>
+
         <div>
           <label htmlFor="reg-name" className={labelClassName}>
             Navn <span className="text-red-500">*</span>
@@ -159,24 +271,19 @@ export function AddRegistrationModal({
         </div>
 
         <div>
-          <label htmlFor="reg-slack-user-id" className={labelClassName}>
+          <label htmlFor="reg-slack-id" className={labelClassName}>
             Slack-bruker-ID{' '}
-            <span className="text-xs font-normal text-zinc-500 dark:text-zinc-400">
-              (valgfritt)
-            </span>
+            <span className="font-normal text-zinc-400">(valgfritt)</span>
           </label>
           <input
-            id="reg-slack-user-id"
+            id="reg-slack-id"
             type="text"
             value={slackUserId}
             onChange={e => setSlackUserId(e.target.value)}
             disabled={isSubmitting}
             className={inputClassName}
-            placeholder="f.eks. U0123456789"
+            placeholder="U12345678"
           />
-          <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-            Knytter påmeldingen til Slack for avatar og kanalinnslipp.
-          </p>
         </div>
 
         {attendanceTypes.length > 1 ? (

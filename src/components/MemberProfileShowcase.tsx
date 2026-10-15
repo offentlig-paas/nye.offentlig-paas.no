@@ -3,7 +3,6 @@
 import { useState, useMemo } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import {
   ArrowLeftIcon,
   ArrowTopRightOnSquareIcon,
@@ -27,13 +26,13 @@ import {
 } from '@heroicons/react/24/outline'
 import { GitHubIcon, LinkedInIcon, SlackIcon } from '@/components/SocialIcons'
 import { Avatar } from '@/components/Avatar'
-import { MemberProfileEditorModal } from '@/components/MemberProfileEditorModal'
 import { getInitials, getBackgroundColor } from '@/lib/avatar-utils'
 import { formatDate } from '@/lib/formatDate'
 import { extractSlackUserId } from '@/lib/slack/utils'
 import { trpc } from '@/lib/trpc/client'
 import {
   CAPABILITY_CATEGORY_LABELS,
+  getCncfProjectMeta,
   type CapabilityCategory,
   type CncfMaturityTier,
   type CncfProjectCategory,
@@ -68,7 +67,6 @@ interface MemberProfileShowcaseProps {
   member: SerializedMember
   profile?: MemberProfile
   isInternalRestricted?: boolean
-  autoOpenEditor?: boolean
   talks: MemberTalkContribution[]
   organizedEventsCount: number
   uniqueSpeakers: { name: string; url?: string }[]
@@ -224,33 +222,12 @@ const DEFAULT_SECTION_ORDER: ProfileSectionId[] = [
 
 export function MemberProfileShowcase({
   member,
-  profile: initialProfile,
+  profile,
   isInternalRestricted = false,
-  autoOpenEditor = false,
   talks,
   organizedEventsCount,
   uniqueSpeakers,
 }: MemberProfileShowcaseProps) {
-  const router = useRouter()
-  const [profile, setProfile] = useState<MemberProfile | undefined>(
-    initialProfile
-  )
-  const [prevAutoOpen, setPrevAutoOpen] = useState(Boolean(autoOpenEditor))
-  const [editorOpen, setEditorOpen] = useState(Boolean(autoOpenEditor))
-  if (Boolean(autoOpenEditor) !== prevAutoOpen) {
-    setPrevAutoOpen(Boolean(autoOpenEditor))
-    if (autoOpenEditor) {
-      setEditorOpen(true)
-    }
-  }
-
-  const handleCloseEditor = () => {
-    setEditorOpen(false)
-    if (autoOpenEditor) {
-      router.replace(`/medlemmer/${member.slug}`, { scroll: false })
-    }
-  }
-
   const [lang, setLang] = useState<'no' | 'en'>('no')
   const [manifestExpanded, setManifestExpanded] = useState(false)
   const [showAllTalks, setShowAllTalks] = useState(false)
@@ -355,22 +332,27 @@ export function MemberProfileShowcase({
       }
     }
 
-    for (const speaker of uniqueSpeakers) {
-      const key = getPersonKey(speaker.name, speaker.url)
-      if (
-        !seenKeys.has(key) &&
-        !seenKeys.has(speaker.name.toLowerCase().trim())
-      ) {
-        seenKeys.add(key)
-        seenKeys.add(speaker.name.toLowerCase().trim())
-        people.push({
-          name: speaker.name,
-          role:
-            lang === 'en'
-              ? 'Fagdag Speaker / Contributor'
-              : 'Foredragsholder på fagdag',
-          slackUrl: speaker.url,
-        })
+    const hasCuratedTeam = Boolean(
+      profile && (profile.team.length > 0 || profile.updatedBy)
+    )
+    if (!hasCuratedTeam) {
+      for (const speaker of uniqueSpeakers) {
+        const key = getPersonKey(speaker.name, speaker.url)
+        if (
+          !seenKeys.has(key) &&
+          !seenKeys.has(speaker.name.toLowerCase().trim())
+        ) {
+          seenKeys.add(key)
+          seenKeys.add(speaker.name.toLowerCase().trim())
+          people.push({
+            name: speaker.name,
+            role:
+              lang === 'en'
+                ? 'Fagdag Speaker / Contributor'
+                : 'Foredragsholder på fagdag',
+            slackUrl: speaker.url,
+          })
+        }
       }
     }
 
@@ -608,59 +590,75 @@ export function MemberProfileShowcase({
                 {CNCF_CATEGORY_LABELS[category][lang]}
               </h3>
               <div className="mt-2 divide-y divide-zinc-200/80 rounded-xl border border-zinc-200/90 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900/50">
-                {projects.map(project => (
-                  <div
-                    key={project.name}
-                    className="flex flex-col justify-between gap-3 p-4 sm:flex-row sm:items-start"
-                  >
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                          {project.name}
-                        </span>
-                        <span
-                          className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${CNCF_TIER_BADGES[project.tier]}`}
-                        >
-                          {project.tier}
-                        </span>
-                        {project.sinceYear && (
-                          <span className="text-xs text-zinc-400 dark:text-zinc-500">
-                            · {lang === 'en' ? 'Since' : 'Siden'}{' '}
-                            {project.sinceYear}
-                          </span>
+                {projects.map(project => {
+                  const logoUrl =
+                    project.logoUrl || getCncfProjectMeta(project.name)?.logoUrl
+                  return (
+                    <div
+                      key={project.name}
+                      className="flex flex-col justify-between gap-3 p-4 sm:flex-row sm:items-start"
+                    >
+                      <div className="flex min-w-0 flex-1 items-start gap-3">
+                        {logoUrl && (
+                          /* eslint-disable-next-line @next/next/no-img-element */
+                          <img
+                            src={logoUrl}
+                            alt=""
+                            className="mt-0.5 h-8 w-8 shrink-0 rounded-lg border border-zinc-200/80 bg-white object-contain p-1 dark:border-zinc-700"
+                          />
                         )}
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                              {project.name}
+                            </span>
+                            <span
+                              className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${CNCF_TIER_BADGES[project.tier]}`}
+                            >
+                              {project.tier}
+                            </span>
+                            {project.sinceYear && (
+                              <span className="text-xs text-zinc-400 dark:text-zinc-500">
+                                · {lang === 'en' ? 'Since' : 'Siden'}{' '}
+                                {project.sinceYear}
+                              </span>
+                            )}
+                          </div>
+                          <p className="mt-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                            {lang === 'en' && project.usageEn
+                              ? project.usageEn
+                              : project.usage}
+                          </p>
+                        </div>
                       </div>
-                      <p className="mt-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-                        {lang === 'en' && project.usageEn
-                          ? project.usageEn
-                          : project.usage}
-                      </p>
-                    </div>
 
-                    <div className="flex shrink-0 items-center gap-3 sm:pt-0.5">
-                      {project.sourceRepoUrl && (
+                      <div className="flex shrink-0 items-center gap-3 sm:pt-0.5">
+                        {project.sourceRepoUrl && (
+                          <a
+                            href={project.sourceRepoUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-xs font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+                          >
+                            <GitHubIcon className="h-3.5 w-3.5 fill-current" />
+                            <span>
+                              {lang === 'en' ? 'Config' : 'Kildekode'}
+                            </span>
+                          </a>
+                        )}
                         <a
-                          href={project.sourceRepoUrl}
+                          href={project.cncfUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-xs font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+                          className="inline-flex items-center gap-1 text-xs font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
                         >
-                          <GitHubIcon className="h-3.5 w-3.5 fill-current" />
-                          <span>{lang === 'en' ? 'Config' : 'Kildekode'}</span>
+                          <span>CNCF</span>
+                          <ArrowTopRightOnSquareIcon className="h-3.5 w-3.5" />
                         </a>
-                      )}
-                      <a
-                        href={project.cncfUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-xs font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
-                      >
-                        <span>CNCF</span>
-                        <ArrowTopRightOnSquareIcon className="h-3.5 w-3.5" />
-                      </a>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
           ))}
@@ -874,9 +872,8 @@ export function MemberProfileShowcase({
 
         <div className="mt-4 border-t border-zinc-100 pt-3.5 dark:border-zinc-800/80">
           {canEdit ? (
-            <button
-              type="button"
-              onClick={() => setEditorOpen(true)}
+            <Link
+              href={`/medlemmer/${member.slug}/rediger?tab=more`}
               className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs font-semibold text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
             >
               <PencilSquareIcon className="h-3.5 w-3.5" />
@@ -885,7 +882,7 @@ export function MemberProfileShowcase({
                   ? 'Manage platform team & access'
                   : 'Administrer team og tilgang'}
               </span>
-            </button>
+            </Link>
           ) : permissions?.isAuthenticated ? (
             <p className="text-xs text-zinc-500 dark:text-zinc-400">
               <span className="font-medium text-zinc-700 dark:text-zinc-300">
@@ -1111,9 +1108,8 @@ export function MemberProfileShowcase({
           </div>
 
           {canEdit && (
-            <button
-              type="button"
-              onClick={() => setEditorOpen(true)}
+            <Link
+              href={`/medlemmer/${member.slug}/rediger`}
               className="inline-flex items-center gap-1.5 rounded-lg bg-teal-600 px-3 py-1 text-xs font-semibold text-white shadow-xs transition hover:bg-teal-500"
             >
               <PencilSquareIcon className="h-3.5 w-3.5" />
@@ -1126,7 +1122,7 @@ export function MemberProfileShowcase({
                     ? 'Create Platform Profile'
                     : 'Opprett plattformprofil'}
               </span>
-            </button>
+            </Link>
           )}
         </div>
       </div>
@@ -1364,9 +1360,8 @@ export function MemberProfileShowcase({
                   : 'Du kan gå gjennom og oppdatere innholdet, eller endre synlighet til Offentlig inne i redigeringsvinduet når dere ønsker.'}
               </div>
             </div>
-            <button
-              type="button"
-              onClick={() => setEditorOpen(true)}
+            <Link
+              href={`/medlemmer/${member.slug}/rediger`}
               className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-amber-600 px-3.5 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-amber-500"
             >
               <PencilSquareIcon className="h-4 w-4" />
@@ -1375,7 +1370,7 @@ export function MemberProfileShowcase({
                   ? 'Review & publish'
                   : 'Gå gjennom og administrer'}
               </span>
-            </button>
+            </Link>
           </div>
         </div>
       )}
@@ -1462,14 +1457,13 @@ export function MemberProfileShowcase({
               </div>
 
               {canEdit && (
-                <button
-                  type="button"
-                  onClick={() => setEditorOpen(true)}
+                <Link
+                  href={`/medlemmer/${member.slug}/rediger`}
                   className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-teal-600 px-4 py-2.5 text-xs font-semibold text-white shadow-xs transition hover:bg-teal-500"
                 >
                   <PencilSquareIcon className="h-4 w-4" />
                   <span>Opprett plattformprofil</span>
-                </button>
+                </Link>
               )}
             </div>
           </div>
@@ -1510,26 +1504,6 @@ export function MemberProfileShowcase({
           })}
         </aside>
       </div>
-
-      {canEdit && editorOpen && (
-        <MemberProfileEditorModal
-          isOpen={editorOpen}
-          onClose={handleCloseEditor}
-          memberName={member.name}
-          memberSlug={member.slug}
-          memberDomains={member.domains}
-          userEmailDomain={permissions?.emailDomain}
-          isAdmin={permissions?.isAdmin}
-          accessReason={permissions?.reason}
-          currentUser={permissions?.currentUser ?? undefined}
-          uniqueSpeakers={uniqueSpeakers}
-          initialProfile={profile}
-          onSaved={updated => {
-            setProfile(updated)
-            router.refresh()
-          }}
-        />
-      )}
     </div>
   )
 }

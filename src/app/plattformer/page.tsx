@@ -85,7 +85,7 @@ export default async function Plattformer() {
             </div>
             <div className="flex shrink-0 items-center gap-2.5">
               <Link
-                href={`/medlemmer/${myMember.getSlug()}?edit=1`}
+                href={`/medlemmer/${myMember.getSlug()}/rediger`}
                 className="inline-flex items-center gap-1.5 rounded-lg bg-teal-600 px-3.5 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-teal-500"
               >
                 <PencilSquareIcon className="h-4 w-4" />
@@ -112,7 +112,7 @@ export default async function Plattformer() {
               </p>
             </div>
             <Link
-              href={`/medlemmer/${myMember.getSlug()}?edit=1`}
+              href={`/medlemmer/${myMember.getSlug()}/rediger`}
               className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-teal-600 px-4 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-teal-500"
             >
               <PlusCircleIcon className="h-4 w-4" />
