@@ -20,7 +20,7 @@ describe('Waitlist E2E Tests', () => {
   }
 
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.resetAllMocks()
     service = new EventRegistrationService()
     mockRepository =
       EventRegistrationRepository.prototype as Mocked<EventRegistrationRepository>
@@ -343,6 +343,221 @@ describe('Waitlist E2E Tests', () => {
       expect(stats.cancelled).toBe(0)
       expect(stats.attended).toBe(0)
       expect(stats['no-show']).toBe(0)
+    })
+  })
+
+  describe('Automatic waitlist promotion', () => {
+    it('should promote oldest waitlisted physical participant when a confirmed physical participant cancels', async () => {
+      const confirmedReg: EventRegistration = {
+        _id: 'reg-confirmed',
+        eventSlug: 'test-event',
+        name: 'Confirmed User',
+        email: 'confirmed@example.com',
+        slackUserId: 'U010',
+        organisation: 'Org A',
+        attendanceType: AttendanceType.Physical,
+        registeredAt: new Date('2026-01-01T10:00:00Z'),
+        status: 'confirmed',
+      }
+
+      const waitlistedLater: EventRegistration = {
+        _id: 'reg-waitlist-2',
+        eventSlug: 'test-event',
+        name: 'Waitlist Later',
+        email: 'w2@example.com',
+        slackUserId: 'U012',
+        organisation: 'Org C',
+        attendanceType: AttendanceType.Physical,
+        registeredAt: new Date('2026-01-01T12:00:00Z'),
+        status: 'waitlist',
+      }
+
+      const waitlistedFirst: EventRegistration = {
+        _id: 'reg-waitlist-1',
+        eventSlug: 'test-event',
+        name: 'Waitlist First',
+        email: 'w1@example.com',
+        slackUserId: 'U011',
+        organisation: 'Org B',
+        attendanceType: AttendanceType.Physical,
+        registeredAt: new Date('2026-01-01T11:00:00Z'),
+        status: 'waitlist',
+      }
+
+      mockRepository.findById.mockResolvedValueOnce(confirmedReg)
+      mockRepository.update
+        .mockResolvedValueOnce({ ...confirmedReg, status: 'cancelled' })
+        .mockResolvedValueOnce({ ...waitlistedFirst, status: 'confirmed' })
+      mockRepository.findMany.mockResolvedValueOnce([
+        waitlistedLater,
+        waitlistedFirst,
+      ])
+      mockRepository.getPhysicalAttendeesCount.mockResolvedValueOnce(1)
+
+      const cancelled = await service.cancelRegistration(
+        'reg-confirmed',
+        mockEvent
+      )
+
+      expect(cancelled.status).toBe('cancelled')
+      expect(mockRepository.update).toHaveBeenCalledTimes(2)
+      expect(mockRepository.update).toHaveBeenNthCalledWith(
+        2,
+        'reg-waitlist-1',
+        { status: 'confirmed' }
+      )
+    })
+
+    it('should waitlist a digital participant switching to physical when at capacity', async () => {
+      const digitalReg: EventRegistration = {
+        _id: 'reg-digital',
+        eventSlug: 'test-event',
+        name: 'Digital User',
+        email: 'digital@example.com',
+        slackUserId: 'U013',
+        organisation: 'Org D',
+        attendanceType: AttendanceType.Digital,
+        registeredAt: new Date('2026-01-01T10:00:00Z'),
+        status: 'confirmed',
+      }
+
+      mockRepository.findById.mockResolvedValueOnce(digitalReg)
+      mockRepository.getPhysicalAttendeesCount.mockResolvedValueOnce(2)
+      mockRepository.update.mockResolvedValueOnce({
+        ...digitalReg,
+        attendanceType: AttendanceType.Physical,
+        status: 'waitlist',
+      })
+
+      const updated = await service.updateRegistration(
+        'reg-digital',
+        { attendanceType: AttendanceType.Physical },
+        mockEvent
+      )
+
+      expect(updated.status).toBe('waitlist')
+      expect(mockRepository.update).toHaveBeenCalledWith('reg-digital', {
+        attendanceType: AttendanceType.Physical,
+        status: 'waitlist',
+      })
+    })
+
+    it('should use reregisteredAt instead of original registeredAt when ordering waitlist', async () => {
+      const confirmedReg: EventRegistration = {
+        _id: 'reg-confirmed',
+        eventSlug: 'test-event',
+        name: 'Confirmed User',
+        email: 'confirmed@example.com',
+        slackUserId: 'U010',
+        organisation: 'Org A',
+        attendanceType: AttendanceType.Physical,
+        registeredAt: new Date('2026-01-01T08:00:00Z'),
+        status: 'confirmed',
+      }
+
+      const reregisteredUser: EventRegistration = {
+        _id: 'reg-reregistered',
+        eventSlug: 'test-event',
+        name: 'Reregistered User',
+        email: 'rereg@example.com',
+        slackUserId: 'U014',
+        organisation: 'Org B',
+        attendanceType: AttendanceType.Physical,
+        registeredAt: new Date('2026-01-01T09:00:00Z'),
+        status: 'waitlist',
+        metadata: {
+          reregisteredAt: '2026-01-01T14:00:00Z',
+        },
+      }
+
+      const genuinelyEarlierWaitlisted: EventRegistration = {
+        _id: 'reg-genuine-waitlist',
+        eventSlug: 'test-event',
+        name: 'Genuine Waitlist',
+        email: 'genuine@example.com',
+        slackUserId: 'U015',
+        organisation: 'Org C',
+        attendanceType: AttendanceType.Physical,
+        registeredAt: new Date('2026-01-01T11:00:00Z'),
+        status: 'waitlist',
+      }
+
+      mockRepository.findById.mockResolvedValueOnce(confirmedReg)
+      mockRepository.update
+        .mockResolvedValueOnce({ ...confirmedReg, status: 'cancelled' })
+        .mockResolvedValueOnce({
+          ...genuinelyEarlierWaitlisted,
+          status: 'confirmed',
+        })
+      mockRepository.findMany.mockResolvedValueOnce([
+        reregisteredUser,
+        genuinelyEarlierWaitlisted,
+      ])
+      mockRepository.getPhysicalAttendeesCount.mockResolvedValueOnce(1)
+
+      await service.cancelRegistration('reg-confirmed', mockEvent)
+
+      expect(mockRepository.update).toHaveBeenNthCalledWith(
+        2,
+        'reg-genuine-waitlist',
+        { status: 'confirmed' }
+      )
+    })
+
+    it('should not promote from waitlist when event has already ended', async () => {
+      const pastEvent = {
+        ...mockEvent,
+        end: new Date('2020-01-01T10:00:00Z'),
+      }
+
+      const result = await service.promoteNextFromWaitlist(
+        'test-event',
+        pastEvent
+      )
+
+      expect(result).toBeNull()
+      expect(mockRepository.findMany).not.toHaveBeenCalled()
+    })
+
+    it('should promote next waitlisted user when admin deletes a confirmed physical registration', async () => {
+      const confirmedReg: EventRegistration = {
+        _id: 'reg-confirmed',
+        eventSlug: 'test-event',
+        name: 'Confirmed User',
+        email: 'confirmed@example.com',
+        slackUserId: 'U010',
+        organisation: 'Org A',
+        attendanceType: AttendanceType.Physical,
+        registeredAt: new Date('2026-01-01T10:00:00Z'),
+        status: 'confirmed',
+      }
+
+      const waitlistedUser: EventRegistration = {
+        _id: 'reg-waitlist-1',
+        eventSlug: 'test-event',
+        name: 'Waitlist First',
+        email: 'w1@example.com',
+        slackUserId: 'U011',
+        organisation: 'Org B',
+        attendanceType: AttendanceType.Physical,
+        registeredAt: new Date('2026-01-01T11:00:00Z'),
+        status: 'waitlist',
+      }
+
+      mockRepository.findById.mockResolvedValueOnce(confirmedReg)
+      mockRepository.delete.mockResolvedValueOnce(undefined)
+      mockRepository.findMany.mockResolvedValueOnce([waitlistedUser])
+      mockRepository.update.mockResolvedValueOnce({
+        ...waitlistedUser,
+        status: 'confirmed',
+      })
+
+      await service.deleteRegistration('reg-confirmed')
+
+      expect(mockRepository.delete).toHaveBeenCalledWith('reg-confirmed')
+      expect(mockRepository.update).toHaveBeenCalledWith('reg-waitlist-1', {
+        status: 'confirmed',
+      })
     })
   })
 })

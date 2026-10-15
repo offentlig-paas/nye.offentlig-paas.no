@@ -1,4 +1,5 @@
 import Image, { type ImageProps } from 'next/image'
+import { EmbeddedEvent } from '@/components/EmbeddedEvent'
 
 type MDXComponents = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -9,5 +10,6 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     ...components,
     Image: (props: ImageProps) => <Image {...props} alt={props.alt || ''} />,
+    EmbeddedEvent,
   }
 }

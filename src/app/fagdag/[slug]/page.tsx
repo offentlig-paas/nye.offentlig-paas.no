@@ -21,7 +21,11 @@ import {
   isCallForPapersOpen,
   hasInternalCallForPapers,
   canUserAccessEvent,
+  isUserEventSpeaker,
+  resolveEventStats,
 } from '@/lib/events/helpers'
+import { eventRegistrationService } from '@/domains/event-registration'
+import { eventFeedbackService } from '@/domains/event-feedback/service'
 import { getAllEventAttachments } from '@/lib/events/attachment-helpers'
 import { getEventPhotos, urlForImage } from '@/lib/sanity/event-photos'
 import { EventHeroGallery } from '@/components/EventHeroGallery'
@@ -52,6 +56,7 @@ import {
   CheckBadgeIcon,
   ChartBarIcon,
   ArrowLeftIcon,
+  VideoCameraIcon,
 } from '@heroicons/react/20/solid'
 
 type Params = Promise<{ slug: string }>
@@ -197,15 +202,30 @@ async function EventBannerFallback({
   )
 }
 
-async function AdditionalPhotos({ slug }: { slug: string }) {
+async function AdditionalPhotos({
+  slug,
+  isActiveOrPast,
+  canUploadAsStaff,
+}: {
+  slug: string
+  isActiveOrPast: boolean
+  canUploadAsStaff: boolean
+}) {
   const photos = await getEventPhotos(slug)
+  const additionalPhotos = photos.slice(4)
 
-  if (photos.length <= 4) {
+  if (additionalPhotos.length === 0 && !isActiveOrPast) {
     return null
   }
 
-  const additionalPhotos = photos.slice(4)
-  return <EventAdditionalPhotosGallery photos={additionalPhotos} />
+  return (
+    <EventAdditionalPhotosGallery
+      photos={additionalPhotos}
+      eventSlug={slug}
+      isActiveOrPast={isActiveOrPast}
+      canUploadAsStaff={canUploadAsStaff}
+    />
+  )
 }
 
 async function EventAgendaSection({
@@ -252,6 +272,10 @@ async function FagdagContent({ params }: { params: Params }) {
   const hasAdminAccess = session?.user
     ? canUserAccessEvent(event, session.user)
     : false
+  const canUploadAsStaff = Boolean(
+    hasAdminAccess ||
+    (session?.user?.slackId && isUserEventSpeaker(event, session.user.slackId))
+  )
 
   const organizerUserIds = event.organizers
     .map(org => (org.url ? extractSlackUserId(org.url) : null))
@@ -264,6 +288,16 @@ async function FagdagContent({ params }: { params: Params }) {
   const url = `${protocol}://${host}/fagdag/${slug}`
 
   const status = getStatus(event)
+  const postEventStats =
+    status === Status.Past
+      ? resolveEventStats(
+          event,
+          ...(await Promise.all([
+            eventRegistrationService.getEventRegistrations(slug),
+            eventFeedbackService.getFeedbackSummary(slug),
+          ]))
+        )
+      : null
 
   return (
     <EventRegistrationProvider eventSlug={slug}>
@@ -425,7 +459,11 @@ async function FagdagContent({ params }: { params: Params }) {
 
               {/* Additional Photos */}
               <Suspense fallback={null}>
-                <AdditionalPhotos slug={slug} />
+                <AdditionalPhotos
+                  slug={slug}
+                  isActiveOrPast={status !== Status.Upcoming}
+                  canUploadAsStaff={canUploadAsStaff}
+                />
               </Suspense>
 
               {/* Agenda */}
@@ -464,14 +502,30 @@ async function FagdagContent({ params }: { params: Params }) {
                 />
               )}
 
+              {/* Recording Link for Past Events */}
+              {status === Status.Past && event.recordingUrl && (
+                <div className="overflow-hidden rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-gray-400/5">
+                  <Button
+                    href={event.recordingUrl}
+                    variant="secondary"
+                    className="w-full"
+                  >
+                    <VideoCameraIcon
+                      className="mr-1 h-4 w-4"
+                      aria-hidden="true"
+                    />
+                    Se opptak
+                  </Button>
+                </div>
+              )}
+
               {/* Feedback & Reviews */}
-              {!isAcceptingRegistrations(event) ? (
+              <EventFeedbackPrompt event={event} eventStatus={status} />
+              {!isAcceptingRegistrations(event) && (
                 <EventFeedbackSummaryWrapper
                   eventSlug={slug}
                   variant="reviews"
                 />
-              ) : (
-                <EventFeedbackPrompt event={event} eventStatus={status} />
               )}
 
               {/* Organizers */}
@@ -521,53 +575,55 @@ async function FagdagContent({ params }: { params: Params }) {
               </div>
 
               {/* Stats */}
-              {event.stats && (
-                <div className="overflow-hidden rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-gray-400/5">
-                  <h2 className="mb-4 flex items-center gap-2 text-base font-semibold text-gray-900 dark:text-gray-100">
-                    <ChartBarIcon
-                      className="h-5 w-5 text-gray-600 dark:text-gray-400"
-                      aria-hidden="true"
-                    />
-                    Etter arrangementet
-                  </h2>
-                  <dl className="grid grid-cols-1 gap-4">
-                    <div>
-                      <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                        Deltakere
-                      </dt>
-                      <dd className="mt-1 text-xl font-semibold text-gray-900 dark:text-gray-100">
-                        {event.stats.participants}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                        Organisasjoner
-                      </dt>
-                      <dd className="mt-1 text-xl font-semibold text-gray-900 dark:text-gray-100">
-                        {event.stats.organisations}
-                      </dd>
-                    </div>
-                    {event.stats.feedback && (
+              {postEventStats &&
+                (postEventStats.registrations.participants > 0 ||
+                  postEventStats.feedback.totalResponses > 0) && (
+                  <div className="overflow-hidden rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-gray-400/5">
+                    <h2 className="mb-4 flex items-center gap-2 text-base font-semibold text-gray-900 dark:text-gray-100">
+                      <ChartBarIcon
+                        className="h-5 w-5 text-gray-600 dark:text-gray-400"
+                        aria-hidden="true"
+                      />
+                      Etter arrangementet
+                    </h2>
+                    <dl className="grid grid-cols-1 gap-4">
                       <div>
                         <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                          Gjennomsnittlig vurdering
+                          Deltakere
                         </dt>
-                        <dd className="mt-1">
-                          <Rating
-                            rating={event.stats.feedback?.averageRating ?? 0}
-                            total={event.stats.feedback?.respondents ?? 0}
-                          />
+                        <dd className="mt-1 text-xl font-semibold text-gray-900 dark:text-gray-100">
+                          {postEventStats.registrations.participants}
                         </dd>
                       </div>
-                    )}
-                    {event.stats.feedback &&
-                      event.stats.feedback?.comments.length > 0 && (
+                      <div>
+                        <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                          Organisasjoner
+                        </dt>
+                        <dd className="mt-1 text-xl font-semibold text-gray-900 dark:text-gray-100">
+                          {postEventStats.registrations.organizations}
+                        </dd>
+                      </div>
+                      {postEventStats.feedback.totalResponses > 0 && (
+                        <div>
+                          <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                            Gjennomsnittlig vurdering
+                          </dt>
+                          <dd className="mt-1">
+                            <Rating
+                              rating={postEventStats.feedback.averageRating}
+                              total={postEventStats.feedback.totalResponses}
+                            />
+                          </dd>
+                        </div>
+                      )}
+                      {postEventStats.feedback.historicalComments.length >
+                        0 && (
                         <div>
                           <dt className="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">
                             Tilbakemeldinger
                           </dt>
                           <dd className="space-y-2">
-                            {event.stats.feedback?.comments.map(
+                            {postEventStats.feedback.historicalComments.map(
                               (feedback, index) => (
                                 <div
                                   key={index}
@@ -586,9 +642,9 @@ async function FagdagContent({ params }: { params: Params }) {
                           </dd>
                         </div>
                       )}
-                  </dl>
-                </div>
-              )}
+                    </dl>
+                  </div>
+                )}
             </div>
           </div>
         </div>

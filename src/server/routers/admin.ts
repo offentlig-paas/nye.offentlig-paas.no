@@ -760,10 +760,10 @@ Mvh ${organizerNames}`
         const registrations =
           await eventRegistrationService.getEventRegistrations(input.slug)
 
-        // Only send to users who attended
+        // Send to users who attended or are confirmed
         const filteredRegistrations = filterRegistrationsByStatus(
           registrations,
-          'attended'
+          'all'
         )
 
         const allUserIds = extractUserIds(filteredRegistrations)
@@ -784,7 +784,7 @@ Mvh ${organizerNames}`
         if (userIds.length === 0) {
           throw new TRPCError({
             code: 'BAD_REQUEST',
-            message: 'No attended users without feedback found',
+            message: 'No attended or confirmed users without feedback found',
           })
         }
       }
@@ -863,7 +863,9 @@ Mvh ${organizerNames}`
         const organizerCount = event.organizers?.length || 0
         const scheduleItemCount = event.schedule?.length || 0
         const hasRecording = !!event.recordingUrl
-        const hasCallForPapers = !!event.callForPapersUrl
+        const hasCallForPapers = Boolean(
+          event.callForPapersUrl || event.callForPapersEnabled
+        )
 
         return {
           slug: event.slug,

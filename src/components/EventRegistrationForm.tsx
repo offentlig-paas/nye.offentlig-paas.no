@@ -15,6 +15,7 @@ import {
   UserGroupIcon,
   BuildingOfficeIcon,
   CheckCircleIcon,
+  ClockIcon,
   MapPinIcon,
   CalendarDaysIcon,
 } from '@heroicons/react/20/solid'
@@ -110,6 +111,8 @@ const RegistrationForm = memo(function RegistrationForm({
   onSubmit,
   onCancel,
   isLoading,
+  submitLabel = 'Bekreft påmelding',
+  loadingLabel = 'Melder på...',
 }: {
   registrationData: RegistrationFormData
   setRegistrationData: React.Dispatch<
@@ -120,6 +123,8 @@ const RegistrationForm = memo(function RegistrationForm({
   onSubmit: () => void
   onCancel: () => void
   isLoading: boolean
+  submitLabel?: string
+  loadingLabel?: string
 }) {
   return (
     <div className="space-y-6">
@@ -164,9 +169,7 @@ const RegistrationForm = memo(function RegistrationForm({
                   }
                   className="relative size-4 appearance-none rounded-full border border-zinc-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-blue-600 checked:bg-blue-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:border-zinc-200 disabled:bg-zinc-100 disabled:before:bg-zinc-400 dark:border-white/10 dark:bg-white/5 dark:before:bg-white dark:checked:border-blue-500 dark:checked:bg-blue-500 dark:focus-visible:outline-blue-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden"
                 />
-                <span
-                  className={`block text-sm/6 font-medium text-zinc-900 dark:text-white ${attendanceTypes.length === 1 ? 'font-medium' : ''}`}
-                >
+                <span className="block text-sm/6 font-medium text-zinc-900 dark:text-white">
                   {AttendanceTypeDisplay[type]}
                 </span>
                 {attendanceTypes.length === 1 && (
@@ -298,7 +301,7 @@ const RegistrationForm = memo(function RegistrationForm({
           }
           className="flex-1"
         >
-          {isLoading ? 'Melder på...' : 'Bekreft påmelding'}
+          {isLoading ? loadingLabel : submitLabel}
         </Button>
         <Button
           variant="secondary"
@@ -317,7 +320,7 @@ const RegistrationForm = memo(function RegistrationForm({
  * Event registration form with multiple states:
  * - Not logged in: prompts user to log in
  * - Not registered: shows registration form
- * - Registered: shows confirmation with unregister option
+ * - Registered / Waitlisted: shows status with edit and unregister options
  * - Special mode for social event opt-in only
  */
 export const EventRegistrationForm = memo(function EventRegistrationForm({
@@ -352,11 +355,13 @@ export const EventRegistrationForm = memo(function EventRegistrationForm({
 
   const isActivelyRegistered =
     registrationStatus === 'confirmed' || registrationStatus === 'attended'
+  const isOnWaitlist = registrationStatus === 'waitlist'
 
   const [state, setState] = useState({
     isLoading: false,
     showRegistrationForm: false,
     showUnregisterModal: false,
+    isEditing: false,
   })
 
   const [registrationData, setRegistrationData] =
@@ -382,6 +387,7 @@ export const EventRegistrationForm = memo(function EventRegistrationForm({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session?.user?.slackId, session?.user?.statusText, session?.user?.title])
+
   const handleRegister = async () => {
     if (!session?.user?.slackId) return
 
@@ -392,7 +398,7 @@ export const EventRegistrationForm = memo(function EventRegistrationForm({
 
     setState(prev => ({ ...prev, isLoading: true }))
     try {
-      await registerMutation.mutateAsync({
+      const result = await registerMutation.mutateAsync({
         slug: eventSlug,
         ...registrationData,
         attendanceType: registrationData.attendanceType,
@@ -409,7 +415,15 @@ export const EventRegistrationForm = memo(function EventRegistrationForm({
         organisation: session?.user?.statusText || session?.user?.title || '',
       }))
       await refetch()
-      showSuccess('Påmelding bekreftet!', `Du er nå påmeldt ${eventTitle}.`)
+
+      if (result.registration.status === 'waitlist') {
+        showSuccess(
+          'Satt på venteliste',
+          `Fysiske plasser er fullbooket. Du står nå på venteliste for ${eventTitle}.`
+        )
+      } else {
+        showSuccess('Påmelding bekreftet!', `Du er nå påmeldt ${eventTitle}.`)
+      }
     } catch (error) {
       console.error('Registration error:', error)
       showError(
@@ -417,6 +431,54 @@ export const EventRegistrationForm = memo(function EventRegistrationForm({
         error instanceof Error
           ? error.message
           : 'Noe gikk galt under påmeldingen.'
+      )
+    } finally {
+      setState(prev => ({ ...prev, isLoading: false }))
+    }
+  }
+
+  const handleStartEditing = () => {
+    if (!registration) return
+    setRegistrationData({
+      comments: registration.comments || '',
+      dietary: registration.dietary || '',
+      organisation:
+        registration.organisation ||
+        session?.user?.statusText ||
+        session?.user?.title ||
+        '',
+      attendanceType:
+        (registration.attendanceType as AttendanceType | undefined) ||
+        (attendanceTypes.length === 1 ? attendanceTypes[0] : undefined),
+      attendingSocialEvent: registration.attendingSocialEvent ?? false,
+    })
+    setState(prev => ({ ...prev, isEditing: true }))
+  }
+
+  const handleSaveEdit = async () => {
+    if (!session?.user?.slackId) return
+
+    setState(prev => ({ ...prev, isLoading: true }))
+    try {
+      const result = await updateMutation.mutateAsync({
+        slug: eventSlug,
+        organisation: registrationData.organisation,
+        attendanceType: registrationData.attendanceType,
+        comments: registrationData.comments,
+        dietary: registrationData.dietary,
+        attendingSocialEvent: registrationData.attendingSocialEvent,
+      })
+
+      setState(prev => ({ ...prev, isEditing: false }))
+      await refetch()
+      showSuccess('Oppdatert!', result.message)
+    } catch (error) {
+      console.error('Update error:', error)
+      showError(
+        'Feil ved oppdatering',
+        error instanceof Error
+          ? error.message
+          : 'Noe gikk galt under oppdateringen.'
       )
     } finally {
       setState(prev => ({ ...prev, isLoading: false }))
@@ -563,24 +625,89 @@ export const EventRegistrationForm = memo(function EventRegistrationForm({
     )
   }
 
-  if (isActivelyRegistered) {
+  if (isActivelyRegistered || isOnWaitlist) {
+    const containerClasses = isOnWaitlist
+      ? 'overflow-hidden rounded-xl bg-amber-50 p-6 shadow-sm ring-1 ring-amber-900/10 dark:bg-amber-900/20 dark:ring-amber-400/10'
+      : 'overflow-hidden rounded-xl bg-green-50 p-6 shadow-sm ring-1 ring-green-900/10 dark:bg-green-900/20 dark:ring-green-400/10'
+
     return (
-      <div className="overflow-hidden rounded-xl bg-green-50 p-6 shadow-sm ring-1 ring-green-900/10 dark:bg-green-900/20 dark:ring-green-400/10">
-        <h3 className="mb-2 flex items-center gap-2 text-base font-semibold text-green-900 dark:text-green-100">
-          <CheckCircleIcon
-            className="h-5 w-5 text-green-600 dark:text-green-400"
-            aria-hidden="true"
-          />
-          Du er påmeldt
+      <div className={containerClasses}>
+        <h3
+          className={`mb-2 flex items-center gap-2 text-base font-semibold ${
+            isOnWaitlist
+              ? 'text-amber-900 dark:text-amber-100'
+              : 'text-green-900 dark:text-green-100'
+          }`}
+        >
+          {isOnWaitlist ? (
+            <>
+              <ClockIcon
+                className="h-5 w-5 text-amber-600 dark:text-amber-400"
+                aria-hidden="true"
+              />
+              Du står på venteliste
+            </>
+          ) : (
+            <>
+              <CheckCircleIcon
+                className="h-5 w-5 text-green-600 dark:text-green-400"
+                aria-hidden="true"
+              />
+              Du er påmeldt
+            </>
+          )}
         </h3>
 
-        {stats && stats.total > 0 && (
-          <div className="mb-3">
-            <RegistrationStatsDisplay counts={stats} variant="green" />
+        {isOnWaitlist && (
+          <p className="mb-3 text-xs text-amber-800 dark:text-amber-200">
+            Fysiske plasser er fullbooket. Du får automatisk beskjed på Slack
+            hvis en plass blir ledig.
+          </p>
+        )}
+
+        {registration && !state.isEditing && (
+          <div
+            className={`mb-3 rounded-lg p-3 text-xs ${
+              isOnWaitlist
+                ? 'bg-white/50 text-amber-900 dark:bg-amber-950/30 dark:text-amber-200'
+                : 'bg-white/50 text-green-900 dark:bg-green-950/30 dark:text-green-200'
+            }`}
+          >
+            {registration.attendanceType && (
+              <p>
+                <span className="font-semibold">Deltakelse:</span>{' '}
+                {
+                  AttendanceTypeDisplay[
+                    registration.attendanceType as AttendanceType
+                  ]
+                }
+              </p>
+            )}
+            {registration.organisation && (
+              <p>
+                <span className="font-semibold">Organisasjon:</span>{' '}
+                {registration.organisation}
+              </p>
+            )}
+            {registration.dietary && (
+              <p>
+                <span className="font-semibold">Kosthold:</span>{' '}
+                {registration.dietary}
+              </p>
+            )}
           </div>
         )}
 
-        {stats && stats.participants.length > 0 && (
+        {stats && stats.total > 0 && !state.isEditing && (
+          <div className="mb-3">
+            <RegistrationStatsDisplay
+              counts={stats}
+              variant={isOnWaitlist ? 'blue' : 'green'}
+            />
+          </div>
+        )}
+
+        {stats && stats.participants.length > 0 && !state.isEditing && (
           <div className="mb-3">
             <OverlappingAvatars
               participants={stats.participants}
@@ -592,16 +719,42 @@ export const EventRegistrationForm = memo(function EventRegistrationForm({
           </div>
         )}
 
-        <Button
-          variant="secondary"
-          onClick={() =>
-            setState(prev => ({ ...prev, showUnregisterModal: true }))
-          }
-          disabled={state.isLoading}
-          className="w-full border border-green-200/50 bg-white/60 text-sm font-medium text-green-800 hover:bg-white/80 hover:text-green-900 active:bg-white/90 active:text-green-900/70 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-white dark:active:bg-gray-800 dark:active:text-white/70"
-        >
-          Meld av
-        </Button>
+        {state.isEditing ? (
+          <div className="mt-4">
+            <RegistrationForm
+              registrationData={registrationData}
+              setRegistrationData={setRegistrationData}
+              attendanceTypes={attendanceTypes}
+              socialEvent={socialEvent}
+              onSubmit={handleSaveEdit}
+              onCancel={() => setState(prev => ({ ...prev, isEditing: false }))}
+              isLoading={state.isLoading}
+              submitLabel="Lagre endringer"
+              loadingLabel="Lagrer..."
+            />
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2">
+            <Button
+              variant="secondary"
+              onClick={handleStartEditing}
+              disabled={state.isLoading}
+              className="w-full border border-zinc-200/80 bg-white/80 text-sm font-medium text-zinc-800 hover:bg-white dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+            >
+              Endre påmelding
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() =>
+                setState(prev => ({ ...prev, showUnregisterModal: true }))
+              }
+              disabled={state.isLoading}
+              className="w-full border border-red-200/60 bg-white/60 text-sm font-medium text-red-700 hover:bg-white/80 hover:text-red-800 dark:border-red-800/50 dark:bg-gray-800 dark:text-red-300 dark:hover:bg-gray-700"
+            >
+              {isOnWaitlist ? 'Meld av venteliste' : 'Meld av'}
+            </Button>
+          </div>
+        )}
 
         <ConfirmationModal
           isOpen={state.showUnregisterModal}

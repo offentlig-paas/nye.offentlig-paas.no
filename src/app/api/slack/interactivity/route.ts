@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { App, type BlockAction } from '@slack/bolt'
 import { createHmac, timingSafeEqual } from 'crypto'
-import { getEventBySlug } from '@/lib/events/helpers'
+import { getEventBySlug, getStatus } from '@/lib/events/helpers'
+import { Status } from '@/lib/events/types'
 import { eventFeedbackService } from '@/domains/event-feedback/service'
 import { eventRegistrationService } from '@/domains/event-registration/service'
 import {
@@ -55,17 +56,113 @@ slackApp.action('quick_feedback', async ({ ack, body, client }) => {
   }
 })
 
+slackApp.action('mark_not_attended', async ({ ack, body, client }) => {
+  await ack()
+
+  try {
+    const action = body as BlockAction
+    const eventSlug =
+      'message' in action && action.message?.metadata?.event_payload?.eventSlug
+    const userId = body.user.id
+
+    if (!eventSlug || typeof eventSlug !== 'string') {
+      throw new Error('Event slug not found in action payload')
+    }
+
+    const event = getEventBySlug(eventSlug)
+    const eventTitle = event?.title || eventSlug
+
+    if (!event || getStatus(event) === Status.Upcoming) {
+      return
+    }
+
+    const registration =
+      await eventRegistrationService.getRegistrationBySlackUserId(
+        eventSlug,
+        userId
+      )
+
+    if (
+      !registration?._id ||
+      (registration.status !== 'confirmed' &&
+        registration.status !== 'attended')
+    ) {
+      return
+    }
+
+    await eventRegistrationService.markAsNoShow(registration._id)
+
+    await client.chat.postMessage({
+      channel: userId,
+      text: `Takk for beskjeden! Vi har registrert at du ikke deltok på *${eventTitle}*.`,
+    })
+  } catch (error) {
+    console.error('Error marking registration as no-show:', error)
+  }
+})
+
+slackApp.action('cancel_registration', async ({ ack, body, client }) => {
+  await ack()
+
+  try {
+    const action = body as BlockAction
+    const eventSlug =
+      'message' in action && action.message?.metadata?.event_payload?.eventSlug
+    const userId = body.user.id
+
+    if (!eventSlug || typeof eventSlug !== 'string') {
+      throw new Error('Event slug not found in action payload')
+    }
+
+    const registration =
+      await eventRegistrationService.getRegistrationBySlackUserId(
+        eventSlug,
+        userId
+      )
+
+    const event = getEventBySlug(eventSlug)
+    const eventTitle = event?.title || eventSlug
+
+    if (!event || getStatus(event) === Status.Past) {
+      await client.chat.postMessage({
+        channel: userId,
+        text: `Arrangementet *${eventTitle}* er avsluttet og kan ikke lenger avmeldes.`,
+      })
+      return
+    }
+
+    if (!registration?._id || registration.status === 'cancelled') {
+      await client.chat.postMessage({
+        channel: userId,
+        text: `Du er allerede avmeldt *${eventTitle}*.`,
+      })
+      return
+    }
+
+    await eventRegistrationService.cancelRegistration(registration._id, event)
+
+    await client.chat.postMessage({
+      channel: userId,
+      text: `Du er nå meldt av *${eventTitle}*.`,
+    })
+  } catch (error) {
+    console.error('Error cancelling registration via Slack:', error)
+  }
+})
+
 slackApp.view('feedback_submission', async ({ ack, body, view, client }) => {
   try {
     const privateMetadata = JSON.parse(view.private_metadata)
     const eventSlug = privateMetadata.eventSlug
 
     const event = getEventBySlug(eventSlug)
-    if (!event) {
+    if (!event || getStatus(event) === Status.Upcoming) {
       await ack({
         response_action: 'errors',
         errors: {
-          event_rating: 'Arrangementet ble ikke funnet',
+          event_rating: !event
+            ? 'Arrangementet ble ikke funnet'
+            : 'Kan ikke gi tilbakemelding før fagdagen har startet',
         },
       })
       return
@@ -80,7 +177,11 @@ slackApp.view('feedback_submission', async ({ ack, body, view, client }) => {
         userId
       )
 
-    if (!registration || registration.status !== 'attended') {
+    if (
+      !registration ||
+      (registration.status !== 'attended' &&
+        registration.status !== 'confirmed')
+    ) {
       await ack({
         response_action: 'errors',
         errors: {
@@ -126,6 +227,10 @@ slackApp.view('feedback_submission', async ({ ack, body, view, client }) => {
     // Do the work asynchronously after acknowledging
     setImmediate(async () => {
       try {
+        if (registration.status === 'confirmed' && registration._id) {
+          await eventRegistrationService.markAsAttended(registration._id)
+        }
+
         await eventFeedbackService.submitQuickFeedback(
           {
             eventSlug,

@@ -154,6 +154,7 @@ export interface EventWithDynamicData extends Event {
     | 'attendingSocialEvent'
     | 'comments'
     | 'dietary'
+    | 'organisation'
     | 'registeredAt'
   > | null
   participantInfo?: EventParticipantInfo

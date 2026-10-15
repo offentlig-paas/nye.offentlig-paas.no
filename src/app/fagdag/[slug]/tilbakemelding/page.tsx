@@ -45,8 +45,11 @@ async function FeedbackContent({ slug }: { slug: string }) {
 
   const registration = enrichedEvent.userRegistration
 
-  // Redirect if user didn't attend
-  if (!registration || registration.status !== 'attended') {
+  // Redirect if user didn't attend or wasn't confirmed
+  if (
+    !registration ||
+    (registration.status !== 'attended' && registration.status !== 'confirmed')
+  ) {
     redirect(`/fagdag/${slug}`)
   }
 

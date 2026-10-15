@@ -4,6 +4,7 @@ import { trpc } from '@/lib/trpc/client'
 import { EventFeedbackSummary } from './EventFeedbackSummary'
 import { EventReviews } from './EventReviews'
 import { useSession } from 'next-auth/react'
+import { useEventRegistration } from '@/contexts/EventRegistrationContext'
 
 interface EventFeedbackSummaryWrapperProps {
   eventSlug: string
@@ -15,6 +16,8 @@ export function EventFeedbackSummaryWrapper({
   variant = 'compact',
 }: EventFeedbackSummaryWrapperProps) {
   const { data: session } = useSession()
+  const { event: eventData } = useEventRegistration()
+  const registration = eventData?.userRegistration
 
   const { data: summary, isLoading: summaryLoading } =
     trpc.eventFeedback.getSummary.useQuery(
@@ -53,9 +56,12 @@ export function EventFeedbackSummaryWrapper({
       return null
     }
 
-    // Show login button if not authenticated, otherwise check feedback status
     const isAuthenticated = !!session?.user
-    const canSubmitFeedback = isAuthenticated && !hasFeedbackData?.hasFeedback
+    const isEligibleAttendee =
+      registration?.status === 'attended' ||
+      registration?.status === 'confirmed'
+    const canSubmitFeedback =
+      isAuthenticated && isEligibleAttendee && !hasFeedbackData?.hasFeedback
     const hasSubmittedFeedback = isAuthenticated && hasFeedbackData?.hasFeedback
     const needsLogin = !isAuthenticated
 
