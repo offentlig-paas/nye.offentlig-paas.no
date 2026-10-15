@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { cacheLife } from 'next/cache'
 import { getEvent, getStatus } from '@/lib/events/helpers'
 import { EventSummary } from './EventSummary'
 import { EventAgenda } from './EventAgenda'
@@ -9,7 +10,13 @@ interface EmbeddedEventProps {
   showAgenda?: boolean
 }
 
-export function EmbeddedEvent({ slug, showAgenda = true }: EmbeddedEventProps) {
+export async function EmbeddedEvent({
+  slug,
+  showAgenda = true,
+}: EmbeddedEventProps) {
+  'use cache'
+  cacheLife('hours')
+
   const event = getEvent(slug)
   if (!event) {
     return null

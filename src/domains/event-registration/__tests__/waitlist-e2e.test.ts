@@ -5,6 +5,9 @@ import { AttendanceType } from '@/lib/events/types'
 import type { EventRegistration, CreateEventRegistrationInput } from '../types'
 
 vi.mock('../repository')
+vi.mock('@/lib/events/helpers', () => ({
+  getAllEvents: vi.fn(() => [{ slug: 'test-event', maxCapacity: 2 }]),
+}))
 
 /**
  * E2E tests for waitlist functionality
