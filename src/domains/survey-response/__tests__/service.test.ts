@@ -185,6 +185,41 @@ describe('SurveyResponseService', () => {
       })
     })
 
+    it('flags pilot responses and their contact info', async () => {
+      const answers = [
+        { questionId: 'q1', value: 'Test' },
+        { questionId: 'q-email', value: 'ola@test.no' },
+      ]
+      vi.spyOn(validation, 'validateAnswers').mockReturnValue({
+        valid: true,
+        errors: [],
+        sanitizedAnswers: answers,
+      })
+      mockRepo.create.mockResolvedValue({
+        _id: 'r',
+        surveySlug: 'test-survey',
+        surveyVersion: 1,
+        answers: [],
+        submittedAt: '2026-01-01T00:00:00Z',
+      })
+
+      await service.submitResponse(
+        mockSurveyWithSensitive,
+        answers,
+        { ip: '9.9.9.9' },
+        'sub-pilot',
+        true
+      )
+
+      expect(mockRepo.create).toHaveBeenCalledWith(
+        expect.objectContaining({ pilot: true }),
+        'sub-pilot'
+      )
+      expect(mockRepo.createContactInfo).toHaveBeenCalledWith(
+        expect.objectContaining({ pilot: true })
+      )
+    })
+
     it('stores the later-rounds consent with the address in contact info', async () => {
       const answers = [
         { questionId: 'q24-interview', value: 'no' },

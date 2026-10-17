@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import { redirect } from 'next/navigation'
 import { AdminSurveyResponsesClient } from '@/components/AdminSurveyResponsesClient'
+import { AdminSurveyPilotLink } from '@/components/AdminSurveyPilotLink'
 import { createCaller } from '@/server/root'
 import { getSurvey, getUserSurveyRole } from '@/lib/surveys/helpers'
 import { members } from '@/data/members'
@@ -9,6 +10,7 @@ import type { QuestionMeta } from '@/components/AdminSurveyResponsesClient'
 
 interface AdminSurveyResponsesPageProps {
   params: Promise<{ slug: string }>
+  searchParams: Promise<{ pilot?: string }>
 }
 
 function ResponsesSkeleton() {
@@ -47,37 +49,64 @@ function buildQuestionMeta(slug: string): Map<string, QuestionMeta> {
   return meta
 }
 
-async function ResponsesContent({ slug }: { slug: string }) {
+async function ResponsesContent({
+  slug,
+  pilot,
+  isOwner,
+}: {
+  slug: string
+  pilot: boolean
+  isOwner: boolean
+}) {
   const caller = await createCaller()
-  const data = await caller.admin.surveys.getResponses({ slug })
+  const [data, pilotLink] = await Promise.all([
+    caller.admin.surveys.getResponses({ slug, pilot }),
+    pilot ? caller.admin.surveys.getPilotLink({ slug }) : null,
+  ])
   const questionMeta = buildQuestionMeta(slug)
   const memberNames = members
     .map(m => m.name)
     .sort((a, b) => a.localeCompare(b, 'nb'))
   return (
-    <AdminSurveyResponsesClient
-      slug={slug}
-      initialData={data}
-      questionMeta={Object.fromEntries(questionMeta)}
-      memberNames={memberNames}
-    />
+    <div className="space-y-6">
+      {pilotLink && (
+        <AdminSurveyPilotLink
+          slug={slug}
+          title={getSurvey(slug)?.title ?? slug}
+          url={pilotLink.url}
+          estimatedMinutes={getSurvey(slug)?.estimatedMinutes}
+        />
+      )}
+      <AdminSurveyResponsesClient
+        slug={slug}
+        initialData={data}
+        questionMeta={Object.fromEntries(questionMeta)}
+        memberNames={memberNames}
+        pilot={pilot}
+        isOwner={isOwner}
+      />
+    </div>
   )
 }
 
 export default async function AdminSurveyResponsesPage({
   params,
+  searchParams,
 }: AdminSurveyResponsesPageProps) {
   const { slug } = await params
+  const pilot = (await searchParams).pilot === '1'
 
   const session = await requireAdminOrSurveyAccess()
   const survey = getSurvey(slug)
-  if (survey && getUserSurveyRole(survey, session.user) === 'researcher') {
+  const isOwner =
+    !survey || getUserSurveyRole(survey, session.user) !== 'researcher'
+  if (!isOwner && !pilot) {
     redirect(`/admin/forskning/${slug}`)
   }
 
   return (
     <Suspense fallback={<ResponsesSkeleton />}>
-      <ResponsesContent slug={slug} />
+      <ResponsesContent slug={slug} pilot={pilot} isOwner={isOwner} />
     </Suspense>
   )
 }

@@ -60,6 +60,10 @@ Følgende miljøvariabler må konfigureres for full funksjonalitet:
 - `SANITY_STUDIO_PROJECT_ID` - Sanity project ID (for Studio)
 - `SANITY_STUDIO_DATASET` - Sanity dataset (for Studio)
 
+#### Pilottesting av undersøkelser
+
+- `SURVEY_PILOT_TOKEN` - Hemmelig nøkkel som gir tilgang til undersøkelser med status `Pilot`. Testere får lenken `/forskning/<prosjekt>/undersokelse?pilot=<nøkkel>`. Lag nøkkelen med `openssl rand -hex 24`. Uten nøkkel er pilotundersøkelser stengt. Nøkkelen står i lenken og havner derfor i nettleserhistorikk og forespørselslogger. Bytt `SURVEY_PILOT_TOKEN` når piloten er ferdig.
+
 #### URL-konfigurasjon (produksjon)
 
 - `NEXT_PUBLIC_URL` - Base URL for applikasjonen (brukes i meldinger til foredragsholdere)

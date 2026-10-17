@@ -715,6 +715,13 @@ const surveyResponseSchema = defineType({
       validation: Rule => Rule.required().integer().min(1),
     },
     {
+      name: 'pilot',
+      title: 'Pilot',
+      type: 'boolean',
+      description:
+        'Pilot test data, excluded from results and deleted before opening',
+    },
+    {
       name: 'answers',
       title: 'Answers',
       type: 'array',
@@ -863,6 +870,13 @@ const surveyContactInfoSchema = defineType({
       title: 'Survey Slug',
       type: 'string',
       validation: Rule => Rule.required(),
+    },
+    {
+      name: 'pilot',
+      title: 'Pilot',
+      type: 'boolean',
+      description:
+        'Pilot test data, excluded from results and deleted before opening',
     },
     {
       name: 'answers',

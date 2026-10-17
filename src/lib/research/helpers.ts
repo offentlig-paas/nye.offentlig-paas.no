@@ -13,6 +13,7 @@ import { estimateCompletionMinutes } from '@/lib/surveys/helpers'
 
 export const surveyStatusLabel: Record<SurveyStatus, string> = {
   [SurveyStatus.Draft]: 'Utkast',
+  [SurveyStatus.Pilot]: 'Utkast',
   [SurveyStatus.Open]: 'Åpen',
   [SurveyStatus.Closed]: 'Avsluttet',
 }
@@ -30,7 +31,8 @@ export function getSurveyTitle(survey: ResearchSurvey): string {
 
 export function getSurveyStatus(survey: ResearchSurvey): SurveyStatus {
   if (isInternalSurvey(survey)) {
-    return getSurvey(survey.surveySlug)?.status ?? SurveyStatus.Closed
+    const status = getSurvey(survey.surveySlug)?.status ?? SurveyStatus.Closed
+    return status === SurveyStatus.Pilot ? SurveyStatus.Draft : status
   }
   return survey.status
 }

@@ -36,11 +36,22 @@ interface SurveyFormProps {
   contact: ConsentContact
   /** Render without submitting answers (admin preview of drafts). */
   preview?: boolean
+  /** Pilot token from the tester's link; marks the submission as pilot. */
+  pilotToken?: string
 }
 
-export function SurveyForm({ survey, contact, preview }: SurveyFormProps) {
-  // Preview drafts use their own key so they never prefill the public form.
-  const draftKey = preview ? `${survey.slug}:preview` : survey.slug
+export function SurveyForm({
+  survey,
+  contact,
+  preview,
+  pilotToken,
+}: SurveyFormProps) {
+  // Preview and pilot drafts use their own key so they never prefill the public form.
+  const draftKey = preview
+    ? `${survey.slug}:preview`
+    : pilotToken
+      ? `${survey.slug}:pilot`
+      : survey.slug
   const draft = useMemo(
     () => loadDraft(draftKey, survey.version),
     [draftKey, survey.version]
@@ -240,6 +251,7 @@ export function SurveyForm({ survey, contact, preview }: SurveyFormProps) {
         answers: answerArray,
         honeypot: honeypotRef.current?.value ?? '',
         durationSeconds,
+        pilotToken,
       })
       if ('honeypot' in result && result.honeypot) {
         return
@@ -262,6 +274,7 @@ export function SurveyForm({ survey, contact, preview }: SurveyFormProps) {
     survey.version,
     preview,
     draftKey,
+    pilotToken,
   ])
 
   if (isSuccess) {

@@ -5,7 +5,7 @@ import Script from 'next/script'
 import { Providers } from '@/app/providers'
 import { Layout } from '@/components/Layout'
 import { AuthSessionProvider } from '@/components/AuthSessionProvider'
-import { Analytics } from '@vercel/analytics/react'
+import { Analytics } from '@/components/Analytics'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
 import '@/styles/tailwind.css'

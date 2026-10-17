@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import clsx from 'clsx'
 import {
   ChevronDownIcon,
   ChevronUpIcon,
@@ -43,11 +45,15 @@ export function AdminSurveyResponsesClient({
   initialData,
   questionMeta,
   memberNames,
+  pilot,
+  isOwner,
 }: {
   slug: string
   initialData: ResponsesData
   questionMeta: Record<string, QuestionMeta>
   memberNames: string[]
+  pilot: boolean
+  isOwner: boolean
 }) {
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [linkingId, setLinkingId] = useState<string | null>(null)
@@ -65,6 +71,22 @@ export function AdminSurveyResponsesClient({
       router.refresh()
     },
   })
+
+  const deletePilot = trpc.admin.surveys.deletePilotResponses.useMutation({
+    onSuccess: () => router.refresh(),
+    onError: error => alert(error.message),
+  })
+
+  function handleDeletePilot() {
+    if (
+      !confirm(
+        `Slette alle ${initialData.total} pilotsvar og tilhørende kontaktinformasjon? Dette kan ikke angres.`
+      )
+    ) {
+      return
+    }
+    deletePilot.mutate({ slug })
+  }
 
   useEffect(() => {
     if (!linkedId) return
@@ -86,18 +108,60 @@ export function AdminSurveyResponsesClient({
 
   return (
     <div className="space-y-4">
+      {isOwner && initialData.showPilotTab && (
+        <nav className="flex gap-4 border-b border-zinc-200 text-sm dark:border-zinc-700">
+          {[
+            {
+              label: 'Besvarelser',
+              href: `/admin/forskning/${slug}/responses`,
+              active: !pilot,
+            },
+            {
+              label: 'Pilot',
+              href: `/admin/forskning/${slug}/responses?pilot=1`,
+              active: pilot,
+            },
+          ].map(tab => (
+            <Link
+              key={tab.label}
+              href={tab.href}
+              aria-current={tab.active ? 'page' : undefined}
+              className={clsx(
+                '-mb-px border-b-2 px-1 pb-2 font-medium',
+                tab.active
+                  ? 'border-teal-500 text-teal-600 dark:text-teal-400'
+                  : 'border-transparent text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200'
+              )}
+            >
+              {tab.label}
+            </Link>
+          ))}
+        </nav>
+      )}
       <div className="flex items-center justify-between">
         <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          {initialData.total} besvarelser totalt
+          {pilot
+            ? `${initialData.total} pilotsvar. Holdes utenfor resultater, tellinger og eksport.`
+            : `${initialData.total} besvarelser totalt`}
         </p>
-        <button
-          onClick={handleExport}
-          disabled={isExporting}
-          className="inline-flex items-center gap-2 rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-700 shadow-sm transition hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
-        >
-          <ArrowDownTrayIcon className="h-4 w-4" />
-          {isExporting ? 'Eksporterer…' : 'Eksporter CSV'}
-        </button>
+        {!isOwner ? null : pilot ? (
+          <button
+            onClick={handleDeletePilot}
+            disabled={deletePilot.isPending || initialData.total === 0}
+            className="inline-flex items-center gap-2 rounded-lg border border-red-300 bg-white px-3 py-1.5 text-sm font-medium text-red-700 shadow-sm transition hover:bg-red-50 disabled:opacity-50 dark:border-red-700 dark:bg-zinc-800 dark:text-red-400 dark:hover:bg-red-900/20"
+          >
+            {deletePilot.isPending ? 'Sletter…' : 'Slett alle pilotsvar'}
+          </button>
+        ) : (
+          <button
+            onClick={handleExport}
+            disabled={isExporting}
+            className="inline-flex items-center gap-2 rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-700 shadow-sm transition hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+          >
+            <ArrowDownTrayIcon className="h-4 w-4" />
+            {isExporting ? 'Eksporterer…' : 'Eksporter CSV'}
+          </button>
+        )}
       </div>
 
       <div className="overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-700">
@@ -146,6 +210,7 @@ export function AdminSurveyResponsesClient({
                 }
                 justLinked={linkedId === response.id}
                 memberNames={memberNames}
+                canLink={isOwner}
               />
             ))}
           </tbody>
@@ -187,6 +252,7 @@ function ResponseRowView({
   linkPending,
   justLinked,
   memberNames,
+  canLink,
 }: {
   response: ResponseRow
   questionMeta: Record<string, QuestionMeta>
@@ -199,6 +265,7 @@ function ResponseRowView({
   linkPending: boolean
   justLinked: boolean
   memberNames: string[]
+  canLink: boolean
 }) {
   const [search, setSearch] = useState('')
   const duration = response.durationSeconds
@@ -307,7 +374,7 @@ function ResponseRowView({
                   </div>
                 )
               )}
-              {!response.isMember && (
+              {canLink && !response.isMember && (
                 <div className="border-t border-zinc-200 pt-3 dark:border-zinc-700">
                   {isLinking ? (
                     <LinkOrganizationForm

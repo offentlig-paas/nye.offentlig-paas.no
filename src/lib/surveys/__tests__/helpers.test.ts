@@ -32,7 +32,7 @@ describe('getSurvey', () => {
 })
 
 describe('getSurveyForProject', () => {
-  it('shows AI Agents Wave 1 results while Wave 2 is a draft', () => {
+  it('shows AI Agents Wave 1 results while Wave 2 is in pilot', () => {
     expect(getSurveyForProject('state-of-ai-agents', 'results')?.slug).toBe(
       'ai-agents-2026'
     )
@@ -41,9 +41,18 @@ describe('getSurveyForProject', () => {
     )
   })
 
-  it('never returns a draft for the public form', () => {
+  it('never returns a draft or pilot for the public form', () => {
     expect(getSurveyForProject('state-of-platforms', 'form')).toBeUndefined()
     expect(getSurveyForProject('state-of-platforms', 'results')).toBeUndefined()
+  })
+
+  it('returns the pilot survey only when asked for it', () => {
+    expect(getSurveyForProject('state-of-platforms', 'pilot')?.slug).toBe(
+      'state-of-platforms-2027'
+    )
+    expect(getSurveyForProject('state-of-ai-agents', 'pilot')?.slug).toBe(
+      'ai-agents-2027'
+    )
   })
 
   it('returns undefined for unknown project', () => {

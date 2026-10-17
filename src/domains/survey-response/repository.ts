@@ -9,6 +9,11 @@ import type {
 } from './types'
 import { TRPCError } from '@trpc/server'
 
+/** GROQ filter: pilot responses are kept apart from real data. */
+const pilotFilter = (pilot = false) =>
+  pilot ? 'pilot == true' : '!(pilot == true)'
+const REAL = pilotFilter()
+
 export class SurveyResponseRepository {
   async create(
     input: CreateSurveyResponseInput,
@@ -21,6 +26,7 @@ export class SurveyResponseRepository {
       surveyVersion: input.surveyVersion,
       answers: input.answers,
       submittedAt: new Date().toISOString(),
+      ...(input.pilot ? { pilot: true } : {}),
       metadata: input.metadata ?? {},
     })
 
@@ -50,6 +56,7 @@ export class SurveyResponseRepository {
       submissionId: input.submissionId,
       surveySlug: input.surveySlug,
       answers: input.answers,
+      ...(input.pilot ? { pilot: true } : {}),
       createdAt: new Date().toISOString(),
     })
 
@@ -63,8 +70,8 @@ export class SurveyResponseRepository {
     }
   }
 
-  async countBySurvey(surveySlug: string): Promise<number> {
-    const query = `count(*[_type == "surveyResponse" && surveySlug == $surveySlug])`
+  async countBySurvey(surveySlug: string, pilot = false): Promise<number> {
+    const query = `count(*[_type == "surveyResponse" && surveySlug == $surveySlug && ${pilotFilter(pilot)}])`
     return await sanityClient.fetch<number>(query, { surveySlug })
   }
 
@@ -72,7 +79,7 @@ export class SurveyResponseRepository {
     surveySlug: string,
     orgQuestionId = 'q1-org'
   ): Promise<number> {
-    const query = `count(array::unique(*[_type == "surveyResponse" && surveySlug == $surveySlug].answers[questionId == $orgQuestionId].value))`
+    const query = `count(array::unique(*[_type == "surveyResponse" && surveySlug == $surveySlug && ${REAL}].answers[questionId == $orgQuestionId].value))`
     return await sanityClient.fetch<number>(query, {
       surveySlug,
       orgQuestionId,
@@ -80,13 +87,13 @@ export class SurveyResponseRepository {
   }
 
   async findBySurvey(surveySlug: string): Promise<SurveyResponse[]> {
-    const query = `*[_type == "surveyResponse" && surveySlug == $surveySlug] | order(submittedAt desc)`
+    const query = `*[_type == "surveyResponse" && surveySlug == $surveySlug && ${REAL}] | order(submittedAt desc)`
     return await sanityClient.fetch<SurveyResponse[]>(query, { surveySlug })
   }
 
   async getLatestResponseDate(surveySlug: string): Promise<string | null> {
     const result = await sanityClient.fetch<{ submittedAt: string } | null>(
-      `*[_type == "surveyResponse" && surveySlug == $surveySlug] | order(submittedAt desc) [0] { submittedAt }`,
+      `*[_type == "surveyResponse" && surveySlug == $surveySlug && ${REAL}] | order(submittedAt desc) [0] { submittedAt }`,
       { surveySlug }
     )
     return result?.submittedAt ?? null
@@ -95,14 +102,15 @@ export class SurveyResponseRepository {
   async findBySurveyPaginated(
     surveySlug: string,
     offset: number,
-    limit: number
+    limit: number,
+    pilot = false
   ): Promise<{ responses: SurveyResponse[]; total: number }> {
     const [responses, total] = await Promise.all([
       sanityClient.fetch<SurveyResponse[]>(
-        `*[_type == "surveyResponse" && surveySlug == $surveySlug] | order(submittedAt desc) [$offset...$end]`,
+        `*[_type == "surveyResponse" && surveySlug == $surveySlug && ${pilotFilter(pilot)}] | order(submittedAt desc) [$offset...$end]`,
         { surveySlug, offset, end: offset + limit }
       ),
-      this.countBySurvey(surveySlug),
+      this.countBySurvey(surveySlug, pilot),
     ])
     return { responses, total }
   }
@@ -111,7 +119,7 @@ export class SurveyResponseRepository {
     surveySlug: string,
     orgQuestionId = 'q1-org'
   ): Promise<{ organization: string; count: number }[]> {
-    const query = `*[_type == "surveyResponse" && surveySlug == $surveySlug]{
+    const query = `*[_type == "surveyResponse" && surveySlug == $surveySlug && ${REAL}]{
       "org": answers[questionId == $orgQuestionId][0].value
     }`
     const rows = await sanityClient.fetch<{ org: string | null }[]>(query, {
@@ -133,7 +141,7 @@ export class SurveyResponseRepository {
   async getDailyResponseCounts(
     surveySlug: string
   ): Promise<{ date: string; count: number }[]> {
-    const query = `*[_type == "surveyResponse" && surveySlug == $surveySlug]{
+    const query = `*[_type == "surveyResponse" && surveySlug == $surveySlug && ${REAL}]{
       "date": string::split(submittedAt, "T")[0]
     }`
     const rows = await sanityClient.fetch<{ date: string }[]>(query, {
@@ -165,5 +173,18 @@ export class SurveyResponseRepository {
       `*[_type == "surveyResponse" && _id == $id][0]`,
       { id: responseId }
     )
+  }
+
+  /** Deletes all pilot responses and pilot contact info for a survey. */
+  async deletePilotBySurvey(surveySlug: string): Promise<number> {
+    const ids = await sanityClient.fetch<string[]>(
+      `*[_type in ["surveyResponse", "surveyContactInfo"] && surveySlug == $surveySlug && pilot == true]._id`,
+      { surveySlug }
+    )
+    if (ids.length === 0) return 0
+    const tx = sanityClient.transaction()
+    for (const id of ids) tx.delete(id)
+    await tx.commit()
+    return ids.length
   }
 }

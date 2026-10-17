@@ -6,10 +6,14 @@ import {
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import { SurveyResponseRepository } from '@/domains/survey-response/repository'
-import { getAccessibleSurveys } from '@/lib/surveys/helpers'
+import {
+  getAccessibleSurveys,
+  getProjectForSurvey,
+} from '@/lib/surveys/helpers'
+import { getAppUrl } from '@/server/lib/environment'
 import { getSlackUsersForMember } from '@/lib/members-slack'
 import { members } from '@/data/members'
-import type { SurveyDefinition } from '@/lib/surveys/types'
+import { SurveyStatus, type SurveyDefinition } from '@/lib/surveys/types'
 
 const repository = new SurveyResponseRepository()
 
@@ -179,6 +183,19 @@ export const adminSurveyRouter = router({
       }
     }),
 
+  /** Pilot URL with token. Server-side only; never in a public bundle. */
+  getPilotLink: adminSurveyProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(({ ctx }) => {
+      if (ctx.survey.status !== SurveyStatus.Pilot) return null
+      const token = process.env.SURVEY_PILOT_TOKEN
+      const project = getProjectForSurvey(ctx.survey.slug)
+      if (!token || !project) return { url: null }
+      return {
+        url: `${getAppUrl().url}/forskning/${project.slug}/undersokelse?pilot=${encodeURIComponent(token)}`,
+      }
+    }),
+
   getOrganizations: adminSurveyProcedure
     .input(z.object({ slug: z.string() }))
     .query(async ({ ctx }) => {
@@ -269,10 +286,11 @@ export const adminSurveyRouter = router({
         slug: z.string(),
         offset: z.number().int().min(0).default(0),
         limit: z.number().int().min(1).max(100).default(50),
+        pilot: z.boolean().default(false),
       })
     )
     .query(async ({ ctx, input }) => {
-      if (ctx.surveyRole !== 'owner') {
+      if (ctx.surveyRole !== 'owner' && !input.pilot) {
         throw new TRPCError({
           code: 'FORBIDDEN',
           message: 'Forskere har ikke tilgang til individuelle besvarelser',
@@ -284,11 +302,15 @@ export const adminSurveyRouter = router({
       const sensitiveIds = new Set(survey.sensitiveQuestionIds ?? [])
       const memberNames = getMemberNameSet()
 
-      const result = await repository.findBySurveyPaginated(
-        survey.slug,
-        input.offset,
-        input.limit
-      )
+      const [result, pilotCount] = await Promise.all([
+        repository.findBySurveyPaginated(
+          survey.slug,
+          input.offset,
+          input.limit,
+          input.pilot
+        ),
+        repository.countBySurvey(survey.slug, true),
+      ])
 
       return {
         responses: result.responses.map(r => {
@@ -310,6 +332,7 @@ export const adminSurveyRouter = router({
           }
         }),
         total: result.total,
+        showPilotTab: survey.status === SurveyStatus.Pilot || pilotCount > 0,
         offset: input.offset,
         limit: input.limit,
       }
@@ -373,6 +396,25 @@ export const adminSurveyRouter = router({
       ].join('\n')
 
       return { csv: csvContent, filename: `${survey.slug}-responses.csv` }
+    }),
+
+  deletePilotResponses: adminSurveyProcedure
+    .input(z.object({ slug: z.string() }))
+    .mutation(async ({ ctx }) => {
+      if (ctx.surveyRole !== 'owner') {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Kun eiere av undersøkelsen kan slette pilotsvar',
+        })
+      }
+      if (ctx.survey.status !== SurveyStatus.Pilot) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Pilotsvar kan bare slettes mens undersøkelsen er i pilot',
+        })
+      }
+      const deleted = await repository.deletePilotBySurvey(ctx.survey.slug)
+      return { deleted }
     }),
 
   linkOrganization: adminSurveyProcedure
