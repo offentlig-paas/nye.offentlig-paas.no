@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
   getConsentContact,
-  getSurveyForProject,
   getVisibleQuestionIds,
   getVisibleSectionIds,
   validateSurveyDefinition,
@@ -138,12 +137,6 @@ describe('per-wave data controller', () => {
     )
     expect(getConsentContact('ai-agents-2026')?.dataController).toBe(
       'Hans Kristian Flaatten (styreleder, Offentlig PaaS)'
-    )
-  })
-
-  it('keeps the public AI Agents form and results on Wave 1', () => {
-    expect(getSurveyForProject('state-of-ai-agents')?.slug).toBe(
-      'ai-agents-2026'
     )
   })
 })

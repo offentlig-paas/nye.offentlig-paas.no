@@ -19,16 +19,29 @@ export function getSurvey(slug: string): SurveyDefinition | undefined {
   return surveys.find(s => s.slug === slug)
 }
 
+/**
+ * Pick a project's survey, newest (last listed) first.
+ * - `form`: the open survey, else the newest non-draft one (shown as not
+ *   open). Drafts are never returned.
+ * - `results`: the newest survey with published results.
+ */
 export function getSurveyForProject(
-  projectSlug: string
+  projectSlug: string,
+  purpose: 'form' | 'results'
 ): SurveyDefinition | undefined {
   const project = researchProjects.find(p => p.slug === projectSlug)
-  if (!project) return undefined
+  const linked = (project?.surveys ?? [])
+    .flatMap(s => ('surveySlug' in s ? [getSurvey(s.surveySlug)] : []))
+    .filter((s): s is SurveyDefinition => s !== undefined)
+    .reverse()
 
-  const linked = project.surveys?.find(s => 'surveySlug' in s)
-  if (!linked || !('surveySlug' in linked)) return undefined
-
-  return getSurvey(linked.surveySlug)
+  if (purpose === 'results') {
+    return linked.find(s => s.resultsConfig?.published)
+  }
+  return (
+    linked.find(s => s.status === SurveyStatus.Open) ??
+    linked.find(s => s.status !== SurveyStatus.Draft)
+  )
 }
 
 export function getProjectForSurvey(

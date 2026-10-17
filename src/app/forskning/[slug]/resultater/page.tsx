@@ -51,7 +51,7 @@ async function ResultsContent({ slug }: { slug: string }) {
   const project = getProject(slug)
   if (!project) notFound()
 
-  const survey = getSurveyForProject(slug)
+  const survey = getSurveyForProject(slug, 'results')
   if (!survey || !survey.resultsConfig?.published) notFound()
 
   const caller = await createCaller()
@@ -93,7 +93,7 @@ export default async function SurveyResultsPage({ params }: ResultsPageProps) {
   const project = getProject(slug)
   if (!project) notFound()
 
-  const survey = getSurveyForProject(slug)
+  const survey = getSurveyForProject(slug, 'results')
   if (!survey || !survey.resultsConfig?.published) notFound()
 
   return (

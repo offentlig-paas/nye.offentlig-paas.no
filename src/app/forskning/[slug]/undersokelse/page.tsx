@@ -16,7 +16,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params
   const project = researchProjects.find(p => p.slug === slug)
-  const survey = getSurveyForProject(slug)
+  const survey = getSurveyForProject(slug, 'form')
   if (!project) return {}
 
   return {
@@ -30,7 +30,7 @@ async function SurveyPageContent({ params }: { params: Params }) {
   const project = researchProjects.find(p => p.slug === slug)
   if (!project) notFound()
 
-  const survey = getSurveyForProject(slug)
+  const survey = getSurveyForProject(slug, 'form')
 
   if (!survey) {
     const externalSurvey = project.surveys?.find(
