@@ -269,6 +269,7 @@ export const adminSurveyRouter = router({
         slug: z.string(),
         offset: z.number().int().min(0).default(0),
         limit: z.number().int().min(1).max(100).default(50),
+        pilot: z.boolean().default(false),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -287,7 +288,8 @@ export const adminSurveyRouter = router({
       const result = await repository.findBySurveyPaginated(
         survey.slug,
         input.offset,
-        input.limit
+        input.limit,
+        input.pilot
       )
 
       return {
@@ -373,6 +375,19 @@ export const adminSurveyRouter = router({
       ].join('\n')
 
       return { csv: csvContent, filename: `${survey.slug}-responses.csv` }
+    }),
+
+  deletePilotResponses: adminSurveyProcedure
+    .input(z.object({ slug: z.string() }))
+    .mutation(async ({ ctx }) => {
+      if (ctx.surveyRole !== 'owner') {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Kun eiere av undersøkelsen kan slette pilotsvar',
+        })
+      }
+      const deleted = await repository.deletePilotBySurvey(ctx.survey.slug)
+      return { deleted }
     }),
 
   linkOrganization: adminSurveyProcedure

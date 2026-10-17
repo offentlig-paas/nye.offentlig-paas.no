@@ -9,6 +9,7 @@ import type { QuestionMeta } from '@/components/AdminSurveyResponsesClient'
 
 interface AdminSurveyResponsesPageProps {
   params: Promise<{ slug: string }>
+  searchParams: Promise<{ pilot?: string }>
 }
 
 function ResponsesSkeleton() {
@@ -47,9 +48,15 @@ function buildQuestionMeta(slug: string): Map<string, QuestionMeta> {
   return meta
 }
 
-async function ResponsesContent({ slug }: { slug: string }) {
+async function ResponsesContent({
+  slug,
+  pilot,
+}: {
+  slug: string
+  pilot: boolean
+}) {
   const caller = await createCaller()
-  const data = await caller.admin.surveys.getResponses({ slug })
+  const data = await caller.admin.surveys.getResponses({ slug, pilot })
   const questionMeta = buildQuestionMeta(slug)
   const memberNames = members
     .map(m => m.name)
@@ -60,14 +67,17 @@ async function ResponsesContent({ slug }: { slug: string }) {
       initialData={data}
       questionMeta={Object.fromEntries(questionMeta)}
       memberNames={memberNames}
+      pilot={pilot}
     />
   )
 }
 
 export default async function AdminSurveyResponsesPage({
   params,
+  searchParams,
 }: AdminSurveyResponsesPageProps) {
   const { slug } = await params
+  const pilot = (await searchParams).pilot === '1'
 
   const session = await requireAdminOrSurveyAccess()
   const survey = getSurvey(slug)
@@ -77,7 +87,7 @@ export default async function AdminSurveyResponsesPage({
 
   return (
     <Suspense fallback={<ResponsesSkeleton />}>
-      <ResponsesContent slug={slug} />
+      <ResponsesContent slug={slug} pilot={pilot} />
     </Suspense>
   )
 }
