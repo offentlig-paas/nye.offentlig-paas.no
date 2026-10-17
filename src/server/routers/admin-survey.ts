@@ -6,7 +6,11 @@ import {
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import { SurveyResponseRepository } from '@/domains/survey-response/repository'
-import { getAccessibleSurveys } from '@/lib/surveys/helpers'
+import {
+  getAccessibleSurveys,
+  getProjectForSurvey,
+} from '@/lib/surveys/helpers'
+import { getAppUrl } from '@/server/lib/environment'
 import { getSlackUsersForMember } from '@/lib/members-slack'
 import { members } from '@/data/members'
 import { SurveyStatus, type SurveyDefinition } from '@/lib/surveys/types'
@@ -179,6 +183,19 @@ export const adminSurveyRouter = router({
       }
     }),
 
+  /** Pilot URL with token. Server-side only; never in a public bundle. */
+  getPilotLink: adminSurveyProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(({ ctx }) => {
+      if (ctx.survey.status !== SurveyStatus.Pilot) return null
+      const token = process.env.SURVEY_PILOT_TOKEN
+      const project = getProjectForSurvey(ctx.survey.slug)
+      if (!token || !project) return { url: null }
+      return {
+        url: `${getAppUrl().url}/forskning/${project.slug}/undersokelse?pilot=${encodeURIComponent(token)}`,
+      }
+    }),
+
   getOrganizations: adminSurveyProcedure
     .input(z.object({ slug: z.string() }))
     .query(async ({ ctx }) => {
@@ -273,7 +290,7 @@ export const adminSurveyRouter = router({
       })
     )
     .query(async ({ ctx, input }) => {
-      if (ctx.surveyRole !== 'owner') {
+      if (ctx.surveyRole !== 'owner' && !input.pilot) {
         throw new TRPCError({
           code: 'FORBIDDEN',
           message: 'Forskere har ikke tilgang til individuelle besvarelser',
