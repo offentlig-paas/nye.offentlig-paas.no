@@ -387,7 +387,19 @@ export default async function ResearchProjectPage({
               projectSlug={project.slug}
             />
             <DatasetsSection datasets={project.datasets} />
-            <EthicsSection ethics={project.ethics} />
+            <EthicsSection
+              ethics={project.ethics}
+              wave={earlierWavesLabel(project.waves)}
+            />
+            {project.waves
+              ?.filter(w => w.ethics)
+              .map(w => (
+                <EthicsSection
+                  key={w.name}
+                  ethics={w.ethics}
+                  wave={`${waveLabel(w.name)} (${w.year})`}
+                />
+              ))}
             {articles.length > 0 && (
               <section className="rounded-2xl border border-zinc-200 bg-white p-5 md:col-span-2 dark:border-zinc-800 dark:bg-zinc-900/40">
                 <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
@@ -729,6 +741,28 @@ async function SurveysSection({
   )
 }
 
+/** "Wave 3" → "Bølge 3" */
+function waveLabel(name: string): string {
+  return name.replace(/^Wave /, 'Bølge ')
+}
+
+/**
+ * Label for the project-level ethics block when some waves have their own
+ * ethics: it then applies to the remaining (earlier) waves.
+ */
+function earlierWavesLabel(
+  waves: ResearchProject['waves']
+): string | undefined {
+  if (!waves?.some(w => w.ethics)) return undefined
+  const numbers = waves
+    .filter(w => !w.ethics)
+    .map(w => waveLabel(w.name).replace(/^Bølge /, ''))
+  if (numbers.length === 0) return undefined
+  return numbers.length === 1
+    ? `Bølge ${numbers[0]}`
+    : `Bølge ${numbers[0]}–${numbers[numbers.length - 1]}`
+}
+
 const ethicsLabels: Record<
   keyof Omit<ResearchEthics, 'dataController' | 'contactEmail'>,
   string
@@ -738,15 +772,24 @@ const ethicsLabels: Record<
   consentStatus: 'Samtykke',
   anonymization: 'Anonymisering',
   retentionPeriod: 'Slettefrist',
+  processors: 'Databehandlere og lagring',
+  publication: 'Publisering',
+  rights: 'Dine rettigheter',
 }
 
-function EthicsSection({ ethics }: { ethics: ResearchProject['ethics'] }) {
+function EthicsSection({
+  ethics,
+  wave,
+}: {
+  ethics: ResearchProject['ethics']
+  wave?: string
+}) {
   if (!ethics) return null
   return (
     <section className="rounded-2xl border border-zinc-200 bg-white p-5 md:col-span-2 dark:border-zinc-800 dark:bg-zinc-900/40">
       <h2 className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
         <ShieldCheckIcon className="h-4 w-4 text-zinc-400" />
-        Personvern og forskningsetikk
+        Personvern og forskningsetikk{wave && ` – ${wave}`}
       </h2>
       <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
         Behandlingsansvarlig: {ethics.dataController} (

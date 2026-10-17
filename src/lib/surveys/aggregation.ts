@@ -6,7 +6,7 @@ import type {
   CheckboxQuestion,
 } from './types'
 import type { SurveyResponse } from '@/domains/survey-response/types'
-import { getVisibleSectionIds } from './helpers'
+import { getVisibleQuestionIds } from './helpers'
 import type { SurveyAnswer } from './types'
 
 export interface AggregatedSurveyResults {
@@ -45,6 +45,8 @@ function getEffectiveVisualization(
 ): 'bar' | 'diverging' | 'hidden' {
   if (question.visualization) return question.visualization
   if (question.type === 'text' || question.type === 'textarea') return 'hidden'
+  // ponytail: matrix answers are not charted; add a per-row breakdown when results are published
+  if (question.type === 'matrix') return 'hidden'
   return 'bar'
 }
 
@@ -67,14 +69,12 @@ function buildAnswerMaps(
 
 function countRespondentsWhoSawQuestion(
   questionId: string,
-  section: SurveySection,
   allSections: SurveySection[],
   answerMaps: Map<string, SurveyAnswer>[]
 ): number {
   let count = 0
   for (const answers of answerMaps) {
-    const visibleIds = new Set(getVisibleSectionIds(allSections, answers))
-    if (visibleIds.has(section.id)) {
+    if (getVisibleQuestionIds(allSections, answers).has(questionId)) {
       count++
     }
   }
@@ -203,7 +203,6 @@ export function aggregateSurveyResults(
 
       const responseCount = countRespondentsWhoSawQuestion(
         question.id,
-        section,
         survey.sections,
         answerMaps
       )

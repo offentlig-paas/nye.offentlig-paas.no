@@ -7,6 +7,9 @@ export enum SurveyStatus {
 }
 
 export interface SurveyConsent {
+  /** Full consent text (markdown). Replaces the generated text when set. */
+  fullText?: string
+  checkboxLabel?: string
   aboutText?: string
   dataCollectionText: string
   additionalSections?: { heading: string; body: string }[]
@@ -59,12 +62,27 @@ export type SurveyQuestion =
   | RadioQuestion
   | CheckboxQuestion
   | TypeaheadQuestion
+  | MatrixQuestion
+
+/**
+ * Condition on an earlier question. Met when that question is visible and
+ * its answer contains at least one `anyOf` value and no `noneOf` value.
+ */
+export interface QuestionCondition {
+  questionId: string
+  anyOf?: string[]
+  noneOf?: string[]
+}
 
 interface QuestionBase {
   id: string
   title: string
   description?: string
   required: boolean
+  /** Show the question only when all conditions are met. */
+  showIf?: QuestionCondition[]
+  /** Make the question required when all conditions are met. */
+  requiredIf?: QuestionCondition[]
   visualization?: 'bar' | 'diverging' | 'hidden'
 }
 
@@ -98,6 +116,16 @@ export interface CheckboxQuestion extends QuestionBase {
   minSelections?: number
   maxSelections?: number
   randomizeOptions?: boolean
+}
+
+/**
+ * One choice per row. Answers are stored as `row:column` strings, so the
+ * stored shape stays `string[]`.
+ */
+export interface MatrixQuestion extends QuestionBase {
+  type: 'matrix'
+  rows: { value: string; label: string }[]
+  options: QuestionOption[]
 }
 
 export interface QuestionOption {

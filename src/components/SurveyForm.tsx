@@ -11,6 +11,8 @@ import type {
 } from '@/lib/surveys/types'
 import {
   getVisibleSectionIds,
+  getVisibleQuestionIds,
+  isQuestionRequired,
   estimateCompletionMinutes,
   buildConsentText,
   buildThankYouMessage,
@@ -21,6 +23,7 @@ import { TextareaInput } from './survey/TextareaInput'
 import { RadioGroup } from './survey/RadioGroup'
 import { CheckboxGroup } from './survey/CheckboxGroup'
 import { TypeaheadInput } from './survey/TypeaheadInput'
+import { MatrixGroup } from './survey/MatrixGroup'
 import { Markdown } from './survey/Markdown'
 import {
   useDraftPersistence,
@@ -31,12 +34,16 @@ import {
 interface SurveyFormProps {
   survey: SurveyDefinition
   contact: ConsentContact
+  /** Render without submitting answers (admin preview of drafts). */
+  preview?: boolean
 }
 
-export function SurveyForm({ survey, contact }: SurveyFormProps) {
+export function SurveyForm({ survey, contact, preview }: SurveyFormProps) {
+  // Preview drafts use their own key so they never prefill the public form.
+  const draftKey = preview ? `${survey.slug}:preview` : survey.slug
   const draft = useMemo(
-    () => loadDraft(survey.slug, survey.version),
-    [survey.slug, survey.version]
+    () => loadDraft(draftKey, survey.version),
+    [draftKey, survey.version]
   )
   const [answers, setAnswers] = useState<Map<string, SurveyAnswer>>(() =>
     draft ? new Map(draft.answers) : new Map()
@@ -58,7 +65,9 @@ export function SurveyForm({ survey, contact }: SurveyFormProps) {
   const submittingRef = useRef(false)
   const submissionIdRef = useRef(draft?.submissionId ?? crypto.randomUUID())
   const startTimeRef = useRef<number | null>(draft?.startTime ?? null)
-  const [sessionSeed] = useState(() => Math.floor(Math.random() * 2147483647))
+  const [sessionSeed] = useState(
+    () => draft?.sessionSeed ?? Math.floor(Math.random() * 2147483647)
+  )
   const [stepAnnouncement, setStepAnnouncement] = useState('')
 
   const estimatedMinutes = useMemo(
@@ -88,7 +97,7 @@ export function SurveyForm({ survey, contact }: SurveyFormProps) {
   }, [focusTrigger])
 
   useDraftPersistence(
-    survey.slug,
+    draftKey,
     survey.version,
     answers,
     currentSectionIndex,
@@ -96,7 +105,8 @@ export function SurveyForm({ survey, contact }: SurveyFormProps) {
     showConsent,
     startTimeRef,
     isSuccess,
-    submissionIdRef
+    submissionIdRef,
+    sessionSeed
   )
 
   const submitMutation = trpc.survey.submit.useMutation()
@@ -109,6 +119,11 @@ export function SurveyForm({ survey, contact }: SurveyFormProps) {
   const visibleSections = useMemo(
     () => survey.sections.filter(s => visibleSectionIds.includes(s.id)),
     [survey.sections, visibleSectionIds]
+  )
+
+  const visibleQuestionIds = useMemo(
+    () => getVisibleQuestionIds(survey.sections, answers),
+    [survey.sections, answers]
   )
 
   const currentSection = visibleSections[currentSectionIndex]
@@ -136,8 +151,13 @@ export function SurveyForm({ survey, contact }: SurveyFormProps) {
     const newErrors = new Map<string, string>()
 
     for (const question of currentSection.questions) {
+      if (!visibleQuestionIds.has(question.id)) continue
       const answer = answers.get(question.id)
-      const error = validateQuestion(question, answer)
+      const error = validateQuestion(
+        question,
+        answer,
+        isQuestionRequired(question, answers, visibleQuestionIds)
+      )
       if (error) {
         newErrors.set(question.id, error)
       }
@@ -153,7 +173,7 @@ export function SurveyForm({ survey, contact }: SurveyFormProps) {
       })
     }
     return newErrors.size === 0
-  }, [currentSection, answers])
+  }, [currentSection, answers, visibleQuestionIds])
 
   const handleNext = useCallback(() => {
     if (!validateCurrentSection()) return
@@ -201,6 +221,13 @@ export function SurveyForm({ survey, contact }: SurveyFormProps) {
     setIsSubmitting(true)
     setSubmitError(null)
 
+    if (preview) {
+      setIsSuccess(true)
+      clearDraft(draftKey, survey.version)
+      setIsSubmitting(false)
+      return
+    }
+
     try {
       const answerArray = Array.from(answers.values())
       const durationSeconds = startTimeRef.current
@@ -218,7 +245,7 @@ export function SurveyForm({ survey, contact }: SurveyFormProps) {
         return
       }
       setIsSuccess(true)
-      clearDraft(survey.slug, survey.version)
+      clearDraft(draftKey, survey.version)
     } catch (error) {
       submittingRef.current = false
       setSubmitError(
@@ -233,6 +260,8 @@ export function SurveyForm({ survey, contact }: SurveyFormProps) {
     submitMutation,
     survey.slug,
     survey.version,
+    preview,
+    draftKey,
   ])
 
   if (isSuccess) {
@@ -245,7 +274,11 @@ export function SurveyForm({ survey, contact }: SurveyFormProps) {
           Takk for ditt svar!
         </h2>
         <div className="mt-4 text-base text-teal-700 dark:text-teal-300">
-          <Markdown>{thankYouText}</Markdown>
+          <Markdown>
+            {preview
+              ? 'Dette var en forhåndsvisning. Svarene ble ikke lagret.'
+              : thankYouText}
+          </Markdown>
         </div>
       </div>
     )
@@ -293,8 +326,8 @@ export function SurveyForm({ survey, contact }: SurveyFormProps) {
             htmlFor="consent"
             className="text-base/7 font-medium text-zinc-700 dark:text-zinc-300"
           >
-            Jeg har lest informasjonen over og samtykker til å delta i
-            undersøkelsen.
+            {survey.consent.checkboxLabel ??
+              'Jeg har lest informasjonen over og samtykker til å delta i undersøkelsen.'}
           </label>
         </div>
         <button
@@ -352,6 +385,7 @@ export function SurveyForm({ survey, contact }: SurveyFormProps) {
         <SectionRenderer
           section={currentSection}
           answers={answers}
+          visibleQuestionIds={visibleQuestionIds}
           errors={errors}
           onAnswer={updateAnswer}
           sessionSeed={sessionSeed}
@@ -415,6 +449,7 @@ export function SurveyForm({ survey, contact }: SurveyFormProps) {
 function SectionRenderer({
   section,
   answers,
+  visibleQuestionIds,
   errors,
   onAnswer,
   sessionSeed,
@@ -422,6 +457,7 @@ function SectionRenderer({
 }: {
   section: SurveySection
   answers: Map<string, SurveyAnswer>
+  visibleQuestionIds: Set<string>
   errors: Map<string, string>
   onAnswer: (id: string, value: string | string[], otherText?: string) => void
   sessionSeed: number
@@ -445,16 +481,25 @@ function SectionRenderer({
       </div>
 
       <div className="space-y-6">
-        {section.questions.map(question => (
-          <QuestionRenderer
-            key={question.id}
-            question={question}
-            answer={answers.get(question.id)}
-            error={errors.get(question.id)}
-            onAnswer={onAnswer}
-            sessionSeed={sessionSeed}
-          />
-        ))}
+        {section.questions
+          .filter(q => visibleQuestionIds.has(q.id))
+          .map(question => (
+            <QuestionRenderer
+              key={question.id}
+              question={{
+                ...question,
+                required: isQuestionRequired(
+                  question,
+                  answers,
+                  visibleQuestionIds
+                ),
+              }}
+              answer={answers.get(question.id)}
+              error={errors.get(question.id)}
+              onAnswer={onAnswer}
+              sessionSeed={sessionSeed}
+            />
+          ))}
       </div>
     </div>
   )
@@ -521,6 +566,15 @@ function QuestionRenderer({
           onChange={(v, ot) => onAnswer(question.id, v, ot)}
           error={error}
           sessionSeed={sessionSeed}
+        />
+      )
+    case 'matrix':
+      return (
+        <MatrixGroup
+          question={question}
+          value={(answer?.value as string[]) ?? []}
+          onChange={v => onAnswer(question.id, v)}
+          error={error}
         />
       )
   }

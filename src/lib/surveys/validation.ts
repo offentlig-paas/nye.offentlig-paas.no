@@ -1,5 +1,5 @@
 import type { SurveyDefinition, SurveyAnswer, SurveyQuestion } from './types'
-import { getVisibleSectionIds } from './helpers'
+import { getVisibleQuestionIds, isQuestionRequired } from './helpers'
 
 const MAX_TEXT_LENGTH = 10_000
 
@@ -12,16 +12,24 @@ interface ValidationResult {
 /**
  * Validate a single question–answer pair. Returns the first error message
  * or null if valid. Shared by both client-side section validation and
- * server-side full-survey validation.
+ * server-side full-survey validation. `required` defaults to the question's
+ * own flag; pass the evaluated value for questions with `requiredIf`.
  */
 export function validateQuestion(
   question: SurveyQuestion,
-  answer: SurveyAnswer | undefined
+  answer: SurveyAnswer | undefined,
+  required: boolean = question.required
 ): string | null {
-  if (question.required) {
-    if (!answer) return 'Dette feltet er påkrevd'
+  if (required) {
+    if (!answer) {
+      return question.type === 'matrix'
+        ? 'Svar på alle radene'
+        : 'Dette feltet er påkrevd'
+    }
     if (Array.isArray(answer.value) && answer.value.length === 0) {
-      return 'Velg minst ett alternativ'
+      return question.type === 'matrix'
+        ? 'Svar på alle radene'
+        : 'Velg minst ett alternativ'
     }
     if (typeof answer.value === 'string' && answer.value.trim() === '') {
       return 'Dette feltet er påkrevd'
@@ -93,6 +101,23 @@ export function validateQuestion(
       }
       return validateOtherText(question.options, answer.value, answer)
     }
+
+    case 'matrix': {
+      if (!Array.isArray(answer.value)) return 'Forventet liste med valg'
+      const rows = new Set(question.rows.map(r => r.value))
+      const cols = new Set(question.options.map(o => o.value))
+      const answeredRows = new Set<string>()
+      for (const v of answer.value) {
+        const [row = '', col = ''] = v.split(':')
+        if (!rows.has(row) || !cols.has(col)) return `Ugyldig valg "${v}"`
+        if (answeredRows.has(row)) return 'Velg ett svar per rad'
+        answeredRows.add(row)
+      }
+      if (required && answeredRows.size < rows.size) {
+        return 'Svar på alle radene'
+      }
+      return null
+    }
   }
 }
 
@@ -117,8 +142,8 @@ function validateOtherText(
  * Server-side validation of survey answers against the definition.
  *
  * - Validates each answer via the shared `validateQuestion` function
- * - Enforces required fields for visible (non-skipped) sections
- * - Strips answers for questions in skipped sections
+ * - Enforces required fields for visible questions (`required`/`requiredIf`)
+ * - Strips answers for hidden questions (skipped sections or unmet `showIf`)
  * - Deduplicates answers (last answer per question wins)
  */
 export function validateAnswers(
@@ -127,41 +152,29 @@ export function validateAnswers(
 ): ValidationResult {
   const errors: string[] = []
   const answerMap = new Map(answers.map(a => [a.questionId, a]))
-  const visibleSectionIds = new Set(
-    getVisibleSectionIds(survey.sections, answerMap)
-  )
+  const visibleQuestionIds = getVisibleQuestionIds(survey.sections, answerMap)
 
-  const questionSectionMap = new Map<string, string>()
+  const questionMap = new Map<string, SurveyQuestion>()
   for (const section of survey.sections) {
     for (const question of section.questions) {
-      questionSectionMap.set(question.id, section.id)
-    }
-  }
+      questionMap.set(question.id, question)
+      if (!visibleQuestionIds.has(question.id)) continue
 
-  for (const section of survey.sections) {
-    if (!visibleSectionIds.has(section.id)) continue
-
-    for (const question of section.questions) {
       const answer = answerMap.get(question.id)
-      const error = validateQuestion(question, answer)
+      const required = isQuestionRequired(
+        question,
+        answerMap,
+        visibleQuestionIds
+      )
+      const error = validateQuestion(question, answer, required)
       if (error) {
         errors.push(`"${question.title}": ${error}`)
       }
     }
   }
 
-  const questionMap = new Map<string, SurveyQuestion>()
-  for (const section of survey.sections) {
-    for (const question of section.questions) {
-      questionMap.set(question.id, question)
-    }
-  }
-
   const sanitizedAnswers = Array.from(answerMap.values())
-    .filter(a => {
-      const sectionId = questionSectionMap.get(a.questionId)
-      return sectionId && visibleSectionIds.has(sectionId)
-    })
+    .filter(a => visibleQuestionIds.has(a.questionId))
     .map(a => {
       const question = questionMap.get(a.questionId)
       if (!question) return a

@@ -2,6 +2,7 @@ import { type Metadata } from 'next'
 import { Suspense } from 'react'
 import { redirect, notFound } from 'next/navigation'
 import { researchProjects } from '@/data/research'
+import { ResearchStatus } from '@/lib/research/types'
 import { SurveyStatus } from '@/lib/surveys/types'
 import { getSurveyForProject, getConsentContact } from '@/lib/surveys/helpers'
 import { Container } from '@/components/Container'
@@ -16,7 +17,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params
   const project = researchProjects.find(p => p.slug === slug)
-  const survey = getSurveyForProject(slug)
+  const survey = getSurveyForProject(slug, 'form')
   if (!project) return {}
 
   return {
@@ -30,7 +31,7 @@ async function SurveyPageContent({ params }: { params: Params }) {
   const project = researchProjects.find(p => p.slug === slug)
   if (!project) notFound()
 
-  const survey = getSurveyForProject(slug)
+  const survey = getSurveyForProject(slug, 'form')
 
   if (!survey) {
     const externalSurvey = project.surveys?.find(
@@ -43,6 +44,9 @@ async function SurveyPageContent({ params }: { params: Params }) {
   }
 
   if (survey.status !== SurveyStatus.Open) {
+    const nextWavePlanned = project.waves?.some(
+      w => w.status === ResearchStatus.Planning
+    )
     return (
       <Container className="mt-16 sm:mt-32">
         <div className="mx-auto max-w-2xl text-center">
@@ -50,7 +54,9 @@ async function SurveyPageContent({ params }: { params: Params }) {
             Undersøkelsen er ikke tilgjengelig
           </h1>
           <p className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">
-            Denne undersøkelsen er ikke åpen for svar. Se{' '}
+            {nextWavePlanned
+              ? 'Forrige runde er avsluttet, og neste runde er under planlegging. Se'
+              : 'Denne undersøkelsen er ikke åpen for svar. Se'}{' '}
             <a
               href={`/forskning/${slug}`}
               className="text-teal-500 hover:text-teal-600 dark:text-teal-400"

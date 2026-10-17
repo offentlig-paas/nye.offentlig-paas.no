@@ -6,11 +6,31 @@ import {
 import { SurveyStatus } from '@/lib/surveys/types'
 import { type ResearchEthics } from '@/lib/research/types'
 import { aiAgents2026 } from '@/data/surveys/ai-agents-2026'
+import { aiAgents2027 } from '@/data/surveys/ai-agents-2027'
+import { stateOfPlatforms2027 } from '@/data/surveys/state-of-platforms-2027'
 
 const sharedEthics = {
   dataController: 'Hans Kristian Flaatten (styreleder, Offentlig PaaS)',
   contactEmail: 'kontakt@offentlig-paas.no',
 } satisfies Partial<ResearchEthics>
+
+/**
+ * Ethics for waves collected under the association as data controller.
+ * Earlier waves keep the project ethics they were consented under.
+ */
+const associationEthics = {
+  dataController: 'foreningen Offentlig PAAS, ved styreleder',
+  contactEmail: 'kontakt@offentlig-paas.no',
+  legalBasis: 'Samtykke etter GDPR art. 6 nr. 1 bokstav a',
+  siktAssessment: 'Vurderes før datainnsamlingen starter.',
+  consentStatus:
+    'Deltakerne samtykker ved å krysse av før de starter i skjemaet. Samtykket gjelder bare denne runden.',
+  processors:
+    'Vercel (drift av nettstedet) og Sanity (lagring av svarene) er databehandlere, og svarene lagres i EU/EØS. Leverandørene kan være underlagt amerikansk lov. Eventuelle overføringer sikres etter GDPR kapittel V, gjennom EU–US Data Privacy Framework eller EUs standard personvernbestemmelser.',
+  retentionPeriod: 'Senest to år etter siste bølge i studien',
+  rights:
+    'Du kan be om innsyn, retting, sletting og begrenset behandling, og om å få utlevert opplysningene i et maskinlesbart format. Du kan trekke samtykket når som helst. Offentlig PAAS har ikke personvernombud. Du kan klage til Datatilsynet.',
+} satisfies Omit<ResearchEthics, 'anonymization'>
 
 export const researchProjects: ResearchProject[] = [
   {
@@ -19,7 +39,7 @@ export const researchProjects: ResearchProject[] = [
     description:
       'Vi følger utviklingen av interne utviklerplattformer i norsk offentlig sektor over tid: utbredelse, modenhet, motivasjon og teknologivalg.',
     longDescription:
-      'Studien måler hvordan offentlige virksomheter bygger og bruker interne utviklerplattformer langs de fem dimensjonene i CNCFs modenhetsmodell: investering, bruk, grensesnitt, drift og måling. Fordi 60 % av virksomhetene fra 2024 også deltok i 2026, kan vi skille faktiske endringer i hver enkelt virksomhet fra endringer i utvalget. Andre runde i 2026 omfatter 48 plattformer i 45 virksomheter med til sammen rundt 240 000 ansatte.',
+      'Studien måler hvordan offentlige virksomheter bygger og bruker interne utviklerplattformer langs de fem dimensjonene i CNCFs modenhetsmodell: investering, bruk, grensesnitt, drift og måling. Fordi 60 % av virksomhetene fra 2024 også deltok i 2026, kan vi skille faktiske endringer i hver enkelt virksomhet fra endringer i utvalget. Andre runde i 2026 omfatter 48 plattformer i 45 virksomheter med til sammen rundt 240 000 ansatte. Vi planlegger en tredje runde med en ny del om KI på plattformen.',
     stats: [
       {
         value: '92 %',
@@ -103,6 +123,20 @@ export const researchProjects: ResearchProject[] = [
         description:
           'Andre runde samlet inn vinteren 2025 og 2026 blant 45 av 84 medlemsvirksomheter (54 % svarprosent) med 48 plattformer og rundt 240 000 ansatte. 27 av virksomhetene deltok i begge rundene.',
       },
+      {
+        name: 'Wave 3',
+        year: 2027,
+        status: ResearchStatus.Planning,
+        description:
+          'Tredje runde er under planlegging og er ikke åpen for svar ennå. Kjernespørsmålene er de samme som i 2024 og 2026. En ny del spør hvordan plattformteamene legger til rette for KI og KI-kodeagenter. Skjemaet testes før det åpnes.',
+        ethics: {
+          ...associationEthics,
+          publication:
+            'Vi publiserer bare samlede resultater. Vi publiserer ikke svar fra enkeltorganisasjoner. Svaralternativer som færre enn tre har valgt, rapporteres som «under 3».',
+          anonymization:
+            'Navn på organisasjoner, plattformer og personer publiseres ikke. Vi skiller e-postadresser fra svarene før analyse og sletter dem når eventuell kontakt er avsluttet.',
+        },
+      },
     ],
     papers: [
       {
@@ -140,6 +174,11 @@ export const researchProjects: ResearchProject[] = [
         status: SurveyStatus.Closed,
         waveName: 'Wave 2',
       },
+      {
+        surveySlug: stateOfPlatforms2027.slug,
+        waveName: 'Wave 3',
+        description: 'Under planlegging. Ikke åpen for svar ennå.',
+      },
     ],
     datasets: [
       {
@@ -174,7 +213,7 @@ export const researchProjects: ResearchProject[] = [
     description:
       'Vi undersøker hvordan norske offentlige virksomheter bruker og styrer KI-kodeverktøy, hvor utbredt uoffisiell bruk er, og hva som bekymrer utviklere og ledere.',
     longDescription:
-      'Våren 2026 svarte 115 utviklere, arkitekter og ledere fra 57 offentlige virksomheter på hvilke KI-kodeverktøy de faktisk bruker, hvilke verktøy som er offisielt godkjent, og hvordan bruken styres. Undersøkelsen skiller mellom enkel autofullføring og agenter som selv endrer filer og kjører kommandoer, og måler hvor enige kolleger i samme virksomhet er om egne rammer.',
+      'Våren 2026 svarte 115 utviklere, arkitekter og ledere fra 57 offentlige virksomheter på hvilke KI-kodeverktøy de faktisk bruker, hvilke verktøy som er offisielt godkjent, og hvordan bruken styres. Undersøkelsen skiller mellom enkel autofullføring og agenter som selv endrer filer og kjører kommandoer, og måler hvor enige kolleger i samme virksomhet er om egne rammer. Vi planlegger en andre runde som også spør om kodeagenter, plattformstøtte og hvor mye agentene får gjøre på egen hånd.',
     stats: [
       {
         value: '92 %',
@@ -240,6 +279,30 @@ export const researchProjects: ResearchProject[] = [
     team: ['Hans Kristian Flaatten', 'Anders Olsen Sandvik'],
     startDate: '2026-01-01',
     lastUpdated: '2026-10-12',
+    waves: [
+      {
+        name: 'Wave 1',
+        year: 2026,
+        status: ResearchStatus.Writing,
+        organizations: 57,
+        description:
+          'Første runde samlet inn i april og mai 2026: 115 svar fra 57 virksomheter.',
+      },
+      {
+        name: 'Wave 2',
+        year: 2027,
+        status: ResearchStatus.Planning,
+        description:
+          'Andre runde er under planlegging og er ikke åpen for svar ennå. Den følger opp spørsmålene fra første runde og spør i tillegg om kodeagenter, plattformstøtte og hvor mye agentene får gjøre på egen hånd. Skjemaet testes før det åpnes.',
+        ethics: {
+          ...associationEthics,
+          publication:
+            'Vi publiserer sammenstilte resultater og kan publisere et anonymisert datasett med ett svar per rad. Virksomhetskode er bare med for virksomheter med minst fem svar. De andre får felleskoden «Org-annen». Rollen oppgis som «annen» der færre enn fem fra samme virksomhet har den. Størrelsen på utviklingsmiljøet oppgis bare i grove grupper. Grupper med færre enn fem svar rapporteres ikke.',
+          anonymization:
+            'Vi erstatter virksomhetsnavn med koder før analyse. Koblingstabellen og e-postadressene lagres adskilt fra svarene. Vi gjennomgår og renser fritekst før publisering.',
+        },
+      },
+    ],
     papers: [
       {
         title:
@@ -259,6 +322,12 @@ export const researchProjects: ResearchProject[] = [
     surveys: [
       {
         surveySlug: aiAgents2026.slug,
+        waveName: 'Wave 1',
+      },
+      {
+        surveySlug: aiAgents2027.slug,
+        waveName: 'Wave 2',
+        description: 'Under planlegging. Ikke åpen for svar ennå.',
       },
     ],
     datasets: [

@@ -26,6 +26,8 @@ export interface ResearchWave {
   organizations?: number
   invited?: number
   description?: string
+  /** Overrides the project ethics for this wave (consent given per wave). */
+  ethics?: ResearchEthics
 }
 
 interface ResearchAuthor {
@@ -90,6 +92,9 @@ export interface ResearchEthics {
   consentStatus: string
   anonymization: string
   retentionPeriod?: string
+  processors?: string
+  publication?: string
+  rights?: string
 }
 
 export interface ResearchProject {

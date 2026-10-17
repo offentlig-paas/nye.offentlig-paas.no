@@ -32,18 +32,22 @@ describe('getSurvey', () => {
 })
 
 describe('getSurveyForProject', () => {
-  it('finds the survey linked to state-of-ai-agents project', () => {
-    const survey = getSurveyForProject('state-of-ai-agents')
-    expect(survey).toBeDefined()
-    expect(survey?.slug).toBe('ai-agents-2026')
+  it('shows AI Agents Wave 1 results while Wave 2 is a draft', () => {
+    expect(getSurveyForProject('state-of-ai-agents', 'results')?.slug).toBe(
+      'ai-agents-2026'
+    )
+    expect(getSurveyForProject('state-of-ai-agents', 'form')?.slug).toBe(
+      'ai-agents-2026'
+    )
   })
 
-  it('returns undefined for project without surveySlug', () => {
-    expect(getSurveyForProject('state-of-platforms')).toBeUndefined()
+  it('never returns a draft for the public form', () => {
+    expect(getSurveyForProject('state-of-platforms', 'form')).toBeUndefined()
+    expect(getSurveyForProject('state-of-platforms', 'results')).toBeUndefined()
   })
 
   it('returns undefined for unknown project', () => {
-    expect(getSurveyForProject('nonexistent')).toBeUndefined()
+    expect(getSurveyForProject('nonexistent', 'form')).toBeUndefined()
   })
 })
 
