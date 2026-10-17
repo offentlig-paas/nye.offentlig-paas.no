@@ -8,9 +8,9 @@ function pilotInvitation(title: string, url: string): string {
 
 Vi tester spørreskjemaet «${title}» før det åpnes, og vil gjerne at du prøver det.
 
-Svarene dine brukes bare til å teste skjemaet, og de slettes før undersøkelsen åpner.
+Svarene dine brukes bare til å teste skjemaet, og de slettes før undersøkelsen åpnes.
 
-Lenken er bare til deg. Ikke del den videre.
+Ikke del lenken med andre.
 
 Noter gjerne alt som er uklart, vanskelig å svare på eller tar lang tid.
 
