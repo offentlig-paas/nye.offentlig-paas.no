@@ -62,7 +62,7 @@ Følgende miljøvariabler må konfigureres for full funksjonalitet:
 
 #### Pilottesting av undersøkelser
 
-- `SURVEY_PILOT_TOKEN` - Hemmelig nøkkel som gir tilgang til undersøkelser med status `Pilot`. Testere får lenken `/forskning/<prosjekt>/undersokelse?pilot=<nøkkel>`. Lag nøkkelen med `openssl rand -hex 24`. Uten nøkkel er pilotundersøkelser stengt.
+- `SURVEY_PILOT_TOKEN` - Hemmelig nøkkel som gir tilgang til undersøkelser med status `Pilot`. Testere får lenken `/forskning/<prosjekt>/undersokelse?pilot=<nøkkel>`. Lag nøkkelen med `openssl rand -hex 24`. Uten nøkkel er pilotundersøkelser stengt. Nøkkelen står i lenken og havner derfor i nettleserhistorikk og forespørselslogger. Bytt `SURVEY_PILOT_TOKEN` når piloten er ferdig.
 
 #### URL-konfigurasjon (produksjon)
 
