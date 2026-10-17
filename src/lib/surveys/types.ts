@@ -2,6 +2,8 @@ import type { SlackUser } from '@/lib/types'
 
 export enum SurveyStatus {
   Draft = 'draft',
+  /** Only reachable with a pilot token; shown publicly as Draft. */
+  Pilot = 'pilot',
   Open = 'open',
   Closed = 'closed',
 }

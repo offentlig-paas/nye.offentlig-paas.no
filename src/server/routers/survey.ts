@@ -84,7 +84,11 @@ export const surveyRouter = router({
     .input(z.object({ surveySlug: z.string() }))
     .query(async ({ input }) => {
       const survey = getSurvey(input.surveySlug)
-      if (!survey || survey.status === SurveyStatus.Draft) {
+      if (
+        !survey ||
+        survey.status === SurveyStatus.Draft ||
+        survey.status === SurveyStatus.Pilot
+      ) {
         throw new TRPCError({
           code: 'NOT_FOUND',
           message: 'Undersøkelsen finnes ikke',
