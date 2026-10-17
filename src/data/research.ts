@@ -132,9 +132,9 @@ export const researchProjects: ResearchProject[] = [
         ethics: {
           ...associationEthics,
           publication:
-            'Vi publiserer bare samlede resultater. Svar fra enkeltorganisasjoner blir ikke gjort åpent tilgjengelige. Svaralternativer som færre enn tre har valgt, rapporteres som «under 3».',
+            'Vi publiserer bare samlede resultater. Vi publiserer ikke svar fra enkeltorganisasjoner. Svaralternativer som færre enn tre har valgt, rapporteres som «under 3».',
           anonymization:
-            'Navn på organisasjoner, plattformer og personer publiseres ikke. E-postadresser skilles fra svarene før analyse og slettes når eventuell kontakt er avsluttet.',
+            'Navn på organisasjoner, plattformer og personer publiseres ikke. Vi skiller e-postadresser fra svarene før analyse og sletter dem når eventuell kontakt er avsluttet.',
         },
       },
     ],
@@ -297,9 +297,9 @@ export const researchProjects: ResearchProject[] = [
         ethics: {
           ...associationEthics,
           publication:
-            'Vi publiserer sammenstilte resultater og kan publisere et anonymisert datasett med ett svar per rad. Virksomhetskode er bare med for virksomheter med minst fem svar; de andre får felleskoden «Org-annen». Rollen oppgis som «annen» der færre enn fem fra samme virksomhet har den. Størrelsen på utviklingsmiljøet oppgis bare i grove grupper. Grupper med færre enn fem svar rapporteres ikke.',
+            'Vi publiserer sammenstilte resultater og kan publisere et anonymisert datasett med ett svar per rad. Virksomhetskode er bare med for virksomheter med minst fem svar. De andre får felleskoden «Org-annen». Rollen oppgis som «annen» der færre enn fem fra samme virksomhet har den. Størrelsen på utviklingsmiljøet oppgis bare i grove grupper. Grupper med færre enn fem svar rapporteres ikke.',
           anonymization:
-            'Virksomhetsnavn erstattes med koder før analyse, og koblingstabellen lagres adskilt fra svarene. E-postadresser lagres adskilt fra svarene. Fritekst gjennomgås og renses før publisering.',
+            'Vi erstatter virksomhetsnavn med koder før analyse. Koblingstabellen og e-postadressene lagres adskilt fra svarene. Vi gjennomgår og renser fritekst før publisering.',
         },
       },
     ],
