@@ -64,7 +64,13 @@ export default function RootLayout({
             </Providers>
           </AuthSessionProvider>
         </Suspense>
-        <Analytics />
+        <Analytics
+          beforeSend={event => {
+            const url = new URL(event.url)
+            url.searchParams.delete('pilot')
+            return { ...event, url: url.toString() }
+          }}
+        />
         <SpeedInsights />
       </body>
     </html>
