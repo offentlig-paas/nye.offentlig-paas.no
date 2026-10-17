@@ -220,7 +220,7 @@ export const aiAgents2027: SurveyDefinition = {
             'Velg det alternativet som best beskriver situasjonen i organisasjonen i dag. De tre midterste alternativene skiller mellom uformell bruk (enkeltpersoner på eget initiativ), organisasjonen har tatt en offisiell beslutning men ikke alle bruker verktøyene ennå, og at de fleste utviklere faktisk har tilgang og bruker dem.',
           required: true,
           options: [
-            { label: 'Ikke i bruk, så vidt jeg vet', value: 'none' },
+            { label: 'Ikke i bruk, så vidt jeg vet', value: 'not-in-use' },
             {
               label: 'Enkeltpersoner bruker KI-verktøy på eget initiativ',
               value: 'individual',

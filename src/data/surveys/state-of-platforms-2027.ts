@@ -34,8 +34,6 @@ const usesKubernetes: QuestionCondition[] = [
   { questionId: 'q14-kubernetes', anyOf: ['Ja'] },
 ]
 
-const EXCLUSIVE = ' (kan ikke kombineres)'
-
 export const stateOfPlatforms2027: SurveyDefinition = {
   slug: 'state-of-platforms-2027',
   version: 1,
@@ -604,7 +602,7 @@ export const stateOfPlatforms2027: SurveyDefinition = {
           showIf: hasPlatform,
           options: [
             {
-              label: `Ingen KI-tjenester på plattformen i dag${EXCLUSIVE}`,
+              label: `Ingen KI-tjenester på plattformen i dag`,
               value: 'none',
               exclusive: true,
             },
@@ -644,12 +642,12 @@ export const stateOfPlatforms2027: SurveyDefinition = {
               value: 'ai-observability',
             },
             {
-              label: `Vi planlegger eller tester KI-tjenester, men ingenting er i produksjon ennå${EXCLUSIVE}`,
+              label: `Vi planlegger eller tester KI-tjenester, men ingenting er i produksjon ennå`,
               value: 'planned',
               exclusive: true,
             },
             {
-              label: `Vet ikke${EXCLUSIVE}`,
+              label: `Vet ikke`,
               value: 'unknown',
               exclusive: true,
             },
@@ -669,7 +667,7 @@ export const stateOfPlatforms2027: SurveyDefinition = {
           showIf: hasPlatform,
           options: [
             {
-              label: `Ingen applikasjoner på plattformen bruker KI i produksjon ennå${EXCLUSIVE}`,
+              label: `Ingen applikasjoner på plattformen bruker KI i produksjon ennå`,
               value: 'no-prod-ai',
               exclusive: true,
             },
@@ -695,7 +693,7 @@ export const stateOfPlatforms2027: SurveyDefinition = {
             },
             { label: 'Egne modeller i eget datasenter', value: 'on-prem' },
             {
-              label: `Vet ikke${EXCLUSIVE}`,
+              label: `Vet ikke`,
               value: 'unknown',
               exclusive: true,
             },
@@ -725,7 +723,7 @@ export const stateOfPlatforms2027: SurveyDefinition = {
               value: 'outside-eu',
             },
             {
-              label: `Vet ikke${EXCLUSIVE}`,
+              label: `Vet ikke`,
               value: 'unknown',
               exclusive: true,
             },
@@ -739,12 +737,12 @@ export const stateOfPlatforms2027: SurveyDefinition = {
           required: true,
           options: [
             {
-              label: `Vi har ikke plattformteam / ikke relevant${EXCLUSIVE}`,
+              label: `Vi har ikke plattformteam / ikke relevant`,
               value: 'no-platform-team',
               exclusive: true,
             },
             {
-              label: `Ingen rolle – dette håndteres av andre (f.eks. IT-avdelingen, sikkerhet, innkjøp eller det enkelte team)${EXCLUSIVE}`,
+              label: `Ingen rolle – dette håndteres av andre (f.eks. IT-avdelingen, sikkerhet, innkjøp eller det enkelte team)`,
               value: 'no-role',
               exclusive: true,
             },
@@ -774,7 +772,7 @@ export const stateOfPlatforms2027: SurveyDefinition = {
               value: 'ci-guardrails',
             },
             {
-              label: `Vet ikke${EXCLUSIVE}`,
+              label: `Vet ikke`,
               value: 'unknown',
               exclusive: true,
             },
@@ -789,7 +787,7 @@ export const stateOfPlatforms2027: SurveyDefinition = {
           showIf: hasPlatform,
           options: [
             {
-              label: `Ingen egen tilrettelegging; agentene bruker bare lokal kildekode og vanlige kommandolinjeverktøy (f.eks. kubectl) med utviklerens egne tilganger${EXCLUSIVE}`,
+              label: `Ingen egen tilrettelegging; agentene bruker bare lokal kildekode og vanlige kommandolinjeverktøy (f.eks. kubectl) med utviklerens egne tilganger`,
               value: 'no-integration',
               exclusive: true,
             },
@@ -819,12 +817,12 @@ export const stateOfPlatforms2027: SurveyDefinition = {
               value: 'sandbox-env',
             },
             {
-              label: `Vi har bevisst sperret KI-agenter ute fra plattformen${EXCLUSIVE}`,
+              label: `Vi har bevisst sperret KI-agenter ute fra plattformen`,
               value: 'restricted',
               exclusive: true,
             },
             {
-              label: `Vet ikke${EXCLUSIVE}`,
+              label: `Vet ikke`,
               value: 'unknown',
               exclusive: true,
             },
@@ -838,7 +836,7 @@ export const stateOfPlatforms2027: SurveyDefinition = {
           required: true,
           options: [
             {
-              label: `Plattformteamet bruker ikke KI-verktøy i arbeidet${EXCLUSIVE}`,
+              label: `Plattformteamet bruker ikke KI-verktøy i arbeidet`,
               value: 'none',
               exclusive: true,
             },
@@ -873,12 +871,12 @@ export const stateOfPlatforms2027: SurveyDefinition = {
               value: 'autonomous-ops',
             },
             {
-              label: `Vi har ikke plattformteam${EXCLUSIVE}`,
+              label: `Vi har ikke plattformteam`,
               value: 'no-platform-team',
               exclusive: true,
             },
             {
-              label: `Vet ikke / jeg er ikke i plattformteamet${EXCLUSIVE}`,
+              label: `Vet ikke / jeg er ikke i plattformteamet`,
               value: 'unknown',
               exclusive: true,
             },
@@ -894,7 +892,7 @@ export const stateOfPlatforms2027: SurveyDefinition = {
           maxSelections: 3,
           options: [
             {
-              label: `Nei, vi merker liten eller ingen endring på plattformnivå så langt${EXCLUSIVE}`,
+              label: `Nei, vi merker liten eller ingen endring på plattformnivå så langt`,
               value: 'no-change',
               exclusive: true,
             },
@@ -932,7 +930,7 @@ export const stateOfPlatforms2027: SurveyDefinition = {
               value: 'support-burden',
             },
             {
-              label: `Vet ikke / for tidlig å si${EXCLUSIVE}`,
+              label: `Vet ikke / for tidlig å si`,
               value: 'unknown',
               exclusive: true,
             },
