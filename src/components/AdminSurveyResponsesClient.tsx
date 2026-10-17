@@ -46,12 +46,14 @@ export function AdminSurveyResponsesClient({
   questionMeta,
   memberNames,
   pilot,
+  isOwner,
 }: {
   slug: string
   initialData: ResponsesData
   questionMeta: Record<string, QuestionMeta>
   memberNames: string[]
   pilot: boolean
+  isOwner: boolean
 }) {
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [linkingId, setLinkingId] = useState<string | null>(null)
@@ -106,7 +108,7 @@ export function AdminSurveyResponsesClient({
 
   return (
     <div className="space-y-4">
-      {initialData.showPilotTab && (
+      {isOwner && initialData.showPilotTab && (
         <nav className="flex gap-4 border-b border-zinc-200 text-sm dark:border-zinc-700">
           {[
             {
@@ -142,7 +144,7 @@ export function AdminSurveyResponsesClient({
             ? `${initialData.total} pilotsvar. Holdes utenfor resultater, tellinger og eksport.`
             : `${initialData.total} besvarelser totalt`}
         </p>
-        {pilot ? (
+        {!isOwner ? null : pilot ? (
           <button
             onClick={handleDeletePilot}
             disabled={deletePilot.isPending || initialData.total === 0}
@@ -208,6 +210,7 @@ export function AdminSurveyResponsesClient({
                 }
                 justLinked={linkedId === response.id}
                 memberNames={memberNames}
+                canLink={isOwner}
               />
             ))}
           </tbody>
@@ -249,6 +252,7 @@ function ResponseRowView({
   linkPending,
   justLinked,
   memberNames,
+  canLink,
 }: {
   response: ResponseRow
   questionMeta: Record<string, QuestionMeta>
@@ -261,6 +265,7 @@ function ResponseRowView({
   linkPending: boolean
   justLinked: boolean
   memberNames: string[]
+  canLink: boolean
 }) {
   const [search, setSearch] = useState('')
   const duration = response.durationSeconds
@@ -369,7 +374,7 @@ function ResponseRowView({
                   </div>
                 )
               )}
-              {!response.isMember && (
+              {canLink && !response.isMember && (
                 <div className="border-t border-zinc-200 pt-3 dark:border-zinc-700">
                   {isLinking ? (
                     <LinkOrganizationForm

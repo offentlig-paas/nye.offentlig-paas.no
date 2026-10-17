@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
 import { AdminSurveyOverviewClient } from '@/components/AdminSurveyOverviewClient'
+import { AdminSurveyPilotLink } from '@/components/AdminSurveyPilotLink'
 import { createCaller } from '@/server/root'
 
 interface AdminSurveyOverviewPageProps {
@@ -24,8 +25,22 @@ function OverviewSkeleton() {
 
 async function OverviewContent({ slug }: { slug: string }) {
   const caller = await createCaller()
-  const overview = await caller.admin.surveys.getOverview({ slug })
-  return <AdminSurveyOverviewClient overview={overview} />
+  const [overview, pilotLink] = await Promise.all([
+    caller.admin.surveys.getOverview({ slug }),
+    caller.admin.surveys.getPilotLink({ slug }),
+  ])
+  return (
+    <div className="space-y-6">
+      {pilotLink && (
+        <AdminSurveyPilotLink
+          slug={slug}
+          title={overview.survey.title}
+          url={pilotLink.url}
+        />
+      )}
+      <AdminSurveyOverviewClient overview={overview} />
+    </div>
+  )
 }
 
 export default async function AdminSurveyOverviewPage({
