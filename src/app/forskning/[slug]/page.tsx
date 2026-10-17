@@ -388,6 +388,15 @@ export default async function ResearchProjectPage({
             />
             <DatasetsSection datasets={project.datasets} />
             <EthicsSection ethics={project.ethics} />
+            {project.waves
+              ?.filter(w => w.ethics)
+              .map(w => (
+                <EthicsSection
+                  key={w.name}
+                  ethics={w.ethics}
+                  wave={`${w.name} (${w.year})`}
+                />
+              ))}
             {articles.length > 0 && (
               <section className="rounded-2xl border border-zinc-200 bg-white p-5 md:col-span-2 dark:border-zinc-800 dark:bg-zinc-900/40">
                 <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
@@ -738,15 +747,24 @@ const ethicsLabels: Record<
   consentStatus: 'Samtykke',
   anonymization: 'Anonymisering',
   retentionPeriod: 'Slettefrist',
+  processors: 'Databehandlere og lagring',
+  publication: 'Publisering',
+  rights: 'Dine rettigheter',
 }
 
-function EthicsSection({ ethics }: { ethics: ResearchProject['ethics'] }) {
+function EthicsSection({
+  ethics,
+  wave,
+}: {
+  ethics: ResearchProject['ethics']
+  wave?: string
+}) {
   if (!ethics) return null
   return (
     <section className="rounded-2xl border border-zinc-200 bg-white p-5 md:col-span-2 dark:border-zinc-800 dark:bg-zinc-900/40">
       <h2 className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
         <ShieldCheckIcon className="h-4 w-4 text-zinc-400" />
-        Personvern og forskningsetikk
+        Personvern og forskningsetikk{wave && ` – ${wave}`}
       </h2>
       <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
         Behandlingsansvarlig: {ethics.dataController} (

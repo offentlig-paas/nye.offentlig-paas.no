@@ -38,8 +38,10 @@ describe('getSurveyForProject', () => {
     expect(survey?.slug).toBe('ai-agents-2026')
   })
 
-  it('returns undefined for project without surveySlug', () => {
-    expect(getSurveyForProject('state-of-platforms')).toBeUndefined()
+  it('returns the first internal survey, skipping external ones', () => {
+    expect(getSurveyForProject('state-of-platforms')?.slug).toBe(
+      'state-of-platforms-2026-w3'
+    )
   })
 
   it('returns undefined for unknown project', () => {

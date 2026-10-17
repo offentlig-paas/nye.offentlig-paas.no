@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
+  getConsentContact,
+  getSurveyForProject,
   getVisibleQuestionIds,
   getVisibleSectionIds,
   validateSurveyDefinition,
@@ -123,5 +125,25 @@ describe('State of Platforms Wave 3 routing', () => {
       ).has('q33b-inference-region')
     expect(visible(['on-prem'])).toBe(false)
     expect(visible(['vendor-api', 'on-prem'])).toBe(true)
+  })
+})
+
+describe('per-wave data controller', () => {
+  it('uses the association for new waves and keeps earlier waves unchanged', () => {
+    expect(getConsentContact(aiAgents2026W2.slug)?.dataController).toBe(
+      'foreningen Offentlig PAAS, ved styreleder'
+    )
+    expect(getConsentContact(stateOfPlatforms2026W3.slug)?.dataController).toBe(
+      'foreningen Offentlig PAAS, ved styreleder'
+    )
+    expect(getConsentContact('ai-agents-2026')?.dataController).toBe(
+      'Hans Kristian Flaatten (styreleder, Offentlig PaaS)'
+    )
+  })
+
+  it('keeps the public AI Agents form and results on Wave 1', () => {
+    expect(getSurveyForProject('state-of-ai-agents')?.slug).toBe(
+      'ai-agents-2026'
+    )
   })
 })

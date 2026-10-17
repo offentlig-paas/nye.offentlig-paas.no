@@ -43,14 +43,18 @@ export function getConsentContact(
   surveySlug: string
 ): ConsentContact | undefined {
   const project = getProjectForSurvey(surveySlug)
-  if (!project?.ethics) return undefined
+  const waveName = project?.surveys?.find(
+    s => 'surveySlug' in s && s.surveySlug === surveySlug
+  )?.waveName
+  const ethics =
+    project?.waves?.find(w => w.name === waveName)?.ethics ?? project?.ethics
+  if (!ethics) return undefined
   return {
-    dataController: project.ethics.dataController,
-    contactEmail: project.ethics.contactEmail,
-    legalBasis: project.ethics.legalBasis,
+    dataController: ethics.dataController,
+    contactEmail: ethics.contactEmail,
+    legalBasis: ethics.legalBasis,
     retentionPeriod:
-      project.ethics.retentionPeriod ??
-      'senest to år etter at studien er avsluttet',
+      ethics.retentionPeriod ?? 'senest to år etter at studien er avsluttet',
   }
 }
 
