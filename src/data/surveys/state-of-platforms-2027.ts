@@ -36,8 +36,8 @@ const usesKubernetes: QuestionCondition[] = [
 
 const EXCLUSIVE = ' (kan ikke kombineres)'
 
-export const stateOfPlatforms2026W3: SurveyDefinition = {
-  slug: 'state-of-platforms-2026-w3',
+export const stateOfPlatforms2027: SurveyDefinition = {
+  slug: 'state-of-platforms-2027',
   version: 1,
   title: 'Plattformundersøkelsen i offentlig sektor, runde 3',
   owners: [

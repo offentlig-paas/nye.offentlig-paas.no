@@ -7,15 +7,15 @@ import {
   validateSurveyDefinition,
 } from '@/lib/surveys/helpers'
 import { SurveyStatus, type SurveyAnswer } from '@/lib/surveys/types'
-import { aiAgents2026W2 } from '../ai-agents-2026-w2'
-import { stateOfPlatforms2026W3 } from '../state-of-platforms-2026-w3'
+import { aiAgents2027 } from '../ai-agents-2027'
+import { stateOfPlatforms2027 } from '../state-of-platforms-2027'
 
 const map = (pairs: [string, string | string[]][]) =>
   new Map<string, SurveyAnswer>(
     pairs.map(([questionId, value]) => [questionId, { questionId, value }])
   )
 
-describe.each([aiAgents2026W2, stateOfPlatforms2026W3])('$slug', survey => {
+describe.each([aiAgents2027, stateOfPlatforms2027])('$slug', survey => {
   it('is a valid draft', () => {
     expect(validateSurveyDefinition(survey)).toEqual([])
     expect(survey.status).toBe(SurveyStatus.Draft)
@@ -35,7 +35,7 @@ describe.each([aiAgents2026W2, stateOfPlatforms2026W3])('$slug', survey => {
 describe('AI Agents Wave 2 routing', () => {
   const contactIds = ['q24-email', 'q24-later-rounds']
   const count = (answers: Map<string, SurveyAnswer>) =>
-    [...getVisibleQuestionIds(aiAgents2026W2.sections, answers)].filter(
+    [...getVisibleQuestionIds(aiAgents2027.sections, answers)].filter(
       id => !contactIds.includes(id)
     ).length
 
@@ -70,7 +70,7 @@ describe('AI Agents Wave 2 routing', () => {
 
   it('ends the survey when there are no developers', () => {
     const ids = getVisibleSectionIds(
-      aiAgents2026W2.sections,
+      aiAgents2027.sections,
       map([['q4-dev-count', 'none']])
     )
     expect(ids).toEqual(['context'])
@@ -78,12 +78,12 @@ describe('AI Agents Wave 2 routing', () => {
 
   it('shows Q20b on its own page only after skill-loss', () => {
     const without = getVisibleSectionIds(
-      aiAgents2026W2.sections,
+      aiAgents2027.sections,
       map([['q20-concerns', ['security']]])
     )
     expect(without).not.toContain('skill-loss')
     const withIt = getVisibleSectionIds(
-      aiAgents2026W2.sections,
+      aiAgents2027.sections,
       map([['q20-concerns', ['skill-loss']]])
     )
     expect(withIt).toContain('skill-loss')
@@ -97,11 +97,11 @@ describe('State of Platforms Wave 3 routing', () => {
       ['q14-kubernetes', 'Nei'],
     ])
     const sections = getVisibleSectionIds(
-      stateOfPlatforms2026W3.sections,
+      stateOfPlatforms2027.sections,
       answers
     )
     expect(sections).not.toContain('maturity')
-    const ids = getVisibleQuestionIds(stateOfPlatforms2026W3.sections, answers)
+    const ids = getVisibleQuestionIds(stateOfPlatforms2027.sections, answers)
     for (const id of [
       'q8-platform-name',
       'q15-distributions',
@@ -117,7 +117,7 @@ describe('State of Platforms Wave 3 routing', () => {
   it('shows Q33b only for external AI services', () => {
     const visible = (q33a: string[]) =>
       getVisibleQuestionIds(
-        stateOfPlatforms2026W3.sections,
+        stateOfPlatforms2027.sections,
         map([
           ['q7-platform', 'Ja'],
           ['q33a-inference-model', q33a],
@@ -130,10 +130,10 @@ describe('State of Platforms Wave 3 routing', () => {
 
 describe('per-wave data controller', () => {
   it('uses the association for new waves and keeps earlier waves unchanged', () => {
-    expect(getConsentContact(aiAgents2026W2.slug)?.dataController).toBe(
+    expect(getConsentContact(aiAgents2027.slug)?.dataController).toBe(
       'foreningen Offentlig PAAS, ved styreleder'
     )
-    expect(getConsentContact(stateOfPlatforms2026W3.slug)?.dataController).toBe(
+    expect(getConsentContact(stateOfPlatforms2027.slug)?.dataController).toBe(
       'foreningen Offentlig PAAS, ved styreleder'
     )
     expect(getConsentContact('ai-agents-2026')?.dataController).toBe(

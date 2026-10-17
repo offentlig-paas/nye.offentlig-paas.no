@@ -6,8 +6,8 @@ import {
 import { SurveyStatus } from '@/lib/surveys/types'
 import { type ResearchEthics } from '@/lib/research/types'
 import { aiAgents2026 } from '@/data/surveys/ai-agents-2026'
-import { aiAgents2026W2 } from '@/data/surveys/ai-agents-2026-w2'
-import { stateOfPlatforms2026W3 } from '@/data/surveys/state-of-platforms-2026-w3'
+import { aiAgents2027 } from '@/data/surveys/ai-agents-2027'
+import { stateOfPlatforms2027 } from '@/data/surveys/state-of-platforms-2027'
 
 const sharedEthics = {
   dataController: 'Hans Kristian Flaatten (styreleder, Offentlig PaaS)',
@@ -175,7 +175,7 @@ export const researchProjects: ResearchProject[] = [
         waveName: 'Wave 2',
       },
       {
-        surveySlug: stateOfPlatforms2026W3.slug,
+        surveySlug: stateOfPlatforms2027.slug,
         waveName: 'Wave 3',
         description: 'Under planlegging. Ikke åpen for svar ennå.',
       },
@@ -325,7 +325,7 @@ export const researchProjects: ResearchProject[] = [
         waveName: 'Wave 1',
       },
       {
-        surveySlug: aiAgents2026W2.slug,
+        surveySlug: aiAgents2027.slug,
         waveName: 'Wave 2',
         description: 'Under planlegging. Ikke åpen for svar ennå.',
       },

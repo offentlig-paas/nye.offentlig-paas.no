@@ -72,8 +72,8 @@ const usesAgents: QuestionCondition[] = [
   { questionId: 'q10b-agent-production', noneOf: ['no-agents'] },
 ]
 
-export const aiAgents2026W2: SurveyDefinition = {
-  slug: 'ai-agents-2026-w2',
+export const aiAgents2027: SurveyDefinition = {
+  slug: 'ai-agents-2027',
   version: 1,
   title: 'KI-kodeverktøy og kodeagenter i norsk offentlig sektor, runde 2',
   owners: [

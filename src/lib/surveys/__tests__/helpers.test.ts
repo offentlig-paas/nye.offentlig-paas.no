@@ -40,7 +40,7 @@ describe('getSurveyForProject', () => {
 
   it('returns the first internal survey, skipping external ones', () => {
     expect(getSurveyForProject('state-of-platforms')?.slug).toBe(
-      'state-of-platforms-2026-w3'
+      'state-of-platforms-2027'
     )
   })
 
