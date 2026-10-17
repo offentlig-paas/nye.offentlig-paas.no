@@ -285,12 +285,15 @@ export const adminSurveyRouter = router({
       const sensitiveIds = new Set(survey.sensitiveQuestionIds ?? [])
       const memberNames = getMemberNameSet()
 
-      const result = await repository.findBySurveyPaginated(
-        survey.slug,
-        input.offset,
-        input.limit,
-        input.pilot
-      )
+      const [result, pilotCount] = await Promise.all([
+        repository.findBySurveyPaginated(
+          survey.slug,
+          input.offset,
+          input.limit,
+          input.pilot
+        ),
+        repository.countBySurvey(survey.slug, true),
+      ])
 
       return {
         responses: result.responses.map(r => {
@@ -312,6 +315,7 @@ export const adminSurveyRouter = router({
           }
         }),
         total: result.total,
+        showPilotTab: survey.status === SurveyStatus.Pilot || pilotCount > 0,
         offset: input.offset,
         limit: input.limit,
       }

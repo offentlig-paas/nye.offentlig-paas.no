@@ -106,34 +106,36 @@ export function AdminSurveyResponsesClient({
 
   return (
     <div className="space-y-4">
-      <nav className="flex gap-4 border-b border-zinc-200 text-sm dark:border-zinc-700">
-        {[
-          {
-            label: 'Besvarelser',
-            href: `/admin/forskning/${slug}/responses`,
-            active: !pilot,
-          },
-          {
-            label: 'Pilot',
-            href: `/admin/forskning/${slug}/responses?pilot=1`,
-            active: pilot,
-          },
-        ].map(tab => (
-          <Link
-            key={tab.label}
-            href={tab.href}
-            aria-current={tab.active ? 'page' : undefined}
-            className={clsx(
-              '-mb-px border-b-2 px-1 pb-2 font-medium',
-              tab.active
-                ? 'border-teal-500 text-teal-600 dark:text-teal-400'
-                : 'border-transparent text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200'
-            )}
-          >
-            {tab.label}
-          </Link>
-        ))}
-      </nav>
+      {initialData.showPilotTab && (
+        <nav className="flex gap-4 border-b border-zinc-200 text-sm dark:border-zinc-700">
+          {[
+            {
+              label: 'Besvarelser',
+              href: `/admin/forskning/${slug}/responses`,
+              active: !pilot,
+            },
+            {
+              label: 'Pilot',
+              href: `/admin/forskning/${slug}/responses?pilot=1`,
+              active: pilot,
+            },
+          ].map(tab => (
+            <Link
+              key={tab.label}
+              href={tab.href}
+              aria-current={tab.active ? 'page' : undefined}
+              className={clsx(
+                '-mb-px border-b-2 px-1 pb-2 font-medium',
+                tab.active
+                  ? 'border-teal-500 text-teal-600 dark:text-teal-400'
+                  : 'border-transparent text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200'
+              )}
+            >
+              {tab.label}
+            </Link>
+          ))}
+        </nav>
+      )}
       <div className="flex items-center justify-between">
         <p className="text-sm text-zinc-500 dark:text-zinc-400">
           {pilot
