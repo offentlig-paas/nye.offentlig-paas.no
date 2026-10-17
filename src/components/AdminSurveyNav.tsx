@@ -7,6 +7,7 @@ import {
   TableCellsIcon,
   PresentationChartBarIcon,
   BuildingOffice2Icon,
+  EyeIcon,
 } from '@heroicons/react/24/outline'
 import type { SurveyRole } from '@/lib/surveys/types'
 
@@ -46,6 +47,13 @@ export function AdminSurveyNav({ surveySlug, role }: AdminSurveyNavProps) {
       icon: TableCellsIcon,
       current: pathname === `/admin/forskning/${surveySlug}/responses`,
       ownerOnly: true,
+    },
+    {
+      name: 'Forhåndsvisning',
+      href: `/admin/forskning/${surveySlug}/forhandsvisning`,
+      icon: EyeIcon,
+      current: pathname === `/admin/forskning/${surveySlug}/forhandsvisning`,
+      ownerOnly: false,
     },
   ]
 

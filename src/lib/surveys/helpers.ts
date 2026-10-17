@@ -12,6 +12,7 @@ import {
   type QuestionOption,
   type RadioQuestion,
   type ConsentContact,
+  type QuestionCondition,
 } from './types'
 
 export function getSurvey(slug: string): SurveyDefinition | undefined {
@@ -93,26 +94,37 @@ export function getAccessibleSurveys(user: {
 }
 
 /**
- * Evaluate section-level branching and return the ordered list of section IDs
- * a respondent should see based on their current answers.
+ * Evaluate branching and return the ordered section IDs and the set of
+ * question IDs a respondent should see based on their current answers.
  *
- * Branching works by checking selected answers for `skipToSection`. When a
- * radio/checkbox option with `skipToSection` is selected, the survey jumps
- * directly to that section (skipping everything in between). The special
- * value "end" skips to the end of the survey.
+ * Section branching: when a radio/checkbox option with `skipToSection` is
+ * selected, the survey jumps directly to that section. The special value
+ * "end" skips to the end of the survey.
+ *
+ * Question conditions: a question with `showIf` is visible only when every
+ * condition is met against an earlier visible question. A section whose
+ * questions are all hidden is skipped.
  */
-export function getVisibleSectionIds(
+function getVisibility(
   sections: SurveySection[],
   answers: Map<string, SurveyAnswer>
-): string[] {
-  const result: string[] = []
+): { sectionIds: string[]; questionIds: Set<string> } {
+  const sectionIds: string[] = []
+  const questionIds = new Set<string>()
   let i = 0
 
   while (i < sections.length) {
     const section = sections[i]!
-    result.push(section.id)
+    const visibleQuestions = section.questions.filter(q => {
+      const visible = conditionsMet(q.showIf, answers, questionIds)
+      if (visible) questionIds.add(q.id)
+      return visible
+    })
+    if (section.questions.length === 0 || visibleQuestions.length > 0) {
+      sectionIds.push(section.id)
+    }
 
-    const jumpTarget = findJumpTarget(section, answers)
+    const jumpTarget = findJumpTarget(visibleQuestions, answers)
     if (jumpTarget === 'end') break
     if (jumpTarget) {
       const targetIdx = sections.findIndex(s => s.id === jumpTarget)
@@ -125,14 +137,63 @@ export function getVisibleSectionIds(
     i++
   }
 
-  return result
+  return { sectionIds, questionIds }
+}
+
+export function getVisibleSectionIds(
+  sections: SurveySection[],
+  answers: Map<string, SurveyAnswer>
+): string[] {
+  return getVisibility(sections, answers).sectionIds
+}
+
+/**
+ * Collect all question IDs that are visible: in a visible section and with
+ * all `showIf` conditions met.
+ */
+export function getVisibleQuestionIds(
+  sections: SurveySection[],
+  answers: Map<string, SurveyAnswer>
+): Set<string> {
+  return getVisibility(sections, answers).questionIds
+}
+
+/** Whether a question is required given the current answers. */
+export function isQuestionRequired(
+  question: SurveyQuestion,
+  answers: Map<string, SurveyAnswer>,
+  visibleQuestionIds: Set<string>
+): boolean {
+  if (question.required) return true
+  if (!question.requiredIf) return false
+  return conditionsMet(question.requiredIf, answers, visibleQuestionIds)
+}
+
+function conditionsMet(
+  conditions: QuestionCondition[] | undefined,
+  answers: Map<string, SurveyAnswer>,
+  visibleQuestionIds: Set<string>
+): boolean {
+  if (!conditions) return true
+  return conditions.every(c => {
+    if (!visibleQuestionIds.has(c.questionId)) return false
+    const answer = answers.get(c.questionId)
+    const selected = !answer
+      ? []
+      : Array.isArray(answer.value)
+        ? answer.value
+        : [answer.value]
+    if (c.anyOf && !c.anyOf.some(v => selected.includes(v))) return false
+    if (c.noneOf?.some(v => selected.includes(v))) return false
+    return true
+  })
 }
 
 function findJumpTarget(
-  section: SurveySection,
+  questions: SurveyQuestion[],
   answers: Map<string, SurveyAnswer>
 ): string | undefined {
-  for (const question of section.questions) {
+  for (const question of questions) {
     if (question.type !== 'radio' && question.type !== 'checkbox') continue
 
     const answer = answers.get(question.id)
@@ -156,7 +217,9 @@ function findJumpTarget(
  * - Section IDs are unique
  * - Question IDs are unique across all sections
  * - skipToSection references valid section IDs or "end"
- * - Radio/checkbox questions have at least one option
+ * - Radio/checkbox/matrix questions have at least one option
+ * - Matrix questions have at least one row
+ * - showIf/requiredIf reference an earlier question
  */
 export function validateSurveyDefinition(survey: SurveyDefinition): string[] {
   const errors: string[] = []
@@ -175,9 +238,28 @@ export function validateSurveyDefinition(survey: SurveyDefinition): string[] {
       if (questionIds.has(question.id)) {
         errors.push(`Duplicate question ID: "${question.id}"`)
       }
+
+      for (const c of [
+        ...(question.showIf ?? []),
+        ...(question.requiredIf ?? []),
+      ]) {
+        if (!questionIds.has(c.questionId)) {
+          errors.push(
+            `Question "${question.id}" has a condition on "${c.questionId}", which is not an earlier question`
+          )
+        }
+      }
       questionIds.add(question.id)
 
-      if (question.type === 'radio' || question.type === 'checkbox') {
+      if (question.type === 'matrix' && question.rows.length === 0) {
+        errors.push(`Question "${question.id}" has no rows`)
+      }
+
+      if (
+        question.type === 'radio' ||
+        question.type === 'checkbox' ||
+        question.type === 'matrix'
+      ) {
         if (question.options.length === 0) {
           errors.push(`Question "${question.id}" has no options`)
         }
@@ -211,32 +293,13 @@ export function validateSurveyDefinition(survey: SurveyDefinition): string[] {
   return errors
 }
 
-/**
- * Collect all question IDs that belong to visible (non-skipped) sections.
- */
-export function getVisibleQuestionIds(
-  sections: SurveySection[],
-  answers: Map<string, SurveyAnswer>
-): Set<string> {
-  const visibleSectionIds = new Set(getVisibleSectionIds(sections, answers))
-  const ids = new Set<string>()
-
-  for (const section of sections) {
-    if (!visibleSectionIds.has(section.id)) continue
-    for (const question of section.questions) {
-      ids.add(question.id)
-    }
-  }
-
-  return ids
-}
-
 const SECONDS_PER_QUESTION: Record<SurveyQuestion['type'], number> = {
   radio: 15,
   checkbox: 20,
   text: 20,
   typeahead: 15,
   textarea: 45,
+  matrix: 60,
 }
 
 /**
@@ -302,6 +365,7 @@ export function buildConsentText(
   contact: ConsentContact
 ): string {
   const { consent } = survey
+  if (consent.fullText) return consent.fullText
 
   const aboutSection = consent.aboutText ?? survey.description ?? ''
 
