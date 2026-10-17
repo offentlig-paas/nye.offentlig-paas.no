@@ -4,6 +4,7 @@ import { SurveyResponseRepository } from '../repository'
 import { SurveyStatus } from '@/lib/surveys/types'
 import type { SurveyDefinition } from '@/lib/surveys/types'
 import * as validation from '@/lib/surveys/validation'
+import { aiAgents2027 } from '@/data/surveys/ai-agents-2027'
 
 vi.mock('../repository')
 
@@ -181,6 +182,47 @@ describe('SurveyResponseService', () => {
         submissionId: 'sub-sensitive',
         surveySlug: 'test-survey',
         answers: [expect.objectContaining({ questionId: 'q-email' })],
+      })
+    })
+
+    it('stores the later-rounds consent with the address in contact info', async () => {
+      const answers = [
+        { questionId: 'q24-interview', value: 'no' },
+        { questionId: 'q24-email', value: 'ola@test.no' },
+        { questionId: 'q24-later-rounds', value: ['yes'] },
+      ]
+      vi.spyOn(validation, 'validateAnswers').mockReturnValue({
+        valid: true,
+        errors: [],
+        sanitizedAnswers: answers,
+      })
+      mockRepo.create.mockResolvedValue({
+        _id: 'r',
+        surveySlug: aiAgents2027.slug,
+        surveyVersion: 1,
+        answers: [],
+        submittedAt: '2026-01-01T00:00:00Z',
+      })
+      mockRepo.createContactInfo.mockResolvedValue()
+
+      await service.submitResponse(aiAgents2027, answers, {}, 'sub-later')
+
+      expect(mockRepo.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          answers: [expect.objectContaining({ questionId: 'q24-interview' })],
+        }),
+        'sub-later'
+      )
+      expect(mockRepo.createContactInfo).toHaveBeenCalledWith({
+        submissionId: 'sub-later',
+        surveySlug: aiAgents2027.slug,
+        answers: [
+          expect.objectContaining({ questionId: 'q24-email' }),
+          expect.objectContaining({
+            questionId: 'q24-later-rounds',
+            arrayValue: ['yes'],
+          }),
+        ],
       })
     })
 
