@@ -2,6 +2,7 @@ import { router, publicProcedure } from '../trpc'
 import { z } from 'zod'
 import { getSurvey } from '@/lib/surveys/helpers'
 import { SurveyStatus } from '@/lib/surveys/types'
+import { isValidPilotToken } from '@/lib/surveys/pilot'
 import { surveyResponseService } from '@/domains/survey-response/service'
 import { SurveyResponseRepository } from '@/domains/survey-response/repository'
 import { aggregateSurveyResults } from '@/lib/surveys/aggregation'
@@ -28,6 +29,7 @@ const submitSurveySchema = z.object({
   answers: z.array(surveyAnswerSchema).max(MAX_ANSWERS),
   honeypot: z.string().optional(),
   durationSeconds: z.number().int().min(0).max(86_400).optional(),
+  pilotToken: z.string().max(MAX_ID_LENGTH).optional(),
 })
 
 export const surveyRouter = router({
@@ -46,7 +48,10 @@ export const surveyRouter = router({
         })
       }
 
-      if (survey.status !== SurveyStatus.Open) {
+      const pilot =
+        survey.status === SurveyStatus.Pilot &&
+        isValidPilotToken(input.pilotToken)
+      if (survey.status !== SurveyStatus.Open && !pilot) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
           message: 'Undersøkelsen er ikke åpen for svar',
@@ -74,7 +79,8 @@ export const surveyRouter = router({
           ip,
           durationSeconds: input.durationSeconds,
         },
-        input.submissionId
+        input.submissionId,
+        pilot
       )
 
       return { success: true }
