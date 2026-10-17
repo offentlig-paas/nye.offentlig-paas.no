@@ -9,6 +9,8 @@ export enum SurveyStatus {
 export interface SurveyConsent {
   aboutText?: string
   dataCollectionText: string
+  /** Replaces the generated body of the «Personvern og GDPR» section. */
+  privacyText?: string
   additionalSections?: { heading: string; body: string }[]
 }
 

@@ -319,7 +319,7 @@ export function buildConsentText(
 
     additionalText,
 
-    `**Personvern og GDPR**\nBehandlingsgrunnlaget er ${contact.legalBasis}. Ingen enkeltpersoner eller organisasjoner vil bli identifisert i publikasjoner. Svarene lagres og slettes ${contact.retentionPeriod}.\n\nDu har rett til å be om innsyn, retting eller sletting av dine opplysninger. Du kan også klage til Datatilsynet. Kontakt oss på ${contact.contactEmail} hvis du har spørsmål.`,
+    `**Personvern og GDPR**\n${consent.privacyText ?? `Behandlingsgrunnlaget er ${contact.legalBasis}. Ingen enkeltpersoner eller organisasjoner vil bli identifisert i publikasjoner. Svarene lagres og slettes ${contact.retentionPeriod}.`}\n\nDu har rett til å be om innsyn, retting eller sletting av dine opplysninger. Du kan også klage til Datatilsynet. Kontakt oss på ${contact.contactEmail} hvis du har spørsmål.`,
 
     `**Frivillig deltakelse**\nDet er helt frivillig å delta, og du kan avslutte når som helst uten å oppgi grunn. Ved å gå videre samtykker du til deltakelse.`,
   ]
