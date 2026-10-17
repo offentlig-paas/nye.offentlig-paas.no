@@ -23,8 +23,10 @@ vi.mock('@/lib/trpc/client', () => ({
 const mockLoadDraft = vi.fn().mockReturnValue(null)
 const mockClearDraft = vi.fn()
 
+const mockUseDraftPersistence = vi.fn()
+
 vi.mock('@/lib/surveys/useDraftPersistence', () => ({
-  useDraftPersistence: vi.fn(),
+  useDraftPersistence: (...args: unknown[]) => mockUseDraftPersistence(...args),
   loadDraft: (...args: unknown[]) => mockLoadDraft(...args),
   clearDraft: (...args: unknown[]) => mockClearDraft(...args),
 }))
@@ -475,6 +477,42 @@ describe('SurveyForm', () => {
 
       await user.type(screen.getByLabelText(/Your name/), 'Alice')
       expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    })
+  })
+
+  describe('preview and drafts', () => {
+    it('never submits in preview and uses a separate draft key', async () => {
+      mockLoadDraft.mockReturnValue(null)
+      const user = userEvent.setup()
+      render(<SurveyForm survey={simpleSurvey} contact={contact} preview />)
+      expect(mockLoadDraft).toHaveBeenCalledWith('test-survey:preview', 1)
+      expect(mockUseDraftPersistence.mock.calls.at(-1)?.[0]).toBe(
+        'test-survey:preview'
+      )
+      await acceptConsentAndStart(user)
+
+      await user.type(screen.getByLabelText(/Your name/), 'Alice')
+      await user.click(screen.getByRole('button', { name: /neste/i }))
+      await user.click(screen.getByLabelText('Developer'))
+      await user.click(screen.getByRole('button', { name: /send inn/i }))
+
+      expect(mockMutateAsync).not.toHaveBeenCalled()
+      expect(screen.getByText(/ble ikke lagret/i)).toBeInTheDocument()
+    })
+
+    it('restores the shuffle seed from the draft', () => {
+      mockLoadDraft.mockReturnValue({
+        answers: [],
+        currentSectionIndex: 0,
+        consentAccepted: false,
+        showConsent: true,
+        startTime: null,
+        submissionId: '00000000-0000-0000-0000-000000000002',
+        sessionSeed: 42,
+      })
+      render(<SurveyForm survey={simpleSurvey} contact={contact} />)
+      expect(mockLoadDraft).toHaveBeenCalledWith('test-survey', 1)
+      expect(mockUseDraftPersistence.mock.calls.at(-1)?.[9]).toBe(42)
     })
   })
 

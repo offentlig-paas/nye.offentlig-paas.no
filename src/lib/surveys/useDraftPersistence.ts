@@ -10,6 +10,8 @@ interface DraftState {
   showConsent: boolean
   startTime: number | null
   submissionId: string
+  /** Seed for shuffled option order. Missing in drafts saved before it was added. */
+  sessionSeed?: number
 }
 
 function storageKey(slug: string, version: number): string {
@@ -65,7 +67,8 @@ export function useDraftPersistence(
   showConsent: boolean,
   startTimeRef: RefObject<number | null>,
   isSuccess: boolean,
-  submissionIdRef: RefObject<string>
+  submissionIdRef: RefObject<string>,
+  sessionSeed: number
 ) {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -79,6 +82,7 @@ export function useDraftPersistence(
         showConsent,
         startTime: startTimeRef.current,
         submissionId: submissionIdRef.current,
+        sessionSeed,
       }
       sessionStorage.setItem(storageKey(slug, version), JSON.stringify(state))
     } catch {
@@ -94,6 +98,7 @@ export function useDraftPersistence(
     startTimeRef,
     isSuccess,
     submissionIdRef,
+    sessionSeed,
   ])
 
   useEffect(() => {

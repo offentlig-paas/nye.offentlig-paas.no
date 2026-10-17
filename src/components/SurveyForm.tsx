@@ -39,9 +39,11 @@ interface SurveyFormProps {
 }
 
 export function SurveyForm({ survey, contact, preview }: SurveyFormProps) {
+  // Preview drafts use their own key so they never prefill the public form.
+  const draftKey = preview ? `${survey.slug}:preview` : survey.slug
   const draft = useMemo(
-    () => loadDraft(survey.slug, survey.version),
-    [survey.slug, survey.version]
+    () => loadDraft(draftKey, survey.version),
+    [draftKey, survey.version]
   )
   const [answers, setAnswers] = useState<Map<string, SurveyAnswer>>(() =>
     draft ? new Map(draft.answers) : new Map()
@@ -63,7 +65,9 @@ export function SurveyForm({ survey, contact, preview }: SurveyFormProps) {
   const submittingRef = useRef(false)
   const submissionIdRef = useRef(draft?.submissionId ?? crypto.randomUUID())
   const startTimeRef = useRef<number | null>(draft?.startTime ?? null)
-  const [sessionSeed] = useState(() => Math.floor(Math.random() * 2147483647))
+  const [sessionSeed] = useState(
+    () => draft?.sessionSeed ?? Math.floor(Math.random() * 2147483647)
+  )
   const [stepAnnouncement, setStepAnnouncement] = useState('')
 
   const estimatedMinutes = useMemo(
@@ -93,7 +97,7 @@ export function SurveyForm({ survey, contact, preview }: SurveyFormProps) {
   }, [focusTrigger])
 
   useDraftPersistence(
-    survey.slug,
+    draftKey,
     survey.version,
     answers,
     currentSectionIndex,
@@ -101,7 +105,8 @@ export function SurveyForm({ survey, contact, preview }: SurveyFormProps) {
     showConsent,
     startTimeRef,
     isSuccess,
-    submissionIdRef
+    submissionIdRef,
+    sessionSeed
   )
 
   const submitMutation = trpc.survey.submit.useMutation()
@@ -218,7 +223,7 @@ export function SurveyForm({ survey, contact, preview }: SurveyFormProps) {
 
     if (preview) {
       setIsSuccess(true)
-      clearDraft(survey.slug, survey.version)
+      clearDraft(draftKey, survey.version)
       setIsSubmitting(false)
       return
     }
@@ -240,7 +245,7 @@ export function SurveyForm({ survey, contact, preview }: SurveyFormProps) {
         return
       }
       setIsSuccess(true)
-      clearDraft(survey.slug, survey.version)
+      clearDraft(draftKey, survey.version)
     } catch (error) {
       submittingRef.current = false
       setSubmitError(
@@ -256,6 +261,7 @@ export function SurveyForm({ survey, contact, preview }: SurveyFormProps) {
     survey.slug,
     survey.version,
     preview,
+    draftKey,
   ])
 
   if (isSuccess) {
