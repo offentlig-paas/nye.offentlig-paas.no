@@ -3,10 +3,17 @@
 import { useState } from 'react'
 import Link from 'next/link'
 
-function pilotInvitation(title: string, url: string): string {
+function pilotInvitation(
+  title: string,
+  url: string,
+  estimatedMinutes?: string
+): string {
+  const time = estimatedMinutes
+    ? `\n\nDet tar omtrent ${estimatedMinutes} minutter.`
+    : ''
   return `Hei!
 
-Vi tester spørreskjemaet «${title}» før det åpnes, og vil gjerne at du prøver det.
+Vi tester spørreskjemaet «${title}» før det åpnes, og vil gjerne at du prøver det.${time}
 
 Svarene dine brukes bare til å teste skjemaet, og de slettes før undersøkelsen åpnes.
 
@@ -29,10 +36,12 @@ export function AdminSurveyPilotLink({
   slug,
   title,
   url,
+  estimatedMinutes,
 }: {
   slug: string
   title: string
   url: string | null
+  estimatedMinutes?: string
 }) {
   const [copied, setCopied] = useState<string | null>(null)
 
@@ -73,7 +82,9 @@ export function AdminSurveyPilotLink({
               {copied === 'url' ? 'Kopiert' : 'Kopier lenke'}
             </button>
             <button
-              onClick={() => copy('mail', pilotInvitation(title, url))}
+              onClick={() =>
+                copy('mail', pilotInvitation(title, url, estimatedMinutes))
+              }
               className={buttonClass}
             >
               {copied === 'mail' ? 'Kopiert' : 'Kopier e-posttekst'}

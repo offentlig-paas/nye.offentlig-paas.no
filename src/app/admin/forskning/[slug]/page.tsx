@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import { AdminSurveyOverviewClient } from '@/components/AdminSurveyOverviewClient'
 import { AdminSurveyPilotLink } from '@/components/AdminSurveyPilotLink'
 import { createCaller } from '@/server/root'
+import { getSurvey } from '@/lib/surveys/helpers'
 
 interface AdminSurveyOverviewPageProps {
   params: Promise<{ slug: string }>
@@ -36,6 +37,7 @@ async function OverviewContent({ slug }: { slug: string }) {
           slug={slug}
           title={overview.survey.title}
           url={pilotLink.url}
+          estimatedMinutes={getSurvey(slug)?.estimatedMinutes}
         />
       )}
       <AdminSurveyOverviewClient overview={overview} />

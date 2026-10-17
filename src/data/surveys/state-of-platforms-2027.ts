@@ -38,6 +38,7 @@ export const stateOfPlatforms2027: SurveyDefinition = {
   slug: 'state-of-platforms-2027',
   version: 1,
   title: 'Plattformundersøkelsen i offentlig sektor, runde 3',
+  estimatedMinutes: '12–15',
   owners: [
     {
       name: 'Hans Kristian Flaatten',

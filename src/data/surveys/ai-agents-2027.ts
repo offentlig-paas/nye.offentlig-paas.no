@@ -76,6 +76,7 @@ export const aiAgents2027: SurveyDefinition = {
   slug: 'ai-agents-2027',
   version: 1,
   title: 'KI-kodeverktøy og kodeagenter i norsk offentlig sektor, runde 2',
+  estimatedMinutes: '10–15',
   owners: [
     {
       name: 'Hans Kristian Flaatten',

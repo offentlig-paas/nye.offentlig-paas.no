@@ -39,6 +39,8 @@ export interface SurveyDefinition {
   researchers?: SlackUser[]
   organizationQuestionId?: string
   sensitiveQuestionIds?: string[]
+  /** Shown in pilot invitations, e.g. "10–15". */
+  estimatedMinutes?: string
   resultsConfig?: ResultsConfig
 }
 

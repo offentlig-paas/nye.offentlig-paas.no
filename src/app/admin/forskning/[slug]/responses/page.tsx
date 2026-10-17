@@ -74,6 +74,7 @@ async function ResponsesContent({
           slug={slug}
           title={getSurvey(slug)?.title ?? slug}
           url={pilotLink.url}
+          estimatedMinutes={getSurvey(slug)?.estimatedMinutes}
         />
       )}
       <AdminSurveyResponsesClient
