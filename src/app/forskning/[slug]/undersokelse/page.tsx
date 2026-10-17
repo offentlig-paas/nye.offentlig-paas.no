@@ -25,6 +25,8 @@ export async function generateMetadata({
   return {
     title: survey?.title ?? `Undersøkelse — ${project.title}`,
     description: survey?.description ?? project.description,
+    robots: { index: false, follow: false },
+    referrer: 'strict-origin-when-cross-origin',
   }
 }
 
