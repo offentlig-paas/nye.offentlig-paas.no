@@ -9,7 +9,7 @@ import { SurveyResponseRepository } from '@/domains/survey-response/repository'
 import { getAccessibleSurveys } from '@/lib/surveys/helpers'
 import { getSlackUsersForMember } from '@/lib/members-slack'
 import { members } from '@/data/members'
-import type { SurveyDefinition } from '@/lib/surveys/types'
+import { SurveyStatus, type SurveyDefinition } from '@/lib/surveys/types'
 
 const repository = new SurveyResponseRepository()
 
@@ -384,6 +384,12 @@ export const adminSurveyRouter = router({
         throw new TRPCError({
           code: 'FORBIDDEN',
           message: 'Kun eiere av undersøkelsen kan slette pilotsvar',
+        })
+      }
+      if (ctx.survey.status !== SurveyStatus.Pilot) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Pilotsvar kan bare slettes mens undersøkelsen er i pilot',
         })
       }
       const deleted = await repository.deletePilotBySurvey(ctx.survey.slug)
