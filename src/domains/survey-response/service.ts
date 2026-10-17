@@ -27,7 +27,8 @@ class SurveyResponseService {
     survey: SurveyDefinition,
     answers: SurveyAnswer[],
     metadata: { userAgent?: string; ip?: string; durationSeconds?: number },
-    submissionId: string
+    submissionId: string,
+    pilot = false
   ) {
     const result = validateAnswers(survey, answers)
     if (!result.valid) {
@@ -65,6 +66,7 @@ class SurveyResponseService {
       surveySlug: survey.slug,
       surveyVersion: survey.version,
       answers: regularAnswers,
+      ...(pilot && { pilot }),
       metadata: {
         deviceCategory: categorizeDevice(metadata.userAgent),
         submissionSource: 'web',
@@ -81,6 +83,7 @@ class SurveyResponseService {
         submissionId,
         surveySlug: survey.slug,
         answers: sensitiveAnswers,
+        ...(pilot && { pilot }),
       })
     }
 

@@ -4,6 +4,7 @@ export interface SurveyResponse {
   surveyVersion: number
   answers: SurveyResponseAnswer[]
   submittedAt: string
+  pilot?: boolean
   metadata?: SurveyResponseMetadata
   organizationOverride?: OrganizationOverride
 }
@@ -34,6 +35,7 @@ export interface CreateSurveyResponseInput {
   surveySlug: string
   surveyVersion: number
   answers: SurveyResponseAnswer[]
+  pilot?: boolean
   metadata?: SurveyResponseMetadata
 }
 
@@ -41,4 +43,5 @@ export interface CreateSurveyContactInput {
   submissionId: string
   surveySlug: string
   answers: SurveyResponseAnswer[]
+  pilot?: boolean
 }
