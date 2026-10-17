@@ -66,7 +66,7 @@ export const stateOfPlatforms2027: SurveyDefinition = {
   },
   thankYouMessage:
     'Takk for at du tok deg tid til å svare! Resultatene publiseres som samlede tall fra Offentlig PAAS. Har du spørsmål, kontakt oss på kontakt@offentlig-paas.no.',
-  status: SurveyStatus.Draft,
+  status: SurveyStatus.Pilot,
   sections: [
     {
       id: 'organization',

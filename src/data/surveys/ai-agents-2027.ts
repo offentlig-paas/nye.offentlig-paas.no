@@ -114,7 +114,7 @@ export const aiAgents2027: SurveyDefinition = {
   },
   thankYouMessage:
     'Takk for at du tok deg tid til å svare! Resultatene publiseres av Offentlig PAAS. Har du spørsmål, kontakt oss på kontakt@offentlig-paas.no.',
-  status: SurveyStatus.Draft,
+  status: SurveyStatus.Pilot,
   sections: [
     {
       id: 'context',

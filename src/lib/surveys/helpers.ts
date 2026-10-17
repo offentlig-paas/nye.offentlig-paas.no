@@ -27,7 +27,7 @@ export function getSurvey(slug: string): SurveyDefinition | undefined {
  */
 export function getSurveyForProject(
   projectSlug: string,
-  purpose: 'form' | 'results'
+  purpose: 'form' | 'results' | 'pilot'
 ): SurveyDefinition | undefined {
   const project = researchProjects.find(p => p.slug === projectSlug)
   const linked = (project?.surveys ?? [])
@@ -38,9 +38,14 @@ export function getSurveyForProject(
   if (purpose === 'results') {
     return linked.find(s => s.resultsConfig?.published)
   }
+  if (purpose === 'pilot') {
+    return linked.find(s => s.status === SurveyStatus.Pilot)
+  }
   return (
     linked.find(s => s.status === SurveyStatus.Open) ??
-    linked.find(s => s.status !== SurveyStatus.Draft)
+    linked.find(
+      s => s.status !== SurveyStatus.Draft && s.status !== SurveyStatus.Pilot
+    )
   )
 }
 
