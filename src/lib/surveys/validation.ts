@@ -21,9 +21,15 @@ export function validateQuestion(
   required: boolean = question.required
 ): string | null {
   if (required) {
-    if (!answer) return 'Dette feltet er påkrevd'
+    if (!answer) {
+      return question.type === 'matrix'
+        ? 'Svar på alle radene'
+        : 'Dette feltet er påkrevd'
+    }
     if (Array.isArray(answer.value) && answer.value.length === 0) {
-      return 'Velg minst ett alternativ'
+      return question.type === 'matrix'
+        ? 'Svar på alle radene'
+        : 'Velg minst ett alternativ'
     }
     if (typeof answer.value === 'string' && answer.value.trim() === '') {
       return 'Dette feltet er påkrevd'

@@ -194,6 +194,8 @@ describe('matrix', () => {
       'Svar på alle radene'
     )
     expect(validateQuestion(q, answer(['scm:read']), false)).toBeNull()
+    expect(validateQuestion(q, answer([]))).toBe('Svar på alle radene')
+    expect(validateQuestion(q, undefined)).toBe('Svar på alle radene')
   })
 
   it('rejects unknown cells and duplicate rows', () => {
