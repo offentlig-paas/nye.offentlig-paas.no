@@ -387,14 +387,17 @@ export default async function ResearchProjectPage({
               projectSlug={project.slug}
             />
             <DatasetsSection datasets={project.datasets} />
-            <EthicsSection ethics={project.ethics} />
+            <EthicsSection
+              ethics={project.ethics}
+              wave={earlierWavesLabel(project.waves)}
+            />
             {project.waves
               ?.filter(w => w.ethics)
               .map(w => (
                 <EthicsSection
                   key={w.name}
                   ethics={w.ethics}
-                  wave={`${w.name} (${w.year})`}
+                  wave={`${waveLabel(w.name)} (${w.year})`}
                 />
               ))}
             {articles.length > 0 && (
@@ -736,6 +739,28 @@ async function SurveysSection({
       </ul>
     </section>
   )
+}
+
+/** "Wave 3" → "Bølge 3" */
+function waveLabel(name: string): string {
+  return name.replace(/^Wave /, 'Bølge ')
+}
+
+/**
+ * Label for the project-level ethics block when some waves have their own
+ * ethics: it then applies to the remaining (earlier) waves.
+ */
+function earlierWavesLabel(
+  waves: ResearchProject['waves']
+): string | undefined {
+  if (!waves?.some(w => w.ethics)) return undefined
+  const numbers = waves
+    .filter(w => !w.ethics)
+    .map(w => waveLabel(w.name).replace(/^Bølge /, ''))
+  if (numbers.length === 0) return undefined
+  return numbers.length === 1
+    ? `Bølge ${numbers[0]}`
+    : `Bølge ${numbers[0]}–${numbers[numbers.length - 1]}`
 }
 
 const ethicsLabels: Record<
