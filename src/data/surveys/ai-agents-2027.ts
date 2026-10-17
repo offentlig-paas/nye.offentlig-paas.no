@@ -662,7 +662,10 @@ export const aiAgents2027: SurveyDefinition = {
               label: 'Delte retningslinjer, wiki eller beste praksis',
               value: 'shared-resources',
             },
-            { label: 'Uformell deling mellom utviklere', value: 'informal' },
+            {
+              label: 'Uformell kunnskapsdeling mellom utviklere',
+              value: 'informal',
+            },
             {
               label: 'Plattformteamet tilbyr KI-verktøy og oppsett',
               value: 'platform-team',
