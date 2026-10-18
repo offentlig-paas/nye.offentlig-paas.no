@@ -74,7 +74,7 @@ const usesAgents: QuestionCondition[] = [
 
 export const aiAgents2027: SurveyDefinition = {
   slug: 'ai-agents-2027',
-  version: 1,
+  version: 2,
   title: 'KI-kodeverktøy og kodeagenter i norsk offentlig sektor, runde 2',
   estimatedMinutes: '10–15',
   owners: [
@@ -642,6 +642,43 @@ export const aiAgents2027: SurveyDefinition = {
           ],
         },
         {
+          id: 'q15b-support-forms',
+          type: 'checkbox',
+          title:
+            'Hvilke former for støtte og organisering rundt KI-kodeverktøy finnes i organisasjonen din?',
+          description: 'Velg alle som passer.',
+          required: false,
+          options: [
+            {
+              label: 'Eget KI-team eller kompetansesenter for KI',
+              value: 'ai-team',
+            },
+            {
+              label: 'Champions-nettverk eller faste ressurspersoner',
+              value: 'champions',
+            },
+            { label: 'Organisert opplæring eller kurs', value: 'training' },
+            {
+              label: 'Delte retningslinjer, wiki eller beste praksis',
+              value: 'shared-resources',
+            },
+            {
+              label: 'Uformell kunnskapsdeling mellom utviklere',
+              value: 'informal',
+            },
+            {
+              label: 'Plattformteamet tilbyr KI-verktøy og oppsett',
+              value: 'platform-team',
+            },
+            {
+              label: 'Faste fagmøter eller erfaringsdeling',
+              value: 'communities',
+            },
+            { label: 'Ingen av disse', value: 'none', exclusive: true },
+            { label: 'Vet ikke', value: 'unknown', exclusive: true },
+          ],
+        },
+        {
           id: 'q16-decision-authority',
           type: 'radio',
           title:
@@ -1070,7 +1107,7 @@ export const aiAgents2027: SurveyDefinition = {
           type: 'matrix',
           title: 'Hvilken tilgang får kodeagenter i teamet ditt i praksis?',
           description:
-            'Svar ut fra hva agentene faktisk kan gjøre i dag, ikke hva retningslinjene sier. Velg ett svar per rad.',
+            'Svar ut fra hva agentene faktisk kan gjøre i dag, ikke hva retningslinjene sier. «Bare indirekte» betyr at agenten ser data som en person eller et skript gir den, uten egen tilgang til systemet. Velg ett svar per rad.',
           required: true,
           showIf: usesAgents,
           rows: [
@@ -1096,6 +1133,10 @@ export const aiAgents2027: SurveyDefinition = {
           ],
           options: [
             { label: 'Ingen', value: 'none' },
+            {
+              label: 'Bare indirekte (data limes inn eller hentes via skript)',
+              value: 'indirect',
+            },
             { label: 'Lese', value: 'read' },
             {
               label:

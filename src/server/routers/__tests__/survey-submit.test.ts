@@ -12,6 +12,7 @@ vi.mock('@/domains/survey-response/repository', () => ({
 const { surveyRouter } = await import('../survey')
 const { surveyResponseService } =
   await import('@/domains/survey-response/service')
+const { surveys } = await import('@/data/surveys')
 
 const caller = surveyRouter.createCaller({
   session: null,
@@ -21,7 +22,7 @@ const caller = surveyRouter.createCaller({
 const submit = (surveySlug: string, pilotToken?: string) =>
   caller.submit({
     surveySlug,
-    surveyVersion: 1,
+    surveyVersion: surveys.find(s => s.slug === surveySlug)?.version ?? 1,
     submissionId: '00000000-0000-4000-8000-000000000000',
     answers: [],
     pilotToken,

@@ -39,7 +39,7 @@ describe('AI Agents Wave 2 routing', () => {
     ).length
 
   it('matches the question counts in the instrument', () => {
-    expect(count(map([['q8-personal-use', 'no']]))).toBe(25)
+    expect(count(map([['q8-personal-use', 'no']]))).toBe(26)
     expect(
       count(
         map([
@@ -47,7 +47,7 @@ describe('AI Agents Wave 2 routing', () => {
           ['q20-concerns', ['skill-loss']],
         ])
       )
-    ).toBe(26)
+    ).toBe(27)
     expect(
       count(
         map([
@@ -55,7 +55,7 @@ describe('AI Agents Wave 2 routing', () => {
           ['q10b-agent-production', 'no-agents'],
         ])
       )
-    ).toBe(31)
+    ).toBe(32)
     expect(
       count(
         map([
@@ -64,7 +64,21 @@ describe('AI Agents Wave 2 routing', () => {
           ['q20-concerns', ['skill-loss']],
         ])
       )
-    ).toBe(35)
+    ).toBe(36)
+  })
+
+  it('offers indirect access in the Q26b matrix', () => {
+    const q = aiAgents2027.sections
+      .flatMap(s => s.questions)
+      .find(q => q.id === 'q26b-system-access')
+    expect(q?.type === 'matrix' && q.options.map(o => o.value)).toEqual([
+      'none',
+      'indirect',
+      'read',
+      'read-write',
+      'not-used',
+      'unknown',
+    ])
   })
 
   it('ends the survey when there are no developers', () => {
