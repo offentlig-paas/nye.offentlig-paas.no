@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useMemo, useRef, useCallback, useEffect } from 'react'
-import { members } from '@/data/members'
+import { members, findMemberByName } from '@/data/members'
 
-const ORGANISATION_NAMES = members
-  .map(m => m.name)
-  .sort((a, b) => a.localeCompare(b, 'nb'))
+const ORGANISATIONS = [...members].sort((a, b) =>
+  a.name.localeCompare(b.name, 'nb')
+)
+const ORGANISATION_NAMES = ORGANISATIONS.map(m => m.name)
 
 interface OrganisationTypeaheadProps {
   id: string
@@ -40,9 +41,11 @@ export function OrganisationTypeahead({
   const filtered = useMemo(
     () =>
       value.trim()
-        ? ORGANISATION_NAMES.filter(name =>
-            name.toLowerCase().includes(value.toLowerCase())
-          )
+        ? ORGANISATIONS.filter(m =>
+            m
+              .getNames()
+              .some(n => n.toLowerCase().includes(value.toLowerCase()))
+          ).map(m => m.name)
         : ORGANISATION_NAMES,
     [value]
   )
@@ -67,9 +70,7 @@ export function OrganisationTypeahead({
 
       const trimmed = value.trim()
       if (trimmed) {
-        const exactMatch = ORGANISATION_NAMES.find(
-          name => name.toLowerCase() === trimmed.toLowerCase()
-        )
+        const exactMatch = findMemberByName(trimmed)?.name
         if (exactMatch) {
           select(exactMatch)
           return

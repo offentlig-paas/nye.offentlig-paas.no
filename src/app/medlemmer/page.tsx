@@ -321,7 +321,7 @@ export default function MedlemmerPage() {
       result = result.filter(m => {
         const p = platformBySlug.get(m.getSlug())
         return (
-          m.name.toLowerCase().includes(q) ||
+          m.getNames().some(n => n.toLowerCase().includes(q)) ||
           Boolean(p?.name.toLowerCase().includes(q))
         )
       })

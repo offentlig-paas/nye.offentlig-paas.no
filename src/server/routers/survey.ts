@@ -1,3 +1,4 @@
+import { canonicalOrgName } from '@/data/members'
 import { router, publicProcedure } from '../trpc'
 import { z } from 'zod'
 import { getSurvey } from '@/lib/surveys/helpers'
@@ -140,7 +141,7 @@ export const surveyRouter = router({
           r.organizationOverride?.memberName ??
           r.answers.find(a => a.questionId === orgQid)?.value
         if (typeof org === 'string' && org) {
-          uniqueOrgs.add(org.toLowerCase().trim())
+          uniqueOrgs.add(canonicalOrgName(org).toLowerCase().trim())
         }
       }
 

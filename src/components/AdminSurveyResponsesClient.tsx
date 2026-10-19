@@ -13,6 +13,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { trpc } from '@/lib/trpc/client'
 import { downloadCSV } from '@/lib/csv-utils'
+import { findMemberByName } from '@/data/members'
 import type { inferRouterOutputs } from '@trpc/server'
 import type { AppRouter } from '@/server/root'
 
@@ -429,7 +430,9 @@ function LinkOrganizationForm({
 }) {
   const filtered = search.trim()
     ? memberNames.filter(n =>
-        n.toLowerCase().includes(search.toLowerCase().trim())
+        (findMemberByName(n)?.getNames() ?? [n]).some(name =>
+          name.toLowerCase().includes(search.toLowerCase().trim())
+        )
       )
     : memberNames
 
