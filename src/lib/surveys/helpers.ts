@@ -74,15 +74,17 @@ export function getProjectForSurvey(
   )
 }
 
-/** The survey listed before this one in its research project. */
 export function getPreviousSurvey(
   surveySlug: string
 ): SurveyDefinition | undefined {
-  const slugs = (getProjectForSurvey(surveySlug)?.surveys ?? []).flatMap(s =>
-    'surveySlug' in s ? [s.surveySlug] : []
+  const linked = getProjectForSurvey(surveySlug)?.surveys ?? []
+  const index = linked.findIndex(
+    s => 'surveySlug' in s && s.surveySlug === surveySlug
   )
-  const index = slugs.indexOf(surveySlug)
-  return index > 0 ? getSurvey(slugs[index - 1]!) : undefined
+  const previous = linked[index - 1]
+  return previous && 'surveySlug' in previous
+    ? getSurvey(previous.surveySlug)
+    : undefined
 }
 
 export function getConsentContact(

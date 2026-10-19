@@ -56,7 +56,7 @@ interface iMember {
   linkedinUrl?: string
 }
 
-function normalizeName(text: string): string {
+export function normalizeName(text: string): string {
   return text.trim().replace(/\s+/g, ' ').toLocaleLowerCase('nb')
 }
 

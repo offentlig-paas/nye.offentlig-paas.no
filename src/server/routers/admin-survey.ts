@@ -17,6 +17,7 @@ import {
 import { getAppUrl } from '@/server/lib/environment'
 import { getSlackUsersForMember } from '@/lib/members-slack'
 import { members, findMemberByName, canonicalOrgName } from '@/data/members'
+import { normalizeName } from '@/lib/members'
 import { SurveyStatus, type SurveyDefinition } from '@/lib/surveys/types'
 
 const repository = new SurveyResponseRepository()
@@ -207,7 +208,15 @@ export const adminSurveyRouter = router({
         getUserSurveyRole(previousSurvey, ctx.user) !== null
       const [allResponses, previousResponses] = await Promise.all([
         repository.findBySurvey(survey.slug),
-        canSeePrevious ? repository.findBySurvey(previousSurvey.slug) : null,
+        canSeePrevious
+          ? repository.findBySurvey(previousSurvey.slug).catch(error => {
+              console.error(
+                `Failed to fetch previous wave ${previousSurvey.slug}:`,
+                error
+              )
+              return null
+            })
+          : null,
       ])
 
       const orgCounts = new Map<string, number>()
@@ -225,7 +234,7 @@ export const adminSurveyRouter = router({
         .sort((a, b) => b.count - a.count)
 
       const respondedOrgs = new Set(
-        orgBreakdown.map(o => o.organization.toLowerCase().trim())
+        orgBreakdown.map(o => normalizeName(o.organization))
       )
 
       const previousOrgs = new Map<
@@ -237,30 +246,30 @@ export const adminSurveyRouter = router({
         for (const r of previousResponses) {
           const organization = resolveOrganization(r, previousOrgQid)
           if (organization === 'Ukjent') continue
-          const key = organization.toLowerCase().trim()
+          const key = normalizeName(organization)
           const entry = previousOrgs.get(key) ?? { organization, count: 0 }
           entry.count++
           previousOrgs.set(key, entry)
         }
       }
 
-      const previousWave = previousResponses
-        ? {
-            total: previousOrgs.size,
-            returned: [...previousOrgs.keys()].filter(k => respondedOrgs.has(k))
-              .length,
-            missing: [...previousOrgs.entries()]
-              .filter(([key]) => !respondedOrgs.has(key))
-              .map(([, { organization, count }]) => ({
-                organization,
-                previousCount: count,
-                isMember: Boolean(findMemberByName(organization)),
-              }))
-              .sort((a, b) =>
-                a.organization.localeCompare(b.organization, 'nb')
-              ),
-          }
-        : null
+      const missingFromPrevious = [...previousOrgs.entries()]
+        .filter(([key]) => !respondedOrgs.has(key))
+        .map(([, { organization, count }]) => ({
+          organization,
+          previousCount: count,
+          isMember: Boolean(findMemberByName(organization)),
+        }))
+        .sort((a, b) => a.organization.localeCompare(b.organization, 'nb'))
+
+      const previousWave =
+        previousOrgs.size > 0
+          ? {
+              total: previousOrgs.size,
+              returned: previousOrgs.size - missingFromPrevious.length,
+              missing: missingFromPrevious,
+            }
+          : null
 
       const membersByType = new Map<
         string,
@@ -282,7 +291,7 @@ export const adminSurveyRouter = router({
           responded: 0,
           names: [],
         }
-        const key = member.name.toLowerCase().trim()
+        const key = normalizeName(member.name)
         const responded = respondedOrgs.has(key)
         entry.total++
         if (responded) entry.responded++
