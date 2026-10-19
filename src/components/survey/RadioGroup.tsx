@@ -25,14 +25,58 @@ export function RadioGroup({
   const groupId = `q-${question.id}`
   const errorId = `${groupId}-error`
   const [localOtherText, setLocalOtherText] = useState(otherText ?? '')
+  const inline = question.layout === 'inline'
 
   const options = useMemo(
     () =>
       question.randomizeOptions
-        ? shuffleOptions(question.options, question.id, sessionSeed)
+        ? shuffleOptions(question.options, sessionSeed)
         : question.options,
     [question.options, question.randomizeOptions, question.id, sessionSeed]
   )
+
+  if (inline) {
+    return (
+      <fieldset
+        className="-mt-3"
+        aria-required={question.required || undefined}
+        aria-describedby={error ? errorId : undefined}
+        aria-invalid={error ? true : undefined}
+      >
+        <legend className="text-sm/6 font-medium text-zinc-600 dark:text-zinc-400">
+          {question.title}
+          {question.required && <span className="sr-only"> (påkrevd)</span>}
+        </legend>
+        <div className="mt-1 flex flex-wrap gap-2">
+          {options.map(option => (
+            <label
+              key={option.value}
+              className="cursor-pointer rounded-md px-3 py-1.5 text-sm text-zinc-700 ring-1 ring-zinc-300 has-checked:bg-teal-600 has-checked:text-white has-checked:ring-teal-600 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-teal-500 dark:text-zinc-300 dark:ring-white/10 dark:has-checked:bg-teal-500"
+            >
+              <input
+                type="radio"
+                name={groupId}
+                value={option.value}
+                checked={value === option.value}
+                onChange={() => onChange(option.value)}
+                className="sr-only"
+              />
+              {option.label}
+            </label>
+          ))}
+        </div>
+        {error && (
+          <p
+            id={errorId}
+            role="alert"
+            className="mt-1 text-sm/6 text-red-600 dark:text-red-400"
+          >
+            {error}
+          </p>
+        )}
+      </fieldset>
+    )
+  }
 
   return (
     <fieldset

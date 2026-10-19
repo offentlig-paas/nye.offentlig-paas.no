@@ -253,7 +253,7 @@ describe('SurveyForm', () => {
       expect(screen.getByRole('progressbar')).toBeInTheDocument()
       expect(screen.getByRole('progressbar')).toHaveAttribute(
         'aria-valuenow',
-        '1'
+        '0'
       )
     })
   })

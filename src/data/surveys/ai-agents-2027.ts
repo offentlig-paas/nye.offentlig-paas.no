@@ -249,6 +249,7 @@ export const aiAgents2027: SurveyDefinition = {
           type: 'radio',
           title: 'Hvor sikker er du på svaret over?',
           required: true,
+          layout: 'inline',
           options: confidence,
         },
         {
@@ -280,6 +281,7 @@ export const aiAgents2027: SurveyDefinition = {
           type: 'radio',
           title: 'Hvor sikker er du på svaret over?',
           required: true,
+          layout: 'inline',
           options: confidence,
         },
         {
@@ -613,6 +615,7 @@ export const aiAgents2027: SurveyDefinition = {
           type: 'radio',
           title: 'Hvor sikker er du på svaret over?',
           required: true,
+          layout: 'inline',
           options: confidence,
         },
         {

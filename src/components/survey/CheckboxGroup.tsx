@@ -29,7 +29,7 @@ export function CheckboxGroup({
   const options = useMemo(
     () =>
       question.randomizeOptions
-        ? shuffleOptions(question.options, question.id, sessionSeed)
+        ? shuffleOptions(question.options, sessionSeed)
         : question.options,
     [question.options, question.randomizeOptions, question.id, sessionSeed]
   )
