@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description:
       profile?.tagline ||
       profile?.platformDescription ||
-      `Medlemsprofil for ${member.name} i Offentlig PaaS`,
+      `Medlemsprofil for ${member.name} i Offentlig PAAS`,
   }
 }
 
