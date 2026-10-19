@@ -12,6 +12,7 @@ import {
   isSurveyLinkable,
 } from '../helpers'
 import { researchProjects } from '@/data/research'
+import { surveys } from '@/data/surveys'
 import {
   SurveyStatus,
   ResearchStatus,
@@ -48,6 +49,14 @@ describe('Research Helpers', () => {
 
     it('returns undefined for unknown slug', () => {
       expect(getProject('nonexistent')).toBeUndefined()
+    })
+  })
+
+  describe('getSurveyStatus', () => {
+    it('hides pilot surveys from public pages (pilot reads as draft)', () => {
+      for (const s of surveys.filter(s => s.status === SurveyStatus.Pilot)) {
+        expect(getSurveyStatus({ surveySlug: s.slug })).toBe(SurveyStatus.Draft)
+      }
     })
   })
 
