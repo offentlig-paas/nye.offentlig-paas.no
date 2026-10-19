@@ -4,6 +4,16 @@
 @config '../typography.ts';
 @custom-variant dark (&:where(.dark, .dark *));
 
+@media print {
+  nav,
+  footer {
+    display: none !important;
+  }
+  [data-print-results] section > * {
+    break-inside: avoid;
+  }
+}
+
 @utility scrollbar-hide {
   scrollbar-width: none;
   &::-webkit-scrollbar {

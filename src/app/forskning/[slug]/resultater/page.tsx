@@ -7,6 +7,7 @@ import { getProject } from '@/lib/research/helpers'
 import { getSurveyForProject } from '@/lib/surveys/helpers'
 import { createCaller } from '@/server/root'
 import Link from 'next/link'
+import { SurveyResultsActions } from '@/components/SurveyResultsActions'
 import { ArrowLeftIcon } from '@heroicons/react/20/solid'
 
 interface ResultsPageProps {
@@ -79,12 +80,22 @@ async function ResultsContent({ slug }: { slug: string }) {
   }
 
   return (
-    <SurveyResultsRenderer
-      results={data}
-      uniqueOrganizations={data.uniqueOrganizations}
-      heroText={data.heroText}
-      methodologyNote={data.methodologyNote}
-    />
+    <>
+      <SurveyResultsActions
+        csvLinks={[
+          {
+            href: `/forskning/${slug}/resultater/eksport`,
+            label: 'Last ned CSV',
+          },
+        ]}
+      />
+      <SurveyResultsRenderer
+        results={data}
+        uniqueOrganizations={data.uniqueOrganizations}
+        heroText={data.heroText}
+        methodologyNote={data.methodologyNote}
+      />
+    </>
   )
 }
 
@@ -101,7 +112,7 @@ export default async function SurveyResultsPage({ params }: ResultsPageProps) {
       <div className="mx-auto max-w-4xl">
         <Link
           href={`/forskning/${slug}`}
-          className="group mb-6 inline-flex items-center gap-2 text-sm text-zinc-500 transition hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300"
+          className="group mb-6 inline-flex items-center gap-2 text-sm text-zinc-500 transition hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300 print:hidden"
         >
           <ArrowLeftIcon className="h-4 w-4" />
           Tilbake til prosjektet
@@ -111,7 +122,7 @@ export default async function SurveyResultsPage({ params }: ResultsPageProps) {
           Resultater — {project.title}
         </h1>
 
-        <div className="mt-8">
+        <div className="mt-8" data-print-results>
           <Suspense fallback={<ResultsSkeleton />}>
             <ResultsContent slug={slug} />
           </Suspense>
