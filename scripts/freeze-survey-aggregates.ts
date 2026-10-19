@@ -15,7 +15,7 @@ import { join } from 'node:path'
 import { getSurvey } from '@/lib/surveys/helpers'
 import { aggregateSurveyResults } from '@/lib/surveys/aggregation'
 import type { FrozenAggregates } from '@/lib/surveys/frozen'
-import { likertAverage } from '@/lib/surveys/likert'
+import { storedAverage } from '@/lib/surveys/likert'
 import { SurveyResponseRepository } from '@/domains/survey-response/repository'
 
 const slug = process.argv[2]
@@ -47,8 +47,8 @@ const rawById = new Map(
 )
 for (const q of results.sections.flatMap(s => s.questions)) {
   if (q.visualization !== 'diverging') continue
-  const average = likertAverage(rawById.get(q.id)!.options)
-  if (average !== null) q.average = average
+  const average = storedAverage(rawById.get(q.id)!.options, q.options)
+  if (average !== undefined) q.average = average
 }
 
 const frozen: FrozenAggregates = {

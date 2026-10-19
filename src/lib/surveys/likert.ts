@@ -52,3 +52,16 @@ export function groupQuestions(questions: AggregatedQuestion[]) {
   }
   return groups
 }
+
+/**
+ * Pre-suppression mean for frozen aggregates, rounded to 1 decimal. Omitted
+ * when any scale point is suppressed, since the exact mean could reveal it.
+ */
+export function storedAverage(
+  raw: AggregatedOption[],
+  suppressed: AggregatedOption[]
+): number | undefined {
+  if (scaleOptions(suppressed).some(o => o.suppressed)) return undefined
+  const avg = likertAverage(raw)
+  return avg === null ? undefined : Math.round(avg * 10) / 10
+}

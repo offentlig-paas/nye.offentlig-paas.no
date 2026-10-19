@@ -31,7 +31,7 @@ export interface AggregatedQuestion {
   responseCount: number
   options: AggregatedOption[]
   freeTextCount?: number
-  /** Pre-suppression Likert mean, stored only in frozen aggregates. */
+  /** Pre-suppression Likert mean (1 decimal), stored only in frozen aggregates and omitted when a scale point is suppressed. */
   average?: number
 }
 

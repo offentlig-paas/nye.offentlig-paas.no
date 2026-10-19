@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import type { AggregatedQuestion } from '../aggregation'
-import { formatNb, groupQuestions, likertAverage } from '../likert'
+import {
+  formatNb,
+  groupQuestions,
+  likertAverage,
+  storedAverage,
+} from '../likert'
 
 const opt = (label: string, count: number, value = label) => ({
   label,
@@ -71,5 +76,19 @@ describe('groupQuestions', () => {
     expect(
       groups.map(g => (g.kind === 'likert' ? g.questions.length : 's'))
     ).toEqual([2, 1, 's', 1])
+  })
+})
+
+describe('storedAverage', () => {
+  const raw = [opt('a', 1), opt('b', 2), opt('c', 4)]
+  it('rounds the raw mean to one decimal', () => {
+    expect(storedAverage(raw, raw)).toBe(2.4)
+  })
+  it('is omitted when a scale point is suppressed', () => {
+    const safe = [
+      { ...opt('a', 0), suppressed: true as const },
+      ...raw.slice(1),
+    ]
+    expect(storedAverage(raw, safe)).toBeUndefined()
   })
 })

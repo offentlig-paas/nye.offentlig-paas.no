@@ -725,8 +725,9 @@
             {
               "label": "Nivå 3, Skalerbar — Innsikt",
               "value": "Nivå 3, Skalerbar — Innsikt",
-              "count": 5,
-              "percentage": 11
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
             },
             {
               "label": "Nivå 4, Optimalisering — Kvantitativ og kvalitativ",
@@ -745,8 +746,8 @@
             {
               "label": "Andre (for få svar)",
               "value": "_suppressed",
-              "count": 2,
-              "percentage": 5
+              "count": 7,
+              "percentage": 16
             }
           ]
         },

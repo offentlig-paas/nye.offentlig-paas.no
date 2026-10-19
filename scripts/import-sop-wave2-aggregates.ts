@@ -14,7 +14,7 @@ import {
   type AggregatedSurveyResults,
 } from '../src/lib/surveys/aggregation'
 import type { FrozenAggregates } from '../src/lib/surveys/frozen'
-import { likertAverage } from '../src/lib/surveys/likert'
+import { storedAverage } from '../src/lib/surveys/likert'
 import type { SurveyAnswer, SurveyDefinition } from '../src/lib/surveys/types'
 import { getVisibleQuestionIds } from '../src/lib/surveys/helpers'
 
@@ -132,15 +132,16 @@ export function aggregateCsv(
       }
     })
     const diverging = q.visualization === 'diverging'
-    const average = diverging ? likertAverage(options) : null
+    const safe = suppressSmallBuckets(options, n, minBucket)
+    const average = diverging ? storedAverage(options, safe) : undefined
     out.push({
       id: prevId,
       title: q.title,
       type: q.type,
       visualization: diverging ? 'diverging' : 'bar',
       responseCount: n,
-      options: suppressSmallBuckets(options, n, minBucket),
-      ...(average !== null && { average }),
+      options: safe,
+      ...(average !== undefined && { average }),
     })
   }
 
