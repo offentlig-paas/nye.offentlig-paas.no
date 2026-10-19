@@ -42,10 +42,10 @@ export function ResultTable({ question }: { question: AggregatedQuestion }) {
               <div className="flex items-center gap-2">
                 <div
                   aria-hidden="true"
-                  className="h-2.5 flex-1 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800"
+                  className="h-2.5 flex-1 overflow-hidden rounded-full bg-zinc-100 [-webkit-print-color-adjust:exact] [print-color-adjust:exact] dark:bg-zinc-800"
                 >
                   <div
-                    className="h-full rounded-full bg-teal-500 dark:bg-teal-400 print:bg-zinc-600"
+                    className="h-full rounded-full bg-teal-500 dark:bg-teal-400"
                     style={{ width: `${o.percentage}%` }}
                   />
                 </div>

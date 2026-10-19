@@ -37,7 +37,7 @@ function Bar({ question }: { question: AggregatedQuestion }) {
   return (
     <div
       aria-hidden="true"
-      className="relative h-7 rounded bg-zinc-100 dark:bg-zinc-800"
+      className="relative h-7 rounded bg-zinc-100 [-webkit-print-color-adjust:exact] [print-color-adjust:exact] dark:bg-zinc-800"
     >
       <div className="absolute inset-y-0 left-1/2 w-px bg-zinc-400 dark:bg-zinc-500" />
       <div
@@ -66,7 +66,7 @@ export function LikertBar({ questions }: { questions: AggregatedQuestion[] }) {
 
   return (
     <div className="space-y-4">
-      <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-600 dark:text-zinc-400">
+      <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-600 [-webkit-print-color-adjust:exact] [print-color-adjust:exact] dark:text-zinc-400">
         {scale.map((o, i) => (
           <li key={o.value} className="flex items-center gap-1.5">
             <span
