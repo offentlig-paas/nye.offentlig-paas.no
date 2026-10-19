@@ -36,9 +36,9 @@ const usesKubernetes: QuestionCondition[] = [
 
 export const stateOfPlatforms2027: SurveyDefinition = {
   slug: 'state-of-platforms-2027',
-  version: 1,
+  version: 2,
   title: 'Plattformundersøkelsen i offentlig sektor, runde 3',
-  estimatedMinutes: '12–15',
+  estimatedMinutes: '8–14',
   owners: [
     {
       name: 'Hans Kristian Flaatten',
@@ -56,7 +56,7 @@ export const stateOfPlatforms2027: SurveyDefinition = {
     checkboxLabel:
       'Jeg har lest informasjonen over og samtykker til at svarene mine brukes som beskrevet.',
     fullText: [
-      '**Hva handler undersøkelsen om?**\nVi kartlegger modenhet, verktøyvalg og organisering rundt applikasjonsplattformer i norsk offentlig sektor. I år spør vi også om kunstig intelligens (KI) på plattformen. Undersøkelsen tar ca. 12–15 minutter (anslag, verifiseres i pilot).',
+      '**Hva handler undersøkelsen om?**\nVi kartlegger modenhet, verktøyvalg og organisering rundt applikasjonsplattformer i norsk offentlig sektor. I år spør vi også om kunstig intelligens (KI) på plattformen. Undersøkelsen tar ca. 8–14 minutter, avhengig av svarene dine.',
       '**Hvem er ansvarlig?**\nUndersøkelsen gjennomføres av Offentlig PAAS. Behandlingsansvarlig er foreningen Offentlig PAAS. Kontaktperson er styreleder, kontakt@offentlig-paas.no.',
       '**Hva samler vi inn?**\nVi samler inn svar om organisasjonens plattformvalg, modenhet, teknologier, skybruk og KI. Vi spør om organisasjonsnavn for å kunne oppdage duplikater og sammenligne med tidligere år. Vi spør også om din rolle. Organisasjonsnavn og rolle kan til sammen identifisere deg, og vi behandler derfor svarene som personopplysninger. E-postadresse i siste spørsmål er frivillig og brukes bare til å kontakte deg om podkast eller artikkel.',
       '**Hva publiserer vi?**\nVi publiserer bare samlede resultater, i akademiske tidsskrifter og konferanser og på offentlig-paas.no. Navn på organisasjoner eller personer blir ikke publisert. Svar fra enkeltorganisasjoner blir ikke gjort åpent tilgjengelige. Svaralternativer som færre enn tre har valgt, rapporteres som «under 3».',
@@ -131,22 +131,6 @@ export const stateOfPlatforms2027: SurveyDefinition = {
           ]),
         },
         {
-          id: 'q5-budget',
-          type: 'radio',
-          title: 'Budsjett (MNOK)',
-          required: false,
-          options: core([
-            '<500',
-            '500–999',
-            '1000–2999',
-            '3000–9999',
-            '10000–24999',
-            '25000–49999',
-            '50000–99999',
-            '100000+',
-          ]),
-        },
-        {
           id: 'q6-role',
           type: 'radio',
           title: 'Hva er din primærrolle?',
@@ -173,6 +157,7 @@ export const stateOfPlatforms2027: SurveyDefinition = {
         {
           id: 'q7-platform',
           type: 'radio',
+          layout: 'inline',
           title: 'Har dere en applikasjonsplattform?',
           required: true,
           options: core(['Ja', 'Nei']),
@@ -337,6 +322,7 @@ export const stateOfPlatforms2027: SurveyDefinition = {
         {
           id: 'q14-kubernetes',
           type: 'radio',
+          layout: 'inline',
           title: 'Bruker dere Kubernetes?',
           required: true,
           options: core(['Ja', 'Nei']),
@@ -356,10 +342,7 @@ export const stateOfPlatforms2027: SurveyDefinition = {
             'EKS',
             'Nutanix Kubernetes Engine',
             'Talos',
-            'Anthos',
-            'Rancher',
             'Azure RedHat OpenShift (ARO)',
-            'K3s',
             'Vet ikke',
             'Annet',
           ]),
@@ -367,6 +350,7 @@ export const stateOfPlatforms2027: SurveyDefinition = {
         {
           id: 'q16-k8s-years',
           type: 'radio',
+          layout: 'inline',
           title: 'Hvor mange år har dere kjørt Kubernetes i produksjon?',
           required: false,
           showIf: usesKubernetes,
@@ -399,6 +383,7 @@ export const stateOfPlatforms2027: SurveyDefinition = {
         {
           id: 'q19-operators',
           type: 'radio',
+          layout: 'inline',
           title: 'Utvikler dere egne Kubernetes operators?',
           required: false,
           showIf: usesKubernetes,
@@ -429,6 +414,7 @@ export const stateOfPlatforms2027: SurveyDefinition = {
         {
           id: 'q21-cloud',
           type: 'radio',
+          layout: 'inline',
           title: 'Bruker dere sky for plattformen deres?',
           required: true,
           options: core(['Ja', 'Nei']),
@@ -441,21 +427,9 @@ export const stateOfPlatforms2027: SurveyDefinition = {
           options: core(['Azure', 'Google Cloud', 'AWS', 'Annet']),
         },
         {
-          id: 'q23-multi-cloud',
-          type: 'checkbox',
-          title: 'Brukere dere flere sky-leverandører?',
-          required: false,
-          options: core([
-            'Azure',
-            'Google Cloud',
-            'AWS',
-            'Oracle Cloud',
-            'Annet',
-          ]),
-        },
-        {
           id: 'q24-cloud-years',
           type: 'radio',
+          layout: 'inline',
           title: 'Hvor mange år har dere kjørt applikasjoner i sky?',
           required: false,
           options: scale1to10,
@@ -502,23 +476,6 @@ export const stateOfPlatforms2027: SurveyDefinition = {
             'OpenSearch',
             'Appdynamics',
             'Jaeger',
-            'Zabbix',
-            'Victoria Metrics',
-            'Annet',
-          ]),
-        },
-        {
-          id: 'q27-packaging',
-          type: 'checkbox',
-          title: 'Hva bruker dere for pakking av applikasjoner?',
-          required: false,
-          options: core([
-            'Helm',
-            'Kustomize',
-            'JIB',
-            'Buildpacks',
-            'Packer',
-            'Jsonnet',
             'Annet',
           ]),
         },
@@ -535,7 +492,6 @@ export const stateOfPlatforms2027: SurveyDefinition = {
             'Jenkins',
             'GitLab Pipelines',
             'kubectl apply',
-            'Harness',
             'Annet',
           ]),
         },
@@ -580,9 +536,6 @@ export const stateOfPlatforms2027: SurveyDefinition = {
             'Pulumi',
             'AWS CloudFormation',
             'Crossplane (Kubernetes)',
-            'Google Cloud Config Connector (Kubernetes)',
-            'Puppet',
-            'Azure Service Operator (Kubernets)',
             'Annet',
           ]),
         },
@@ -590,7 +543,7 @@ export const stateOfPlatforms2027: SurveyDefinition = {
     },
     {
       id: 'ai',
-      title: 'KI og plattformen',
+      title: 'Plattformen og KI',
       questions: [
         {
           id: 'q32-ai-capabilities',
@@ -598,105 +551,69 @@ export const stateOfPlatforms2027: SurveyDefinition = {
           title:
             'Hvilke tjenester eller hvilken infrastruktur tilbyr plattformen deres for team som utvikler eller kjører KI-løsninger (f.eks. applikasjoner som bruker språkmodeller, eller maskinlæring)?',
           description:
-            'Kryss av for det som tilbys i produksjon i dag, som del av plattformen eller som et standardisert oppsett.',
+            'Kryss av for det som tilbys i produksjon i dag, som en del av plattformen eller som et standardisert oppsett. Eksempler: *Språkmodeller i sky:* Azure OpenAI, Google Vertex AI, AWS Bedrock. *KI-gateway:* LiteLLM, Envoy AI Gateway, Azure API Management. *Egne modeller:* vLLM, Ollama, KServe. *Vektorsøk:* pgvector, OpenSearch, Qdrant. *MLOps:* MLflow, Kubeflow. *KI-overvåking:* OpenTelemetry for generativ KI, Langfuse.',
           required: true,
           showIf: hasPlatform,
+          randomizeOptions: true,
           options: [
             {
-              label: `Ingen KI-tjenester på plattformen i dag`,
-              value: 'none',
-              exclusive: true,
-            },
-            {
               label:
-                'Standardisert tilgang til språkmodeller hos skyleverandør (f.eks. Azure OpenAI, Google Vertex AI, AWS Bedrock)',
+                '**Språkmodeller i sky:** Standardisert tilgang til språkmodeller hos en skyleverandør',
               value: 'cloud-llm-access',
             },
             {
               label:
-                'Felles KI-gateway eller proxy foran språkmodellene (f.eks. LiteLLM, Envoy AI Gateway, Azure API Management)',
+                '**KI-gateway:** Felles gateway eller proxy foran språkmodellene',
               value: 'ai-gateway',
             },
             {
               label:
-                'GPU-noder eller annen akselerert maskinvare på plattformen',
+                '**GPU:** GPU-noder eller annen akselerert maskinvare på plattformen',
               value: 'gpu-k8s',
             },
             {
               label:
-                'Kjøring av egne eller åpne modeller på plattformen (f.eks. vLLM, Ollama, KServe)',
+                '**Egne modeller:** Vi kjører egne eller åpne modeller på plattformen',
               value: 'self-hosted-inference',
             },
             {
               label:
-                'Vektordatabaser eller søkeindekser for RAG (f.eks. pgvector, OpenSearch, Qdrant)',
+                '**Vektorsøk (RAG):** Vektordatabaser eller søkeindekser for KI',
               value: 'vector-rag',
             },
             {
               label:
-                'MLOps-verktøy for trening, versjonering og utrulling av modeller (f.eks. MLflow, Kubeflow)',
+                '**MLOps:** Verktøy for å trene, versjonere og rulle ut modeller',
               value: 'mlops',
             },
             {
-              label:
-                'Overvåking og evaluering av KI-kall (f.eks. OpenTelemetry for generativ KI, Langfuse)',
+              label: '**KI-overvåking:** Overvåking og evaluering av KI-kall',
               value: 'ai-observability',
             },
             {
-              label: `Vi planlegger eller tester KI-tjenester, men ingenting er i produksjon ennå`,
+              label:
+                '**Planlagt:** Vi planlegger eller tester, men ingenting er i produksjon ennå',
               value: 'planned',
               exclusive: true,
+              pinPosition: 'last',
             },
             {
-              label: `Vet ikke`,
+              label: '**Ingen:** Plattformen har ingen KI-tjenester i dag',
+              value: 'none',
+              exclusive: true,
+              pinPosition: 'last',
+            },
+            {
+              label: 'Vet ikke',
               value: 'unknown',
               exclusive: true,
+              pinPosition: 'last',
             },
             {
               label: 'Annet (spesifiser)',
               value: 'other',
               allowOtherText: true,
-            },
-          ],
-        },
-        {
-          id: 'q33a-inference-model',
-          type: 'checkbox',
-          title:
-            'Bruker applikasjoner på plattformen deres språkmodeller eller annen KI i produksjon? I så fall: hvordan kjøres modellene (inferens)?',
-          required: true,
-          showIf: hasPlatform,
-          options: [
-            {
-              label: `Ingen applikasjoner på plattformen bruker KI i produksjon ennå`,
-              value: 'no-prod-ai',
-              exclusive: true,
-            },
-            {
-              label:
-                'Administrert KI-tjeneste hos en skyleverandør (f.eks. Azure OpenAI, Google Vertex AI, AWS Bedrock)',
-              value: 'cloud-managed',
-            },
-            {
-              label:
-                'Direkte mot API-et til en modelleverandør (f.eks. OpenAI, Anthropic, Mistral)',
-              value: 'vendor-api',
-            },
-            {
-              label:
-                'KI som er innebygd i innkjøpt programvare som applikasjonene bruker (f.eks. Microsoft 365 Copilot)',
-              value: 'saas-embedded',
-            },
-            {
-              label:
-                'Egne modeller på vår egen sky- eller Kubernetes-plattform',
-              value: 'own-k8s-cloud',
-            },
-            { label: 'Egne modeller i eget datasenter', value: 'on-prem' },
-            {
-              label: `Vet ikke`,
-              value: 'unknown',
-              exclusive: true,
+              pinPosition: 'last',
             },
           ],
         },
@@ -705,182 +622,121 @@ export const stateOfPlatforms2027: SurveyDefinition = {
           type: 'checkbox',
           title:
             'Hvor behandles dataene når applikasjonene bruker KI-tjenester hos en ekstern leverandør?',
+          description:
+            'Eksempler på EU/EØS: Azure OpenAI i EU-region eller Google Vertex AI i Europa.',
           required: false,
           showIf: [
             {
-              questionId: 'q33a-inference-model',
-              anyOf: ['cloud-managed', 'vendor-api', 'saas-embedded'],
+              questionId: 'q32-ai-capabilities',
+              anyOf: ['cloud-llm-access', 'ai-gateway'],
             },
           ],
           options: [
             { label: 'I Norge', value: 'norway' },
-            {
-              label:
-                'I EU/EØS utenfor Norge (f.eks. Azure OpenAI i EU-region, Google Vertex AI i Europa)',
-              value: 'eu-eea',
-            },
+            { label: 'I EU/EØS utenfor Norge', value: 'eu-eea' },
             {
               label: 'Utenfor EU/EØS eller uten fast region',
               value: 'outside-eu',
             },
-            {
-              label: `Vet ikke`,
-              value: 'unknown',
-              exclusive: true,
-            },
+            { label: 'Vet ikke', value: 'unknown', exclusive: true },
           ],
         },
+      ],
+    },
+    {
+      id: 'agents',
+      title: 'KI-agenter',
+      questions: [
         {
           id: 'q34-platform-role',
           type: 'checkbox',
           title:
             'Hvilken rolle har plattformteamet (eller et tilsvarende sentralt teknisk miljø) når det gjelder KI-kodeverktøy og KI-agenter for utviklerne i organisasjonen?',
+          description:
+            'Velg alle som passer. Eksempler: *Ingen rolle:* IT-avdeling, sikkerhet, anskaffelse eller det enkelte team håndterer dette. *Tilgang:* anskaffelse, lisenser eller SSO/IAM. *Felles oppsett for agenter:* `AGENTS.md`, Copilot-instrukser eller ferdige oppsett tilpasset plattformen. *Kontekst fra plattformen:* MCP-servere (Model Context Protocol), CLI-verktøy eller API-er. *Sjekker i CI/CD:* sikkerhetsskanning eller policysjekker.',
           required: true,
           options: [
             {
-              label: `Vi har ikke plattformteam / ikke relevant`,
+              label:
+                'Vi har ikke plattformteam eller tilsvarende sentralt teknisk miljø',
               value: 'no-platform-team',
               exclusive: true,
             },
             {
-              label: `Ingen rolle – dette håndteres av andre (f.eks. IT-avdelingen, sikkerhet, innkjøp eller det enkelte team)`,
+              label:
+                '**Ingen rolle:** Andre enn plattformteamet håndterer dette',
               value: 'no-role',
               exclusive: true,
             },
             {
               label:
-                'Innkjøp, lisenser eller tilgangsstyring (SSO/IAM) for KI-kodeverktøy',
+                '**Tilgang:** Skaffer lisenser og styrer tilgang til KI-kodeverktøyene',
               value: 'provisioning',
             },
             {
               label:
-                'Drifter en intern KI-gateway eller egne modeller som utviklerne kan koble kodeverktøyene til',
+                '**Intern KI-gateway:** Drifter en gateway eller egne modeller som utviklerne kan koble verktøyene til',
               value: 'llm-gateway-dev',
             },
             {
               label:
-                'Lager felles regler, instrukser eller maler for KI-agenter (f.eks. AGENTS.md, Copilot-instrukser)',
+                '**Felles oppsett for agenter:** Lager regler, instrukser eller maler for KI-agenter',
               value: 'golden-paths',
             },
             {
               label:
-                'Tilbyr MCP-servere (Model Context Protocol), CLI-verktøy eller API-er som KI-agenter kan hente informasjon om plattformen fra',
+                '**Kontekst fra plattformen:** Tilbyr verktøy som lar agentene hente informasjon fra plattformen',
               value: 'mcp-context',
             },
             {
               label:
-                'Har automatiske sjekker i CI/CD som også gjelder kode skrevet med KI (f.eks. sikkerhetsskanning, policysjekker)',
+                '**Sjekker i CI/CD:** Automatiske sjekker som også gjelder kode skrevet med KI',
               value: 'ci-guardrails',
             },
-            {
-              label: `Vet ikke`,
-              value: 'unknown',
-              exclusive: true,
-            },
+            { label: 'Vet ikke', value: 'unknown', exclusive: true },
           ],
         },
         {
           id: 'q35-agent-interfaces',
-          type: 'checkbox',
+          type: 'radio',
           title:
-            'Hvordan kan utviklernes KI-kodeagenter (f.eks. Claude Code, GitHub Copilot, Cursor) samhandle med plattformen deres i dag?',
-          required: true,
+            'Hva er det meste utviklernes KI-kodeagenter kan gjøre mot plattformen deres i praksis i dag?',
+          description:
+            'Svar ut fra hva som faktisk skjer, ikke hva retningslinjene sier. Velg det høyeste nivået. Eksempler på agenter: Claude Code, GitHub Copilot, Cursor. *Lese dokumentasjon:* `llms.txt`, CRD-er, Helm-verdier eller OpenAPI. *Lesetilgang:* logger, status for applikasjoner eller byggfeil. *Endringer via pull request:* GitOps.',
+          required: false,
           showIf: hasPlatform,
           options: [
             {
-              label: `Ingen egen tilrettelegging; agentene bruker bare lokal kildekode og vanlige kommandolinjeverktøy (f.eks. kubectl) med utviklerens egne tilganger`,
+              label:
+                '**Ingen tilrettelegging:** Agentene bruker bare utviklerens egne verktøy og tilganger',
               value: 'no-integration',
-              exclusive: true,
             },
             {
               label:
-                'Plattformdokumentasjon og skjemaer (CRD-er, Helm-verdier, OpenAPI) er lagt til rette for at KI-agenter kan lese dem (f.eks. llms.txt)',
+                '**Lese dokumentasjon:** Dokumentasjon og skjemaer er lagt til rette for KI-agenter',
               value: 'docs-llms-txt',
             },
             {
               label:
-                'Vi tilbyr en egen MCP-server eller et eget verktøy som gir agenter lesetilgang til plattformen (f.eks. logger, status for applikasjoner, byggfeil)',
+                '**Lesetilgang:** Agentene kan lese fra plattformen via MCP eller CLI',
               value: 'mcp-read',
             },
             {
               label:
-                'KI-agenter kan foreslå endringer på plattformen gjennom pull requests som et menneske godkjenner (f.eks. GitOps)',
+                '**Endringer via pull request:** Agentene kan foreslå endringer som et menneske godkjenner',
               value: 'agent-pr',
             },
             {
               label:
-                'KI-agenter kan gjøre endringer eller opprette ressurser direkte på plattformen via MCP, CLI eller API, med egen tilgangsstyring',
+                '**Direkte endringer:** Agentene kan endre eller opprette ressurser direkte, med egen tilgangsstyring',
               value: 'agent-direct-write',
             },
             {
               label:
-                'Plattformen tilbyr isolerte, kortvarige testmiljøer der KI-agenter kan kjøre og teste kode',
-              value: 'sandbox-env',
-            },
-            {
-              label: `Vi har bevisst sperret KI-agenter ute fra plattformen`,
+                '**Sperret:** Vi har bevisst sperret KI-agenter ute fra plattformen',
               value: 'restricted',
-              exclusive: true,
             },
-            {
-              label: `Vet ikke`,
-              value: 'unknown',
-              exclusive: true,
-            },
-          ],
-        },
-        {
-          id: 'q36-ai-for-platform',
-          type: 'checkbox',
-          title:
-            'Hvordan bruker plattformteamet selv KI-verktøy i utvikling og drift av plattformen?',
-          required: true,
-          options: [
-            {
-              label: `Plattformteamet bruker ikke KI-verktøy i arbeidet`,
-              value: 'none',
-              exclusive: true,
-            },
-            {
-              label:
-                'Skrive og omstrukturere infrastrukturkode (f.eks. Terraform, Bicep, Helm, Kubernetes-manifester, operators)',
-              value: 'iac-manifests',
-            },
-            {
-              label:
-                'Lage CI/CD-pipelines, skript og interne kommandolinjeverktøy',
-              value: 'cicd-scripts',
-            },
-            {
-              label:
-                'Feilsøking, hendelseshåndtering og årsaksanalyse (f.eks. analysere logger og metrikker)',
-              value: 'troubleshooting',
-            },
-            {
-              label:
-                'Skrive plattformdokumentasjon eller svare på spørsmål fra applikasjonsteam (f.eks. en chatbot basert på dokumentasjonen)',
-              value: 'docs-support',
-            },
-            {
-              label:
-                'Skrive eller kontrollere sikkerhetspolicyer (f.eks. Kyverno, OPA/Rego, NetworkPolicies) og vurdere sårbarheter (CVE-er)',
-              value: 'security-policy',
-            },
-            {
-              label:
-                'Automatiserte agenter som foreslår oppgraderinger, justerer ressursbruk eller lager pull requests i plattformens kodelagre',
-              value: 'autonomous-ops',
-            },
-            {
-              label: `Vi har ikke plattformteam`,
-              value: 'no-platform-team',
-              exclusive: true,
-            },
-            {
-              label: `Vet ikke / jeg er ikke i plattformteamet`,
-              value: 'unknown',
-              exclusive: true,
-            },
+            { label: 'Vet ikke', value: 'unknown' },
           ],
         },
         {
@@ -888,50 +744,54 @@ export const stateOfPlatforms2027: SurveyDefinition = {
           type: 'checkbox',
           title:
             'Har bruk av KI-kodeverktøy eller KI-applikasjoner i organisasjonen ført til endringer for plattformen eller plattformteamet?',
-          description: 'Velg opptil tre alternativer som passer best.',
-          required: true,
+          description:
+            'Velg opptil tre alternativer som passer best. Eksempler: *Flere avklaringer:* DPIA eller ROS-analyser. *Etterspørsel etter KI-infrastruktur:* GPU, tilgang til språkmodeller, vektordatabaser eller KI-gateway.',
+          required: false,
           maxSelections: 3,
           options: [
             {
-              label: `Nei, vi merker liten eller ingen endring på plattformnivå så langt`,
+              label:
+                '**Ingen endring:** Vi merker liten eller ingen endring på plattformnivå så langt',
               value: 'no-change',
               exclusive: true,
             },
             {
               label:
-                'Høyere endringstakt – flere pull requests, bygg og deployer gjennom CI/CD',
+                '**Høyere endringstakt:** Flere pull requests, bygg og deployer',
               value: 'more-deploys-prs',
             },
             {
               label:
-                'Flere nye småapplikasjoner, prototyper eller tjenester som settes opp på plattformen',
+                '**Flere nye applikasjoner:** Flere prototyper og småtjenester på plattformen',
               value: 'new-apps-experimentation',
             },
             {
               label:
-                'Større behov for automatiske sperrer og policysjekker i plattformen',
+                '**Behov for sperrer:** Større behov for automatiske sperrer og policysjekker',
               value: 'guardrail-demand',
             },
             {
               label:
-                'Flere avklaringer om personvern og risiko (f.eks. DPIA, ROS)',
+                '**Flere avklaringer:** Flere vurderinger av personvern og risiko',
               value: 'compliance-load',
             },
             {
               label:
-                'Økt etterspørsel fra teamene etter GPU, tilgang til språkmodeller, vektordatabaser eller KI-gateway',
+                '**Etterspørsel etter KI-infrastruktur:** Teamene ber om mer KI-infrastruktur',
               value: 'ai-infra-demand',
             },
             {
-              label: 'Økte kostnader til sky, bygg eller API-er',
+              label:
+                '**Høyere kostnader:** Økte kostnader til sky, bygg eller API-er',
               value: 'cost-increase',
             },
             {
-              label: 'Flere henvendelser om KI-generert konfigurasjon',
+              label:
+                '**Mer brukerstøtte:** Flere henvendelser om KI-generert konfigurasjon',
               value: 'support-burden',
             },
             {
-              label: `Vet ikke / for tidlig å si`,
+              label: 'Vet ikke / for tidlig å si',
               value: 'unknown',
               exclusive: true,
             },
@@ -942,47 +802,51 @@ export const stateOfPlatforms2027: SurveyDefinition = {
           type: 'radio',
           title:
             'Hva er den største utfordringen eller barrieren for plattformteamet når det gjelder KI (både KI-arbeidslaster og KI-verktøy)?',
+          description:
+            'Eksempler: *Personvern og jus:* GDPR, KI-forordningen. *Sikkerhet:* tilgangsstyring for agenter, datalekkasje, prompt injection, usikker kode.',
           required: false,
           options: [
             {
               label:
-                'Personvern og juridiske krav (f.eks. GDPR, KI-forordningen)',
+                '**Personvern og jus:** Krav i personvernregler og annen lovgivning',
               value: 'privacy-legal',
             },
             {
-              label: 'Usikkerhet om databehandling hos skyleverandører',
+              label:
+                '**Databehandling i sky:** Usikkerhet om hvordan skyleverandører behandler dataene',
               value: 'cloud-data-processing',
             },
             {
               label:
-                'Sikkerhetsrisiko (f.eks. tilgangsstyring for agenter, datalekkasje, prompt injection, usikker kode)',
+                '**Sikkerhet:** Sikkerhetsrisiko ved KI-tjenester og KI-agenter',
               value: 'security-risk',
             },
             {
               label:
-                'For lite kapasitet i plattformteamet – kjerneplattform og vanlig drift må prioriteres',
+                '**Kapasitet:** Kjerneplattformen og vanlig drift må prioriteres',
               value: 'capacity-priority',
             },
             {
               label:
-                'Kostnader for eller tilgang til GPU-maskinvare og skyressurser',
+                '**Kostnader og maskinvare:** Kostnader for eller tilgang til GPU og skyressurser',
               value: 'cost-hardware',
             },
             {
               label:
-                'For lite kompetanse i teamet om KI-infrastruktur eller KI-verktøy for utviklere',
+                '**Kompetanse:** For lite kompetanse på KI-infrastruktur eller KI-verktøy',
               value: 'competence',
             },
             {
-              label: 'Uklare behov fra applikasjonsteamene',
+              label: '**Uklare behov:** Applikasjonsteamene har uklare behov',
               value: 'unclear-demand',
             },
             {
-              label: 'Lav etterspørsel fra applikasjonsteamene',
+              label: '**Lav etterspørsel:** Applikasjonsteamene etterspør lite',
               value: 'low-demand',
             },
             {
-              label: 'Vi opplever ingen vesentlige barrierer',
+              label:
+                '**Ingen barrierer:** Vi opplever ingen vesentlige barrierer',
               value: 'no-barrier',
             },
             { label: 'Vet ikke', value: 'unknown' },
@@ -993,12 +857,6 @@ export const stateOfPlatforms2027: SurveyDefinition = {
             },
           ],
         },
-      ],
-    },
-    {
-      id: 'contact',
-      title: 'Avslutning og kontakt',
-      questions: [
         {
           id: 'kontakt',
           type: 'text',
@@ -1009,5 +867,54 @@ export const stateOfPlatforms2027: SurveyDefinition = {
         },
       ],
     },
+  ],
+  /**
+   * Column order for the CSV export. aggregate.py reads columns by position,
+   * so the ended series (Q5, Q23, Q27) stay as empty columns and the new
+   * questions come after the core columns.
+   */
+  exportColumns: [
+    'q1-org',
+    'q3-org-type',
+    'q4-employees',
+    { header: 'Budsjett (MNOK)' },
+    'q6-role',
+    'q7-platform',
+    'q8-platform-name',
+    'q9-why',
+    'q10-self-service',
+    'q11-teams',
+    'q12-languages',
+    'q13a-investment',
+    'q13b-adoption',
+    'q13c-interfaces',
+    'q13d-operations',
+    'q13e-measurement',
+    'q14-kubernetes',
+    'q15-distributions',
+    'q16-k8s-years',
+    'q17-clusters',
+    'q18-k8s-apps',
+    'q19-operators',
+    'q20-databases',
+    'q21-cloud',
+    'q22-primary-cloud',
+    { header: 'Brukere dere flere sky-leverandører?' },
+    'q24-cloud-years',
+    'q25-serverless',
+    'q26-monitoring',
+    { header: 'Hva bruker dere for pakking av applikasjoner?' },
+    'q28-deploy',
+    'q29-network-security',
+    'q30-app-security',
+    'q31-iac',
+    'panel',
+    'q32-ai-capabilities',
+    'q33b-inference-region',
+    'q34-platform-role',
+    'q35-agent-interfaces',
+    'q37-ai-changes',
+    'q38-ai-barrier',
+    'kontakt',
   ],
 }

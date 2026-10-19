@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   getConsentContact,
+  getExportColumns,
   getVisibleQuestionIds,
   getVisibleSectionIds,
   validateSurveyDefinition,
@@ -130,7 +131,6 @@ describe('State of Platforms Wave 3 routing', () => {
       'q8-platform-name',
       'q15-distributions',
       'q32-ai-capabilities',
-      'q33a-inference-model',
       'q35-agent-interfaces',
     ]) {
       expect(ids.has(id)).toBe(false)
@@ -139,16 +139,97 @@ describe('State of Platforms Wave 3 routing', () => {
   })
 
   it('shows Q33b only for external AI services', () => {
-    const visible = (q33a: string[]) =>
+    const visible = (q32: string[]) =>
       getVisibleQuestionIds(
         stateOfPlatforms2027.sections,
         map([
           ['q7-platform', 'Ja'],
-          ['q33a-inference-model', q33a],
+          ['q32-ai-capabilities', q32],
         ])
       ).has('q33b-inference-region')
-    expect(visible(['on-prem'])).toBe(false)
-    expect(visible(['vendor-api', 'on-prem'])).toBe(true)
+    expect(visible(['gpu-k8s'])).toBe(false)
+    expect(visible(['ai-gateway', 'gpu-k8s'])).toBe(true)
+    expect(visible(['cloud-llm-access'])).toBe(true)
+  })
+
+  it('matches the question counts in the instrument', () => {
+    const count = (q7: string, q14: string) =>
+      getVisibleQuestionIds(
+        stateOfPlatforms2027.sections,
+        map([
+          ['q7-platform', q7],
+          ['q14-kubernetes', q14],
+          ['q32-ai-capabilities', ['cloud-llm-access']],
+        ])
+      ).size
+    expect(count('Ja', 'Ja')).toBe(39)
+    expect(count('Ja', 'Nei')).toBe(33)
+    expect(count('Nei', 'Ja')).toBe(26)
+    expect(count('Nei', 'Nei')).toBe(20)
+  })
+
+  it('keeps the export column order expected by aggregate.py', () => {
+    expect(getExportColumns(stateOfPlatforms2027).map(c => c.header)).toEqual([
+      'Organisasjon',
+      'Type organisasjon',
+      'Ansatte',
+      'Budsjett (MNOK)',
+      'Hva er din primærrolle?',
+      'Har dere en applikasjonsplattform?',
+      'Har plattformen deres et navn?',
+      'Hvorfor lager dere plattform?',
+      'Hvilke selvbetjente tjenester består plattformen deres av?',
+      'Ca. hvor mange applikasjonsteam benytter seg av plattformen deres i dag?',
+      'Topp tre programmeringsspråk for applikasjoner?',
+      'Hvordan allokeres ansatte og midler til plattformfunksjoner',
+      'Hvordan oppdager brukere interne plattformer og plattformfunksjonalitet?',
+      'Hvordan benytter brukere plattformfunksjonalitet?',
+      'Hvordan planlegges, prioriteres, utvikles og vedlikeholdes plattformer og deres funksjonalitet?',
+      'Hva er prosessen for å samle inn og lære av tilbakemeldinger?',
+      'Bruker dere Kubernetes?',
+      'Hvilke Kubernetes distribusjoner bruker dere?',
+      'Hvor mange år har dere kjørt Kubernetes i produksjon?',
+      'Hvor mange Kubernetes clustere har dere?',
+      'Hvor mange applikasjoner i produksjon har dere på Kubernetes?',
+      'Utvikler dere egne Kubernetes operators?',
+      'Kjører dere databaser i Kubernetes?',
+      'Bruker dere sky for plattformen deres?',
+      'Hva er deres primære sky for applikasjoner?',
+      'Brukere dere flere sky-leverandører?',
+      'Hvor mange år har dere kjørt applikasjoner i sky?',
+      'Benytter dere serverless funksjoner?',
+      'Hva bruker dere for overvåking av applikasjoner?',
+      'Hva bruker dere for pakking av applikasjoner?',
+      'Hva bruker dere for deploy av applikasjoner?',
+      'Hva bruker dere for nettverksikkerhet?',
+      'Hva bruker dere for applikasjonsikkerhet?',
+      'Hva bruker dere for infrastruktur-automatisering?',
+      'Deltok organisasjonen din i plattformundersøkelsen i 2023/2024 eller 2025/2026?',
+      ...[
+        'q32-ai-capabilities',
+        'q33b-inference-region',
+        'q34-platform-role',
+        'q35-agent-interfaces',
+        'q37-ai-changes',
+        'q38-ai-barrier',
+      ].map(
+        id =>
+          stateOfPlatforms2027.sections
+            .flatMap(s => s.questions)
+            .find(q => q.id === id)!.title
+      ),
+    ])
+  })
+
+  it('exports every question exactly once', () => {
+    const exported = getExportColumns(stateOfPlatforms2027).flatMap(c =>
+      c.question ? [c.question.id] : []
+    )
+    const all = stateOfPlatforms2027.sections
+      .flatMap(s => s.questions)
+      .map(q => q.id)
+      .filter(id => id !== 'kontakt')
+    expect([...exported].sort()).toEqual([...all].sort())
   })
 })
 

@@ -16,6 +16,22 @@ import {
   type QuestionCondition,
 } from './types'
 
+/** CSV export columns, without sensitive questions. Placeholders have no question. */
+export function getExportColumns(
+  survey: SurveyDefinition
+): { header: string; question?: SurveyQuestion }[] {
+  const sensitive = new Set(survey.sensitiveQuestionIds ?? [])
+  const questions = survey.sections.flatMap(s => s.questions)
+  const byId = new Map(questions.map(q => [q.id, q]))
+  const spec = survey.exportColumns ?? questions.map(q => q.id)
+  return spec.flatMap(c => {
+    if (typeof c !== 'string') return [{ header: c.header }]
+    const question = byId.get(c)
+    if (!question) throw new Error(`Unknown export column: ${c}`)
+    return sensitive.has(c) ? [] : [{ header: question.title, question }]
+  })
+}
+
 export function getSurvey(slug: string): SurveyDefinition | undefined {
   return surveys.find(s => s.slug === slug)
 }
