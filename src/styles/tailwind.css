@@ -5,8 +5,9 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @media print {
-  nav,
-  footer {
+  body:has([data-print-results]) header,
+  body:has([data-print-results]) nav,
+  body:has([data-print-results]) footer {
     display: none !important;
   }
   [data-print-results] section > * {
