@@ -3,7 +3,7 @@ import {
   type SlackUserSummary,
   type SlackFetchStatus,
 } from '@/lib/slack/users'
-import { members } from '@/data/members'
+import { members, findMemberByName } from '@/data/members'
 import type { Member } from '@/lib/members'
 import {
   externalDomains,
@@ -143,13 +143,13 @@ export async function getSlackUsersForMember(
   if (status !== 'ok') return null
 
   const domainToMember = buildDomainIndex()
-  const member = members.find(m => m.name === memberName)
+  const member = findMemberByName(memberName)
   if (!member) return null
 
   const users: SlackUserSummary[] = []
 
   for (const [domain, bucket] of domainBuckets) {
-    if (domainToMember.get(domain)?.name === memberName) {
+    if (domainToMember.get(domain)?.name === member.name) {
       users.push(...bucket.users)
     }
   }

@@ -13,18 +13,10 @@ import {
 } from '@/lib/surveys/helpers'
 import { getAppUrl } from '@/server/lib/environment'
 import { getSlackUsersForMember } from '@/lib/members-slack'
-import { members } from '@/data/members'
+import { members, findMemberByName, canonicalOrgName } from '@/data/members'
 import { SurveyStatus, type SurveyDefinition } from '@/lib/surveys/types'
 
 const repository = new SurveyResponseRepository()
-
-function getMemberNameSet(): Set<string> {
-  return new Set(members.map(m => m.name.toLowerCase().trim()))
-}
-
-function getMemberNames(): string[] {
-  return members.map(m => m.name)
-}
 
 function resolveOrganization(
   response: {
@@ -33,10 +25,10 @@ function resolveOrganization(
   },
   orgQid: string
 ): string {
-  if (response.organizationOverride?.memberName) {
-    return response.organizationOverride.memberName
-  }
-  return response.answers.find(a => a.questionId === orgQid)?.value ?? 'Ukjent'
+  const org =
+    response.organizationOverride?.memberName ||
+    response.answers.find(a => a.questionId === orgQid)?.value
+  return org === undefined ? 'Ukjent' : canonicalOrgName(org)
 }
 
 const surveyAccessForSlug = createSurveyAccessMiddleware(
@@ -113,7 +105,6 @@ export const adminSurveyRouter = router({
         ])
 
       const memberCount = (await import('@/data/members')).members.length
-      const memberNames = getMemberNameSet()
 
       const uniqueResolvedOrgs = new Set<string>()
       const deviceBreakdown = new Map<string, number>()
@@ -133,7 +124,7 @@ export const adminSurveyRouter = router({
 
       let respondedMemberCount = 0
       for (const org of uniqueResolvedOrgs) {
-        if (memberNames.has(org)) respondedMemberCount++
+        if (findMemberByName(org)) respondedMemberCount++
       }
 
       const totalQuestions = survey.sections.reduce(
@@ -209,8 +200,6 @@ export const adminSurveyRouter = router({
       const orgQid = getOrgQuestionId(survey)
       const allResponses = await repository.findBySurvey(survey.slug)
 
-      const memberNames = getMemberNameSet()
-
       const orgCounts = new Map<string, number>()
       for (const r of allResponses) {
         const org = resolveOrganization(r, orgQid)
@@ -221,7 +210,7 @@ export const adminSurveyRouter = router({
         .map(([organization, count]) => ({
           organization,
           count,
-          isMember: memberNames.has(organization.toLowerCase().trim()),
+          isMember: Boolean(findMemberByName(organization)),
         }))
         .sort((a, b) => b.count - a.count)
 
@@ -306,7 +295,6 @@ export const adminSurveyRouter = router({
       const { survey } = ctx
       const orgQid = getOrgQuestionId(survey)
       const sensitiveIds = new Set(survey.sensitiveQuestionIds ?? [])
-      const memberNames = getMemberNameSet()
 
       const [result, pilotCount] = await Promise.all([
         repository.findBySurveyPaginated(
@@ -325,7 +313,7 @@ export const adminSurveyRouter = router({
             id: r._id,
             submittedAt: r.submittedAt,
             organization: org,
-            isMember: memberNames.has(org.toLowerCase().trim()),
+            isMember: Boolean(findMemberByName(org)),
             deviceCategory: r.metadata?.deviceCategory ?? 'unknown',
             durationSeconds: r.metadata?.durationSeconds,
             answers: r.answers.filter(a => !sensitiveIds.has(a.questionId)),
@@ -442,8 +430,8 @@ export const adminSurveyRouter = router({
       const { survey } = ctx
       const orgQid = getOrgQuestionId(survey)
 
-      const validMembers = getMemberNames()
-      if (!validMembers.includes(input.memberName)) {
+      const member = findMemberByName(input.memberName)
+      if (!member) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
           message: `"${input.memberName}" er ikke et gyldig medlemsnavn`,
@@ -464,7 +452,7 @@ export const adminSurveyRouter = router({
       const adminName = ctx.user?.name ?? ctx.user?.email ?? 'unknown'
 
       await repository.setOrganizationOverride(input.responseId, {
-        memberName: input.memberName,
+        memberName: member.name,
         originalValue,
         overriddenBy: adminName,
         overriddenAt: new Date().toISOString(),
@@ -484,7 +472,8 @@ export const adminSurveyRouter = router({
       const { survey } = ctx
       const orgQid = getOrgQuestionId(survey)
 
-      if (!members.some(m => m.name === input.memberName)) {
+      const member = findMemberByName(input.memberName)
+      if (!member) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
           message: `"${input.memberName}" er ikke et gyldig medlemsnavn`,
@@ -493,14 +482,14 @@ export const adminSurveyRouter = router({
 
       const respondedOrgs = await getRespondedOrgNames(survey.slug, orgQid)
 
-      if (respondedOrgs.has(input.memberName.toLowerCase().trim())) {
+      if (respondedOrgs.has(member.name.toLowerCase().trim())) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
           message: 'Denne organisasjonen har allerede svart på undersøkelsen',
         })
       }
 
-      const result = await getSlackUsersForMember(input.memberName)
+      const result = await getSlackUsersForMember(member.name)
       if (!result) {
         return { users: [], userCount: 0 }
       }

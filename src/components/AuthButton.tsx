@@ -163,8 +163,11 @@ export function AuthButton({
                   >
                     <span className="flex min-w-0 items-center">
                       <BuildingOffice2Icon className="mr-3 h-4 w-4 shrink-0 text-teal-600 dark:text-teal-400" />
-                      <span className="truncate font-medium">
-                        {myMembership.name}
+                      <span
+                        className="truncate font-medium"
+                        title={myMembership.name}
+                      >
+                        {myMembership.shortName}
                       </span>
                     </span>
                     {myMembership.platformName && (

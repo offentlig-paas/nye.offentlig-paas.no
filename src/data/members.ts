@@ -60,7 +60,9 @@ export const members: Member[] = [
     linkedinUrl: 'https://www.linkedin.com/company/politiets-it-enhet/',
   }),
   new Member({
-    name: 'BRREG',
+    name: 'Brønnøysundregistrene',
+    shortName: 'BRREG',
+    aliases: ['Bronnoysundregistrene', 'Brønnøysund'],
     type: MemberType.AGENCY,
     sectors: [Sector.GENERAL],
     domains: ['brreg.no'],
@@ -1089,3 +1091,13 @@ export const members: Member[] = [
     linkedinUrl: 'https://www.linkedin.com/company/elbits/',
   }),
 ]
+
+/** Finds the member whose name, short name or alias matches the text. */
+export function findMemberByName(text: string): Member | undefined {
+  return members.find(m => m.matchesName(text))
+}
+
+/** Canonical member name for free text, or the text itself if no member matches. */
+export function canonicalOrgName(text: string): string {
+  return findMemberByName(text)?.name ?? text
+}

@@ -180,6 +180,7 @@ export const memberProfileRouter = router({
     return {
       slug,
       name: member.name,
+      shortName: member.getDisplayName(true),
       hasProfile: Boolean(profile?.platformName),
       platformName: profile?.platformName ?? null,
       visibility: profile?.visibility ?? null,

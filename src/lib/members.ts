@@ -41,6 +41,10 @@ export enum Sector {
 
 interface iMember {
   name: string
+  /** Abbreviation for space-restricted UI */
+  shortName?: string
+  /** Alternative spellings and old names, used when matching free text */
+  aliases?: string[]
   type: MemberType
   sectors: Sector[]
   domains?: string[]
@@ -52,8 +56,14 @@ interface iMember {
   linkedinUrl?: string
 }
 
+function normalizeName(text: string): string {
+  return text.trim().replace(/\s+/g, ' ').toLocaleLowerCase('nb')
+}
+
 export class Member implements iMember {
   name: string
+  shortName?: string
+  aliases: string[]
   type: MemberType
   sectors: Sector[]
   domains: string[]
@@ -66,6 +76,8 @@ export class Member implements iMember {
 
   constructor({
     name,
+    shortName,
+    aliases,
     type,
     sectors,
     domains,
@@ -77,6 +89,8 @@ export class Member implements iMember {
     linkedinUrl,
   }: iMember) {
     this.name = name
+    this.shortName = shortName
+    this.aliases = aliases ?? []
     this.type = type
     this.sectors = sectors
     this.domains = domains ?? []
@@ -86,6 +100,24 @@ export class Member implements iMember {
     this.homepage = homepage
     this.linkedinUrl = linkedinUrl
     this.github = github
+  }
+
+  getDisplayName(short = false): string {
+    return (short && this.shortName) || this.name
+  }
+
+  /** Name, short name and aliases, for matching and search */
+  getNames(): string[] {
+    return [
+      this.name,
+      ...(this.shortName ? [this.shortName] : []),
+      ...this.aliases,
+    ]
+  }
+
+  matchesName(text: string): boolean {
+    const n = normalizeName(text)
+    return this.getNames().some(name => normalizeName(name) === n)
   }
 
   getSlug(): string {
