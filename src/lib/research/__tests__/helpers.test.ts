@@ -3,6 +3,7 @@ import {
   getAllProjects,
   getProject,
   getOpenSurveys,
+  findOpenSurvey,
   getResponseRate,
   getWaveResponseRate,
   getSurveyResponseRate,
@@ -78,6 +79,21 @@ describe('Research Helpers', () => {
           'surveySlug' in survey && survey.surveySlug === 'ai-agents-2027'
       )
       expect(agents?.href).toBe('/forskning/state-of-ai-agents/undersokelse')
+    })
+  })
+
+  describe('findOpenSurvey', () => {
+    it('returns the open survey for a project', () => {
+      const found = findOpenSurvey('state-of-ai-agents')
+      expect(
+        found && 'surveySlug' in found.survey && found.survey.surveySlug
+      ).toBe('ai-agents-2027')
+    })
+
+    it('returns nothing when the pinned survey is closed', () => {
+      expect(
+        findOpenSurvey('state-of-ai-agents', 'ai-agents-2026')
+      ).toBeUndefined()
     })
   })
 

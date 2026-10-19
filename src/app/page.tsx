@@ -199,10 +199,12 @@ export default async function Home() {
       <Photos />
       <Container className="mt-24 md:mt-28">
         <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2">
-          <Suspense>
-            <UpcomingEvents className="lg:hidden" />
-          </Suspense>
-          <OpenSurveysCard className="-mt-14 space-y-4 lg:hidden" />
+          <div className="space-y-6 lg:hidden">
+            <Suspense>
+              <UpcomingEvents />
+            </Suspense>
+            <OpenSurveysCard className="space-y-4" />
+          </div>
           <div className="flex flex-col gap-16">
             {artikkel.map(article => (
               <Article key={article.slug} article={article} />

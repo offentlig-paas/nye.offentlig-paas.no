@@ -94,6 +94,14 @@ export function getOpenSurveys(): Array<{
   )
 }
 
+export function findOpenSurvey(projectSlug: string, surveySlug?: string) {
+  return getOpenSurveys().find(({ survey, project }) =>
+    surveySlug
+      ? 'surveySlug' in survey && survey.surveySlug === surveySlug
+      : project.slug === projectSlug
+  )
+}
+
 export function getResponseRate(responses: number, population: number): number {
   if (population <= 0) return 0
   return Math.round((responses / population) * 100)

@@ -1,16 +1,23 @@
 import Link from 'next/link'
 import { ClipboardDocumentListIcon } from '@heroicons/react/24/outline'
 import { members } from '@/data/members'
-import { getOpenSurveys, getSurveyTitle } from '@/lib/research/helpers'
+import {
+  getOpenSurveys,
+  findOpenSurvey,
+  getSurveyTitle,
+} from '@/lib/research/helpers'
 import { surveyResponseService } from '@/domains/survey-response/service'
 
 // Indigo, not teal: keeps surveys visually apart from the events block.
 export async function SurveyCallToAction({
   projectSlug,
+  surveySlug,
 }: {
   projectSlug: string
+  /** Pin one survey; renders nothing unless that survey is open. */
+  surveySlug?: string
 }) {
-  const open = getOpenSurveys().find(o => o.project.slug === projectSlug)
+  const open = findOpenSurvey(projectSlug, surveySlug)
   if (!open) return null
   const { survey, project, href, minutes } = open
 
@@ -75,26 +82,34 @@ export function OpenSurveysCard({ className }: { className?: string }) {
   if (open.length === 0) return null
   return (
     <div className={className}>
-      {open.map(({ survey, href, minutes }) => (
-        <Link
-          key={href}
-          href={href}
-          className="group flex items-start gap-3 rounded-2xl border border-zinc-200 p-4 transition hover:border-indigo-400 dark:border-zinc-700/40 dark:hover:border-indigo-400/60"
-        >
-          <ClipboardDocumentListIcon className="h-6 w-6 flex-none text-indigo-500 dark:text-indigo-400" />
-          <div className="min-w-0">
-            <p className="text-xs font-semibold tracking-wide text-indigo-600 uppercase dark:text-indigo-400">
-              Forskning · åpen undersøkelse
-            </p>
-            <p className="mt-1 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-              {getSurveyTitle(survey)}
-            </p>
-            <p className="mt-1 text-sm text-zinc-600 group-hover:text-indigo-600 dark:text-zinc-400 dark:group-hover:text-indigo-400">
-              Svar på undersøkelsen{minutes && ` (ca. ${minutes} min)`} →
-            </p>
-          </div>
-        </Link>
-      ))}
+      {open.map(({ survey, href, minutes }) => {
+        const external = !href.startsWith('/')
+        const Tag = external ? 'a' : Link
+        return (
+          <Tag
+            key={href}
+            href={href}
+            {...(external && { target: '_blank', rel: 'noopener noreferrer' })}
+            className="group flex items-start gap-3 rounded-2xl border border-zinc-200 p-4 transition hover:border-indigo-400 dark:border-zinc-700/40 dark:hover:border-indigo-400/60"
+          >
+            <ClipboardDocumentListIcon className="h-6 w-6 flex-none text-indigo-500 dark:text-indigo-400" />
+            <div className="min-w-0">
+              <p className="text-xs font-semibold tracking-wide text-indigo-600 uppercase dark:text-indigo-400">
+                Forskning · åpen undersøkelse
+              </p>
+              <p className="mt-1 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                {getSurveyTitle(survey)}
+              </p>
+              <p className="mt-1 text-sm text-zinc-600 group-hover:text-indigo-600 dark:text-zinc-400 dark:group-hover:text-indigo-400">
+                Svar på undersøkelsen{minutes && ` (ca. ${minutes} min)`} →
+                {external && (
+                  <span className="sr-only"> (åpnes i ny fane)</span>
+                )}
+              </p>
+            </div>
+          </Tag>
+        )
+      })}
     </div>
   )
 }
