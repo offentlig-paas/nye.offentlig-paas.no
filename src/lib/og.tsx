@@ -1,7 +1,12 @@
 import { readFile } from 'node:fs/promises'
-import { join } from 'node:path'
 import { ImageResponse } from 'next/og'
 import { formatDate } from '@/lib/formatDate'
+
+export const siteOpenGraph = {
+  siteName: 'Offentlig PAAS',
+  locale: 'nb_NO',
+  type: 'website' as const,
+}
 
 export function truncate(text: string, max: number) {
   if (text.length <= max) return text
@@ -16,9 +21,10 @@ let assets:
   | undefined
 function getAssets() {
   assets ??= Promise.all([
-    readFile(join(process.cwd(), 'src/fonts/inter-latin-400.woff')),
-    readFile(join(process.cwd(), 'src/fonts/inter-latin-700.woff')),
-    readFile(join(process.cwd(), 'src/images/logo.png')).then(
+    // new URL(..., import.meta.url) makes the bundler trace and ship these files.
+    readFile(new URL('../fonts/inter-latin-400.woff', import.meta.url)),
+    readFile(new URL('../fonts/inter-latin-700.woff', import.meta.url)),
+    readFile(new URL('../images/logo.png', import.meta.url)).then(
       b => `data:image/png;base64,${b.toString('base64')}`
     ),
   ])

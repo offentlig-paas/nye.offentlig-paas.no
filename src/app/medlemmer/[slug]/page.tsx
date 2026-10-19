@@ -1,6 +1,7 @@
 import { type Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import { auth } from '@/auth'
+import { siteOpenGraph } from '@/lib/og'
 import { Container } from '@/components/Container'
 import {
   memberProfileService,
@@ -29,12 +30,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? `${member.name} (${profile.platformName}) - Medlemsprofil`
     : `${member.name} - Medlemsprofil`
 
+  const description =
+    profile?.tagline ||
+    profile?.platformDescription ||
+    `Medlemsprofil for ${member.name} i Offentlig PAAS`
+
   return {
     title,
-    description:
-      profile?.tagline ||
-      profile?.platformDescription ||
-      `Medlemsprofil for ${member.name} i Offentlig PAAS`,
+    description,
+    openGraph: { ...siteOpenGraph, title, description },
   }
 }
 

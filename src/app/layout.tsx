@@ -8,6 +8,8 @@ import { AuthSessionProvider } from '@/components/AuthSessionProvider'
 import { Analytics } from '@/components/Analytics'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
+import { siteOpenGraph } from '@/lib/og'
+
 import '@/styles/tailwind.css'
 
 export const metadata: Metadata = {
@@ -18,11 +20,7 @@ export const metadata: Metadata = {
       : process.env.NEXT_PUBLIC_URL
   ),
   applicationName: 'Offentlig PAAS',
-  openGraph: {
-    siteName: 'Offentlig PAAS',
-    locale: 'nb_NO',
-    type: 'website',
-  },
+  openGraph: siteOpenGraph,
   twitter: { card: 'summary_large_image' },
   title: {
     template: '%s - Offentlig PAAS',

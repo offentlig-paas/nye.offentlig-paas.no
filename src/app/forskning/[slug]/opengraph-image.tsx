@@ -1,9 +1,21 @@
 import { ogImage } from '@/lib/og'
 import { findOpenSurvey, getProject } from '@/lib/research/helpers'
 
-export const size = { width: 1200, height: 630 }
-export const contentType = 'image/png'
-export const alt = 'Forskningsprosjekt i Offentlig PAAS'
+export function generateImageMetadata({
+  params,
+}: {
+  params: { slug: string }
+}) {
+  const project = getProject(params?.slug ?? '')
+  return [
+    {
+      id: 'og',
+      alt: project ? `${project.title} – Offentlig PAAS` : 'Offentlig PAAS',
+      size: { width: 1200, height: 630 },
+      contentType: 'image/png',
+    },
+  ]
+}
 
 export default async function Image({
   params,
