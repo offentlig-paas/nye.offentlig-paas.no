@@ -9,11 +9,6 @@ interface MarkdownProps {
   inline?: boolean
 }
 
-/** Removes inline markdown markers for plain-text uses (aria-label, charts). */
-export function stripMarkdown(text: string): string {
-  return text.replace(/(\*\*|__|\*|`)(.+?)\1/g, '$2')
-}
-
 export function Markdown({ children, className, inline }: MarkdownProps) {
   const Wrapper = inline ? 'span' : 'div'
   return (

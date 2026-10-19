@@ -1,3 +1,4 @@
+import { stripMarkdown } from '@/lib/markdown'
 import {
   router,
   protectedProcedure,
@@ -368,7 +369,7 @@ export const adminSurveyRouter = router({
         'Organisasjon (original)',
         'Enhet',
         'Kilde',
-        ...exportableQuestions.map(q => q.title),
+        ...exportableQuestions.map(q => stripMarkdown(q.title)),
       ]
 
       const rows = responses.map(r => {
