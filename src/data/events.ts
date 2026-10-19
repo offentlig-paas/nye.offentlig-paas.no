@@ -24,6 +24,7 @@ export const events: Event[] = [
     maxCapacity: 89,
     location: 'Kripos, Nils Hansens vei 25, 0667 Oslo',
     registration: {
+      disabled: true,
       attendanceTypes: [AttendanceType.Physical, AttendanceType.Digital],
     },
     participantInfo: {
