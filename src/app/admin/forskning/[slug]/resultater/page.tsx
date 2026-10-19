@@ -57,7 +57,7 @@ async function ResultsContent({
   if (!pilot && responses.length === 0 && pilotCount > 0) {
     return (
       <p className="rounded-xl border border-gray-200 p-6 text-gray-700 dark:border-gray-700 dark:text-gray-300">
-        Ingen ekte svar ennå – {pilotCount} pilotsvar.{' '}
+        Ingen svar ennå – {pilotCount} pilotsvar.{' '}
         <Link
           href={`/admin/forskning/${slug}/resultater?pilot=1`}
           className="font-medium text-blue-600 hover:underline dark:text-blue-400"
@@ -109,7 +109,7 @@ export default async function AdminSurveyResultsPage({
     <div data-print-results>
       {pilotCount > 0 && (
         <nav
-          aria-label="Velg svar"
+          aria-label="Velg hvilke svar som vises"
           className="mb-4 inline-flex gap-1 rounded-lg bg-gray-100 p-1 dark:bg-gray-800 print:hidden"
         >
           <Link
@@ -117,7 +117,7 @@ export default async function AdminSurveyResultsPage({
             aria-current={pilot ? undefined : 'page'}
             className={tabClass(!pilot)}
           >
-            Ekte svar
+            Svar
           </Link>
           <Link
             href={`${resultsHref}?pilot=1`}
@@ -133,8 +133,7 @@ export default async function AdminSurveyResultsPage({
           role="status"
           className="mb-6 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-200"
         >
-          Du ser pilotsvar. De er bare til testing og er ikke med i de ekte
-          resultatene.
+          Du ser pilotsvar. De er bare til testing og er ikke med i resultatene.
         </p>
       )}
       <SurveyResultsActions
