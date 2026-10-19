@@ -81,4 +81,36 @@ describe('compareWaves', () => {
     const [q] = compareWaves(cur, prev, { new: 'old' })
     expect(q!.average).toEqual({ previous: 1.5, current: 2 })
   })
+
+  it('excludes non-scale options and drops average on suppression', () => {
+    const cur = results(
+      'new',
+      3,
+      [
+        ['lo', 1],
+        ['hi', 1],
+        ['na', 1],
+      ],
+      'diverging'
+    )
+    cur.sections[0]!.questions[0]!.options[2]!.scale = false
+    const prev = results(
+      'old',
+      2,
+      [
+        ['lo', 0],
+        ['hi', 2],
+      ],
+      'diverging'
+    )
+    expect(compareWaves(cur, prev, { new: 'old' })[0]!.average).toEqual({
+      previous: 2,
+      current: 1.5,
+    })
+    prev.sections[0]!.questions[0]!.options[0]!.suppressed = true
+    expect(compareWaves(cur, prev, { new: 'old' })[0]!.average).toEqual({
+      previous: null,
+      current: null,
+    })
+  })
 })

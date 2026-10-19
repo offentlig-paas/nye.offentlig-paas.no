@@ -1,4 +1,5 @@
-import type { AggregatedQuestion, AggregatedSurveyResults } from './aggregation'
+import type { AggregatedSurveyResults } from './aggregation'
+import { likertAverage } from './likert'
 
 interface ComparedOption {
   value: string
@@ -16,7 +17,7 @@ export interface ComparedQuestion {
   previousN: number
   currentN: number
   options: ComparedOption[]
-  /** Mean option position (1 = first), for diverging (Likert) questions. */
+  /** Mean scale position (1 = first; N/A options excluded), for diverging questions. */
   average?: { previous: number | null; current: number | null }
 }
 
@@ -27,18 +28,6 @@ function questionsById(results: AggregatedSurveyResults) {
 }
 
 const pct = (count: number, n: number) => (n > 0 ? (count / n) * 100 : 0)
-
-function likertAverage(q: AggregatedQuestion, order: string[]): number | null {
-  let sum = 0
-  let total = 0
-  for (const o of q.options) {
-    const pos = order.indexOf(o.value)
-    if (pos < 0) continue
-    sum += (pos + 1) * o.count
-    total += o.count
-  }
-  return total > 0 ? sum / total : null
-}
 
 /** Compare mapped questions; options are matched by value. */
 export function compareWaves(
@@ -90,11 +79,13 @@ export function compareWaves(
       options,
     }
     if (c.visualization === 'diverging' || p.visualization === 'diverging') {
-      const order = c.options.map(o => o.value)
-      question.average = {
-        previous: likertAverage(p, order),
-        current: likertAverage(c, order),
-      }
+      const previousAvg = likertAverage(p.options)
+      const currentAvg = likertAverage(c.options)
+      // A suppressed scale point in either wave makes the change misleading.
+      question.average =
+        previousAvg === null || currentAvg === null
+          ? { previous: null, current: null }
+          : { previous: previousAvg, current: currentAvg }
     }
     out.push(question)
   }
