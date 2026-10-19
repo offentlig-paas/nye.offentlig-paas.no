@@ -112,6 +112,8 @@ export interface RadioQuestion extends QuestionBase {
   type: 'radio'
   options: QuestionOption[]
   randomizeOptions?: boolean
+  /** `inline`: compact single row of buttons, e.g. a follow-up confidence scale. */
+  layout?: 'inline'
 }
 
 export interface CheckboxQuestion extends QuestionBase {
@@ -130,6 +132,12 @@ export interface MatrixQuestion extends QuestionBase {
   type: 'matrix'
   rows: { value: string; label: string }[]
   options: QuestionOption[]
+  /**
+   * Show only rows selected in an earlier checkbox question. `map` expands a
+   * selected code to row values; by default the code is the row value. The
+   * matrix is hidden when no rows remain.
+   */
+  rowsFrom?: { questionId: string; map?: Record<string, string[]> }
 }
 
 export interface QuestionOption {

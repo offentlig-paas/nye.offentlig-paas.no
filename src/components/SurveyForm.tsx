@@ -13,6 +13,8 @@ import {
   getVisibleSectionIds,
   getVisibleQuestionIds,
   isQuestionRequired,
+  resolveQuestion,
+  surveyProgress,
   estimateCompletionMinutes,
   buildConsentText,
   buildThankYouMessage,
@@ -137,6 +139,11 @@ export function SurveyForm({
     [survey.sections, answers]
   )
 
+  const progress = useMemo(
+    () => surveyProgress(survey.sections, answers, survey.estimatedMinutes),
+    [survey.sections, answers, survey.estimatedMinutes]
+  )
+
   const currentSection = visibleSections[currentSectionIndex]
   const isLastSection = currentSectionIndex === visibleSections.length - 1
 
@@ -161,9 +168,14 @@ export function SurveyForm({
     if (!currentSection) return true
     const newErrors = new Map<string, string>()
 
-    for (const question of currentSection.questions) {
-      if (!visibleQuestionIds.has(question.id)) continue
-      const answer = answers.get(question.id)
+    for (const original of currentSection.questions) {
+      if (!visibleQuestionIds.has(original.id)) continue
+      const { question, answer } = resolveQuestion(
+        original,
+        answers.get(original.id),
+        answers,
+        visibleQuestionIds
+      )
       const error = validateQuestion(
         question,
         answer,
@@ -304,7 +316,21 @@ export function SurveyForm({
           ref={formTopRef}
           className="text-base text-zinc-700 dark:text-zinc-300"
         >
-          <Markdown>{consentText}</Markdown>
+          {survey.consent.fullText ? (
+            <>
+              <Markdown>{survey.consent.dataCollectionText}</Markdown>
+              <details className="mt-4">
+                <summary className="cursor-pointer font-medium text-teal-700 dark:text-teal-400">
+                  Les mer
+                </summary>
+                <div className="mt-3">
+                  <Markdown>{consentText}</Markdown>
+                </div>
+              </details>
+            </>
+          ) : (
+            <Markdown>{consentText}</Markdown>
+          )}
         </div>
         <p className="text-sm text-zinc-500 dark:text-zinc-400">
           Estimert tid: ca. {estimatedMinutes} minutter
@@ -376,18 +402,21 @@ export function SurveyForm({
         <div
           className="mx-4 h-2.5 flex-1 overflow-hidden rounded-full bg-zinc-200 sm:h-2 dark:bg-zinc-700"
           role="progressbar"
-          aria-valuenow={currentSectionIndex + 1}
-          aria-valuemin={1}
-          aria-valuemax={visibleSections.length}
-          aria-label={`Fremdrift: seksjon ${currentSectionIndex + 1} av ${visibleSections.length}`}
+          aria-valuenow={Math.round(progress.fraction * 100)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label="Fremdrift: andel besvarte spørsmål"
         >
           <div
             className="h-full rounded-full bg-teal-500 transition-all duration-300 dark:bg-teal-400"
-            style={{
-              width: `${((currentSectionIndex + 1) / visibleSections.length) * 100}%`,
-            }}
+            style={{ width: `${progress.fraction * 100}%` }}
           />
         </div>
+        {progress.minutesLeft !== undefined && (
+          <span className="whitespace-nowrap">
+            ca. {progress.minutesLeft} min igjen
+          </span>
+        )}
       </div>
 
       <div aria-live="polite" aria-atomic className="sr-only">
@@ -496,23 +525,31 @@ function SectionRenderer({
       <div className="space-y-6">
         {section.questions
           .filter(q => visibleQuestionIds.has(q.id))
-          .map(question => (
-            <QuestionRenderer
-              key={question.id}
-              question={{
-                ...question,
-                required: isQuestionRequired(
-                  question,
-                  answers,
-                  visibleQuestionIds
-                ),
-              }}
-              answer={answers.get(question.id)}
-              error={errors.get(question.id)}
-              onAnswer={onAnswer}
-              sessionSeed={sessionSeed}
-            />
-          ))}
+          .map(original => {
+            const { question, answer } = resolveQuestion(
+              original,
+              answers.get(original.id),
+              answers,
+              visibleQuestionIds
+            )
+            return (
+              <QuestionRenderer
+                key={question.id}
+                question={{
+                  ...question,
+                  required: isQuestionRequired(
+                    question,
+                    answers,
+                    visibleQuestionIds
+                  ),
+                }}
+                answer={answer}
+                error={errors.get(question.id)}
+                onAnswer={onAnswer}
+                sessionSeed={sessionSeed}
+              />
+            )
+          })}
       </div>
     </div>
   )

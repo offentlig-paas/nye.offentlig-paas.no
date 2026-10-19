@@ -11,6 +11,7 @@ import {
   type SurveyQuestion,
   type QuestionOption,
   type RadioQuestion,
+  type MatrixQuestion,
   type ConsentContact,
   type QuestionCondition,
 } from './types'
@@ -138,7 +139,10 @@ function getVisibility(
   while (i < sections.length) {
     const section = sections[i]!
     const visibleQuestions = section.questions.filter(q => {
-      const visible = conditionsMet(q.showIf, answers, questionIds)
+      const visible =
+        conditionsMet(q.showIf, answers, questionIds) &&
+        (q.type !== 'matrix' ||
+          getMatrixRows(q, answers, questionIds).length > 0)
       if (visible) questionIds.add(q.id)
       return visible
     })
@@ -178,6 +182,76 @@ export function getVisibleQuestionIds(
   answers: Map<string, SurveyAnswer>
 ): Set<string> {
   return getVisibility(sections, answers).questionIds
+}
+
+/** Matrix rows to show, narrowed by `rowsFrom` when set. */
+export function getMatrixRows(
+  question: MatrixQuestion,
+  answers: Map<string, SurveyAnswer>,
+  visibleQuestionIds: Set<string>
+): MatrixQuestion['rows'] {
+  const from = question.rowsFrom
+  if (!from) return question.rows
+  const answer = visibleQuestionIds.has(from.questionId)
+    ? answers.get(from.questionId)
+    : undefined
+  const codes = !answer
+    ? []
+    : Array.isArray(answer.value)
+      ? answer.value
+      : [answer.value]
+  const wanted = new Set(codes.flatMap(c => from.map?.[c] ?? [c]))
+  return question.rows.filter(r => wanted.has(r.value))
+}
+
+/**
+ * The question as the respondent sees it (matrix rows narrowed by
+ * `rowsFrom`), and the answer with values for hidden rows dropped.
+ */
+export function resolveQuestion(
+  question: SurveyQuestion,
+  answer: SurveyAnswer | undefined,
+  answers: Map<string, SurveyAnswer>,
+  visibleQuestionIds: Set<string>
+): { question: SurveyQuestion; answer: SurveyAnswer | undefined } {
+  if (question.type !== 'matrix' || !question.rowsFrom) {
+    return { question, answer }
+  }
+  const rows = getMatrixRows(question, answers, visibleQuestionIds)
+  const rowValues = new Set(rows.map(r => r.value))
+  return {
+    question: { ...question, rows },
+    answer:
+      answer && Array.isArray(answer.value)
+        ? {
+            ...answer,
+            value: answer.value.filter(v => rowValues.has(v.split(':')[0]!)),
+          }
+        : answer,
+  }
+}
+
+/**
+ * Share of visible questions answered, and minutes left scaled from the
+ * upper bound of `estimatedMinutes` (e.g. "10–15"). Minutes are undefined
+ * when no estimate is given.
+ */
+export function surveyProgress(
+  sections: SurveySection[],
+  answers: Map<string, SurveyAnswer>,
+  estimatedMinutes?: string
+): { fraction: number; minutesLeft?: number } {
+  const visible = [...getVisibleQuestionIds(sections, answers)]
+  const answered = visible.filter(id => {
+    const v = answers.get(id)?.value
+    return Array.isArray(v) ? v.length > 0 : !!v?.trim()
+  }).length
+  const fraction = visible.length ? answered / visible.length : 0
+  const upper = Math.max(...(estimatedMinutes?.match(/\d+/g) ?? []).map(Number))
+  const minutesLeft = Number.isFinite(upper)
+    ? Math.max(1, Math.ceil(upper * (1 - fraction)))
+    : undefined
+  return { fraction, minutesLeft }
 }
 
 /** Whether a question is required given the current answers. */
@@ -273,6 +347,16 @@ export function validateSurveyDefinition(survey: SurveyDefinition): string[] {
       }
       questionIds.add(question.id)
 
+      if (
+        question.type === 'matrix' &&
+        question.rowsFrom &&
+        !questionIds.has(question.rowsFrom.questionId)
+      ) {
+        errors.push(
+          `Question "${question.id}" takes rows from "${question.rowsFrom.questionId}", which is not an earlier question`
+        )
+      }
+
       if (question.type === 'matrix' && question.rows.length === 0) {
         errors.push(`Question "${question.id}" has no rows`)
       }
@@ -354,22 +438,25 @@ function seededRng(seed: number): () => number {
 }
 
 /**
- * Shuffle options for a question while keeping pinned options in place.
- * Uses a stable seed derived from the question ID so order is consistent
- * within a session but varies between respondents.
+ * Shuffle options while keeping pinned options in place. The seed combines
+ * the session seed with the option set, so order is stable within a session,
+ * varies between respondents, and questions with the same options share it.
  */
 export function shuffleOptions(
   options: QuestionOption[],
-  questionId: string,
   sessionSeed: number
 ): QuestionOption[] {
   const pinnedFirst = options.filter(o => o.pinPosition === 'first')
   const pinnedLast = options.filter(o => o.pinPosition === 'last')
   const unpinned = options.filter(o => !o.pinPosition)
 
+  const signature = unpinned
+    .map(o => o.value)
+    .sort()
+    .join('|')
   let seed = sessionSeed
-  for (let i = 0; i < questionId.length; i++) {
-    seed = (seed * 31 + questionId.charCodeAt(i)) | 0
+  for (let i = 0; i < signature.length; i++) {
+    seed = (seed * 31 + signature.charCodeAt(i)) | 0
   }
 
   const rng = seededRng(seed)

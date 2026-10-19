@@ -1,5 +1,9 @@
 import type { SurveyDefinition, SurveyAnswer, SurveyQuestion } from './types'
-import { getVisibleQuestionIds, isQuestionRequired } from './helpers'
+import {
+  getVisibleQuestionIds,
+  isQuestionRequired,
+  resolveQuestion,
+} from './helpers'
 
 const MAX_TEXT_LENGTH = 10_000
 
@@ -144,6 +148,7 @@ function validateOtherText(
  * - Validates each answer via the shared `validateQuestion` function
  * - Enforces required fields for visible questions (`required`/`requiredIf`)
  * - Strips answers for hidden questions (skipped sections or unmet `showIf`)
+ *   and for matrix rows hidden by `rowsFrom`
  * - Deduplicates answers (last answer per question wins)
  */
 export function validateAnswers(
@@ -156,11 +161,17 @@ export function validateAnswers(
 
   const questionMap = new Map<string, SurveyQuestion>()
   for (const section of survey.sections) {
-    for (const question of section.questions) {
-      questionMap.set(question.id, question)
-      if (!visibleQuestionIds.has(question.id)) continue
+    for (const original of section.questions) {
+      questionMap.set(original.id, original)
+      if (!visibleQuestionIds.has(original.id)) continue
 
-      const answer = answerMap.get(question.id)
+      const { question, answer } = resolveQuestion(
+        original,
+        answerMap.get(original.id),
+        answerMap,
+        visibleQuestionIds
+      )
+      if (answer) answerMap.set(question.id, answer)
       const required = isQuestionRequired(
         question,
         answerMap,

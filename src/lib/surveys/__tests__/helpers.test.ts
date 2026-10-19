@@ -405,14 +405,14 @@ describe('shuffleOptions', () => {
   ]
 
   it('produces deterministic order for the same seed', () => {
-    const a = shuffleOptions(options, 'q1', 42)
-    const b = shuffleOptions(options, 'q1', 42)
+    const a = shuffleOptions(options, 42)
+    const b = shuffleOptions(options, 42)
     expect(a.map(o => o.value)).toEqual(b.map(o => o.value))
   })
 
   it('produces different order for different seeds', () => {
-    const a = shuffleOptions(options, 'q1', 42)
-    const b = shuffleOptions(options, 'q1', 999)
+    const a = shuffleOptions(options, 42)
+    const b = shuffleOptions(options, 999)
     const same = a.every((o, i) => o.value === b[i]?.value)
     expect(same).toBe(false)
   })
@@ -424,7 +424,7 @@ describe('shuffleOptions', () => {
       { label: 'B', value: 'b' },
       { label: 'C', value: 'c' },
     ]
-    const result = shuffleOptions(pinned, 'q1', 42)
+    const result = shuffleOptions(pinned, 42)
     expect(result[0]!.value).toBe('first')
     expect(result).toHaveLength(4)
   })
@@ -435,7 +435,7 @@ describe('shuffleOptions', () => {
       { label: 'B', value: 'b' },
       { label: 'Other', value: 'other', pinPosition: 'last' },
     ]
-    const result = shuffleOptions(pinned, 'q1', 42)
+    const result = shuffleOptions(pinned, 42)
     expect(result[result.length - 1]!.value).toBe('other')
   })
 
@@ -447,14 +447,14 @@ describe('shuffleOptions', () => {
       { label: 'C', value: 'c' },
       { label: 'Other', value: 'other', pinPosition: 'last' },
     ]
-    const result = shuffleOptions(pinned, 'q1', 123)
+    const result = shuffleOptions(pinned, 123)
     expect(result[0]!.value).toBe('none')
     expect(result[result.length - 1]!.value).toBe('other')
     expect(result).toHaveLength(5)
   })
 
   it('contains all original options', () => {
-    const result = shuffleOptions(options, 'q1', 42)
+    const result = shuffleOptions(options, 42)
     const values = result.map(o => o.value).sort()
     expect(values).toEqual(['a', 'b', 'c', 'd', 'e'])
   })
