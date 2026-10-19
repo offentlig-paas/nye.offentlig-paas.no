@@ -11,7 +11,9 @@ import {
   getAccessibleSurveys,
   getExportColumns,
   getProjectForSurvey,
+  getSurvey,
 } from '@/lib/surveys/helpers'
+import { compareWaves } from '@/lib/surveys/comparison'
 import { aggregateSurveyResults } from '@/lib/surveys/aggregation'
 import { aggregatedToCsv, toCsv } from '@/lib/surveys/csv'
 import { getAppUrl } from '@/server/lib/environment'
@@ -231,6 +233,31 @@ export const adminSurveyRouter = router({
             return { id: q.id, title: q.title, answers }
           })
       )
+    }),
+
+  getComparison: adminSurveyProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async ({ ctx }) => {
+      if (ctx.surveyRole !== 'owner' && ctx.surveyRole !== 'researcher') {
+        throw new TRPCError({ code: 'FORBIDDEN' })
+      }
+      const { comparesTo } = ctx.survey
+      const previous = comparesTo && getSurvey(comparesTo.slug)
+      if (!comparesTo || !previous) throw new TRPCError({ code: 'NOT_FOUND' })
+      const [currentResponses, previousResponses] = await Promise.all([
+        repository.findBySurvey(ctx.survey.slug),
+        repository.findBySurvey(previous.slug),
+      ])
+      return {
+        previousTitle: previous.title,
+        previousTotal: previousResponses.length,
+        currentTotal: currentResponses.length,
+        questions: compareWaves(
+          aggregateSurveyResults(ctx.survey, currentResponses),
+          aggregateSurveyResults(previous, previousResponses),
+          comparesTo.questionMap
+        ),
+      }
     }),
 
   getOrganizations: adminSurveyProcedure

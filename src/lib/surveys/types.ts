@@ -47,6 +47,12 @@ export interface SurveyDefinition {
    * for analysis scripts that read by position. Defaults to question order.
    */
   exportColumns?: (string | { header: string })[]
+  /** Previous wave to compare with. Only mapped questions are compared. */
+  comparesTo?: {
+    slug: string
+    /** This survey's question id → previous survey's question id. */
+    questionMap: Record<string, string>
+  }
 }
 
 export interface ResultsConfig {

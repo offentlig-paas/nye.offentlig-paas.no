@@ -77,6 +77,31 @@ export const aiAgents2027: SurveyDefinition = {
   version: 4,
   title: 'KI-kodeverktøy og kodeagenter i norsk offentlig sektor, runde 2',
   estimatedMinutes: '10',
+  comparesTo: {
+    slug: 'ai-agents-2026',
+    // Same wording and option values in both waves. Checkbox questions that
+    // gained options in wave 2 (q6, q9, q11, q20) are left out: new choices
+    // shift the shares, so the change would not be comparable.
+    questionMap: {
+      'q3-role': 'q2-role',
+      'q4-dev-count': 'q3-dev-count',
+      'q5-adoption-level': 'q5-adoption-level',
+      'q5b-confidence': 'q5b-confidence',
+      'q6b-confidence': 'q6b-confidence',
+      'q8-personal-use': 'q8-personal-use',
+      'q10-usage-modes': 'q9-usage-modes',
+      'q12-frequency': 'q11-frequency',
+      'q14-policy': 'q12-policy',
+      'q14b-confidence': 'q12b-confidence',
+      'q15-support': 'q13-support',
+      'q16-decision-authority': 'q14-decision-authority',
+      'q17-data-sovereignty': 'q15-data-sovereignty',
+      'q18-measurement': 'q16-measurement',
+      'q19-code-review': 'q17-code-review',
+      'q22-trust': 'q20-trust',
+      'q23-perception-gap': 'q21-perception-gap',
+    },
+  },
   owners: [
     {
       name: 'Hans Kristian Flaatten',
