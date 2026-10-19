@@ -30,9 +30,9 @@ describe('admin.surveys.deletePilotResponses', () => {
 
   it('deletes pilot responses for a pilot survey', async () => {
     await expect(
-      caller(true).deletePilotResponses({ slug: 'ai-agents-2027' })
+      caller(true).deletePilotResponses({ slug: 'state-of-platforms-2027' })
     ).resolves.toEqual({ deleted: 3 })
-    expect(deletePilotBySurvey).toHaveBeenCalledWith('ai-agents-2027')
+    expect(deletePilotBySurvey).toHaveBeenCalledWith('state-of-platforms-2027')
   })
 
   it('refuses when the survey is not in pilot', async () => {
@@ -53,24 +53,20 @@ describe('admin.surveys.deletePilotResponses', () => {
 describe('admin.surveys.getPilotLink', () => {
   afterEach(() => vi.unstubAllEnvs())
 
-  it('returns the absolute pilot URL for owners and researchers', async () => {
+  it('returns the absolute pilot URL for owners', async () => {
     vi.stubEnv('SURVEY_PILOT_TOKEN', 's3cret')
     vi.stubEnv('NEXT_PUBLIC_URL', 'https://offentlig-paas.no')
-    const expected = {
-      url: 'https://offentlig-paas.no/forskning/state-of-ai-agents/undersokelse?pilot=s3cret',
-    }
     await expect(
-      caller(true).getPilotLink({ slug: 'ai-agents-2027' })
-    ).resolves.toEqual(expected)
-    await expect(
-      researcher().getPilotLink({ slug: 'ai-agents-2027' })
-    ).resolves.toEqual(expected)
+      caller(true).getPilotLink({ slug: 'state-of-platforms-2027' })
+    ).resolves.toEqual({
+      url: 'https://offentlig-paas.no/forskning/state-of-platforms/undersokelse?pilot=s3cret',
+    })
   })
 
   it('returns no URL when the token is unset', async () => {
     vi.stubEnv('SURVEY_PILOT_TOKEN', '')
     await expect(
-      caller(true).getPilotLink({ slug: 'ai-agents-2027' })
+      caller(true).getPilotLink({ slug: 'state-of-platforms-2027' })
     ).resolves.toEqual({ url: null })
   })
 
