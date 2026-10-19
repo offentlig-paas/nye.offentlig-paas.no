@@ -1,5 +1,6 @@
 // Import all articles statically to ensure they're bundled in production
 import { article as aiKodeagenterUndersokelse2026 } from '@/app/artikkel/ai-kodeagenter-undersokelse-2026/article'
+import { article as kiKodeagenterUndersokelse2027 } from '@/app/artikkel/ki-kodeagenter-undersokelse-2027/article'
 import { article as arsberetning2024 } from '@/app/artikkel/arsberetning-2024/article'
 import { article as fagdagDataplattform } from '@/app/artikkel/fagdag-dataplattform-mai-2024/article'
 import { article as kiErfaringsdeling2026 } from '@/app/artikkel/ki-kodeagenter-erfaringsdeling-mai-2026/article'
@@ -24,6 +25,10 @@ const allArticles: ArticleWithSlug[] = [
   {
     ...aiKodeagenterUndersokelse2026,
     slug: 'ai-kodeagenter-undersokelse-2026',
+  },
+  {
+    ...kiKodeagenterUndersokelse2027,
+    slug: 'ki-kodeagenter-undersokelse-2027',
   },
   { ...arsberetning2024, slug: 'arsberetning-2024' },
   { ...fagdagDataplattform, slug: 'fagdag-dataplattform-mai-2024' },
