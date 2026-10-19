@@ -74,6 +74,17 @@ export function getProjectForSurvey(
   )
 }
 
+/** The survey listed before this one in its research project. */
+export function getPreviousSurvey(
+  surveySlug: string
+): SurveyDefinition | undefined {
+  const slugs = (getProjectForSurvey(surveySlug)?.surveys ?? []).flatMap(s =>
+    'surveySlug' in s ? [s.surveySlug] : []
+  )
+  const index = slugs.indexOf(surveySlug)
+  return index > 0 ? getSurvey(slugs[index - 1]!) : undefined
+}
+
 export function getConsentContact(
   surveySlug: string
 ): ConsentContact | undefined {
