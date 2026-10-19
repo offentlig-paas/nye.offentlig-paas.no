@@ -183,6 +183,44 @@ function aggregateTypeahead(
   return options
 }
 
+/** Merge options with fewer than `minBucket` (but > 0) answers into one bucket. */
+export function suppressSmallBuckets(
+  options: AggregatedOption[],
+  responseCount: number,
+  minBucket: number
+): AggregatedOption[] {
+  const suppressed = options.filter(o => o.count > 0 && o.count < minBucket)
+  if (suppressed.length === 0) return options
+  // A bucket with one option, or a total below minBucket, would reveal
+  // exact counts, so keep hiding the next-smallest non-zero option.
+  const rest = options
+    .filter(o => o.count >= minBucket)
+    .sort((a, b) => a.count - b.count)
+  const total = () => suppressed.reduce((s, o) => s + o.count, 0)
+  while ((suppressed.length < 2 || total() < minBucket) && rest.length > 0) {
+    suppressed.push(rest.shift()!)
+  }
+  const suppressedTotal = total()
+  // Keep the rows in place so scale positions stay stable.
+  const result: AggregatedOption[] = options.map(o =>
+    suppressed.includes(o)
+      ? { ...o, count: 0, percentage: 0, suppressed: true as const }
+      : o
+  )
+  // Options exhausted and still unsafe: hide the bucket count too.
+  if (suppressed.length >= 2 && suppressedTotal >= minBucket)
+    result.push({
+      label: 'Andre (for få svar)',
+      value: '_suppressed',
+      count: suppressedTotal,
+      percentage:
+        responseCount > 0
+          ? Math.round((suppressedTotal / responseCount) * 100)
+          : 0,
+    })
+  return result
+}
+
 export function aggregateSurveyResults(
   survey: SurveyDefinition,
   responses: SurveyResponse[],
@@ -230,42 +268,11 @@ export function aggregateSurveyResults(
       }
 
       if (minBucket > 0) {
-        const suppressed = aggregatedOptions.filter(
-          o => o.count > 0 && o.count < minBucket
+        aggregatedOptions = suppressSmallBuckets(
+          aggregatedOptions,
+          responseCount,
+          minBucket
         )
-        // A bucket with one option, or a total below minBucket, would reveal
-        // exact counts, so keep hiding the next-smallest non-zero option.
-        const rest = aggregatedOptions
-          .filter(o => o.count >= minBucket)
-          .sort((a, b) => a.count - b.count)
-        const total = () => suppressed.reduce((s, o) => s + o.count, 0)
-        while (
-          suppressed.length > 0 &&
-          (suppressed.length < 2 || total() < minBucket) &&
-          rest.length > 0
-        ) {
-          suppressed.push(rest.shift()!)
-        }
-        if (suppressed.length > 0) {
-          const suppressedTotal = suppressed.reduce((s, o) => s + o.count, 0)
-          // Keep the rows in place so scale positions stay stable.
-          aggregatedOptions = aggregatedOptions.map(o =>
-            suppressed.includes(o)
-              ? { ...o, count: 0, percentage: 0, suppressed: true as const }
-              : o
-          )
-          // Options exhausted and still unsafe: hide the bucket count too.
-          if (suppressed.length >= 2 && suppressedTotal >= minBucket)
-            aggregatedOptions.push({
-              label: 'Andre (for få svar)',
-              value: '_suppressed',
-              count: suppressedTotal,
-              percentage:
-                responseCount > 0
-                  ? Math.round((suppressedTotal / responseCount) * 100)
-                  : 0,
-            })
-        }
       }
 
       questions.push({

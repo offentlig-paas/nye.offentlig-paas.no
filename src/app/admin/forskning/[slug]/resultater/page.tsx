@@ -6,6 +6,7 @@ import { getSurvey, getUserSurveyRole } from '@/lib/surveys/helpers'
 import { SurveyResultsActions } from '@/components/SurveyResultsActions'
 import { SurveyResponseRepository } from '@/domains/survey-response/repository'
 import { aggregateSurveyResults } from '@/lib/surveys/aggregation'
+import { getFrozenAggregates } from '@/lib/surveys/frozen'
 import { requireAdminOrSurveyAccess } from '@/lib/auth-guards'
 
 interface AdminSurveyResultsPageProps {
@@ -53,6 +54,26 @@ async function ResultsContent({
     repository.findBySurvey(survey.slug, pilot),
     repository.countUniqueOrganizations(survey.slug, orgQid, pilot),
   ])
+
+  const frozen = pilot ? null : getFrozenAggregates(slug)
+  if (frozen && responses.length === 0) {
+    return (
+      <>
+        <p
+          role="status"
+          className="mb-6 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+        >
+          Resultatene er låst etter at undersøkelsen ble avsluttet.
+        </p>
+        <SurveyResultsRenderer
+          results={frozen}
+          uniqueOrganizations={frozen.uniqueOrganizations ?? 0}
+          heroText={survey.resultsConfig?.heroText}
+          methodologyNote={survey.resultsConfig?.methodologyNote}
+        />
+      </>
+    )
+  }
 
   if (!pilot && responses.length === 0 && pilotCount > 0) {
     return (

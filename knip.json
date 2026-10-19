@@ -10,7 +10,8 @@
     "src/server/root.ts",
     "src/data/surveys/index.ts",
     "src/lib/surveys/helpers.ts",
-    "src/lib/surveys/types.ts"
+    "src/lib/surveys/types.ts",
+    "scripts/import-sop-wave2-aggregates.ts"
   ],
   "project": [
     "src/**/*.{ts,tsx,js,jsx}",
