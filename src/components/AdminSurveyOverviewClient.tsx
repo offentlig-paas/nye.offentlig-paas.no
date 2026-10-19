@@ -90,7 +90,20 @@ export function AdminSurveyOverviewClient({
     return (
       <div className="rounded-xl border border-dashed border-zinc-300 p-8 text-center dark:border-zinc-700">
         <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-          Ingen svar ennå
+          {overview.pilotCount > 0 ? (
+            <>
+              Ingen svar ennå –{' '}
+              <Link
+                href={`/admin/forskning/${overview.survey.slug}/resultater?pilot=1`}
+                className="text-teal-600 hover:text-teal-500 dark:text-teal-400"
+              >
+                {overview.pilotCount} pilotsvar
+              </Link>
+              .
+            </>
+          ) : (
+            'Ingen svar ennå'
+          )}
         </p>
         <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
           Statistikken vises her når de første svarene kommer inn.{' '}

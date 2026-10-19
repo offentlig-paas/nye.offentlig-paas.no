@@ -91,13 +91,19 @@ export const adminSurveyRouter = router({
     .query(async ({ ctx }) => {
       const { survey } = ctx
       const orgQid = getOrgQuestionId(survey)
-      const [responseCount, dailyCounts, latestResponse, allResponses] =
-        await Promise.all([
-          repository.countBySurvey(survey.slug),
-          repository.getDailyResponseCounts(survey.slug),
-          repository.getLatestResponseDate(survey.slug),
-          repository.findBySurvey(survey.slug),
-        ])
+      const [
+        responseCount,
+        pilotCount,
+        dailyCounts,
+        latestResponse,
+        allResponses,
+      ] = await Promise.all([
+        repository.countBySurvey(survey.slug),
+        repository.countBySurvey(survey.slug, true),
+        repository.getDailyResponseCounts(survey.slug),
+        repository.getLatestResponseDate(survey.slug),
+        repository.findBySurvey(survey.slug),
+      ])
 
       const memberCount = (await import('@/data/members')).members.length
 
@@ -164,6 +170,7 @@ export const adminSurveyRouter = router({
           questionCount: totalQuestions,
         },
         responseCount,
+        pilotCount,
         orgCount: uniqueResolvedOrgs.size,
         respondedMemberCount,
         memberCount,
