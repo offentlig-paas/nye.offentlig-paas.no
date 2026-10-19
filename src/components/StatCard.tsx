@@ -8,7 +8,7 @@ export function StatCard({
 }: {
   icon: React.ComponentType<{ className?: string }>
   label: string
-  value: string | number
+  value: React.ReactNode
   subtext?: string
 }) {
   return (

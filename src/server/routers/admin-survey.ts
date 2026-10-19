@@ -148,9 +148,16 @@ export const adminSurveyRouter = router({
         durations.length > 0
           ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length)
           : null
-      const minDuration = durations.length > 0 ? durations[0]! : null
-      const maxDuration =
-        durations.length > 0 ? durations[durations.length - 1]! : null
+      // Nearest-rank percentile on the sorted list.
+      const percentile = (p: number) =>
+        durations.length > 0
+          ? durations[
+              Math.min(
+                durations.length - 1,
+                Math.ceil((p / 100) * durations.length) - 1
+              )
+            ]!
+          : null
 
       return {
         survey: {
@@ -174,8 +181,8 @@ export const adminSurveyRouter = router({
         durationStats: {
           medianSeconds: medianDuration,
           avgSeconds: avgDuration,
-          minSeconds: minDuration,
-          maxSeconds: maxDuration,
+          p10Seconds: percentile(10),
+          p90Seconds: percentile(90),
           count: durations.length,
         },
       }

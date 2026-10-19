@@ -4,6 +4,8 @@ import { AdminLayout } from '@/components/AdminLayout'
 import { AdminSurveyNav } from '@/components/AdminSurveyNav'
 import { getSurvey, getUserSurveyRole } from '@/lib/surveys/helpers'
 import { requireAdminOrSurveyAccess } from '@/lib/auth-guards'
+import { Badge } from '@/components/Badge'
+import { surveyStatusLabels } from '@/lib/surveys/status-labels'
 
 interface AdminSurveyLayoutProps {
   children: React.ReactNode
@@ -16,7 +18,7 @@ function NavSkeleton() {
   return (
     <div className="border-b border-gray-200 dark:border-gray-700">
       <nav className="-mb-px flex space-x-8">
-        {[...Array(2)].map((_, i) => (
+        {[...Array(5)].map((_, i) => (
           <div
             key={i}
             className="flex items-center gap-2 border-b-2 border-transparent px-1 py-4"
@@ -47,8 +49,11 @@ export default async function AdminSurveyLayout({
     notFound()
   }
 
+  const status = surveyStatusLabels[survey.status] ?? surveyStatusLabels.draft!
+
   return (
     <AdminLayout
+      actions={<Badge color={status.color}>{status.label}</Badge>}
       title={survey.title}
       intro={survey.description ?? ''}
       backButton={{

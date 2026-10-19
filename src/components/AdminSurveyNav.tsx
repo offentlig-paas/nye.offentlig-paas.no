@@ -71,14 +71,14 @@ export function AdminSurveyNav({ surveySlug, role }: AdminSurveyNavProps) {
               href={tab.href}
               className={`group inline-flex items-center gap-2 border-b-2 px-1 py-4 text-sm font-medium whitespace-nowrap transition-colors ${
                 tab.current
-                  ? 'border-blue-500 text-blue-600 dark:border-blue-400 dark:text-blue-400'
+                  ? 'border-teal-500 text-teal-600 dark:border-teal-400 dark:text-teal-400'
                   : 'border-transparent text-zinc-500 hover:border-zinc-300 hover:text-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-300'
               }`}
             >
               <Icon
                 className={`h-5 w-5 ${
                   tab.current
-                    ? 'text-blue-500 dark:text-blue-400'
+                    ? 'text-teal-500 dark:text-teal-400'
                     : 'text-zinc-400 group-hover:text-zinc-500 dark:text-zinc-500 dark:group-hover:text-zinc-400'
                 }`}
               />
