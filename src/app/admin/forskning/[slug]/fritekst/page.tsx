@@ -33,7 +33,7 @@ async function FreeTextContent({ slug }: { slug: string }) {
   return (
     <div className="space-y-8">
       <p className="text-sm text-zinc-500 dark:text-zinc-400">
-        Svarene vises i tilfeldig rekkefølge og uten organisasjon.
+        Svarene vises i tilfeldig rekkefølge og uten organisasjonsnavn.
       </p>
       {questions.map(q => (
         <section key={q.id}>

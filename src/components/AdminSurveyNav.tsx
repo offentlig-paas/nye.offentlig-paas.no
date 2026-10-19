@@ -43,7 +43,7 @@ export function AdminSurveyNav({ surveySlug, role }: AdminSurveyNavProps) {
       ownerOnly: false,
     },
     {
-      name: 'Fritekst',
+      name: 'Fritekstsvar',
       href: `/admin/forskning/${surveySlug}/fritekst`,
       icon: ChatBubbleLeftRightIcon,
       current: pathname === `/admin/forskning/${surveySlug}/fritekst`,
