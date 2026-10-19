@@ -26,6 +26,8 @@ export function MatrixGroup({
     })
   )
 
+  const gridCols = `minmax(9rem, 1.5fr) repeat(${question.options.length}, minmax(0, 1fr))`
+
   function select(row: string, col: string) {
     const next = new Map(selected).set(row, col)
     onChange(
@@ -69,22 +71,45 @@ export function MatrixGroup({
           <Markdown>{question.description}</Markdown>
         </div>
       )}
-      <div className="mt-3 space-y-5">
+      {/* Stacked on mobile; a table with shared columns from sm and up. */}
+      <div
+        className="mt-3 space-y-5 sm:space-y-0 sm:divide-y sm:divide-zinc-200 dark:sm:divide-white/10"
+        style={{ '--matrix-cols': gridCols } as React.CSSProperties}
+      >
+        <div
+          aria-hidden
+          className="hidden gap-x-2 pb-2 text-center text-xs/5 text-zinc-500 sm:grid sm:grid-cols-(--matrix-cols) dark:text-zinc-400"
+        >
+          <span />
+          {question.options.map(option => (
+            <span key={option.value} className="self-end">
+              {option.label}
+            </span>
+          ))}
+        </div>
         {question.rows.map(row => {
           const rowId = `${groupId}-${row.value}`
           return (
-            <div key={row.value} role="radiogroup" aria-labelledby={rowId}>
+            <div
+              key={row.value}
+              role="radiogroup"
+              aria-labelledby={rowId}
+              className="sm:grid sm:grid-cols-(--matrix-cols) sm:items-center sm:gap-x-2 sm:py-2.5"
+            >
               <p
                 id={rowId}
-                className="text-sm/6 font-semibold text-zinc-800 dark:text-zinc-200"
+                className="text-sm/6 font-semibold text-zinc-800 sm:font-medium dark:text-zinc-200"
               >
                 {row.label}
               </p>
-              <div className="mt-1 flex flex-wrap gap-x-5 gap-y-2">
+              <div className="mt-1 flex flex-wrap gap-x-5 gap-y-2 sm:contents">
                 {question.options.map(option => {
                   const optionId = `${rowId}-${option.value}`
                   return (
-                    <div key={option.value} className="flex items-center gap-2">
+                    <div
+                      key={option.value}
+                      className="flex items-center gap-2 sm:justify-center"
+                    >
                       <input
                         id={optionId}
                         type="radio"
@@ -96,7 +121,7 @@ export function MatrixGroup({
                       />
                       <label
                         htmlFor={optionId}
-                        className="text-sm/6 text-zinc-700 dark:text-zinc-300"
+                        className="text-sm/6 text-zinc-700 sm:sr-only dark:text-zinc-300"
                       >
                         {option.label}
                       </label>

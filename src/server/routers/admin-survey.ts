@@ -90,7 +90,8 @@ export const adminSurveyRouter = router({
       })
     )
 
-    return withCounts
+    // Survey data lists oldest first; show newest first.
+    return withCounts.reverse()
   }),
 
   getOverview: adminSurveyProcedure

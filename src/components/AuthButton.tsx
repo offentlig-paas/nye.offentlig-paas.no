@@ -217,6 +217,23 @@ export function AuthButton({
                   Admin
                 </Link>
               )}
+              {session.user.isAdmin &&
+                (
+                  [
+                    ['/admin/events', 'Fagdager'],
+                    ['/admin/members', 'Medlemmer'],
+                    ['/admin/forskning', 'Forskning'],
+                  ] as const
+                ).map(([href, label]) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    onClick={() => setIsDropdownOpen(false)}
+                    className="flex w-full items-center rounded-md py-1.5 pr-3 pl-10 text-sm text-zinc-600 transition hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                  >
+                    {label}
+                  </Link>
+                ))}
               <button
                 onClick={() => {
                   signOut()
