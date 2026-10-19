@@ -60,7 +60,7 @@ export const members: Member[] = [
     linkedinUrl: 'https://www.linkedin.com/company/politiets-it-enhet/',
   }),
   new Member({
-    name: 'Brreg',
+    name: 'BRREG',
     type: MemberType.AGENCY,
     sectors: [Sector.GENERAL],
     domains: ['brreg.no'],
