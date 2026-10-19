@@ -172,7 +172,9 @@ export class EventRegistrationService {
       input.attendanceType === 'physical' &&
       existingRegistration.attendanceType !== 'physical'
     ) {
-      if (resolvedEvent?.maxCapacity !== undefined) {
+      if (isPhysicalRegistrationClosed(resolvedEvent)) {
+        updatePayload.status = 'waitlist'
+      } else if (resolvedEvent?.maxCapacity !== undefined) {
         const currentPhysicalCount =
           (await this.repository.getPhysicalAttendeesCount(
             existingRegistration.eventSlug

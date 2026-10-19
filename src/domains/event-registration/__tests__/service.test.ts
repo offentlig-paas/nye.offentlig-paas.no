@@ -458,6 +458,26 @@ describe('EventRegistrationService', () => {
       )
     })
 
+    it('switching digital to physical after deadline goes to waitlist', async () => {
+      mockRepository.findById.mockResolvedValue({
+        ...mockRegistration,
+        attendanceType: AttendanceType.Digital,
+      })
+      mockRepository.getPhysicalAttendeesCount.mockResolvedValue(0)
+      mockRepository.update.mockResolvedValue(mockRegistration)
+
+      await service.updateRegistration(
+        'reg-123',
+        { attendanceType: AttendanceType.Physical },
+        { maxCapacity: 10, physicalRegistrationDeadline: past }
+      )
+
+      expect(mockRepository.update).toHaveBeenCalledWith('reg-123', {
+        attendanceType: AttendanceType.Physical,
+        status: 'waitlist',
+      })
+    })
+
     it('accepts digital signup after deadline', async () => {
       mockRepository.findByEventAndUser.mockResolvedValue(null)
       mockRepository.create.mockResolvedValue(mockRegistration)
