@@ -1,11 +1,9 @@
 'use client'
 
-import type {
-  AggregatedSurveyResults,
-  AggregatedQuestion,
-} from '@/lib/surveys/aggregation'
-import { HorizontalBarChart } from './charts/HorizontalBarChart'
-import { DivergingBarChart } from './charts/DivergingBarChart'
+import type { AggregatedSurveyResults } from '@/lib/surveys/aggregation'
+import { groupQuestions } from '@/lib/surveys/likert'
+import { ResultTable } from './charts/ResultTable'
+import { LikertBar } from './charts/LikertBar'
 import { UsersIcon, BuildingOfficeIcon } from '@heroicons/react/24/outline'
 import { StatCard } from '@/components/StatCard'
 
@@ -43,8 +41,32 @@ export function SurveyResultsRenderer({
         />
       </div>
 
+      {results.sections.length > 1 && (
+        <nav aria-label="Innhold" className="text-sm">
+          <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">
+            Innhold
+          </h3>
+          <ol className="mt-2 list-decimal space-y-1 pl-5 text-zinc-600 dark:text-zinc-400">
+            {results.sections.map(section => (
+              <li key={section.id}>
+                <a
+                  href={`#${section.id}`}
+                  className="hover:text-teal-600 hover:underline dark:hover:text-teal-400"
+                >
+                  {section.title}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )}
+
       {results.sections.map(section => (
-        <section key={section.id} className="space-y-8">
+        <section
+          key={section.id}
+          id={section.id}
+          className="scroll-mt-24 space-y-8"
+        >
           <div>
             <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
               {section.title}
@@ -56,9 +78,29 @@ export function SurveyResultsRenderer({
             )}
           </div>
 
-          {section.questions.map(question => (
-            <QuestionChart key={question.id} question={question} />
-          ))}
+          {groupQuestions(section.questions).map(group =>
+            group.kind === 'likert' ? (
+              <LikertBar
+                key={group.questions[0]!.id}
+                questions={group.questions}
+              />
+            ) : (
+              <div
+                key={group.question.id}
+                className="break-inside-avoid space-y-2"
+              >
+                <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                  {group.question.title}
+                </h4>
+                {group.question.description && (
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                    {group.question.description}
+                  </p>
+                )}
+                <ResultTable question={group.question} />
+              </div>
+            )
+          )}
         </section>
       ))}
 
@@ -73,27 +115,5 @@ export function SurveyResultsRenderer({
         </section>
       )}
     </div>
-  )
-}
-
-function QuestionChart({ question }: { question: AggregatedQuestion }) {
-  if (question.visualization === 'diverging') {
-    return (
-      <DivergingBarChart
-        title={question.title}
-        description={question.description}
-        options={question.options}
-        responseCount={question.responseCount}
-      />
-    )
-  }
-
-  return (
-    <HorizontalBarChart
-      title={question.title}
-      description={question.description}
-      options={question.options}
-      responseCount={question.responseCount}
-    />
   )
 }

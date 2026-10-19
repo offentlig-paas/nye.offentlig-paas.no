@@ -1,0 +1,48 @@
+import type { AggregatedOption, AggregatedQuestion } from './aggregation'
+
+export const SUPPRESSED_VALUE = '_suppressed'
+
+/** Scale options in order, without the k-anonymity bucket. */
+export function scaleOptions(options: AggregatedOption[]) {
+  return options.filter(o => o.value !== SUPPRESSED_VALUE)
+}
+
+/** Mean on a 1..k scale, or null when nobody answered on the scale. */
+export function likertAverage(options: AggregatedOption[]): number | null {
+  const scale = scaleOptions(options)
+  const total = scale.reduce((s, o) => s + o.count, 0)
+  if (total === 0) return null
+  return scale.reduce((s, o, i) => s + (i + 1) * o.count, 0) / total
+}
+
+export function formatNb(n: number, digits = 1) {
+  return n.toLocaleString('nb-NO', {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  })
+}
+
+const scaleKey = (q: AggregatedQuestion) =>
+  scaleOptions(q.options)
+    .map(o => o.label)
+    .join('\u0000')
+
+type QuestionGroup =
+  | { kind: 'single'; question: AggregatedQuestion }
+  | { kind: 'likert'; questions: AggregatedQuestion[] }
+
+/** Group consecutive diverging questions that share the same scale labels. */
+export function groupQuestions(questions: AggregatedQuestion[]) {
+  const groups: QuestionGroup[] = []
+  for (const q of questions) {
+    if (q.visualization !== 'diverging') {
+      groups.push({ kind: 'single', question: q })
+      continue
+    }
+    const last = groups.at(-1)
+    if (last?.kind === 'likert' && scaleKey(last.questions[0]!) === scaleKey(q))
+      last.questions.push(q)
+    else groups.push({ kind: 'likert', questions: [q] })
+  }
+  return groups
+}
