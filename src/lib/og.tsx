@@ -28,19 +28,20 @@ export function truncate(text: string, max: number) {
 }
 
 // Inter (latin subset, includes æøå) is bundled locally so builds need no network.
-let assets:
-  | Promise<[Buffer<ArrayBufferLike>, Buffer<ArrayBufferLike>, string]>
-  | undefined
-function getAssets() {
-  assets ??= Promise.all([
-    // new URL(..., import.meta.url) makes the bundler trace and ship these files.
+// 'use cache' keeps this file IO out of on-demand ISR renders (cacheComponents).
+async function getAssets() {
+  'use cache'
+  // new URL(..., import.meta.url) makes the bundler trace and ship these files.
+  const [regular, bold, logo] = await Promise.all([
     readFile(new URL('../fonts/inter-latin-400.woff', import.meta.url)),
     readFile(new URL('../fonts/inter-latin-700.woff', import.meta.url)),
-    readFile(new URL('../images/logo.png', import.meta.url)).then(
-      b => `data:image/png;base64,${b.toString('base64')}`
-    ),
+    readFile(new URL('../images/logo.png', import.meta.url)),
   ])
-  return assets
+  return {
+    regular: regular.toString('base64'),
+    bold: bold.toString('base64'),
+    logo: `data:image/png;base64,${logo.toString('base64')}`,
+  }
 }
 
 export function articleOgImage(article: {
@@ -65,7 +66,7 @@ export async function ogImage({
   meta?: string
 }) {
   const t = truncate(title, 90)
-  const [regular, bold, logoSrc] = await getAssets()
+  const { regular, bold, logo: logoSrc } = await getAssets()
   return new ImageResponse(
     <div
       style={{
@@ -110,8 +111,8 @@ export async function ogImage({
       width: 1200,
       height: 630,
       fonts: [
-        { name: 'Inter', data: regular, weight: 400 },
-        { name: 'Inter', data: bold, weight: 700 },
+        { name: 'Inter', data: Buffer.from(regular, 'base64'), weight: 400 },
+        { name: 'Inter', data: Buffer.from(bold, 'base64'), weight: 700 },
       ],
     }
   )
