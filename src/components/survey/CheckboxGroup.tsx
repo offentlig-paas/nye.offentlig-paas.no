@@ -3,7 +3,8 @@
 import { useState, useMemo } from 'react'
 import type { CheckboxQuestion } from '@/lib/surveys/types'
 import { shuffleOptions } from '@/lib/surveys/helpers'
-import { Markdown, stripMarkdown } from './Markdown'
+import { stripMarkdown } from '@/lib/markdown'
+import { Markdown } from './Markdown'
 
 interface CheckboxGroupProps {
   question: CheckboxQuestion

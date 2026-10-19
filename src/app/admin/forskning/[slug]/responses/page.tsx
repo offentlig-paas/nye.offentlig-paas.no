@@ -1,3 +1,4 @@
+import { stripMarkdown } from '@/lib/markdown'
 import { Suspense } from 'react'
 import { redirect } from 'next/navigation'
 import { AdminSurveyResponsesClient } from '@/components/AdminSurveyResponsesClient'
@@ -36,11 +37,11 @@ function buildQuestionMeta(slug: string): Map<string, QuestionMeta> {
       const optionLabels = new Map<string, string>()
       if ('options' in q && Array.isArray(q.options)) {
         for (const opt of q.options) {
-          optionLabels.set(opt.value, opt.label)
+          optionLabels.set(opt.value, stripMarkdown(opt.label))
         }
       }
       meta.set(q.id, {
-        title: q.title,
+        title: stripMarkdown(q.title),
         sectionTitle: section.title,
         optionLabels: Object.fromEntries(optionLabels),
       })

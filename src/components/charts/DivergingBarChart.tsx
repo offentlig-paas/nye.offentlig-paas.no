@@ -1,6 +1,6 @@
 'use client'
 
-import { stripMarkdown } from '@/components/survey/Markdown'
+import { stripMarkdown } from '@/lib/markdown'
 
 import {
   BarChart,
