@@ -41,7 +41,7 @@ const responses: Record<string, ReturnType<typeof org>[]> = {
     org('Ukjent byrå'),
     { answers: [], organizationOverride: undefined },
   ],
-  w2: [org('nav'), org('Ukjent byrå')],
+  w2: [org('nav'), org(' ukjent  byrå')],
 }
 const findBySurvey = vi.fn(async (slug: string) => responses[slug] ?? [])
 
@@ -87,6 +87,20 @@ describe('admin.surveys.getOrganizations previousWave', () => {
     expect(byName.get('Kartverket')).toBe(true)
     expect(byName.get('Skatteetaten')).toBe(true)
     expect([...byName.values()].filter(Boolean)).toHaveLength(3)
+  })
+
+  it('still returns the current wave when the previous fetch fails', async () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+    findBySurvey
+      .mockImplementationOnce(async () => responses.w2 ?? [])
+      .mockRejectedValueOnce(new Error('Sanity down'))
+
+    const data = await caller('UBOTH').getOrganizations({ slug: 'w2' })
+
+    expect(data.previousWave).toBeNull()
+    expect(data.orgBreakdown).toHaveLength(2)
+    expect(consoleError).toHaveBeenCalled()
+    consoleError.mockRestore()
   })
 
   it('returns null for the first wave', async () => {

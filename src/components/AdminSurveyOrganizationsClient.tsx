@@ -428,7 +428,7 @@ function MissingMembersTable({
   members,
   surveySlug,
 }: {
-  members: { name: string; responded: boolean; respondedPreviously: boolean }[]
+  members: OrgData['sectorBreakdown'][number]['organizations']
   surveySlug: string
 }) {
   if (members.length === 0) {
