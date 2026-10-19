@@ -4,6 +4,17 @@
 @config '../typography.ts';
 @custom-variant dark (&:where(.dark, .dark *));
 
+@media print {
+  body:has([data-print-results]) header,
+  body:has([data-print-results]) nav,
+  body:has([data-print-results]) footer {
+    display: none !important;
+  }
+  [data-print-results] section > * {
+    break-inside: avoid;
+  }
+}
+
 @utility scrollbar-hide {
   scrollbar-width: none;
   &::-webkit-scrollbar {

@@ -12,6 +12,8 @@ import {
   getExportColumns,
   getProjectForSurvey,
 } from '@/lib/surveys/helpers'
+import { aggregateSurveyResults } from '@/lib/surveys/aggregation'
+import { aggregatedToCsv, toCsv } from '@/lib/surveys/csv'
 import { getAppUrl } from '@/server/lib/environment'
 import { getSlackUsersForMember } from '@/lib/members-slack'
 import { members, findMemberByName, canonicalOrgName } from '@/data/members'
@@ -52,14 +54,6 @@ async function getRespondedOrgNames(
     responded.add(resolveOrganization(r, orgQid).toLowerCase().trim())
   }
   return responded
-}
-
-function sanitizeCsvCell(value: string): string {
-  const s = value.replace(/"/g, '""')
-  if (/^\s*[=+\-@\t\r]/.test(s)) {
-    return `'${s}`
-  }
-  return s
 }
 
 export const adminSurveyRouter = router({
@@ -418,14 +412,20 @@ export const adminSurveyRouter = router({
         ]
       })
 
-      const csvContent = [
-        headers.map(h => `"${sanitizeCsvCell(h)}"`).join(','),
-        ...rows.map(row =>
-          row.map(cell => `"${sanitizeCsvCell(String(cell))}"`).join(',')
-        ),
-      ].join('\n')
+      return {
+        csv: toCsv([headers, ...rows]),
+        filename: `${survey.slug}-responses.csv`,
+      }
+    }),
 
-      return { csv: csvContent, filename: `${survey.slug}-responses.csv` }
+  exportAggregatedCsv: adminSurveyProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async ({ ctx }) => {
+      const responses = await repository.findBySurvey(ctx.survey.slug)
+      return {
+        csv: aggregatedToCsv(aggregateSurveyResults(ctx.survey, responses)),
+        filename: `${ctx.survey.slug}-aggregert.csv`,
+      }
     }),
 
   deletePilotResponses: adminSurveyProcedure
