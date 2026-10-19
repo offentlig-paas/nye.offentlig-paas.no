@@ -9,6 +9,7 @@ import {
   ChevronRightIcon,
   ChatBubbleLeftIcon,
   ArrowPathIcon,
+  ArrowUturnLeftIcon,
 } from '@heroicons/react/24/outline'
 import type { inferRouterOutputs } from '@trpc/server'
 import type { AppRouter } from '@/server/root'
@@ -27,7 +28,7 @@ export function AdminSurveyOrganizationsClient({
 }) {
   const [expandedSectors, setExpandedSectors] = useState<Set<string>>(new Set())
   const [filter, setFilter] = useState<
-    'all' | 'members' | 'non-members' | 'missing'
+    'all' | 'members' | 'non-members' | 'missing' | 'previous'
   >('all')
 
   function toggleSector(type: string) {
@@ -52,10 +53,13 @@ export function AdminSurveyOrganizationsClient({
   const missingMembers = data.sectorBreakdown
     .flatMap(s => s.organizations)
     .filter(m => !m.responded)
+  const { previousWave } = data
 
   return (
     <div className="space-y-8">
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div
+        className={`grid gap-4 ${previousWave ? 'sm:grid-cols-2 lg:grid-cols-4' : 'sm:grid-cols-3'}`}
+      >
         <StatCard
           icon={BuildingOfficeIcon}
           label="Medlemmer svart"
@@ -72,6 +76,14 @@ export function AdminSurveyOrganizationsClient({
           label="Medlemmer uten svar"
           value={data.totalMembers - data.respondedMembers}
         />
+        {previousWave && (
+          <StatCard
+            icon={ArrowUturnLeftIcon}
+            label="Tilbake fra forrige runde"
+            value={`${previousWave.returned} / ${previousWave.total}`}
+            subtext={`${previousWave.total > 0 ? Math.round((previousWave.returned / previousWave.total) * 100) : 0}% har svart igjen`}
+          />
+        )}
       </div>
 
       <section>
@@ -137,6 +149,7 @@ export function AdminSurveyOrganizationsClient({
                           key={org.name}
                           memberName={org.name}
                           surveySlug={surveySlug}
+                          respondedPreviously={org.respondedPreviously}
                         />
                       )
                     )}
@@ -166,6 +179,14 @@ export function AdminSurveyOrganizationsClient({
                   key: 'missing',
                   label: `Mangler svar (${missingMembers.length})`,
                 },
+                ...(previousWave
+                  ? [
+                      {
+                        key: 'previous',
+                        label: `Mangler fra forrige runde (${previousWave.missing.length})`,
+                      } as const,
+                    ]
+                  : []),
               ] as const
             ).map(opt => (
               <button
@@ -187,6 +208,11 @@ export function AdminSurveyOrganizationsClient({
             members={missingMembers}
             surveySlug={surveySlug}
           />
+        ) : filter === 'previous' && previousWave ? (
+          <MissingFromPreviousTable
+            organizations={previousWave.missing}
+            surveySlug={surveySlug}
+          />
         ) : (
           <OrgTable orgBreakdown={filteredOrgBreakdown} />
         )}
@@ -199,12 +225,22 @@ function OrgName({ name, className }: { name: string; className?: string }) {
   return <span className={className}>{name}</span>
 }
 
+function RespondedPreviouslyBadge() {
+  return (
+    <span className="rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-medium text-sky-700 dark:bg-sky-900/30 dark:text-sky-400">
+      Svarte forrige runde
+    </span>
+  )
+}
+
 function ExpandableOrgContacts({
   memberName,
   surveySlug,
+  respondedPreviously = false,
 }: {
   memberName: string
   surveySlug: string
+  respondedPreviously?: boolean
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const { data, isFetching, error } =
@@ -228,6 +264,7 @@ function ExpandableOrgContacts({
             className={`h-3.5 w-3.5 shrink-0 transition-transform ${isOpen ? 'rotate-90' : ''}`}
           />
           {memberName}
+          {respondedPreviously && <RespondedPreviouslyBadge />}
         </span>
         <span className="flex items-center gap-2">
           {data && (
@@ -340,11 +377,58 @@ function OrgTable({ orgBreakdown }: { orgBreakdown: OrgData['orgBreakdown'] }) {
   )
 }
 
+function MissingFromPreviousTable({
+  organizations,
+  surveySlug,
+}: {
+  organizations: NonNullable<OrgData['previousWave']>['missing']
+  surveySlug: string
+}) {
+  if (organizations.length === 0) {
+    return (
+      <p className="py-8 text-center text-sm text-zinc-400">
+        Alle fra forrige runde har svart!
+      </p>
+    )
+  }
+
+  return (
+    <div className="overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700">
+      <div className="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-900">
+        {organizations.map(org =>
+          org.isMember ? (
+            <ExpandableOrgContacts
+              key={org.organization}
+              memberName={org.organization}
+              surveySlug={surveySlug}
+            />
+          ) : (
+            <div
+              key={org.organization}
+              className="flex items-center justify-between px-4 py-2"
+            >
+              <span className="flex items-center gap-1.5 text-sm text-zinc-400 dark:text-zinc-500">
+                {org.organization}
+                <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                  Ikke medlem
+                </span>
+              </span>
+              <span className="text-xs text-zinc-400 tabular-nums">
+                {org.previousCount} svar forrige runde
+              </span>
+            </div>
+          )
+        )}
+      </div>
+    </div>
+  )
+}
+
 function MissingMembersTable({
   members,
   surveySlug,
 }: {
-  members: { name: string; responded: boolean }[]
+  members: { name: string; responded: boolean; respondedPreviously: boolean }[]
   surveySlug: string
 }) {
   if (members.length === 0) {
@@ -363,6 +447,7 @@ function MissingMembersTable({
             key={org.name}
             memberName={org.name}
             surveySlug={surveySlug}
+            respondedPreviously={org.respondedPreviously}
           />
         ))}
       </div>

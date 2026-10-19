@@ -10,8 +10,10 @@ import { SurveyResponseRepository } from '@/domains/survey-response/repository'
 import {
   getAccessibleSurveys,
   getExportColumns,
+  getPreviousSurvey,
   getProjectForSurvey,
   getSurvey,
+  getUserSurveyRole,
 } from '@/lib/surveys/helpers'
 import { compareWaves, waveName } from '@/lib/surveys/comparison'
 import { getFrozenAggregates, loadWaveResults } from '@/lib/surveys/frozen'
@@ -338,7 +340,14 @@ export const adminSurveyRouter = router({
     .query(async ({ ctx }) => {
       const { survey } = ctx
       const orgQid = getOrgQuestionId(survey)
-      const allResponses = await repository.findBySurvey(survey.slug)
+      const previousSurvey = getPreviousSurvey(survey.slug)
+      const canSeePrevious =
+        previousSurvey !== undefined &&
+        getUserSurveyRole(previousSurvey, ctx.user) !== null
+      const [allResponses, previousResponses] = await Promise.all([
+        repository.findBySurvey(survey.slug),
+        canSeePrevious ? repository.findBySurvey(previousSurvey.slug) : null,
+      ])
 
       const orgCounts = new Map<string, number>()
       for (const r of allResponses) {
@@ -358,12 +367,50 @@ export const adminSurveyRouter = router({
         orgBreakdown.map(o => o.organization.toLowerCase().trim())
       )
 
+      const previousOrgs = new Map<
+        string,
+        { organization: string; count: number }
+      >()
+      if (previousSurvey && previousResponses) {
+        const previousOrgQid = getOrgQuestionId(previousSurvey)
+        for (const r of previousResponses) {
+          const organization = resolveOrganization(r, previousOrgQid)
+          if (organization === 'Ukjent') continue
+          const key = organization.toLowerCase().trim()
+          const entry = previousOrgs.get(key) ?? { organization, count: 0 }
+          entry.count++
+          previousOrgs.set(key, entry)
+        }
+      }
+
+      const previousWave = previousResponses
+        ? {
+            total: previousOrgs.size,
+            returned: [...previousOrgs.keys()].filter(k => respondedOrgs.has(k))
+              .length,
+            missing: [...previousOrgs.entries()]
+              .filter(([key]) => !respondedOrgs.has(key))
+              .map(([, { organization, count }]) => ({
+                organization,
+                previousCount: count,
+                isMember: Boolean(findMemberByName(organization)),
+              }))
+              .sort((a, b) =>
+                a.organization.localeCompare(b.organization, 'nb')
+              ),
+          }
+        : null
+
       const membersByType = new Map<
         string,
         {
           total: number
           responded: number
-          names: { name: string; responded: boolean }[]
+          names: {
+            name: string
+            responded: boolean
+            respondedPreviously: boolean
+          }[]
         }
       >()
 
@@ -374,10 +421,15 @@ export const adminSurveyRouter = router({
           responded: 0,
           names: [],
         }
-        const responded = respondedOrgs.has(member.name.toLowerCase().trim())
+        const key = member.name.toLowerCase().trim()
+        const responded = respondedOrgs.has(key)
         entry.total++
         if (responded) entry.responded++
-        entry.names.push({ name: member.name, responded })
+        entry.names.push({
+          name: member.name,
+          responded,
+          respondedPreviously: previousOrgs.has(key),
+        })
         membersByType.set(type, entry)
       }
 
@@ -406,6 +458,7 @@ export const adminSurveyRouter = router({
       return {
         orgBreakdown,
         sectorBreakdown,
+        previousWave,
         totalMembers,
         respondedMembers,
         memberResponseRate:
