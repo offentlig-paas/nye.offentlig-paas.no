@@ -9,6 +9,7 @@ import { TRPCError } from '@trpc/server'
 import { SurveyResponseRepository } from '@/domains/survey-response/repository'
 import {
   getAccessibleSurveys,
+  getExportColumns,
   getProjectForSurvey,
 } from '@/lib/surveys/helpers'
 import { getAppUrl } from '@/server/lib/environment'
@@ -356,12 +357,9 @@ export const adminSurveyRouter = router({
 
       const { survey } = ctx
       const orgQid = getOrgQuestionId(survey)
-      const sensitiveIds = new Set(survey.sensitiveQuestionIds ?? [])
       const responses = await repository.findBySurvey(survey.slug)
 
-      const exportableQuestions = survey.sections
-        .flatMap(s => s.questions)
-        .filter(q => !sensitiveIds.has(q.id))
+      const columns = getExportColumns(survey)
 
       const headers = [
         'Tidspunkt',
@@ -369,7 +367,7 @@ export const adminSurveyRouter = router({
         'Organisasjon (original)',
         'Enhet',
         'Kilde',
-        ...exportableQuestions.map(q => stripMarkdown(q.title)),
+        ...columns.map(c => stripMarkdown(c.header)),
       ]
 
       const rows = responses.map(r => {
@@ -383,8 +381,8 @@ export const adminSurveyRouter = router({
           r.organizationOverride ? rawOrg : '',
           r.metadata?.deviceCategory ?? '',
           r.metadata?.submissionSource ?? '',
-          ...exportableQuestions.map(q => {
-            const answer = answerMap.get(q.id)
+          ...columns.map(({ question: q }) => {
+            const answer = q && answerMap.get(q.id)
             if (!answer) return ''
             const val = answer.arrayValue
               ? answer.arrayValue.join('; ')

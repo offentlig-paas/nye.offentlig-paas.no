@@ -42,6 +42,11 @@ export interface SurveyDefinition {
   /** Shown in pilot invitations, e.g. "10–15". */
   estimatedMinutes?: string
   resultsConfig?: ResultsConfig
+  /**
+   * CSV column order: question ids, or `{ header }` for an empty column kept
+   * for analysis scripts that read by position. Defaults to question order.
+   */
+  exportColumns?: (string | { header: string })[]
 }
 
 export interface ResultsConfig {
