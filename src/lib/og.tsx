@@ -2,6 +2,18 @@ import { readFile } from 'node:fs/promises'
 import { ImageResponse } from 'next/og'
 import { formatDate } from '@/lib/formatDate'
 
+const PRODUCTION_URL = 'https://offentlig-paas.no'
+
+// NEXT_PUBLIC_URL can be empty or just "https://" in CI and previews.
+export function siteUrl(env: Record<string, string | undefined> = process.env) {
+  if (env.VERCEL_ENV === 'production') return new URL(PRODUCTION_URL)
+  try {
+    return new URL(env.NEXT_PUBLIC_URL ?? '')
+  } catch {
+    return new URL(PRODUCTION_URL)
+  }
+}
+
 export const siteOpenGraph = {
   siteName: 'Offentlig PAAS',
   locale: 'nb_NO',
