@@ -3,7 +3,7 @@ import type { AggregatedQuestion } from '@/lib/surveys/aggregation'
 
 export function ResultTable({ question }: { question: AggregatedQuestion }) {
   // Same as the old bar chart: options nobody picked are not listed.
-  const rows = question.options.filter(o => o.count > 0 || o.suppressed)
+  const rows = question.options.filter(o => o.count > 0)
 
   return (
     <table className="w-full text-sm">
@@ -36,7 +36,7 @@ export function ResultTable({ question }: { question: AggregatedQuestion }) {
               {stripMarkdown(o.label)}
             </th>
             <td className="py-1.5 pr-3 text-right text-zinc-700 tabular-nums dark:text-zinc-300">
-              {o.suppressed ? 'for få' : o.count}
+              {o.count}
             </td>
             <td className="py-1.5">
               <div className="flex items-center gap-2">

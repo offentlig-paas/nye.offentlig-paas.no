@@ -233,11 +233,19 @@ export function aggregateSurveyResults(
         const suppressed = aggregatedOptions.filter(
           o => o.count > 0 && o.count < minBucket
         )
+        // A bucket holding one option would reveal its exact count, so also
+        // hide the next-smallest non-zero option (secondary suppression).
+        if (suppressed.length === 1) {
+          const next = aggregatedOptions
+            .filter(o => o.count >= minBucket)
+            .sort((a, b) => a.count - b.count)[0]
+          if (next) suppressed.push(next)
+        }
         if (suppressed.length > 0) {
           const suppressedTotal = suppressed.reduce((s, o) => s + o.count, 0)
           // Keep the rows in place so scale positions stay stable.
           aggregatedOptions = aggregatedOptions.map(o =>
-            o.count > 0 && o.count < minBucket
+            suppressed.includes(o)
               ? { ...o, count: 0, percentage: 0, suppressed: true as const }
               : o
           )

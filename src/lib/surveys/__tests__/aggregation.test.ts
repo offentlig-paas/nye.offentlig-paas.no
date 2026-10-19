@@ -596,4 +596,52 @@ describe('aggregateSurveyResults', () => {
     expect(likertAverage(q2!.options)).toBe(3)
     expect(groupQuestions([q1!, q2!])).toHaveLength(1)
   })
+
+  describe('secondary suppression', () => {
+    const run = (counts: number[]) => {
+      const values = counts.map((_, i) => String.fromCharCode(97 + i))
+      const survey: SurveyDefinition = {
+        ...baseSurvey,
+        sections: [
+          {
+            id: 's1',
+            title: 'S',
+            questions: [
+              {
+                id: 'q1',
+                type: 'radio',
+                title: 'Q',
+                required: true,
+                options: values.map(v => ({ label: v, value: v })),
+              },
+            ],
+          },
+        ],
+      }
+      const responses = counts.flatMap((n, i) =>
+        Array.from({ length: n }, () =>
+          makeResponse([{ questionId: 'q1', value: values[i]! }])
+        )
+      )
+      const opts = aggregateSurveyResults(survey, responses, {
+        minBucketSize: 3,
+      }).sections[0]!.questions[0]!.options
+      return {
+        hidden: opts.filter(o => o.suppressed).map(o => o.value),
+        bucket: opts.find(o => o.value === '_suppressed')?.count,
+      }
+    }
+
+    it('also hides the next-smallest option when only one is small', () => {
+      expect(run([10, 4, 6, 1])).toEqual({ hidden: ['b', 'd'], bucket: 5 })
+    })
+
+    it('adds nothing when no option is small', () => {
+      expect(run([10, 4, 6])).toEqual({ hidden: [], bucket: undefined })
+    })
+
+    it('adds nothing when two or more options are small', () => {
+      expect(run([10, 4, 1, 2])).toEqual({ hidden: ['c', 'd'], bucket: 3 })
+    })
+  })
 })
