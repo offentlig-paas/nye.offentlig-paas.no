@@ -106,8 +106,11 @@ export function SurveyForm({
   const [focusTrigger, setFocusTrigger] = useState(0)
   useEffect(() => {
     if (focusTrigger === 0) return
-    sectionHeadingRef.current?.focus()
-  }, [focusTrigger])
+    // Scroll after the new section is in the DOM; a plain focus() would
+    // jump-scroll and cancel the smooth scroll.
+    scrollToTop()
+    sectionHeadingRef.current?.focus({ preventScroll: true })
+  }, [focusTrigger, scrollToTop])
 
   useDraftPersistence(
     draftKey,
@@ -213,16 +216,9 @@ export function SurveyForm({
       setStepAnnouncement(
         `Seksjon ${nextIdx + 1} av ${newVisible.length}: ${newVisible[nextIdx]!.title}`
       )
-      scrollToTop()
       setFocusTrigger(t => t + 1)
     }
-  }, [
-    validateCurrentSection,
-    survey.sections,
-    answers,
-    currentSection,
-    scrollToTop,
-  ])
+  }, [validateCurrentSection, survey.sections, answers, currentSection])
 
   const handleBack = useCallback(() => {
     if (currentSectionIndex > 0) {
@@ -231,10 +227,9 @@ export function SurveyForm({
       setStepAnnouncement(
         `Seksjon ${prevIdx + 1} av ${visibleSections.length}: ${visibleSections[prevIdx]!.title}`
       )
-      scrollToTop()
       setFocusTrigger(t => t + 1)
     }
-  }, [currentSectionIndex, visibleSections, scrollToTop])
+  }, [currentSectionIndex, visibleSections])
 
   const handleSubmit = useCallback(async () => {
     if (!validateCurrentSection()) return
