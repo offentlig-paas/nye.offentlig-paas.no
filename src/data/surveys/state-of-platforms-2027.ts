@@ -47,6 +47,41 @@ export const stateOfPlatforms2027: SurveyDefinition = {
     },
   ],
   organizationQuestionId: 'q1-org',
+  comparesTo: {
+    // Wave 2 exists only as frozen aggregates, built from the 2026 CSV by
+    // scripts/import-sop-wave2-aggregates.ts with the same question ids.
+    // Mapped: unchanged wording and options. Left out: free text, Q15, Q26,
+    // Q28, Q31 (options removed) and Q20 (options differ from wave 2).
+    slug: 'state-of-platforms-2026',
+    questionMap: Object.fromEntries(
+      [
+        'q3-org-type',
+        'q4-employees',
+        'q6-role',
+        'q7-platform',
+        'q9-why',
+        'q10-self-service',
+        'q11-teams',
+        'q12-languages',
+        'q13a-investment',
+        'q13b-adoption',
+        'q13c-interfaces',
+        'q13d-operations',
+        'q13e-measurement',
+        'q14-kubernetes',
+        'q16-k8s-years',
+        'q17-clusters',
+        'q18-k8s-apps',
+        'q19-operators',
+        'q21-cloud',
+        'q22-primary-cloud',
+        'q24-cloud-years',
+        'q25-serverless',
+        'q29-network-security',
+        'q30-app-security',
+      ].map(id => [id, id])
+    ),
+  },
   sensitiveQuestionIds: ['kontakt'],
   description:
     'Vi kartlegger modenhet, verktøyvalg og organisering rundt applikasjonsplattformer i norsk offentlig sektor. I år spør vi også om kunstig intelligens (KI) på plattformen.',

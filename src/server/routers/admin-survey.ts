@@ -14,6 +14,7 @@ import {
   getSurvey,
 } from '@/lib/surveys/helpers'
 import { compareWaves } from '@/lib/surveys/comparison'
+import { getFrozenAggregates, loadWaveResults } from '@/lib/surveys/frozen'
 import { aggregateSurveyResults } from '@/lib/surveys/aggregation'
 import { aggregatedToCsv, toCsv } from '@/lib/surveys/csv'
 import { getAppUrl } from '@/server/lib/environment'
@@ -242,21 +243,21 @@ export const adminSurveyRouter = router({
         throw new TRPCError({ code: 'FORBIDDEN' })
       }
       const { comparesTo } = ctx.survey
-      const previous = comparesTo && getSurvey(comparesTo.slug)
-      if (!comparesTo || !previous) throw new TRPCError({ code: 'NOT_FOUND' })
-      const [currentResponses, previousResponses] = await Promise.all([
-        repository.findBySurvey(ctx.survey.slug),
-        repository.findBySurvey(previous.slug),
+      if (!comparesTo) throw new TRPCError({ code: 'NOT_FOUND' })
+      const fetch = (slug: string) => repository.findBySurvey(slug)
+      const [current, previous] = await Promise.all([
+        loadWaveResults(ctx.survey.slug, fetch),
+        loadWaveResults(comparesTo.slug, fetch, { preferFrozen: true }),
       ])
+      if (!current || !previous) throw new TRPCError({ code: 'NOT_FOUND' })
       return {
-        previousTitle: previous.title,
-        previousTotal: previousResponses.length,
-        currentTotal: currentResponses.length,
-        questions: compareWaves(
-          aggregateSurveyResults(ctx.survey, currentResponses),
-          aggregateSurveyResults(previous, previousResponses),
-          comparesTo.questionMap
-        ),
+        previousTitle:
+          getSurvey(comparesTo.slug)?.title ??
+          getFrozenAggregates(comparesTo.slug)?.title ??
+          comparesTo.slug,
+        previousTotal: previous.totalResponses,
+        currentTotal: current.totalResponses,
+        questions: compareWaves(current, previous, comparesTo.questionMap),
       }
     }),
 

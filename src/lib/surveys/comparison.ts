@@ -79,8 +79,9 @@ export function compareWaves(
       options,
     }
     if (c.visualization === 'diverging' || p.visualization === 'diverging') {
-      const previousAvg = likertAverage(p.options)
-      const currentAvg = likertAverage(c.options)
+      // Frozen waves carry the mean computed before suppression.
+      const previousAvg = p.average ?? likertAverage(p.options)
+      const currentAvg = c.average ?? likertAverage(c.options)
       // A suppressed scale point in either wave makes the change misleading.
       question.average =
         previousAvg === null || currentAvg === null

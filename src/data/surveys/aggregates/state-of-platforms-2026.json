@@ -1,0 +1,1276 @@
+{
+  "surveySlug": "state-of-platforms-2026",
+  "title": "Plattformundersøkelsen i offentlig sektor, runde 2",
+  "frozenAt": "2026-10-19",
+  "totalResponses": 48,
+  "uniqueOrganizations": 45,
+  "sections": [
+    {
+      "id": "core",
+      "title": "Kjernespørsmål",
+      "questions": [
+        {
+          "id": "q3-org-type",
+          "title": "Type organisasjon",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 48,
+          "options": [
+            {
+              "label": "Etat",
+              "value": "Etat",
+              "count": 13,
+              "percentage": 27
+            },
+            {
+              "label": "Direktoratet",
+              "value": "Direktoratet",
+              "count": 7,
+              "percentage": 15
+            },
+            {
+              "label": "Forvaltningsorgan",
+              "value": "Forvaltningsorgan",
+              "count": 4,
+              "percentage": 8
+            },
+            {
+              "label": "Offentlig virksomhet",
+              "value": "Offentlig virksomhet",
+              "count": 5,
+              "percentage": 10
+            },
+            {
+              "label": "Statseid selskap",
+              "value": "Statseid selskap",
+              "count": 9,
+              "percentage": 19
+            },
+            {
+              "label": "Statlig foretak",
+              "value": "Statlig foretak",
+              "count": 3,
+              "percentage": 6
+            },
+            {
+              "label": "Kommune",
+              "value": "Kommune",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Kommunalt selskap",
+              "value": "Kommunalt selskap",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Universitet",
+              "value": "Universitet",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Forskningsinstitusjon",
+              "value": "Forskningsinstitusjon",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Annet",
+              "value": "Annet",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Andre (for få svar)",
+              "value": "_suppressed",
+              "count": 7,
+              "percentage": 15
+            }
+          ]
+        },
+        {
+          "id": "q4-employees",
+          "title": "Ansatte",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 48,
+          "options": [
+            {
+              "label": "<100",
+              "value": "<100",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "100–499",
+              "value": "100–499",
+              "count": 18,
+              "percentage": 38
+            },
+            {
+              "label": "500–999",
+              "value": "500–999",
+              "count": 7,
+              "percentage": 15
+            },
+            {
+              "label": "1000–1999",
+              "value": "1000–1999",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "2000–4999",
+              "value": "2000–4999",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "5000–14999",
+              "value": "5000–14999",
+              "count": 6,
+              "percentage": 13
+            },
+            {
+              "label": "15000+",
+              "value": "15000+",
+              "count": 7,
+              "percentage": 15
+            },
+            {
+              "label": "Andre (for få svar)",
+              "value": "_suppressed",
+              "count": 5,
+              "percentage": 10
+            }
+          ]
+        },
+        {
+          "id": "q6-role",
+          "title": "Hva er din primærrolle?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 48,
+          "options": [
+            {
+              "label": "Plattformutvikler",
+              "value": "Plattformutvikler",
+              "count": 20,
+              "percentage": 42
+            },
+            {
+              "label": "Applikasjonsutvikler",
+              "value": "Applikasjonsutvikler",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Arkitekt",
+              "value": "Arkitekt",
+              "count": 4,
+              "percentage": 8
+            },
+            {
+              "label": "Techlead",
+              "value": "Techlead",
+              "count": 8,
+              "percentage": 17
+            },
+            {
+              "label": "Leder",
+              "value": "Leder",
+              "count": 8,
+              "percentage": 17
+            },
+            {
+              "label": "DevOps",
+              "value": "DevOps",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Drift/ops",
+              "value": "Drift/ops",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Sikkerhet",
+              "value": "Sikkerhet",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Test/QA",
+              "value": "Test/QA",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Annet",
+              "value": "Annet",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Andre (for få svar)",
+              "value": "_suppressed",
+              "count": 8,
+              "percentage": 17
+            }
+          ]
+        },
+        {
+          "id": "q7-platform",
+          "title": "Har dere en applikasjonsplattform?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 48,
+          "options": [
+            {
+              "label": "Ja",
+              "value": "Ja",
+              "count": 44,
+              "percentage": 92
+            },
+            {
+              "label": "Nei",
+              "value": "Nei",
+              "count": 4,
+              "percentage": 8
+            }
+          ]
+        },
+        {
+          "id": "q9-why",
+          "title": "Hvorfor lager dere plattform?",
+          "type": "checkbox",
+          "visualization": "bar",
+          "responseCount": 44,
+          "options": [
+            {
+              "label": "Raskere applikasjonsutvikling",
+              "value": "Raskere applikasjonsutvikling",
+              "count": 40,
+              "percentage": 91
+            },
+            {
+              "label": "Stabilitet og kvalitet",
+              "value": "Stabilitet og kvalitet",
+              "count": 36,
+              "percentage": 82
+            },
+            {
+              "label": "Sikkerhet",
+              "value": "Sikkerhet",
+              "count": 36,
+              "percentage": 82
+            },
+            {
+              "label": "Ressursoptimalisering",
+              "value": "Ressursoptimalisering",
+              "count": 27,
+              "percentage": 61
+            },
+            {
+              "label": "Kostoptimalisering",
+              "value": "Kostoptimalisering",
+              "count": 23,
+              "percentage": 52
+            },
+            {
+              "label": "Være attraktiv arbeidsplass for utviklere",
+              "value": "Være attraktiv arbeidsplass for utviklere",
+              "count": 16,
+              "percentage": 36
+            },
+            {
+              "label": "Støtte flere teknologier",
+              "value": "Støtte flere teknologier",
+              "count": 10,
+              "percentage": 23
+            },
+            {
+              "label": "Noen ville ha en plattform",
+              "value": "Noen ville ha en plattform",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Alle andre har en plattform!",
+              "value": "Alle andre har en plattform!",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Annet",
+              "value": "Annet",
+              "count": 6,
+              "percentage": 14
+            },
+            {
+              "label": "Andre (for få svar)",
+              "value": "_suppressed",
+              "count": 5,
+              "percentage": 11
+            }
+          ]
+        },
+        {
+          "id": "q10-self-service",
+          "title": "Hvilke selvbetjente tjenester består plattformen deres av?",
+          "type": "checkbox",
+          "visualization": "bar",
+          "responseCount": 44,
+          "options": [
+            {
+              "label": "Kildekode og versjonskontroll",
+              "value": "Kildekode og versjonskontroll",
+              "count": 38,
+              "percentage": 86
+            },
+            {
+              "label": "Bygg, deploy og kjøre applikasjoner",
+              "value": "Bygg, deploy og kjøre applikasjoner",
+              "count": 40,
+              "percentage": 91
+            },
+            {
+              "label": "Logg, metrikker, dashbaords og alarmer",
+              "value": "Logg, metrikker, dashbaords og alarmer",
+              "count": 40,
+              "percentage": 91
+            },
+            {
+              "label": "Databaser, meldingskøer og lagring",
+              "value": "Databaser, meldingskøer og lagring",
+              "count": 38,
+              "percentage": 86
+            },
+            {
+              "label": "Sikkerhet- og sårbarhets-scanning",
+              "value": "Sikkerhet- og sårbarhets-scanning",
+              "count": 33,
+              "percentage": 75
+            },
+            {
+              "label": "Nettverk/brannmur (interntrafikk)",
+              "value": "Nettverk/brannmur (interntrafikk)",
+              "count": 28,
+              "percentage": 64
+            },
+            {
+              "label": "Nettverk/brannmur (eksterntrafikk)",
+              "value": "Nettverk/brannmur (eksterntrafikk)",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Annet",
+              "value": "Annet",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Andre (for få svar)",
+              "value": "_suppressed",
+              "count": 28,
+              "percentage": 64
+            }
+          ]
+        },
+        {
+          "id": "q11-teams",
+          "title": "Ca. hvor mange applikasjonsteam benytter seg av plattformen deres i dag?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 44,
+          "options": [
+            {
+              "label": "0-5",
+              "value": "0-5",
+              "count": 11,
+              "percentage": 25
+            },
+            {
+              "label": "6-10",
+              "value": "6-10",
+              "count": 8,
+              "percentage": 18
+            },
+            {
+              "label": "11-50",
+              "value": "11-50",
+              "count": 13,
+              "percentage": 30
+            },
+            {
+              "label": "51-100",
+              "value": "51-100",
+              "count": 4,
+              "percentage": 9
+            },
+            {
+              "label": "Mer enn 100",
+              "value": "Mer enn 100",
+              "count": 8,
+              "percentage": 18
+            }
+          ]
+        },
+        {
+          "id": "q12-languages",
+          "title": "Topp tre programmeringsspråk for applikasjoner?",
+          "type": "checkbox",
+          "visualization": "bar",
+          "responseCount": 44,
+          "options": [
+            {
+              "label": "Java",
+              "value": "Java",
+              "count": 25,
+              "percentage": 57
+            },
+            {
+              "label": "Kotlin",
+              "value": "Kotlin",
+              "count": 22,
+              "percentage": 50
+            },
+            {
+              "label": "Python",
+              "value": "Python",
+              "count": 22,
+              "percentage": 50
+            },
+            {
+              "label": "TypeScript",
+              "value": "TypeScript",
+              "count": 23,
+              "percentage": 52
+            },
+            {
+              "label": "JavaScript",
+              "value": "JavaScript",
+              "count": 16,
+              "percentage": 36
+            },
+            {
+              "label": ".NET",
+              "value": ".NET",
+              "count": 13,
+              "percentage": 30
+            },
+            {
+              "label": "Go",
+              "value": "Go",
+              "count": 8,
+              "percentage": 18
+            },
+            {
+              "label": "PHP",
+              "value": "PHP",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Rust",
+              "value": "Rust",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Annet",
+              "value": "Annet",
+              "count": 0,
+              "percentage": 0
+            },
+            {
+              "label": "Andre (for få svar)",
+              "value": "_suppressed",
+              "count": 4,
+              "percentage": 9
+            }
+          ]
+        },
+        {
+          "id": "q13a-investment",
+          "title": "Hvordan allokeres ansatte og midler til plattformfunksjoner",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 44,
+          "options": [
+            {
+              "label": "Nivå 1, Provisorisk – Frivillig eller midlertidig",
+              "value": "Nivå 1, Provisorisk – Frivillig eller midlertidig",
+              "count": 0,
+              "percentage": 0
+            },
+            {
+              "label": "Nivå 2, Operasjonalisert — Dedikert team",
+              "value": "Nivå 2, Operasjonalisert — Dedikert team",
+              "count": 29,
+              "percentage": 66
+            },
+            {
+              "label": "Nivå 3, Skalerbar — Som produkt",
+              "value": "Nivå 3, Skalerbar — Som produkt",
+              "count": 12,
+              "percentage": 27
+            },
+            {
+              "label": "Nivå 4, Optimalisering — Aktivert økosystem",
+              "value": "Nivå 4, Optimalisering — Aktivert økosystem",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "N/A",
+              "value": "N/A",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Andre (for få svar)",
+              "value": "_suppressed",
+              "count": 3,
+              "percentage": 7
+            }
+          ]
+        },
+        {
+          "id": "q13b-adoption",
+          "title": "Hvordan oppdager brukere interne plattformer og plattformfunksjonalitet?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 44,
+          "options": [
+            {
+              "label": "Nivå 1, Provisorisk — Uregelmessig",
+              "value": "Nivå 1, Provisorisk — Uregelmessig",
+              "count": 6,
+              "percentage": 14
+            },
+            {
+              "label": "Nivå 2, Operasjonalisert — Utvendig dytt",
+              "value": "Nivå 2, Operasjonalisert — Utvendig dytt",
+              "count": 13,
+              "percentage": 30
+            },
+            {
+              "label": "Nivå 3, Skalerbar — Innvendig dragning",
+              "value": "Nivå 3, Skalerbar — Innvendig dragning",
+              "count": 22,
+              "percentage": 50
+            },
+            {
+              "label": "Nivå 4, Optimalisering — Deltakende",
+              "value": "Nivå 4, Optimalisering — Deltakende",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "N/A",
+              "value": "N/A",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Andre (for få svar)",
+              "value": "_suppressed",
+              "count": 3,
+              "percentage": 7
+            }
+          ]
+        },
+        {
+          "id": "q13c-interfaces",
+          "title": "Hvordan benytter brukere plattformfunksjonalitet?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 44,
+          "options": [
+            {
+              "label": "Nivå 1, Provisorisk – Tilpassede prosesser",
+              "value": "Nivå 1, Provisorisk – Tilpassede prosesser",
+              "count": 5,
+              "percentage": 11
+            },
+            {
+              "label": "Nivå 2, Operasjonalisert — Standardverktøy",
+              "value": "Nivå 2, Operasjonalisert — Standardverktøy",
+              "count": 13,
+              "percentage": 30
+            },
+            {
+              "label": "Nivå 3, Skalerbar — Selvbetjeningsløsninger",
+              "value": "Nivå 3, Skalerbar — Selvbetjeningsløsninger",
+              "count": 21,
+              "percentage": 48
+            },
+            {
+              "label": "Nivå 4, Optimalisering — Administrerte tjenester",
+              "value": "Nivå 4, Optimalisering — Administrerte tjenester",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "N/A",
+              "value": "N/A",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Andre (for få svar)",
+              "value": "_suppressed",
+              "count": 5,
+              "percentage": 11
+            }
+          ]
+        },
+        {
+          "id": "q13d-operations",
+          "title": "Hvordan planlegges, prioriteres, utvikles og vedlikeholdes plattformer og deres funksjonalitet?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 44,
+          "options": [
+            {
+              "label": "Nivå 1, Provisorisk — På forespørsel",
+              "value": "Nivå 1, Provisorisk — På forespørsel",
+              "count": 8,
+              "percentage": 18
+            },
+            {
+              "label": "Nivå 2, Operasjonalisert — Sentralt registrert",
+              "value": "Nivå 2, Operasjonalisert — Sentralt registrert",
+              "count": 10,
+              "percentage": 23
+            },
+            {
+              "label": "Nivå 3, Skalerbar — Sentralt aktivert",
+              "value": "Nivå 3, Skalerbar — Sentralt aktivert",
+              "count": 20,
+              "percentage": 45
+            },
+            {
+              "label": "Nivå 4, Optimalisering — Administrerte tjenester",
+              "value": "Nivå 4, Optimalisering — Administrerte tjenester",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "N/A",
+              "value": "N/A",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Andre (for få svar)",
+              "value": "_suppressed",
+              "count": 6,
+              "percentage": 14
+            }
+          ]
+        },
+        {
+          "id": "q13e-measurement",
+          "title": "Hva er prosessen for å samle inn og lære av tilbakemeldinger?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 44,
+          "options": [
+            {
+              "label": "Nivå 1, Provisorisk – Ad hoc",
+              "value": "Nivå 1, Provisorisk – Ad hoc",
+              "count": 21,
+              "percentage": 48
+            },
+            {
+              "label": "Nivå 2, Operasjonalisert — Konsekvent innsamling",
+              "value": "Nivå 2, Operasjonalisert — Konsekvent innsamling",
+              "count": 16,
+              "percentage": 36
+            },
+            {
+              "label": "Nivå 3, Skalerbar — Innsikt",
+              "value": "Nivå 3, Skalerbar — Innsikt",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Nivå 4, Optimalisering — Kvantitativ og kvalitativ",
+              "value": "Nivå 4, Optimalisering — Kvantitativ og kvalitativ",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "N/A",
+              "value": "N/A",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Andre (for få svar)",
+              "value": "_suppressed",
+              "count": 7,
+              "percentage": 16
+            }
+          ]
+        },
+        {
+          "id": "q14-kubernetes",
+          "title": "Bruker dere Kubernetes?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 48,
+          "options": [
+            {
+              "label": "Ja",
+              "value": "Ja",
+              "count": 40,
+              "percentage": 83
+            },
+            {
+              "label": "Nei",
+              "value": "Nei",
+              "count": 8,
+              "percentage": 17
+            }
+          ]
+        },
+        {
+          "id": "q16-k8s-years",
+          "title": "Hvor mange år har dere kjørt Kubernetes i produksjon?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 40,
+          "options": [
+            {
+              "label": "1",
+              "value": "1",
+              "count": 7,
+              "percentage": 18
+            },
+            {
+              "label": "2",
+              "value": "2",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "3",
+              "value": "3",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "4",
+              "value": "4",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "5",
+              "value": "5",
+              "count": 5,
+              "percentage": 13
+            },
+            {
+              "label": "6",
+              "value": "6",
+              "count": 5,
+              "percentage": 13
+            },
+            {
+              "label": "7",
+              "value": "7",
+              "count": 7,
+              "percentage": 18
+            },
+            {
+              "label": "8",
+              "value": "8",
+              "count": 5,
+              "percentage": 13
+            },
+            {
+              "label": "9",
+              "value": "9",
+              "count": 5,
+              "percentage": 13
+            },
+            {
+              "label": "10",
+              "value": "10",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Andre (for få svar)",
+              "value": "_suppressed",
+              "count": 6,
+              "percentage": 15
+            }
+          ]
+        },
+        {
+          "id": "q17-clusters",
+          "title": "Hvor mange Kubernetes clustere har dere?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 40,
+          "options": [
+            {
+              "label": "1-5",
+              "value": "1-5",
+              "count": 20,
+              "percentage": 50
+            },
+            {
+              "label": "6-10",
+              "value": "6-10",
+              "count": 9,
+              "percentage": 23
+            },
+            {
+              "label": "10-19",
+              "value": "10-19",
+              "count": 4,
+              "percentage": 10
+            },
+            {
+              "label": "20-49",
+              "value": "20-49",
+              "count": 3,
+              "percentage": 8
+            },
+            {
+              "label": "50+",
+              "value": "50+",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Vet ikke",
+              "value": "Vet ikke",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Andre (for få svar)",
+              "value": "_suppressed",
+              "count": 4,
+              "percentage": 10
+            }
+          ]
+        },
+        {
+          "id": "q18-k8s-apps",
+          "title": "Hvor mange applikasjoner i produksjon har dere på Kubernetes?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 40,
+          "options": [
+            {
+              "label": "0-100",
+              "value": "0-100",
+              "count": 16,
+              "percentage": 40
+            },
+            {
+              "label": "100-500",
+              "value": "100-500",
+              "count": 10,
+              "percentage": 25
+            },
+            {
+              "label": "500-1000",
+              "value": "500-1000",
+              "count": 7,
+              "percentage": 18
+            },
+            {
+              "label": "1000-2000",
+              "value": "1000-2000",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "2000+",
+              "value": "2000+",
+              "count": 4,
+              "percentage": 10
+            },
+            {
+              "label": "Vet ikke",
+              "value": "Vet ikke",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Andre (for få svar)",
+              "value": "_suppressed",
+              "count": 3,
+              "percentage": 8
+            }
+          ]
+        },
+        {
+          "id": "q19-operators",
+          "title": "Utvikler dere egne Kubernetes operators?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 40,
+          "options": [
+            {
+              "label": "Ja",
+              "value": "Ja",
+              "count": 21,
+              "percentage": 53
+            },
+            {
+              "label": "Nei",
+              "value": "Nei",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Vet ikke",
+              "value": "Vet ikke",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Andre (for få svar)",
+              "value": "_suppressed",
+              "count": 19,
+              "percentage": 48
+            }
+          ]
+        },
+        {
+          "id": "q21-cloud",
+          "title": "Bruker dere sky for plattformen deres?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 48,
+          "options": [
+            {
+              "label": "Ja",
+              "value": "Ja",
+              "count": 33,
+              "percentage": 69
+            },
+            {
+              "label": "Nei",
+              "value": "Nei",
+              "count": 15,
+              "percentage": 31
+            }
+          ]
+        },
+        {
+          "id": "q22-primary-cloud",
+          "title": "Hva er deres primære sky for applikasjoner?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 48,
+          "options": [
+            {
+              "label": "Azure",
+              "value": "Azure",
+              "count": 20,
+              "percentage": 42
+            },
+            {
+              "label": "Google Cloud",
+              "value": "Google Cloud",
+              "count": 8,
+              "percentage": 17
+            },
+            {
+              "label": "AWS",
+              "value": "AWS",
+              "count": 6,
+              "percentage": 13
+            },
+            {
+              "label": "Annet",
+              "value": "Annet",
+              "count": 0,
+              "percentage": 0
+            }
+          ]
+        },
+        {
+          "id": "q24-cloud-years",
+          "title": "Hvor mange år har dere kjørt applikasjoner i sky?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 48,
+          "options": [
+            {
+              "label": "1",
+              "value": "1",
+              "count": 3,
+              "percentage": 6
+            },
+            {
+              "label": "2",
+              "value": "2",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "3",
+              "value": "3",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "4",
+              "value": "4",
+              "count": 5,
+              "percentage": 10
+            },
+            {
+              "label": "5",
+              "value": "5",
+              "count": 6,
+              "percentage": 13
+            },
+            {
+              "label": "6",
+              "value": "6",
+              "count": 6,
+              "percentage": 13
+            },
+            {
+              "label": "7",
+              "value": "7",
+              "count": 4,
+              "percentage": 8
+            },
+            {
+              "label": "8",
+              "value": "8",
+              "count": 5,
+              "percentage": 10
+            },
+            {
+              "label": "9",
+              "value": "9",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "10",
+              "value": "10",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Andre (for få svar)",
+              "value": "_suppressed",
+              "count": 5,
+              "percentage": 10
+            }
+          ]
+        },
+        {
+          "id": "q25-serverless",
+          "title": "Benytter dere serverless funksjoner?",
+          "type": "checkbox",
+          "visualization": "bar",
+          "responseCount": 48,
+          "options": [
+            {
+              "label": "Azure Functions",
+              "value": "Azure Functions",
+              "count": 8,
+              "percentage": 17
+            },
+            {
+              "label": "AWS Lambda",
+              "value": "AWS Lambda",
+              "count": 7,
+              "percentage": 15
+            },
+            {
+              "label": "Google Cloud Run",
+              "value": "Google Cloud Run",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Google Cloud Functions",
+              "value": "Google Cloud Functions",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Annet",
+              "value": "Annet",
+              "count": 0,
+              "percentage": 0
+            },
+            {
+              "label": "Andre (for få svar)",
+              "value": "_suppressed",
+              "count": 6,
+              "percentage": 13
+            }
+          ]
+        },
+        {
+          "id": "q29-network-security",
+          "title": "Hva bruker dere for nettverksikkerhet?",
+          "type": "checkbox",
+          "visualization": "bar",
+          "responseCount": 48,
+          "options": [
+            {
+              "label": "NetworkPolicies",
+              "value": "NetworkPolicies",
+              "count": 18,
+              "percentage": 38
+            },
+            {
+              "label": "cert-manager",
+              "value": "cert-manager",
+              "count": 14,
+              "percentage": 29
+            },
+            {
+              "label": "Cilium",
+              "value": "Cilium",
+              "count": 13,
+              "percentage": 27
+            },
+            {
+              "label": "Istio",
+              "value": "Istio",
+              "count": 8,
+              "percentage": 17
+            },
+            {
+              "label": "Linkerd",
+              "value": "Linkerd",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Annet",
+              "value": "Annet",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Andre (for få svar)",
+              "value": "_suppressed",
+              "count": 6,
+              "percentage": 13
+            }
+          ]
+        },
+        {
+          "id": "q30-app-security",
+          "title": "Hva bruker dere for applikasjonsikkerhet?",
+          "type": "checkbox",
+          "visualization": "bar",
+          "responseCount": 48,
+          "options": [
+            {
+              "label": "Kyverno",
+              "value": "Kyverno",
+              "count": 13,
+              "percentage": 27
+            },
+            {
+              "label": "Open Policy Agent (OPA)",
+              "value": "Open Policy Agent (OPA)",
+              "count": 6,
+              "percentage": 13
+            },
+            {
+              "label": "Falco",
+              "value": "Falco",
+              "count": 3,
+              "percentage": 6
+            },
+            {
+              "label": "Sysdig",
+              "value": "Sysdig",
+              "count": 3,
+              "percentage": 6
+            },
+            {
+              "label": "Trivy",
+              "value": "Trivy",
+              "count": 4,
+              "percentage": 8
+            },
+            {
+              "label": "Annet",
+              "value": "Annet",
+              "count": 11,
+              "percentage": 23
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
