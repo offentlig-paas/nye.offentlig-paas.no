@@ -233,13 +233,18 @@ export function aggregateSurveyResults(
         const suppressed = aggregatedOptions.filter(
           o => o.count > 0 && o.count < minBucket
         )
-        // A bucket holding one option would reveal its exact count, so also
-        // hide the next-smallest non-zero option (secondary suppression).
-        if (suppressed.length === 1) {
-          const next = aggregatedOptions
-            .filter(o => o.count >= minBucket)
-            .sort((a, b) => a.count - b.count)[0]
-          if (next) suppressed.push(next)
+        // A bucket with one option, or a total below minBucket, would reveal
+        // exact counts, so keep hiding the next-smallest non-zero option.
+        const rest = aggregatedOptions
+          .filter(o => o.count >= minBucket)
+          .sort((a, b) => a.count - b.count)
+        const total = () => suppressed.reduce((s, o) => s + o.count, 0)
+        while (
+          suppressed.length > 0 &&
+          (suppressed.length < 2 || total() < minBucket) &&
+          rest.length > 0
+        ) {
+          suppressed.push(rest.shift()!)
         }
         if (suppressed.length > 0) {
           const suppressedTotal = suppressed.reduce((s, o) => s + o.count, 0)
@@ -249,15 +254,17 @@ export function aggregateSurveyResults(
               ? { ...o, count: 0, percentage: 0, suppressed: true as const }
               : o
           )
-          aggregatedOptions.push({
-            label: 'Andre (for få svar)',
-            value: '_suppressed',
-            count: suppressedTotal,
-            percentage:
-              responseCount > 0
-                ? Math.round((suppressedTotal / responseCount) * 100)
-                : 0,
-          })
+          // Options exhausted and still unsafe: hide the bucket count too.
+          if (suppressed.length >= 2 && suppressedTotal >= minBucket)
+            aggregatedOptions.push({
+              label: 'Andre (for få svar)',
+              value: '_suppressed',
+              count: suppressedTotal,
+              percentage:
+                responseCount > 0
+                  ? Math.round((suppressedTotal / responseCount) * 100)
+                  : 0,
+            })
         }
       }
 

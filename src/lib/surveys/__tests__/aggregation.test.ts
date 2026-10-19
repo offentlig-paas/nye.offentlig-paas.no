@@ -507,19 +507,20 @@ describe('aggregateSurveyResults', () => {
     const opts = result.sections[0]!.questions[0]!.options
 
     const visible = opts.filter(o => o.value !== '_suppressed' && !o.suppressed)
-    expect(visible).toHaveLength(2)
+    // c+d total 2 < 3, so b is hidden too.
+    expect(visible).toHaveLength(1)
     expect(opts.filter(o => o.suppressed).map(o => [o.value, o.count])).toEqual(
       [
+        ['b', 0],
         ['c', 0],
         ['d', 0],
       ]
     )
     expect(visible.find(o => o.value === 'a')!.count).toBe(10)
-    expect(visible.find(o => o.value === 'b')!.count).toBe(5)
 
     const suppressed = opts.find(o => o.value === '_suppressed')
     expect(suppressed).toBeDefined()
-    expect(suppressed!.count).toBe(2)
+    expect(suppressed!.count).toBe(7)
   })
 
   it('does not suppress when minBucketSize is 0', () => {
@@ -642,6 +643,19 @@ describe('aggregateSurveyResults', () => {
 
     it('adds nothing when two or more options are small', () => {
       expect(run([10, 4, 1, 2])).toEqual({ hidden: ['c', 'd'], bucket: 3 })
+    })
+
+    it('grows the bucket until its total reaches the minimum', () => {
+      expect(run([1, 1, 10, 10])).toEqual({
+        hidden: ['a', 'b', 'c'],
+        bucket: 12,
+      })
+    })
+
+    it('hides the bucket count when options run out', () => {
+      expect(run([2, 10])).toEqual({ hidden: ['a', 'b'], bucket: 12 })
+      expect(run([1, 1])).toEqual({ hidden: ['a', 'b'], bucket: undefined })
+      expect(run([2])).toEqual({ hidden: ['a'], bucket: undefined })
     })
   })
 })
