@@ -291,11 +291,13 @@ export const researchProjects: ResearchProject[] = [
       {
         name: 'Wave 2',
         year: 2027,
-        status: ResearchStatus.Planning,
+        status: ResearchStatus.DataCollection,
         description:
-          'Andre runde er under planlegging og er ikke åpen for svar ennå. Den følger opp spørsmålene fra første runde og spør i tillegg om kodeagenter, plattformstøtte og hvor mye agentene får gjøre på egen hånd. Skjemaet testes før det åpnes.',
+          'Andre runde er åpen for svar. Den følger opp spørsmålene fra første runde og spør i tillegg om kodeagenter, plattformstøtte og hvor mye agentene får gjøre på egen hånd.',
         ethics: {
           ...associationEthics,
+          siktAssessment:
+            'Ikke meldepliktig til Sikt. Svarene publiseres bare anonymisert eller sammenstilt, og e-postadresser lagres adskilt og slettes etter fastsatt frist.',
           publication:
             'Vi publiserer sammenstilte resultater og kan publisere et anonymisert datasett med ett svar per rad. Virksomhetskode er bare med for virksomheter med minst fem svar. De andre får felleskoden «Org-annen». Rollen oppgis som «annen» der færre enn fem fra samme virksomhet har den. Størrelsen på utviklingsmiljøet oppgis bare i grove grupper. Grupper med færre enn fem svar rapporteres ikke.',
           anonymization:
@@ -327,7 +329,7 @@ export const researchProjects: ResearchProject[] = [
       {
         surveySlug: aiAgents2027.slug,
         waveName: 'Wave 2',
-        description: 'Under planlegging. Ikke åpen for svar ennå.',
+        description: 'Åpen for svar.',
       },
     ],
     datasets: [

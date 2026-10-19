@@ -115,7 +115,14 @@ export const aiAgents2027: SurveyDefinition = {
   },
   thankYouMessage:
     'Takk for at du tok deg tid til å svare! Resultatene publiseres av Offentlig PAAS. Har du spørsmål, kontakt oss på kontakt@offentlig-paas.no.',
-  status: SurveyStatus.Pilot,
+  status: SurveyStatus.Open,
+  resultsConfig: {
+    published: false,
+    heroText:
+      'Resultater fra andre runde av kartleggingen av KI-kodeverktøy og kodeagenter i norsk offentlig sektor.',
+    methodologyNote:
+      'Undersøkelsen er distribuert gjennom Offentlig PAAS Slack, LinkedIn og arrangementer. Utvalget er selvselektert og ikke representativt for hele offentlig sektor. Organisasjoner med flere respondenter teller én gang i organisasjonsstatistikken.',
+  },
   sections: [
     {
       id: 'context',

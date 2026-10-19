@@ -29,7 +29,7 @@ const submit = (surveySlug: string, pilotToken?: string) =>
   })
 
 describe('survey.submit', () => {
-  it.each(['ai-agents-2027', 'state-of-platforms-2027', 'ai-agents-2026'])(
+  it.each(['state-of-platforms-2027', 'ai-agents-2026'])(
     'rejects %s because it is not open',
     async slug => {
       await expect(submit(slug)).rejects.toMatchObject({
@@ -49,7 +49,9 @@ describe('survey.submit', () => {
     it.each([undefined, 'wrong'])(
       'rejects a pilot survey with token %s',
       async token => {
-        await expect(submit('ai-agents-2027', token)).rejects.toMatchObject({
+        await expect(
+          submit('state-of-platforms-2027', token)
+        ).rejects.toMatchObject({
           code: 'BAD_REQUEST',
         })
         expect(surveyResponseService.submitResponse).not.toHaveBeenCalled()
@@ -58,10 +60,10 @@ describe('survey.submit', () => {
 
     it('accepts a pilot survey with a valid token and flags it', async () => {
       await expect(
-        submit('ai-agents-2027', 'pilot-secret')
+        submit('state-of-platforms-2027', 'pilot-secret')
       ).resolves.toMatchObject({ success: true })
       expect(surveyResponseService.submitResponse).toHaveBeenCalledWith(
-        expect.objectContaining({ slug: 'ai-agents-2027' }),
+        expect.objectContaining({ slug: 'state-of-platforms-2027' }),
         [],
         expect.anything(),
         '00000000-0000-4000-8000-000000000000',

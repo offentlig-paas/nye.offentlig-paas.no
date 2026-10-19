@@ -32,12 +32,12 @@ describe('getSurvey', () => {
 })
 
 describe('getSurveyForProject', () => {
-  it('shows AI Agents Wave 1 results while Wave 2 is in pilot', () => {
+  it('shows AI Agents Wave 1 results while Wave 2 is open', () => {
     expect(getSurveyForProject('state-of-ai-agents', 'results')?.slug).toBe(
       'ai-agents-2026'
     )
     expect(getSurveyForProject('state-of-ai-agents', 'form')?.slug).toBe(
-      'ai-agents-2026'
+      'ai-agents-2027'
     )
   })
 
@@ -50,9 +50,7 @@ describe('getSurveyForProject', () => {
     expect(getSurveyForProject('state-of-platforms', 'pilot')?.slug).toBe(
       'state-of-platforms-2027'
     )
-    expect(getSurveyForProject('state-of-ai-agents', 'pilot')?.slug).toBe(
-      'ai-agents-2027'
-    )
+    expect(getSurveyForProject('state-of-ai-agents', 'pilot')).toBeUndefined()
   })
 
   it('returns undefined for unknown project', () => {

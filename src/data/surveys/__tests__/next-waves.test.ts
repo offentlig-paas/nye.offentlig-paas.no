@@ -15,9 +15,11 @@ const map = (pairs: [string, string | string[]][]) =>
   )
 
 describe.each([aiAgents2027, stateOfPlatforms2027])('$slug', survey => {
-  it('is a valid pilot', () => {
+  it('is valid and has the expected status', () => {
     expect(validateSurveyDefinition(survey)).toEqual([])
-    expect(survey.status).toBe(SurveyStatus.Pilot)
+    expect(survey.status).toBe(
+      survey === aiAgents2027 ? SurveyStatus.Open : SurveyStatus.Pilot
+    )
     expect(survey.consent.fullText).toContain('foreningen Offentlig PAAS')
   })
 
