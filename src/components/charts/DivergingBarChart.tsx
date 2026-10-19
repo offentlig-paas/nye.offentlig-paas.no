@@ -1,5 +1,7 @@
 'use client'
 
+import { stripMarkdown } from '@/components/survey/Markdown'
+
 import {
   BarChart,
   Bar,
@@ -145,7 +147,7 @@ export function DivergingBarChart({
               style={{ backgroundColor: getBarColor(i, options.length) }}
             />
             <span className="text-zinc-600 dark:text-zinc-400">
-              {opt.label} ({opt.count})
+              {stripMarkdown(opt.label)} ({opt.count})
             </span>
           </div>
         ))}

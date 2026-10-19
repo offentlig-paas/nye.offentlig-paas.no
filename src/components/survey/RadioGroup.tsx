@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react'
 import type { RadioQuestion } from '@/lib/surveys/types'
 import { shuffleOptions } from '@/lib/surveys/helpers'
-import { Markdown } from './Markdown'
+import { Markdown, stripMarkdown } from './Markdown'
 
 interface RadioGroupProps {
   question: RadioQuestion
@@ -38,20 +38,30 @@ export function RadioGroup({
   if (inline) {
     return (
       <fieldset
+        id={groupId}
+        tabIndex={-1}
         className="-mt-3"
         aria-required={question.required || undefined}
         aria-describedby={error ? errorId : undefined}
         aria-invalid={error ? true : undefined}
       >
         <legend className="text-sm/6 font-medium text-zinc-600 dark:text-zinc-400">
-          {question.title}
+          <Markdown inline>{question.title}</Markdown>
           {question.required && <span className="sr-only"> (påkrevd)</span>}
         </legend>
-        <div className="mt-1 flex flex-wrap gap-2">
+        {/* One row of equal columns from sm and up; labels wrap inside. */}
+        <div
+          className="mt-1 grid gap-2 sm:grid-cols-(--inline-cols)"
+          style={
+            {
+              '--inline-cols': `repeat(${options.length}, minmax(0, 1fr))`,
+            } as React.CSSProperties
+          }
+        >
           {options.map(option => (
             <label
               key={option.value}
-              className="cursor-pointer rounded-md px-3 py-1.5 text-sm text-zinc-700 ring-1 ring-zinc-300 has-checked:bg-teal-600 has-checked:text-white has-checked:ring-teal-600 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-teal-500 dark:text-zinc-300 dark:ring-white/10 dark:has-checked:bg-teal-500"
+              className="flex cursor-pointer items-center rounded-md px-3 py-1.5 text-sm text-zinc-700 ring-1 ring-zinc-300 has-checked:bg-teal-600 has-checked:text-white has-checked:ring-teal-600 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-teal-500 dark:text-zinc-300 dark:ring-white/10 dark:has-checked:bg-teal-500"
             >
               <input
                 type="radio"
@@ -61,7 +71,7 @@ export function RadioGroup({
                 onChange={() => onChange(option.value)}
                 className="sr-only"
               />
-              {option.label}
+              <Markdown inline>{option.label}</Markdown>
             </label>
           ))}
         </div>
@@ -80,6 +90,8 @@ export function RadioGroup({
 
   return (
     <fieldset
+      id={groupId}
+      tabIndex={-1}
       aria-required={question.required || undefined}
       aria-describedby={
         [
@@ -92,7 +104,7 @@ export function RadioGroup({
       aria-invalid={error ? true : undefined}
     >
       <legend className="text-base/7 font-semibold text-zinc-900 dark:text-white">
-        {question.title}
+        <Markdown inline>{question.title}</Markdown>
         {question.required && (
           <>
             <span className="ml-1 text-red-600 dark:text-red-400" aria-hidden>
@@ -135,7 +147,7 @@ export function RadioGroup({
                   htmlFor={optionId}
                   className="block text-base/7 font-medium text-zinc-700 dark:text-zinc-300"
                 >
-                  {option.label}
+                  <Markdown inline>{option.label}</Markdown>
                 </label>
               </div>
               {option.allowOtherText && value === option.value && (
@@ -148,7 +160,7 @@ export function RadioGroup({
                       onChange(option.value, e.target.value)
                     }}
                     placeholder="Spesifiser"
-                    aria-label={`${option.label}: spesifiser`}
+                    aria-label={`${stripMarkdown(option.label)}: spesifiser`}
                     className="block w-full rounded-md bg-white px-3 py-2 text-base text-zinc-900 outline-1 -outline-offset-1 outline-zinc-300 placeholder:text-zinc-400 focus:outline-2 focus:-outline-offset-2 focus:outline-teal-500 sm:py-1.5 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-zinc-500 dark:focus:outline-teal-400"
                   />
                 </div>

@@ -27,7 +27,7 @@ describe('RadioGroup', () => {
       />
     )
     expect(
-      screen.getByText('What is your role?', { selector: 'legend' })
+      screen.getByText('What is your role?', { selector: 'legend > span' })
     ).toBeInTheDocument()
     expect(screen.getByLabelText('Developer')).toBeInTheDocument()
     expect(screen.getByLabelText('Manager')).toBeInTheDocument()

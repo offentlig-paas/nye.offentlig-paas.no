@@ -1,5 +1,7 @@
 'use client'
 
+import { stripMarkdown } from '@/components/survey/Markdown'
+
 import {
   BarChart,
   Bar,
@@ -54,7 +56,7 @@ export function HorizontalBarChart({
           <div key={option.value} className="space-y-1">
             <div className="flex items-baseline justify-between gap-2 text-xs">
               <span className="min-w-0 break-words text-zinc-700 dark:text-zinc-300">
-                {option.label}
+                {stripMarkdown(option.label)}
               </span>
               <span className="shrink-0 font-mono text-zinc-500 dark:text-zinc-400">
                 {option.count} ({option.percentage}%)
