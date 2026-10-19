@@ -3,7 +3,7 @@
 export function PrintButton({ className }: { className?: string }) {
   return (
     <button type="button" onClick={() => window.print()} className={className}>
-      Lagre som PDF
+      Skriv ut eller lagre som PDF
     </button>
   )
 }

@@ -20,7 +20,7 @@ export function aggregatedToCsv(results: AggregatedSurveyResults): string {
       'Svaralternativ',
       'Antall',
       'Prosent',
-      'Svar på spørsmålet',
+      'Antall svar på spørsmålet',
     ],
   ]
   for (const section of results.sections) {
