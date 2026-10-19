@@ -55,7 +55,8 @@ export function AdminSurveyListClient({
                 <div className="mt-2 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-zinc-500 dark:text-zinc-400">
                   <span className="flex items-center gap-1.5">
                     <UsersIcon className="h-4 w-4" />
-                    {survey.responseCount} svar
+                    {survey.responseCount}{' '}
+                    {survey.status === 'pilot' ? 'pilotsvar' : 'svar'}
                   </span>
                   <span className="flex items-center gap-1.5">
                     <BuildingOfficeIcon className="h-4 w-4" />

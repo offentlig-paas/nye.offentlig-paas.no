@@ -72,7 +72,20 @@ export async function aggregateSlackUsersByDomain(
   ) {
     return cachedAggregation
   }
+  if (options.skipCache) return fetchAggregation()
+  // Concurrent callers share one pagination run instead of each hitting users.list.
+  const run = (inflight ??= fetchAggregation().finally(() => {
+    if (inflight === run) inflight = null
+  }))
+  return run
+}
 
+let inflight: Promise<DomainAggregation> | null = null
+// Bumped on clear so a run started before the clear does not repopulate the cache.
+let cacheGeneration = 0
+
+async function fetchAggregation(): Promise<DomainAggregation> {
+  const generation = cacheGeneration
   const slack = getSlackClient()
   if (!slack) {
     return { domains: new Map(), status: 'no_token', totalUsers: 0 }
@@ -145,8 +158,10 @@ export async function aggregateSlackUsersByDomain(
     totalUsers,
   }
 
-  cachedAggregation = result
-  cacheTimestamp = Date.now()
+  if (generation === cacheGeneration) {
+    cachedAggregation = result
+    cacheTimestamp = Date.now()
+  }
   return result
 }
 
@@ -185,6 +200,8 @@ export async function getSlackUserCount(): Promise<number> {
 }
 
 export function clearSlackUsersCache() {
+  cacheGeneration++
+  inflight = null
   cachedAggregation = null
   cacheTimestamp = 0
 }

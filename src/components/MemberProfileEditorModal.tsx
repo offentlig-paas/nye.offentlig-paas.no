@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
@@ -558,20 +558,29 @@ export function MemberProfileEditorModal({
     }))
   })
   const [slackTeamQuery, setSlackTeamQuery] = useState('')
+  const [debouncedSlackQuery, setDebouncedSlackQuery] = useState('')
+  useEffect(() => {
+    const t = setTimeout(
+      () => setDebouncedSlackQuery(slackTeamQuery.trim()),
+      300
+    )
+    return () => clearTimeout(t)
+  }, [slackTeamQuery])
   const [editingSlackIdx, setEditingSlackIdx] = useState<number | null>(null)
   const [links, setLinks] = useState<ProfileLink[]>(initialProfile?.links ?? [])
   const [openPositions, setOpenPositions] = useState<OpenPosition[]>(
     initialProfile?.openPositions ?? []
   )
 
-  const { data: slackColleaguesData, isFetching: isFetchingColleagues } =
+  const { data: slackColleaguesData, isLoading: isFetchingColleagues } =
     trpc.memberProfile.getSlackColleagues.useQuery(
       {
         slug: memberSlug,
-        query: slackTeamQuery.trim() || undefined,
+        query: debouncedSlackQuery || undefined,
       },
       {
         enabled: effectiveOpen && activeTab === 'more',
+        placeholderData: prev => prev,
       }
     )
 
@@ -2796,7 +2805,7 @@ export function MemberProfileEditorModal({
                                 const next = [...techStack]
                                 next[idx] = {
                                   ...group,
-                                  items: e.target.value.split(','),
+                                  items: e.target.value.split(/,\s*/),
                                 }
                                 setTechStack(next)
                               }}
