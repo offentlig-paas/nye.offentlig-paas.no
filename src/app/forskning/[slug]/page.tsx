@@ -42,6 +42,7 @@ import {
   type ResearchEthics,
 } from '@/lib/research/types'
 import { auth } from '@/auth'
+import { siteOpenGraph } from '@/lib/og'
 import { canUserAccessSurvey, getSurvey } from '@/lib/surveys/helpers'
 
 type Params = Promise<{ slug: string }>
@@ -62,6 +63,11 @@ export async function generateMetadata({
   return {
     title: project.title,
     description: project.description,
+    openGraph: {
+      ...siteOpenGraph,
+      title: project.title,
+      description: project.description,
+    },
   }
 }
 

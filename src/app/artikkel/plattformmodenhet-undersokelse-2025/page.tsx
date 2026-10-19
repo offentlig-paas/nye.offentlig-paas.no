@@ -1,3 +1,4 @@
+import { siteOpenGraph } from '@/lib/og'
 import { ArticleLayout } from '@/components/ArticleLayout'
 import { article } from './article'
 import Content from './content.mdx'
@@ -5,6 +6,12 @@ import Content from './content.mdx'
 export const metadata = {
   title: article.title,
   description: article.description,
+  openGraph: {
+    ...siteOpenGraph,
+    type: 'article' as const,
+    title: article.title,
+    description: article.description,
+  },
 }
 
 export default function Page() {

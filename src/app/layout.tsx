@@ -8,10 +8,16 @@ import { AuthSessionProvider } from '@/components/AuthSessionProvider'
 import { Analytics } from '@/components/Analytics'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
+import { siteOpenGraph, siteUrl } from '@/lib/og'
+
 import '@/styles/tailwind.css'
 
 export const metadata: Metadata = {
+  // Production previews must point at the public domain, not the per-deploy Vercel URL.
+  metadataBase: siteUrl(),
   applicationName: 'Offentlig PAAS',
+  openGraph: siteOpenGraph,
+  twitter: { card: 'summary_large_image' },
   title: {
     template: '%s - Offentlig PAAS',
     default:

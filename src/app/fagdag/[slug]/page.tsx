@@ -99,7 +99,7 @@ export async function generateMetadata({
   const photos = await getEventPhotos(slug)
   const firstPhoto = photos[0]
 
-  let ogImage: string | undefined
+  let ogImage = `/fagdag/${slug}/og`
   let ogAlt: string = event.title
 
   if (event.bannerImage) {
@@ -146,25 +146,14 @@ export async function generateMetadata({
       description: enhancedDescription,
       type: 'website',
       locale: 'nb_NO',
-      siteName: 'Offentlig PaaS',
-      ...(ogImage && {
-        images: [
-          {
-            url: ogImage,
-            width: 1200,
-            height: 630,
-            alt: ogAlt,
-          },
-        ],
-      }),
+      siteName: 'Offentlig PAAS',
+      images: [{ url: ogImage, width: 1200, height: 630, alt: ogAlt }],
     },
     twitter: {
       card: 'summary_large_image',
       title: event.title,
       description: enhancedDescription,
-      ...(ogImage && {
-        images: [ogImage],
-      }),
+      images: [ogImage],
     },
   }
 }

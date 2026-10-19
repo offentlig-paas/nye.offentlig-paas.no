@@ -28,7 +28,8 @@ function LinkIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
 
 export const metadata: Metadata = {
   title: 'Plattformer',
-  description: 'Norske applikasjonsplattformer',
+  description:
+    'Oversikt over applikasjonsplattformene som offentlige virksomheter i Norge bygger og drifter.',
 }
 
 export default async function Plattformer() {
