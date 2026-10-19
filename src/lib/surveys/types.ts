@@ -152,6 +152,8 @@ export interface QuestionOption {
   skipToSection?: string
   pinPosition?: 'first' | 'last'
   exclusive?: boolean
+  /** `false`: not a point on a diverging scale (e.g. "Vet ikke", N/A). */
+  scale?: false
 }
 
 export interface SurveyAnswer {

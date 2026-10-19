@@ -38,6 +38,10 @@ export interface AggregatedOption {
   value: string
   count: number
   percentage: number
+  /** Not a point on a diverging scale. */
+  scale?: false
+  /** Count hidden (below minBucketSize); merged into `_suppressed`. */
+  suppressed?: true
 }
 
 function getEffectiveVisualization(
@@ -111,6 +115,7 @@ function aggregateRadioOrCheckbox(
   const options: AggregatedOption[] = question.options.map(opt => ({
     label: opt.label,
     value: opt.value,
+    ...(opt.scale === false && { scale: false as const }),
     count: counts.get(opt.value) ?? 0,
     percentage:
       respondentCount > 0
@@ -228,10 +233,21 @@ export function aggregateSurveyResults(
         const suppressed = aggregatedOptions.filter(
           o => o.count > 0 && o.count < minBucket
         )
+        // A bucket holding one option would reveal its exact count, so also
+        // hide the next-smallest non-zero option (secondary suppression).
+        if (suppressed.length === 1) {
+          const next = aggregatedOptions
+            .filter(o => o.count >= minBucket)
+            .sort((a, b) => a.count - b.count)[0]
+          if (next) suppressed.push(next)
+        }
         if (suppressed.length > 0) {
           const suppressedTotal = suppressed.reduce((s, o) => s + o.count, 0)
-          aggregatedOptions = aggregatedOptions.filter(
-            o => o.count === 0 || o.count >= minBucket
+          // Keep the rows in place so scale positions stay stable.
+          aggregatedOptions = aggregatedOptions.map(o =>
+            suppressed.includes(o)
+              ? { ...o, count: 0, percentage: 0, suppressed: true as const }
+              : o
           )
           aggregatedOptions.push({
             label: 'Andre (for få svar)',
