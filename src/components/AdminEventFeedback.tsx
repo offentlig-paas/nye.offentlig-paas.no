@@ -60,7 +60,7 @@ export function AdminEventFeedback({ eventSlug }: AdminEventFeedbackProps) {
       {/* Stats Overview */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard
-          label="Snitt vurdering"
+          label="Gjennomsnittlig vurdering"
           value={
             summary.averageEventRating !== null
               ? summary.averageEventRating.toFixed(1)

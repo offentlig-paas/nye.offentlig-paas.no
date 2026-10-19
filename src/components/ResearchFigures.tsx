@@ -717,7 +717,7 @@ function StateOfPlatformsFigures() {
                     2026
                   </th>
                   <th className="px-4 py-3 text-right font-semibold text-zinc-700 dark:text-zinc-300">
-                    Endring (pp)
+                    Endring (prosentpoeng)
                   </th>
                 </tr>
               </thead>

@@ -221,7 +221,7 @@ export function AdminAgendaClient() {
           icon={XCircleIcon}
         />
         <StatCard
-          label="Snitt vurdering"
+          label="Gjennomsnittlig vurdering"
           value={stats.avgRating > 0 ? stats.avgRating.toFixed(1) : '-'}
           icon={StarIcon}
         />

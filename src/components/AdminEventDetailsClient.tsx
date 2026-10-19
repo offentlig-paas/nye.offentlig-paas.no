@@ -108,7 +108,7 @@ export function AdminEventDetailsClient({
         />
         {isPostEvent && eventDetails.stats.feedbackSummary ? (
           <StatCard
-            label="Snitt vurdering"
+            label="Gjennomsnittlig vurdering"
             value={eventDetails.stats.feedbackSummary.averageEventRating.toFixed(
               1
             )}
