@@ -38,6 +38,8 @@ describe('SurveyResponseRepository pilot handling', () => {
   it('lists only pilot responses when asked', async () => {
     fetch.mockResolvedValue([])
     await repo.findBySurveyPaginated('s', 0, 10, true)
+    await repo.findBySurvey('s', true)
+    await repo.countUniqueOrganizations('s', 'q1-org', true)
     for (const [query] of fetch.mock.calls) {
       expect(query).toContain('&& pilot == true]')
     }

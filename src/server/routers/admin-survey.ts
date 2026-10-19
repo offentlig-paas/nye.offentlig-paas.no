@@ -91,13 +91,19 @@ export const adminSurveyRouter = router({
     .query(async ({ ctx }) => {
       const { survey } = ctx
       const orgQid = getOrgQuestionId(survey)
-      const [responseCount, dailyCounts, latestResponse, allResponses] =
-        await Promise.all([
-          repository.countBySurvey(survey.slug),
-          repository.getDailyResponseCounts(survey.slug),
-          repository.getLatestResponseDate(survey.slug),
-          repository.findBySurvey(survey.slug),
-        ])
+      const [
+        responseCount,
+        pilotCount,
+        dailyCounts,
+        latestResponse,
+        allResponses,
+      ] = await Promise.all([
+        repository.countBySurvey(survey.slug),
+        repository.countBySurvey(survey.slug, true),
+        repository.getDailyResponseCounts(survey.slug),
+        repository.getLatestResponseDate(survey.slug),
+        repository.findBySurvey(survey.slug),
+      ])
 
       const memberCount = (await import('@/data/members')).members.length
 
@@ -164,6 +170,7 @@ export const adminSurveyRouter = router({
           questionCount: totalQuestions,
         },
         responseCount,
+        pilotCount,
         orgCount: uniqueResolvedOrgs.size,
         respondedMemberCount,
         memberCount,
@@ -366,8 +373,8 @@ export const adminSurveyRouter = router({
     }),
 
   exportCsv: adminSurveyProcedure
-    .input(z.object({ slug: z.string() }))
-    .query(async ({ ctx }) => {
+    .input(z.object({ slug: z.string(), pilot: z.boolean().optional() }))
+    .query(async ({ ctx, input }) => {
       if (ctx.surveyRole !== 'owner') {
         throw new TRPCError({
           code: 'FORBIDDEN',
@@ -377,7 +384,7 @@ export const adminSurveyRouter = router({
 
       const { survey } = ctx
       const orgQid = getOrgQuestionId(survey)
-      const responses = await repository.findBySurvey(survey.slug)
+      const responses = await repository.findBySurvey(survey.slug, input.pilot)
 
       const columns = getExportColumns(survey)
 
@@ -414,17 +421,20 @@ export const adminSurveyRouter = router({
 
       return {
         csv: toCsv([headers, ...rows]),
-        filename: `${survey.slug}-responses.csv`,
+        filename: `${survey.slug}-${input.pilot ? 'pilot-' : ''}responses.csv`,
       }
     }),
 
   exportAggregatedCsv: adminSurveyProcedure
-    .input(z.object({ slug: z.string() }))
-    .query(async ({ ctx }) => {
-      const responses = await repository.findBySurvey(ctx.survey.slug)
+    .input(z.object({ slug: z.string(), pilot: z.boolean().optional() }))
+    .query(async ({ ctx, input }) => {
+      const responses = await repository.findBySurvey(
+        ctx.survey.slug,
+        input.pilot
+      )
       return {
         csv: aggregatedToCsv(aggregateSurveyResults(ctx.survey, responses)),
-        filename: `${ctx.survey.slug}-aggregert.csv`,
+        filename: `${ctx.survey.slug}-${input.pilot ? 'pilot-' : ''}aggregert.csv`,
       }
     }),
 
