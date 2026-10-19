@@ -195,7 +195,7 @@ export function SurveyForm({
       const el = document.getElementById(firstErrorId)
       el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
       requestAnimationFrame(() => {
-        el?.focus()
+        el?.focus({ preventScroll: true })
       })
     }
     return newErrors.size === 0

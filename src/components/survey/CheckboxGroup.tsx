@@ -83,6 +83,8 @@ export function CheckboxGroup({
 
   return (
     <fieldset
+      id={groupId}
+      tabIndex={-1}
       aria-required={question.required || undefined}
       aria-describedby={
         [

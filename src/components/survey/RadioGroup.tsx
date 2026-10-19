@@ -38,6 +38,8 @@ export function RadioGroup({
   if (inline) {
     return (
       <fieldset
+        id={groupId}
+        tabIndex={-1}
         className="-mt-3"
         aria-required={question.required || undefined}
         aria-describedby={error ? errorId : undefined}
@@ -88,6 +90,8 @@ export function RadioGroup({
 
   return (
     <fieldset
+      id={groupId}
+      tabIndex={-1}
       aria-required={question.required || undefined}
       aria-describedby={
         [
