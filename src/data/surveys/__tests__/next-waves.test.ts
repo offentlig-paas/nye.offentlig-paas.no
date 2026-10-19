@@ -39,7 +39,7 @@ describe('AI Agents Wave 2 routing', () => {
     ).length
 
   it('matches the question counts in the instrument', () => {
-    expect(count(map([['q8-personal-use', 'no']]))).toBe(26)
+    expect(count(map([['q8-personal-use', 'no']]))).toBe(23)
     expect(
       count(
         map([
@@ -47,7 +47,7 @@ describe('AI Agents Wave 2 routing', () => {
           ['q20-concerns', ['skill-loss']],
         ])
       )
-    ).toBe(27)
+    ).toBe(24)
     expect(
       count(
         map([
@@ -55,28 +55,26 @@ describe('AI Agents Wave 2 routing', () => {
           ['q10b-agent-production', 'no-agents'],
         ])
       )
-    ).toBe(32)
+    ).toBe(28)
     expect(
       count(
         map([
           ['q8-personal-use', 'yes'],
           ['q10b-agent-production', 'regular-prod'],
+          ['q11-integrations', ['scm']],
           ['q20-concerns', ['skill-loss']],
         ])
       )
-    ).toBe(36)
+    ).toBe(31)
   })
 
-  it('offers indirect access in the Q26b matrix', () => {
+  it('has three columns in the Q26b matrix', () => {
     const q = aiAgents2027.sections
       .flatMap(s => s.questions)
       .find(q => q.id === 'q26b-system-access')
     expect(q?.type === 'matrix' && q.options.map(o => o.value)).toEqual([
-      'none',
-      'indirect',
       'read',
       'read-write',
-      'not-used',
       'unknown',
     ])
   })
@@ -89,17 +87,17 @@ describe('AI Agents Wave 2 routing', () => {
     expect(ids).toEqual(['context'])
   })
 
-  it('shows Q20b on its own page only after skill-loss', () => {
-    const without = getVisibleSectionIds(
+  it('shows Q20b only after skill-loss', () => {
+    const without = getVisibleQuestionIds(
       aiAgents2027.sections,
       map([['q20-concerns', ['security']]])
     )
-    expect(without).not.toContain('skill-loss')
-    const withIt = getVisibleSectionIds(
+    expect(without.has('q20b-skill-loss')).toBe(false)
+    const withIt = getVisibleQuestionIds(
       aiAgents2027.sections,
       map([['q20-concerns', ['skill-loss']]])
     )
-    expect(withIt).toContain('skill-loss')
+    expect(withIt.has('q20b-skill-loss')).toBe(true)
   })
 })
 
