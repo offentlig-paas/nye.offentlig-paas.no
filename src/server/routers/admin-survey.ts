@@ -201,6 +201,37 @@ export const adminSurveyRouter = router({
       }
     }),
 
+  getFreeText: adminSurveyProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async ({ ctx }) => {
+      if (ctx.surveyRole !== 'owner' && ctx.surveyRole !== 'researcher') {
+        throw new TRPCError({ code: 'FORBIDDEN' })
+      }
+      const { survey } = ctx
+      const sensitiveIds = new Set(survey.sensitiveQuestionIds ?? [])
+      const responses = await repository.findBySurvey(survey.slug)
+      return survey.sections.flatMap(section =>
+        section.questions
+          .filter(
+            q =>
+              (q.type === 'text' || q.type === 'textarea') &&
+              !sensitiveIds.has(q.id)
+          )
+          .map(q => {
+            const answers = responses
+              .map(r => r.answers.find(a => a.questionId === q.id)?.value)
+              .filter((v): v is string => typeof v === 'string' && !!v.trim())
+              .map(v => v.trim())
+            // Fisher-Yates, so order never reveals submission order.
+            for (let i = answers.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1))
+              ;[answers[i], answers[j]] = [answers[j]!, answers[i]!]
+            }
+            return { id: q.id, title: q.title, answers }
+          })
+      )
+    }),
+
   getOrganizations: adminSurveyProcedure
     .input(z.object({ slug: z.string() }))
     .query(async ({ ctx }) => {

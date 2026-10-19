@@ -8,6 +8,7 @@ import {
   PresentationChartBarIcon,
   BuildingOffice2Icon,
   EyeIcon,
+  ChatBubbleLeftRightIcon,
 } from '@heroicons/react/24/outline'
 import type { SurveyRole } from '@/lib/surveys/types'
 
@@ -39,7 +40,14 @@ export function AdminSurveyNav({ surveySlug, role }: AdminSurveyNavProps) {
       href: `/admin/forskning/${surveySlug}/resultater`,
       icon: PresentationChartBarIcon,
       current: pathname === `/admin/forskning/${surveySlug}/resultater`,
-      ownerOnly: true,
+      ownerOnly: false,
+    },
+    {
+      name: 'Fritekstsvar',
+      href: `/admin/forskning/${surveySlug}/fritekst`,
+      icon: ChatBubbleLeftRightIcon,
+      current: pathname === `/admin/forskning/${surveySlug}/fritekst`,
+      ownerOnly: false,
     },
     {
       name: 'Besvarelser',
