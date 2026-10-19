@@ -11,8 +11,8 @@ interface AdminSurveyOverviewPageProps {
 function OverviewSkeleton() {
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-3">
-        {[...Array(3)].map((_, i) => (
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {[...Array(4)].map((_, i) => (
           <div
             key={i}
             className="h-24 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-700"

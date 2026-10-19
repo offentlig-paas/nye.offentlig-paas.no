@@ -7,19 +7,12 @@ import {
   UsersIcon,
 } from '@heroicons/react/24/outline'
 import { Badge } from '@/components/Badge'
-import type { BadgeColor } from '@/components/Badge'
+import { surveyStatusLabels as statusLabels } from '@/lib/surveys/status-labels'
 import type { inferRouterOutputs } from '@trpc/server'
 import type { AppRouter } from '@/server/root'
 
 type SurveyListItem =
   inferRouterOutputs<AppRouter>['admin']['surveys']['list'][0]
-
-const statusLabels: Record<string, { label: string; color: BadgeColor }> = {
-  draft: { label: 'Utkast', color: 'zinc' },
-  pilot: { label: 'Pilot', color: 'yellow' },
-  open: { label: 'Åpen', color: 'green' },
-  closed: { label: 'Stengt', color: 'red' },
-}
 
 export function AdminSurveyListClient({
   surveys,
