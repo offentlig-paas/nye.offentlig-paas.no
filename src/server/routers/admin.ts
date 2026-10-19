@@ -953,6 +953,8 @@ Mvh ${organizerNames}`
           registrationUrl: ctx.event.registrationUrl,
           callForPapersUrl: ctx.event.callForPapersUrl,
           recordingUrl: ctx.event.recordingUrl,
+          physicalRegistrationDeadline:
+            ctx.event.physicalRegistrationDeadline?.toISOString(),
           organizers: ctx.event.organizers,
           schedule: scheduleWithAttachments,
           eventStats: ctx.event.stats,

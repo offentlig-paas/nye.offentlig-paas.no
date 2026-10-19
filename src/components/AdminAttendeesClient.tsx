@@ -232,6 +232,15 @@ export function AdminAttendeesClient() {
         onClearSelection={() => setSelectedRegistrations([])}
       />
 
+      {eventDetails.physicalRegistrationDeadline &&
+        new Date() >= new Date(eventDetails.physicalRegistrationDeadline) && (
+          <p className="rounded-2xl border border-gray-200 bg-gray-50 p-4 text-xs text-gray-700 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300">
+            Fristen for fysisk påmelding har gått ut. Ledige fysiske plasser går
+            ikke lenger automatisk til ventelisten. Du kan fortsatt bekrefte
+            deltakere manuelt.
+          </p>
+        )}
+
       {/* Waitlist Quick Action */}
       {statusFilter === 'waitlist' &&
         filteredRegistrations.length > 0 &&

@@ -9,7 +9,10 @@ import type {
 } from '../types'
 
 vi.mock('../repository')
-vi.mock('@/lib/events/helpers', () => ({
+vi.mock('@/lib/events/helpers', async importOriginal => ({
+  isPhysicalRegistrationClosed: (
+    await importOriginal<typeof import('@/lib/events/helpers')>()
+  ).isPhysicalRegistrationClosed,
   getAllEvents: vi.fn(() => [{ slug: 'test-event' }, { slug: 'active-event' }]),
 }))
 
@@ -350,6 +353,144 @@ describe('EventRegistrationService', () => {
       const result = await service.cancelRegistration('reg-123')
 
       expect(result.status).toBe('cancelled')
+    })
+  })
+
+  describe('physicalRegistrationDeadline', () => {
+    const past = new Date(Date.now() - 60_000)
+    const future = new Date(Date.now() + 60_000)
+    const waitlisted = {
+      ...mockRegistration,
+      _id: 'reg-wait',
+      status: 'waitlist' as RegistrationStatus,
+    }
+
+    it.each([
+      ['unset', undefined],
+      ['before deadline', future],
+    ])('promotes from waitlist when deadline is %s', async (_, deadline) => {
+      mockRepository.findMany.mockResolvedValue([waitlisted])
+      mockRepository.getPhysicalAttendeesCount.mockResolvedValue(1)
+      mockRepository.update.mockResolvedValue({
+        ...waitlisted,
+        status: 'confirmed',
+      })
+
+      const result = await service.promoteNextFromWaitlist('test-event', {
+        maxCapacity: 2,
+        physicalRegistrationDeadline: deadline,
+      })
+
+      expect(result?.status).toBe('confirmed')
+      expect(mockRepository.update).toHaveBeenCalledWith('reg-wait', {
+        status: 'confirmed',
+      })
+    })
+
+    it('does not promote after deadline and leaves waitlist untouched', async () => {
+      mockRepository.findMany.mockResolvedValue([waitlisted])
+      mockRepository.getPhysicalAttendeesCount.mockResolvedValue(1)
+
+      const result = await service.promoteNextFromWaitlist('test-event', {
+        maxCapacity: 2,
+        physicalRegistrationDeadline: past,
+      })
+
+      expect(result).toBeNull()
+      expect(mockRepository.update).not.toHaveBeenCalled()
+    })
+
+    it('cancelling a physical spot after deadline only cancels', async () => {
+      mockRepository.findById.mockResolvedValue(mockRegistration)
+      mockRepository.findMany.mockResolvedValue([waitlisted])
+      mockRepository.update.mockResolvedValue({
+        ...mockRegistration,
+        status: 'cancelled',
+      })
+
+      await service.cancelRegistration('reg-123', {
+        physicalRegistrationDeadline: past,
+      })
+
+      expect(mockRepository.update).toHaveBeenCalledTimes(1)
+      expect(mockRepository.update).toHaveBeenCalledWith('reg-123', {
+        status: 'cancelled',
+      })
+    })
+
+    it('puts physical signup on waitlist after deadline', async () => {
+      mockRepository.findByEventAndUser.mockResolvedValue(null)
+      mockRepository.create.mockResolvedValue(mockRegistration)
+
+      await service.registerForEvent(validInput, {
+        physicalRegistrationDeadline: past,
+      })
+
+      expect(mockRepository.create).toHaveBeenCalledWith(validInput, 'waitlist')
+    })
+
+    it('admin can still confirm from waitlist after deadline', async () => {
+      mockRepository.findById.mockResolvedValue(waitlisted)
+      mockRepository.update.mockResolvedValue({
+        ...waitlisted,
+        status: 'confirmed',
+      })
+
+      const result = await service.confirmFromWaitlist('reg-wait')
+
+      expect(result.status).toBe('confirmed')
+    })
+
+    it.each([
+      ['unset', undefined],
+      ['before deadline', future],
+    ])('accepts physical signup when deadline is %s', async (_, deadline) => {
+      mockRepository.findByEventAndUser.mockResolvedValue(null)
+      mockRepository.create.mockResolvedValue(mockRegistration)
+
+      await service.registerForEvent(validInput, {
+        physicalRegistrationDeadline: deadline,
+      })
+
+      expect(mockRepository.create).toHaveBeenCalledWith(
+        validInput,
+        'confirmed'
+      )
+    })
+
+    it('switching digital to physical after deadline goes to waitlist', async () => {
+      mockRepository.findById.mockResolvedValue({
+        ...mockRegistration,
+        attendanceType: AttendanceType.Digital,
+      })
+      mockRepository.getPhysicalAttendeesCount.mockResolvedValue(0)
+      mockRepository.update.mockResolvedValue(mockRegistration)
+
+      await service.updateRegistration(
+        'reg-123',
+        { attendanceType: AttendanceType.Physical },
+        { maxCapacity: 10, physicalRegistrationDeadline: past }
+      )
+
+      expect(mockRepository.update).toHaveBeenCalledWith('reg-123', {
+        attendanceType: AttendanceType.Physical,
+        status: 'waitlist',
+      })
+    })
+
+    it('accepts digital signup after deadline', async () => {
+      mockRepository.findByEventAndUser.mockResolvedValue(null)
+      mockRepository.create.mockResolvedValue(mockRegistration)
+
+      await service.registerForEvent(
+        { ...validInput, attendanceType: AttendanceType.Digital },
+        { physicalRegistrationDeadline: past }
+      )
+
+      expect(mockRepository.create).toHaveBeenCalledWith(
+        expect.objectContaining({ attendanceType: AttendanceType.Digital }),
+        'confirmed'
+      )
     })
   })
 

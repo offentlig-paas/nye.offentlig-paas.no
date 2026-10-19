@@ -7,7 +7,10 @@ import type {
   EventRegistrationQuery,
   RegistrationStatus,
 } from './types'
-import { getAllEvents } from '@/lib/events/helpers'
+import {
+  getAllEvents,
+  isPhysicalRegistrationClosed,
+} from '@/lib/events/helpers'
 import { sendDirectMessage } from '@/lib/slack/messaging'
 
 interface OrphanedRegistrationGroup {
@@ -32,7 +35,7 @@ export class EventRegistrationService {
 
   async registerForEvent(
     input: CreateEventRegistrationInput,
-    event?: { maxCapacity?: number }
+    event?: { maxCapacity?: number; physicalRegistrationDeadline?: Date }
   ): Promise<EventRegistration> {
     const existingRegistration = input.slackUserId
       ? await this.repository.findByEventAndUser(
@@ -49,8 +52,13 @@ export class EventRegistrationService {
 
     let registrationStatus: RegistrationStatus = 'confirmed'
 
-    // Check capacity only for physical attendance when limit is defined
+    // After the physical deadline, physical signups always go to the waitlist
     if (
+      input.attendanceType === 'physical' &&
+      isPhysicalRegistrationClosed(event)
+    ) {
+      registrationStatus = 'waitlist'
+    } else if (
       input.attendanceType === 'physical' &&
       event?.maxCapacity !== undefined
     ) {
@@ -143,7 +151,12 @@ export class EventRegistrationService {
   async updateRegistration(
     id: string,
     input: UpdateEventRegistrationInput,
-    event?: { maxCapacity?: number; title?: string; end?: Date }
+    event?: {
+      maxCapacity?: number
+      title?: string
+      end?: Date
+      physicalRegistrationDeadline?: Date
+    }
   ): Promise<EventRegistration> {
     const existingRegistration = await this.repository.findById(id)
     if (!existingRegistration) {
@@ -159,7 +172,9 @@ export class EventRegistrationService {
       input.attendanceType === 'physical' &&
       existingRegistration.attendanceType !== 'physical'
     ) {
-      if (resolvedEvent?.maxCapacity !== undefined) {
+      if (isPhysicalRegistrationClosed(resolvedEvent)) {
+        updatePayload.status = 'waitlist'
+      } else if (resolvedEvent?.maxCapacity !== undefined) {
         const currentPhysicalCount =
           (await this.repository.getPhysicalAttendeesCount(
             existingRegistration.eventSlug
@@ -269,7 +284,12 @@ export class EventRegistrationService {
 
   async cancelRegistration(
     id: string,
-    event?: { maxCapacity?: number; title?: string; end?: Date }
+    event?: {
+      maxCapacity?: number
+      title?: string
+      end?: Date
+      physicalRegistrationDeadline?: Date
+    }
   ): Promise<EventRegistration> {
     const existing = await this.repository.findById(id)
     if (!existing) {
@@ -290,11 +310,20 @@ export class EventRegistrationService {
 
   async promoteNextFromWaitlist(
     eventSlug: string,
-    event?: { maxCapacity?: number; title?: string; end?: Date }
+    event?: {
+      maxCapacity?: number
+      title?: string
+      end?: Date
+      physicalRegistrationDeadline?: Date
+    }
   ): Promise<EventRegistration | null> {
     const resolvedEvent =
       event ?? getAllEvents().find(e => e.slug === eventSlug)
     if (resolvedEvent?.end && new Date() > resolvedEvent.end) {
+      return null
+    }
+    // After the physical deadline, freed spots stay empty and the waitlist stays as is
+    if (isPhysicalRegistrationClosed(resolvedEvent)) {
       return null
     }
 

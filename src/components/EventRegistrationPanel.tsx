@@ -3,7 +3,8 @@ import { EventRegistrationForm } from './EventRegistrationForm'
 import { EventParticipantInfo } from './EventParticipantInfo'
 import { EventCalendarDownload } from './EventCalendarDownload'
 import { VideoCameraIcon } from '@heroicons/react/20/solid'
-import type { Event } from '@/lib/events/types'
+import { AttendanceType, type Event } from '@/lib/events/types'
+import { isPhysicalRegistrationClosed } from '@/lib/events/helpers'
 
 interface EventRegistrationPanelProps {
   event: Event
@@ -27,8 +28,19 @@ export function EventRegistrationPanel({
   eventUrl,
   isAcceptingRegistrations,
 }: EventRegistrationPanelProps) {
+  const physicalClosed =
+    isAcceptingRegistrations &&
+    event.registration.attendanceTypes.includes(AttendanceType.Physical) &&
+    isPhysicalRegistrationClosed(event)
   return (
     <div className="space-y-4">
+      {physicalClosed && (
+        <p className="rounded-xl bg-amber-50 p-4 text-sm text-amber-800 ring-1 ring-amber-200 dark:bg-amber-950/30 dark:text-amber-200 dark:ring-amber-900/60">
+          Fysiske plasser er fordelt. Du kan stå på venteliste, men får bare
+          plass hvis arrangøren tildeler den.
+        </p>
+      )}
+
       {/* Main Registration Form */}
       <EventRegistrationForm
         eventSlug={eventSlug}
