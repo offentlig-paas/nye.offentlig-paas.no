@@ -88,8 +88,8 @@ export function LikertBar({ questions }: { questions: AggregatedQuestion[] }) {
                 {q.title}
               </h4>
               <p className="text-xs text-zinc-500 tabular-nums dark:text-zinc-400">
-                {avg !== null && <>Snitt {formatNb(avg)} · </>}
-                Alle: {q.responseCount} svar
+                {avg !== null && <>Gjennomsnitt {formatNb(avg)} · </>}
+                Antall svar: {q.responseCount}
               </p>
             </div>
             {q.description && (
@@ -101,7 +101,7 @@ export function LikertBar({ questions }: { questions: AggregatedQuestion[] }) {
             {suppressed && (
               <p className="text-xs text-zinc-500 dark:text-zinc-400">
                 {suppressed.count} svar er slått sammen fordi for få valgte
-                samme svar.
+                hvert av alternativene.
               </p>
             )}
             <details className="text-xs">
@@ -121,7 +121,7 @@ export function LikertBar({ questions }: { questions: AggregatedQuestion[] }) {
                       Antall
                     </th>
                     <th scope="col" className="py-1 text-right font-medium">
-                      Andel
+                      Andel av dem som svarte
                     </th>
                   </tr>
                 </thead>

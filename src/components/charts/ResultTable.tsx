@@ -8,7 +8,7 @@ export function ResultTable({ question }: { question: AggregatedQuestion }) {
   return (
     <table className="w-full text-sm">
       <caption className="mb-2 text-left text-xs text-zinc-500 dark:text-zinc-400">
-        Alle: {question.responseCount} svar
+        Antall svar: {question.responseCount}
       </caption>
       <thead>
         <tr className="border-b border-zinc-200 text-left text-xs text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
