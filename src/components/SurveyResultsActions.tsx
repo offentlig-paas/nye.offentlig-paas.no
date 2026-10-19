@@ -6,9 +6,11 @@ const linkClass =
 
 export function SurveyResultsActions({
   freeTextHref,
+  compareHref,
   csvLinks,
 }: {
   freeTextHref?: string
+  compareHref?: string
   csvLinks: { href: string; label: string }[]
 }) {
   return (
@@ -16,6 +18,11 @@ export function SurveyResultsActions({
       {freeTextHref && (
         <Link href={freeTextHref} className={linkClass}>
           Se fritekstsvarene
+        </Link>
+      )}
+      {compareHref && (
+        <Link href={compareHref} className={linkClass}>
+          Sammenlign bølger
         </Link>
       )}
       {csvLinks.map(l => (

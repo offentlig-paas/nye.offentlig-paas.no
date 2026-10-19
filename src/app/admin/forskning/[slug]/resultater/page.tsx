@@ -138,6 +138,9 @@ export default async function AdminSurveyResultsPage({
       )}
       <SurveyResultsActions
         freeTextHref={`/admin/forskning/${slug}/fritekst`}
+        compareHref={
+          survey.comparesTo ? `/admin/forskning/${slug}/sammenlign` : undefined
+        }
         csvLinks={[
           ...(isOwner
             ? [
