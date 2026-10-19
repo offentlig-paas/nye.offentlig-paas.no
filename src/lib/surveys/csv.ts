@@ -26,6 +26,8 @@ export function aggregatedToCsv(results: AggregatedSurveyResults): string {
   for (const section of results.sections) {
     for (const q of section.questions) {
       for (const o of q.options) {
+        // Suppressed options carry count 0; only the bucket row is real.
+        if (o.suppressed) continue
         rows.push([
           stripMarkdown(section.title),
           stripMarkdown(q.title),

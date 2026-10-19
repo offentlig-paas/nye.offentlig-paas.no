@@ -88,8 +88,9 @@ describe('aggregatedToCsv', () => {
     const csv = aggregatedToCsv(
       aggregateSurveyResults(survey, responses, { minBucketSize: 3 })
     )
-    expect(csv).toContain('"Stor","3"')
+    // Secondary suppression hides both options; only the bucket row remains.
+    expect(csv).not.toContain('Stor')
     expect(csv).not.toContain('Liten')
-    expect(csv).toContain('"Andre (for få svar)","1"')
+    expect(csv).toContain('"Andre (for få svar)","4"')
   })
 })
