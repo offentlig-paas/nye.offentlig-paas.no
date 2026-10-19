@@ -133,3 +133,5 @@ certificates
 .sanity/
 next-env.d.ts
 *.csv
+.vercel
+.env*
