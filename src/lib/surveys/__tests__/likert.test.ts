@@ -33,6 +33,23 @@ describe('likertAverage', () => {
       ])
     ).toBe(2.5)
   })
+  it('excludes non-scale options such as N/A from the average', () => {
+    expect(
+      likertAverage([
+        opt('a', 1),
+        opt('b', 1),
+        { ...opt('N/A', 10), scale: false as const },
+      ])
+    ).toBe(1.5)
+  })
+  it('returns null when a scale point is suppressed', () => {
+    expect(
+      likertAverage([
+        opt('a', 4),
+        { ...opt('b', 0), suppressed: true as const },
+      ])
+    ).toBeNull()
+  })
   it('returns null without answers', () => {
     expect(likertAverage([opt('a', 0)])).toBeNull()
   })

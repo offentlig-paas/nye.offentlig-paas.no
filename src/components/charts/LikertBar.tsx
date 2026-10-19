@@ -4,6 +4,7 @@ import {
   SUPPRESSED_VALUE,
   formatNb,
   likertAverage,
+  nonScaleOptions,
   scaleOptions,
 } from '@/lib/surveys/likert'
 
@@ -81,6 +82,7 @@ export function LikertBar({ questions }: { questions: AggregatedQuestion[] }) {
       {questions.map(q => {
         const avg = likertAverage(q.options)
         const suppressed = q.options.find(o => o.value === SUPPRESSED_VALUE)
+        const outside = nonScaleOptions(q.options)
         return (
           <div key={q.id} className="break-inside-avoid space-y-1.5">
             <div className="flex flex-wrap items-baseline justify-between gap-x-3">
@@ -98,6 +100,20 @@ export function LikertBar({ questions }: { questions: AggregatedQuestion[] }) {
               </p>
             )}
             <Bar question={q} />
+            {outside.length > 0 && (
+              <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-500 dark:text-zinc-400">
+                {outside.map(o => (
+                  <li key={o.value} className="flex items-center gap-1.5">
+                    <span
+                      aria-hidden="true"
+                      className={`inline-block h-3 w-3 rounded-sm ${NEUTRAL}`}
+                    />
+                    {stripMarkdown(o.label)}:{' '}
+                    {o.suppressed ? 'for få' : `${o.count} (${o.percentage} %)`}
+                  </li>
+                ))}
+              </ul>
+            )}
             {suppressed && (
               <p className="text-xs text-zinc-500 dark:text-zinc-400">
                 {suppressed.count} svar er slått sammen fordi for få valgte
@@ -134,8 +150,12 @@ export function LikertBar({ questions }: { questions: AggregatedQuestion[] }) {
                       >
                         {stripMarkdown(o.label)}
                       </th>
-                      <td className="py-0.5 pr-3 text-right">{o.count}</td>
-                      <td className="py-0.5 text-right">{o.percentage} %</td>
+                      <td className="py-0.5 pr-3 text-right">
+                        {o.suppressed ? 'for få' : o.count}
+                      </td>
+                      <td className="py-0.5 text-right">
+                        {o.suppressed ? '–' : `${o.percentage} %`}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

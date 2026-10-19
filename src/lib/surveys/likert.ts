@@ -2,14 +2,20 @@ import type { AggregatedOption, AggregatedQuestion } from './aggregation'
 
 export const SUPPRESSED_VALUE = '_suppressed'
 
-/** Scale options in order, without the k-anonymity bucket. */
+/** Scale options in order, without the k-anonymity bucket or N/A-style options. */
 export function scaleOptions(options: AggregatedOption[]) {
-  return options.filter(o => o.value !== SUPPRESSED_VALUE)
+  return options.filter(o => o.value !== SUPPRESSED_VALUE && o.scale !== false)
 }
 
-/** Mean on a 1..k scale, or null when nobody answered on the scale. */
+/** "Vet ikke"/N/A-style options shown outside the diverging bar. */
+export function nonScaleOptions(options: AggregatedOption[]) {
+  return options.filter(o => o.scale === false)
+}
+
+/** Mean on a 1..k scale, or null when nobody answered or a point is suppressed. */
 export function likertAverage(options: AggregatedOption[]): number | null {
   const scale = scaleOptions(options)
+  if (scale.some(o => o.suppressed)) return null
   const total = scale.reduce((s, o) => s + o.count, 0)
   if (total === 0) return null
   return scale.reduce((s, o, i) => s + (i + 1) * o.count, 0) / total

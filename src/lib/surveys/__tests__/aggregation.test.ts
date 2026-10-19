@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { aggregateSurveyResults } from '../aggregation'
+import { groupQuestions, likertAverage, scaleOptions } from '../likert'
 import type { SurveyDefinition } from '../types'
 import { SurveyStatus } from '../types'
 import type { SurveyResponse } from '@/domains/survey-response/types'
@@ -505,8 +506,14 @@ describe('aggregateSurveyResults', () => {
     })
     const opts = result.sections[0]!.questions[0]!.options
 
-    const visible = opts.filter(o => o.value !== '_suppressed')
+    const visible = opts.filter(o => o.value !== '_suppressed' && !o.suppressed)
     expect(visible).toHaveLength(2)
+    expect(opts.filter(o => o.suppressed).map(o => [o.value, o.count])).toEqual(
+      [
+        ['c', 0],
+        ['d', 0],
+      ]
+    )
     expect(visible.find(o => o.value === 'a')!.count).toBe(10)
     expect(visible.find(o => o.value === 'b')!.count).toBe(5)
 
@@ -546,5 +553,47 @@ describe('aggregateSurveyResults', () => {
     const opts = result.sections[0]!.questions[0]!.options
     expect(opts.find(o => o.value === '_suppressed')).toBeUndefined()
     expect(opts.find(o => o.value === 'a')!.count).toBe(1)
+  })
+
+  it('keeps a suppressed mid-scale point in place for diverging questions', () => {
+    const labels = ['1', '2', '3', '4', '5']
+    const question = (id: string) => ({
+      id,
+      type: 'radio' as const,
+      title: id,
+      required: true,
+      visualization: 'diverging' as const,
+      options: [
+        ...labels.map(l => ({ label: l, value: l })),
+        { label: 'Vet ikke', value: 'unknown', scale: false as const },
+      ],
+    })
+    const survey: SurveyDefinition = {
+      ...baseSurvey,
+      sections: [
+        { id: 's1', title: 'S', questions: [question('q1'), question('q2')] },
+      ],
+    }
+    const answer = (v: string) =>
+      makeResponse([
+        { questionId: 'q1', value: v },
+        { questionId: 'q2', value: v === '3' ? 'unknown' : v },
+      ])
+    const responses = [
+      ...['1', '2', '4', '5', 'unknown'].flatMap(v =>
+        Array.from({ length: 3 }, () => answer(v))
+      ),
+      answer('3'),
+    ]
+
+    const [q1, q2] = aggregateSurveyResults(survey, responses, {
+      minBucketSize: 3,
+    }).sections[0]!.questions
+    const scale = scaleOptions(q1!.options)
+    expect(scale.map(o => o.value)).toEqual(labels)
+    expect(scale[2]).toMatchObject({ count: 0, suppressed: true })
+    expect(likertAverage(q1!.options)).toBeNull()
+    expect(likertAverage(q2!.options)).toBe(3)
+    expect(groupQuestions([q1!, q2!])).toHaveLength(1)
   })
 })

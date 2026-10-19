@@ -738,6 +738,7 @@ export const aiAgents2026: SurveyDefinition = {
             {
               label: 'Ikke aktuelt — jeg bruker ikke KI-kodeverktøy',
               value: 'not-applicable',
+              scale: false,
             },
           ],
         },
@@ -768,10 +769,12 @@ export const aiAgents2026: SurveyDefinition = {
               label:
                 'Organisasjonen har ingen tydelig tilnærming, så det er vanskelig å si',
               value: 'no-approach',
+              scale: false,
             },
             {
               label: 'Vet ikke / har ingen mening',
               value: 'unknown',
+              scale: false,
             },
           ],
         },
