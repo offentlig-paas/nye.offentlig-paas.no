@@ -52,7 +52,7 @@ export default async function AdminSurveyComparePage({
                   <th className={th}>Svar</th>
                   <th className={th}>Forrige bølge (%)</th>
                   <th className={th}>Denne bølgen (%)</th>
-                  <th className={th}>Endring (pp)</th>
+                  <th className={th}>Endring (prosentpoeng)</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
@@ -67,7 +67,7 @@ export default async function AdminSurveyComparePage({
                 {q.average && (
                   <tr className="font-medium">
                     <td className="px-3 py-2">
-                      Snitt (1 = første svaralternativ)
+                      Gjennomsnitt (1 = første svaralternativ)
                     </td>
                     <td className={td}>{cell(q.average.previous)}</td>
                     <td className={td}>{cell(q.average.current)}</td>
