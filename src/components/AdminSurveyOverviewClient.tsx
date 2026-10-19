@@ -117,7 +117,7 @@ export function AdminSurveyOverviewClient({
         />
         <StatCard
           icon={BuildingOfficeIcon}
-          label="Medlemsorganisasjoner svart"
+          label="Medlemsorganisasjoner som har svart"
           value={`${overview.respondedMemberCount} / ${overview.memberCount}`}
           subtext={`${memberResponseRate} % av alle medlemsorganisasjoner`}
         />
