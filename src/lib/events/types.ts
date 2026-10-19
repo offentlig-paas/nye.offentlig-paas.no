@@ -42,6 +42,7 @@ export interface Event {
   participantInfo?: EventParticipantInfo
   slackChannel?: SlackChannel
   maxCapacity?: number // Maximum physical attendees allowed
+  physicalRegistrationDeadline?: Date // After this, physical signups close and the waitlist is no longer promoted
   bannerImage?: BannerImage
 }
 

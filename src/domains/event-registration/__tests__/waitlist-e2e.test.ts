@@ -5,7 +5,10 @@ import { AttendanceType } from '@/lib/events/types'
 import type { EventRegistration, CreateEventRegistrationInput } from '../types'
 
 vi.mock('../repository')
-vi.mock('@/lib/events/helpers', () => ({
+vi.mock('@/lib/events/helpers', async importOriginal => ({
+  isPhysicalRegistrationClosed: (
+    await importOriginal<typeof import('@/lib/events/helpers')>()
+  ).isPhysicalRegistrationClosed,
   getAllEvents: vi.fn(() => [{ slug: 'test-event', maxCapacity: 2 }]),
 }))
 

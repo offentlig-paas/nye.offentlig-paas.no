@@ -51,6 +51,16 @@ export function getStatus(event: Event) {
   return Status.Current
 }
 
+export function isPhysicalRegistrationClosed(
+  event?: { physicalRegistrationDeadline?: Date },
+  now: Date = new Date()
+) {
+  return (
+    !!event?.physicalRegistrationDeadline &&
+    now.getTime() >= event.physicalRegistrationDeadline.getTime()
+  )
+}
+
 export function isAcceptingRegistrations(event: Event) {
   if (getStatus(event) !== Status.Upcoming) {
     return false
