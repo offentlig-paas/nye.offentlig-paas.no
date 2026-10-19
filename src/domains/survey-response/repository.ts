@@ -77,17 +77,21 @@ export class SurveyResponseRepository {
 
   async countUniqueOrganizations(
     surveySlug: string,
-    orgQuestionId = 'q1-org'
+    orgQuestionId = 'q1-org',
+    pilot = false
   ): Promise<number> {
-    const query = `count(array::unique(*[_type == "surveyResponse" && surveySlug == $surveySlug && ${REAL}].answers[questionId == $orgQuestionId].value))`
+    const query = `count(array::unique(*[_type == "surveyResponse" && surveySlug == $surveySlug && ${pilotFilter(pilot)}].answers[questionId == $orgQuestionId].value))`
     return await sanityClient.fetch<number>(query, {
       surveySlug,
       orgQuestionId,
     })
   }
 
-  async findBySurvey(surveySlug: string): Promise<SurveyResponse[]> {
-    const query = `*[_type == "surveyResponse" && surveySlug == $surveySlug && ${REAL}] | order(submittedAt desc)`
+  async findBySurvey(
+    surveySlug: string,
+    pilot = false
+  ): Promise<SurveyResponse[]> {
+    const query = `*[_type == "surveyResponse" && surveySlug == $surveySlug && ${pilotFilter(pilot)}] | order(submittedAt desc)`
     return await sanityClient.fetch<SurveyResponse[]>(query, { surveySlug })
   }
 

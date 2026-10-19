@@ -366,8 +366,8 @@ export const adminSurveyRouter = router({
     }),
 
   exportCsv: adminSurveyProcedure
-    .input(z.object({ slug: z.string() }))
-    .query(async ({ ctx }) => {
+    .input(z.object({ slug: z.string(), pilot: z.boolean().optional() }))
+    .query(async ({ ctx, input }) => {
       if (ctx.surveyRole !== 'owner') {
         throw new TRPCError({
           code: 'FORBIDDEN',
@@ -377,7 +377,7 @@ export const adminSurveyRouter = router({
 
       const { survey } = ctx
       const orgQid = getOrgQuestionId(survey)
-      const responses = await repository.findBySurvey(survey.slug)
+      const responses = await repository.findBySurvey(survey.slug, input.pilot)
 
       const columns = getExportColumns(survey)
 
@@ -414,17 +414,20 @@ export const adminSurveyRouter = router({
 
       return {
         csv: toCsv([headers, ...rows]),
-        filename: `${survey.slug}-responses.csv`,
+        filename: `${survey.slug}-${input.pilot ? 'pilot-' : ''}responses.csv`,
       }
     }),
 
   exportAggregatedCsv: adminSurveyProcedure
-    .input(z.object({ slug: z.string() }))
-    .query(async ({ ctx }) => {
-      const responses = await repository.findBySurvey(ctx.survey.slug)
+    .input(z.object({ slug: z.string(), pilot: z.boolean().optional() }))
+    .query(async ({ ctx, input }) => {
+      const responses = await repository.findBySurvey(
+        ctx.survey.slug,
+        input.pilot
+      )
       return {
         csv: aggregatedToCsv(aggregateSurveyResults(ctx.survey, responses)),
-        filename: `${ctx.survey.slug}-aggregert.csv`,
+        filename: `${ctx.survey.slug}-${input.pilot ? 'pilot-' : ''}aggregert.csv`,
       }
     }),
 

@@ -9,13 +9,15 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params
-  const type = new URL(request.url).searchParams.get('type')
+  const query = new URL(request.url).searchParams
+  const type = query.get('type')
+  const input = { slug, pilot: query.get('pilot') === '1' }
   const surveys = (await createCaller()).admin.surveys
   try {
     const { csv, filename } =
       type === 'raw'
-        ? await surveys.exportCsv({ slug })
-        : await surveys.exportAggregatedCsv({ slug })
+        ? await surveys.exportCsv(input)
+        : await surveys.exportAggregatedCsv(input)
     return csvResponse(csv, filename)
   } catch (error) {
     if (error instanceof TRPCError) {
