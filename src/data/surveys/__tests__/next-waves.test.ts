@@ -68,15 +68,26 @@ describe('AI Agents Wave 2 routing', () => {
     ).toBe(31)
   })
 
-  it('has three columns in the Q26b matrix', () => {
+  it('has four columns in the Q26b matrix', () => {
     const q = aiAgents2027.sections
       .flatMap(s => s.questions)
       .find(q => q.id === 'q26b-system-access')
     expect(q?.type === 'matrix' && q.options.map(o => o.value)).toEqual([
+      'none',
       'read',
       'read-write',
       'unknown',
     ])
+  })
+
+  it('shows the contact page only after yes to the interview', () => {
+    const sections = (interview: string) =>
+      getVisibleSectionIds(
+        aiAgents2027.sections,
+        map([['q24-interview', interview]])
+      )
+    expect(sections('yes')).toContain('contact')
+    expect(sections('no')).not.toContain('contact')
   })
 
   it('ends the survey when there are no developers', () => {
