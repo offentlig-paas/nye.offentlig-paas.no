@@ -47,11 +47,19 @@ export function RadioGroup({
           {question.title}
           {question.required && <span className="sr-only"> (påkrevd)</span>}
         </legend>
-        <div className="mt-1 flex flex-wrap gap-2">
+        {/* One row of equal columns from sm and up; labels wrap inside. */}
+        <div
+          className="mt-1 grid gap-2 sm:grid-cols-(--inline-cols)"
+          style={
+            {
+              '--inline-cols': `repeat(${options.length}, minmax(0, 1fr))`,
+            } as React.CSSProperties
+          }
+        >
           {options.map(option => (
             <label
               key={option.value}
-              className="cursor-pointer rounded-md px-3 py-1.5 text-sm text-zinc-700 ring-1 ring-zinc-300 has-checked:bg-teal-600 has-checked:text-white has-checked:ring-teal-600 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-teal-500 dark:text-zinc-300 dark:ring-white/10 dark:has-checked:bg-teal-500"
+              className="flex cursor-pointer items-center rounded-md px-3 py-1.5 text-sm text-zinc-700 ring-1 ring-zinc-300 has-checked:bg-teal-600 has-checked:text-white has-checked:ring-teal-600 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-teal-500 dark:text-zinc-300 dark:ring-white/10 dark:has-checked:bg-teal-500"
             >
               <input
                 type="radio"
