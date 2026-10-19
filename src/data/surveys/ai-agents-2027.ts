@@ -1011,7 +1011,7 @@ export const aiAgents2027: SurveyDefinition = {
           required: true,
           options: [
             { label: 'Ja', value: 'yes' },
-            { label: 'Nei', value: 'no' },
+            { label: 'Nei', value: 'no', skipToSection: 'end' },
           ],
         },
       ],

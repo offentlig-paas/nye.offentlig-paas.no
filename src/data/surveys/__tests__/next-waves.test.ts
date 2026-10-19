@@ -80,6 +80,16 @@ describe('AI Agents Wave 2 routing', () => {
     ])
   })
 
+  it('shows the contact page only after yes to the interview', () => {
+    const sections = (interview: string) =>
+      getVisibleSectionIds(
+        aiAgents2027.sections,
+        map([['q24-interview', interview]])
+      )
+    expect(sections('yes')).toContain('contact')
+    expect(sections('no')).not.toContain('contact')
+  })
+
   it('ends the survey when there are no developers', () => {
     const ids = getVisibleSectionIds(
       aiAgents2027.sections,
