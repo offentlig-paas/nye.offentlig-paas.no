@@ -74,9 +74,9 @@ const usesAgents: QuestionCondition[] = [
 
 export const aiAgents2027: SurveyDefinition = {
   slug: 'ai-agents-2027',
-  version: 2,
+  version: 3,
   title: 'KI-kodeverktøy og kodeagenter i norsk offentlig sektor, runde 2',
-  estimatedMinutes: '10–15',
+  estimatedMinutes: '10',
   owners: [
     {
       name: 'Hans Kristian Flaatten',
@@ -100,7 +100,7 @@ export const aiAgents2027: SurveyDefinition = {
     checkboxLabel:
       'Jeg har lest informasjonen over og samtykker til at svarene mine brukes som beskrevet.',
     fullText: [
-      '**Om undersøkelsen**\nOffentlig PAAS gjennomfører denne undersøkelsen for å kartlegge hvordan KI-kodeverktøy og kodeagenter brukes, styres og oppleves i norsk offentlig sektor. Dette er runde 2. Første runde ble gjennomført våren 2026 med 115 deltakere fra 57 virksomheter. Undersøkelsen tar 10–15 minutter.',
+      '**Om undersøkelsen**\nOffentlig PAAS gjennomfører denne undersøkelsen for å kartlegge hvordan KI-kodeverktøy og kodeagenter brukes, styres og oppleves i norsk offentlig sektor. Dette er runde 2. Første runde ble gjennomført våren 2026 med 115 deltakere fra 57 virksomheter. Undersøkelsen tar rundt 10 minutter.',
       'Du kan delta enten du deltok i første runde eller ikke, og enten du bruker KI-kodeverktøy eller ikke. Svar fra deg som ikke bruker slike verktøy er like viktige.',
       '**Begreper**\n- **KI-kodeverktøy:** Verktøy som bruker språkmodeller til å hjelpe med programmering, feilsøking, testing eller dokumentasjon (f.eks. GitHub Copilot, Claude Code, Cursor, ChatGPT eller Claude i nettleseren, interne KI-assistenter).\n- **Kodeagent:** Verktøy som planlegger og utfører oppgaver i flere steg selv, for eksempel leser og endrer flere filer, kjører kommandoer og tester, og retter egne feil (f.eks. Claude Code, Copilot Agent Mode, Cursor Agent, Codex, OpenCode).',
       '**Hvem er ansvarlig?**\nBehandlingsansvarlig er foreningen Offentlig PAAS. Kontaktperson er styreleder, kontakt@offentlig-paas.no.',
@@ -284,44 +284,10 @@ export const aiAgents2027: SurveyDefinition = {
           layout: 'inline',
           options: confidence,
         },
-        {
-          id: 'q7-introduction-path',
-          type: 'radio',
-          title:
-            'Hva var den viktigste måten KI-kodeverktøy ble innført i organisasjonen din?',
-          required: true,
-          options: [
-            {
-              label: 'Sentral anskaffelse eller IT-avdeling bestemte',
-              value: 'central',
-            },
-            { label: 'Team eller avdeling valgte selv', value: 'team' },
-            {
-              label:
-                'Enkeltpersoner begynte å bruke verktøy, og det ble etter hvert akseptert',
-              value: 'bottom-up',
-            },
-            {
-              label:
-                'Verktøyet fulgte med en eksisterende avtale (f.eks. Microsoft/GitHub-avtale)',
-              value: 'bundled',
-            },
-            {
-              label: 'Ikke aktuelt — vi bruker ikke KI-kodeverktøy',
-              value: 'not-applicable',
-            },
-            { label: 'Vet ikke', value: 'unknown' },
-            {
-              label: 'Annet (spesifiser)',
-              value: 'other',
-              allowOtherText: true,
-            },
-          ],
-        },
       ],
     },
     {
-      id: 'personal-screening',
+      id: 'personal-usage',
       title: 'Personlig bruk og agentiske arbeidsflyter',
       description:
         'Nå spør vi om din egen bruk av KI-kodeverktøy — uavhengig av hva organisasjonen offisielt tilbyr.',
@@ -378,12 +344,6 @@ export const aiAgents2027: SurveyDefinition = {
             },
           ],
         },
-      ],
-    },
-    {
-      id: 'personal-usage',
-      title: 'Din bruk av KI-kodeverktøy',
-      questions: [
         {
           id: 'q9-personal-tools',
           type: 'checkbox',
@@ -399,7 +359,6 @@ export const aiAgents2027: SurveyDefinition = {
           title: 'Hvilke måter bruker du KI-kodeverktøy på?',
           required: true,
           showIf: usesTools,
-          randomizeOptions: true,
           options: [
             {
               label:
@@ -464,35 +423,6 @@ export const aiAgents2027: SurveyDefinition = {
           ],
         },
         {
-          id: 'q10c-agent-workstyle',
-          type: 'radio',
-          title:
-            'Hvordan jobber du vanligvis sammen med kodeagenten i produksjonskode?',
-          required: true,
-          showIf: [
-            {
-              questionId: 'q10b-agent-production',
-              anyOf: ['occasional-prod', 'regular-prod'],
-            },
-          ],
-          options: [
-            {
-              label:
-                'Jeg styrer steg for steg og skriver eller retter kode underveis',
-              value: 'steered',
-            },
-            {
-              label:
-                'Agenten skriver det meste ut fra en beskrivelse fra meg, og jeg gjennomgår resultatet',
-              value: 'delegated',
-            },
-            {
-              label: 'Det varierer mye fra oppgave til oppgave',
-              value: 'varies',
-            },
-          ],
-        },
-        {
           id: 'q11-integrations',
           type: 'checkbox',
           title: 'Har du koblet KI-kodeverktøyet ditt til andre systemer?',
@@ -553,42 +483,6 @@ export const aiAgents2027: SurveyDefinition = {
             { label: 'Sjelden eller aldri', value: 'rarely' },
           ],
         },
-        {
-          id: 'q13-benefit',
-          type: 'radio',
-          title:
-            'Hva er den viktigste fordelen du opplever med KI-kodeverktøy?',
-          required: true,
-          showIf: usesTools,
-          options: [
-            {
-              label: 'Økt hastighet — jeg skriver kode raskere',
-              value: 'speed',
-            },
-            {
-              label: 'Bedre kvalitet — KI hjelper meg å skrive bedre kode',
-              value: 'quality',
-            },
-            {
-              label: 'Læring — jeg lærer nye teknikker og mønstre',
-              value: 'learning',
-            },
-            {
-              label:
-                'Redusert kjedelig arbeid — KI tar seg av repetitive oppgaver',
-              value: 'reduced-toil',
-            },
-            {
-              label: 'Jeg opplever ikke vesentlige fordeler',
-              value: 'no-benefit',
-            },
-            {
-              label: 'Annet (spesifiser)',
-              value: 'other',
-              allowOtherText: true,
-            },
-          ],
-        },
       ],
     },
     {
@@ -642,43 +536,6 @@ export const aiAgents2027: SurveyDefinition = {
               value: 'structured',
             },
             { label: 'Vet ikke', value: 'unknown' },
-          ],
-        },
-        {
-          id: 'q15b-support-forms',
-          type: 'checkbox',
-          title:
-            'Hvilke former for støtte og organisering rundt KI-kodeverktøy finnes i organisasjonen din?',
-          description: 'Velg alle som passer.',
-          required: false,
-          options: [
-            {
-              label: 'Eget KI-team eller kompetansesenter for KI',
-              value: 'ai-team',
-            },
-            {
-              label: 'Champions-nettverk eller faste ressurspersoner',
-              value: 'champions',
-            },
-            { label: 'Organisert opplæring eller kurs', value: 'training' },
-            {
-              label: 'Delte retningslinjer, wiki eller beste praksis',
-              value: 'shared-resources',
-            },
-            {
-              label: 'Uformell kunnskapsdeling mellom utviklere',
-              value: 'informal',
-            },
-            {
-              label: 'Plattformteamet tilbyr KI-verktøy og oppsett',
-              value: 'platform-team',
-            },
-            {
-              label: 'Faste fagmøter eller erfaringsdeling',
-              value: 'communities',
-            },
-            { label: 'Ingen av disse', value: 'none', exclusive: true },
-            { label: 'Vet ikke', value: 'unknown', exclusive: true },
           ],
         },
         {
@@ -808,7 +665,6 @@ export const aiAgents2027: SurveyDefinition = {
           description: 'Velg de tre viktigste.',
           required: true,
           maxSelections: 3,
-          randomizeOptions: true,
           options: [
             {
               label: 'Sikkerhetssårbarheter i KI-generert kode',
@@ -849,9 +705,12 @@ export const aiAgents2027: SurveyDefinition = {
               label: 'Jeg har ingen vesentlige bekymringer',
               value: 'no-concerns',
               exclusive: true,
-              pinPosition: 'last',
             },
-            otherTool,
+            {
+              label: 'Andre (spesifiser)',
+              value: 'other',
+              allowOtherText: true,
+            },
           ],
         },
       ],
@@ -867,31 +726,33 @@ export const aiAgents2027: SurveyDefinition = {
             'Du valgte tap av kompetanse eller ferdigheter som en bekymring. Hva bekymrer deg mest? (Velg opptil 2)',
           required: true,
           maxSelections: 2,
+          description:
+            '*Tap av oversikt:* vi tar i bruk kode som virker, men som ingen i teamet forstår godt. *Juniorer lærer ikke håndverket:* nyutdannede og juniorutviklere får for lite trening i programmering og problemløsning. *Svekket feilsøkingsevne:* det blir vanskeligere å feilsøke selv når komplekse feil oppstår, eller når KI-verktøyet ikke hjelper. *Overfladisk kodegjennomgang:* store mengder KI-generert kode gjør at kode godkjennes uten at detaljene er forstått. *Arkitekturglidning:* KI-agenter løser enkeltoppgaver uten å ta hensyn til helhetlig arkitektur og gjenbruk.',
           showIf: [{ questionId: 'q20-concerns', anyOf: ['skill-loss'] }],
           options: [
             {
               label:
-                'Tap av oversikt over egen kodebase: Vi tar i bruk kode som virker, men som ingen i teamet forstår godt',
+                '**Tap av oversikt:** Ingen i teamet forstår koden vi tar i bruk godt nok',
               value: 'comprehension-debt',
             },
             {
               label:
-                'Juniorer lærer ikke håndverket: Nyutdannede og juniorutviklere får for lite trening i programmering og problemløsning',
+                '**Juniorer lærer ikke håndverket:** De får for lite trening i å programmere selv',
               value: 'junior-learning',
             },
             {
               label:
-                'Svekket feilsøkingsevne: Når komplekse feil oppstår, eller KI-verktøyet ikke hjelper, er det vanskeligere å feilsøke selv',
+                '**Svekket feilsøkingsevne:** Det blir vanskeligere å feilsøke på egen hånd',
               value: 'debugging-atrophy',
             },
             {
               label:
-                'Overfladisk kodegjennomgang: Store mengder KI-generert kode gjør at kode godkjennes uten at detaljene er forstått',
+                '**Overfladisk kodegjennomgang:** Kode godkjennes uten at detaljene er forstått',
               value: 'review-fatigue',
             },
             {
               label:
-                'Arkitekturglidning: KI-agenter løser enkeltoppgaver isolert uten å ta hensyn til helhetlig arkitektur og gjenbruk',
+                '**Arkitekturglidning:** Agentene løser oppgaver isolert, uten blikk for helheten',
               value: 'architecture-drift',
             },
             {
@@ -900,57 +761,6 @@ export const aiAgents2027: SurveyDefinition = {
               exclusive: true,
             },
             { label: 'Vet ikke', value: 'unknown', exclusive: true },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'concerns-public-sector',
-      title: 'Bekymringer og barrierer',
-      questions: [
-        {
-          id: 'q21-public-sector',
-          type: 'checkbox',
-          title:
-            'Hvilke hensyn mener du er spesielt viktige ved bruk av KI-kodeverktøy i offentlig sektor, sammenlignet med privat sektor? (Velg opptil 2)',
-          required: false,
-          maxSelections: 2,
-          options: [
-            {
-              label:
-                'Innbyggernes tillit til at offentlige IT-systemer er sikre, korrekte og etterprøvbare',
-              value: 'citizen-trust',
-            },
-            {
-              label:
-                'Digital suverenitet og uavhengighet av store utenlandske teknologiselskaper',
-              value: 'sovereignty',
-            },
-            {
-              label:
-                'Skjermingsverdig informasjon (sikkerhetsloven) og personopplysninger',
-              value: 'classified-data',
-            },
-            {
-              label:
-                'Regler for offentlige anskaffelser, åpenhet og likebehandling av leverandører',
-              value: 'procurement-law',
-            },
-            {
-              label:
-                'Å beholde teknisk kjernekompetanse i egen virksomhet (mindre avhengighet av konsulenter og leverandører)',
-              value: 'internal-competence',
-            },
-            {
-              label: 'Ingen vesentlig forskjell fra privat sektor',
-              value: 'no-difference',
-              exclusive: true,
-            },
-            {
-              label: 'Annet (spesifiser)',
-              value: 'other',
-              allowOtherText: true,
-            },
           ],
         },
         {
@@ -1024,6 +834,8 @@ export const aiAgents2027: SurveyDefinition = {
           type: 'checkbox',
           title:
             'Hva gjør plattformteamet (eller tilsvarende sentralt teknisk miljø) i organisasjonen din for KI-kodeverktøy og KI-agenter som du som utvikler kan bruke?',
+          description:
+            'Velg alle som passer. Eksempler: *Ingen rolle:* IT-avdeling, sikkerhet, anskaffelse eller det enkelte team håndterer dette. *Tilgang:* anskaffelse, lisenser eller SSO/IAM. *Felles oppsett for agenter:* `AGENTS.md`, Copilot-instrukser eller ferdige oppsett tilpasset plattformen. *Kontekst fra plattformen:* MCP-servere, CLI-verktøy eller API-er. *Sjekker i CI/CD:* sikkerhetsskanning eller policysjekker.',
           required: false,
           requiredIf: usesTools,
           options: [
@@ -1035,33 +847,33 @@ export const aiAgents2027: SurveyDefinition = {
             },
             {
               label:
-                'Ingen rolle — dette håndteres av andre (f.eks. IT-avdeling, sikkerhet, anskaffelse eller det enkelte team)',
+                '**Ingen rolle:** Andre enn plattformteamet håndterer dette',
               value: 'no-role',
               exclusive: true,
             },
             {
               label:
-                'Står for anskaffelse, lisenser eller tilgangsstyring (SSO/IAM) for KI-kodeverktøyene jeg bruker',
+                '**Tilgang:** Skaffer lisenser og styrer tilgang til KI-kodeverktøyene jeg bruker',
               value: 'provisioning',
             },
             {
               label:
-                'Drifter en intern KI-gateway eller egne modeller som jeg kan koble kodeverktøyet mitt til',
+                '**Intern KI-gateway:** Drifter en gateway eller egne modeller som jeg kan koble verktøyet mitt til',
               value: 'llm-gateway-dev',
             },
             {
               label:
-                'Lager felles regler, instrukser eller maler for KI-agenter (f.eks. AGENTS.md, Copilot-instrukser, ferdige oppsett tilpasset plattformen)',
+                '**Felles oppsett for agenter:** Lager regler, instrukser eller maler for KI-agenter',
               value: 'golden-paths',
             },
             {
               label:
-                'Tilbyr MCP-servere, CLI-verktøy eller API-er som lar agenten min hente kontekst fra plattformen',
+                '**Kontekst fra plattformen:** Tilbyr verktøy som lar agenten min hente informasjon fra plattformen',
               value: 'mcp-context',
             },
             {
               label:
-                'Har automatiske sjekker i CI/CD som også gjelder kode skrevet med KI (f.eks. sikkerhetsskanning, policysjekker)',
+                '**Sjekker i CI/CD:** Automatiske sjekker som også gjelder kode skrevet med KI',
               value: 'ci-guardrails',
             },
             { label: 'Vet ikke', value: 'unknown', exclusive: true },
@@ -1071,7 +883,7 @@ export const aiAgents2027: SurveyDefinition = {
           id: 'q26-autonomy',
           type: 'radio',
           title:
-            'Hva er det meste en kodeagent får gjøre i teamet ditt i praksis i dag, uten at et menneske godkjenner hvert steg?',
+            'Hva er det meste kodeagenten du bruker får gjøre i praksis i dag, uten at et menneske godkjenner hvert steg?',
           description:
             'Svar ut fra hva som faktisk skjer, ikke hva retningslinjene sier. Velg det høyeste nivået.',
           required: true,
@@ -1108,11 +920,23 @@ export const aiAgents2027: SurveyDefinition = {
         {
           id: 'q26b-system-access',
           type: 'matrix',
-          title: 'Hvilken tilgang får kodeagenter i teamet ditt i praksis?',
+          title:
+            'Hva får kodeagenten du bruker gjøre i systemene du har koblet den til?',
           description:
-            'Svar ut fra hva agentene faktisk kan gjøre i dag, ikke hva retningslinjene sier. «Bare indirekte» betyr at agenten ser data som en person eller et skript gir den, uten egen tilgang til systemet. Velg ett svar per rad.',
+            'Svar ut fra hva agenten faktisk kan gjøre i dag, ikke hva retningslinjene sier. «Lese og endre» betyr at agenten kan gjøre endringer selv, for eksempel pushe kode, starte bygg eller sende meldinger. Velg ett svar per rad.',
           required: true,
           showIf: usesAgents,
+          rowsFrom: {
+            questionId: 'q11-integrations',
+            map: {
+              scm: ['scm'],
+              'project-mgmt': ['project-mgmt'],
+              cicd: ['cicd'],
+              infra: ['infra'],
+              monitoring: ['logs-test', 'logs-prod'],
+              communication: ['chat'],
+            },
+          },
           rows: [
             { value: 'scm', label: 'Kode (f.eks. GitHub, GitLab)' },
             { value: 'project-mgmt', label: 'Oppgaver (f.eks. Jira)' },
@@ -1126,27 +950,11 @@ export const aiAgents2027: SurveyDefinition = {
               value: 'logs-prod',
               label: 'Logger og metrikker fra produksjon',
             },
-            { value: 'email', label: 'E-post' },
             { value: 'chat', label: 'Chat (f.eks. Slack, Teams)' },
-            {
-              value: 'docs',
-              label: 'Dokumenter og wiki (f.eks. Confluence)',
-            },
-            { value: 'db', label: 'Databaser' },
           ],
           options: [
-            { label: 'Ingen', value: 'none' },
-            {
-              label: 'Bare indirekte (data limes inn eller hentes via skript)',
-              value: 'indirect',
-            },
             { label: 'Lese', value: 'read' },
-            {
-              label:
-                'Lese og endre (f.eks. pushe kode, starte bygg, sende melding)',
-              value: 'read-write',
-            },
-            { label: 'Bruker ikke systemet', value: 'not-used' },
+            { label: 'Lese og endre', value: 'read-write' },
             { label: 'Vet ikke', value: 'unknown' },
           ],
         },
@@ -1155,32 +963,34 @@ export const aiAgents2027: SurveyDefinition = {
           type: 'checkbox',
           title:
             'Hvordan har din egen bruk av KI-kodeverktøy endret seg de siste 12 månedene? (Velg alle som passer)',
+          description:
+            '*Mer strukturert* kan for eksempel være faste instruksfiler, tydeligere grenser eller grundigere gjennomgang. *Trappet ned* gjelder for eksempel etter problemer med kvalitet, sikkerhet eller vedlikehold.',
           required: true,
           showIf: usesTools,
           options: [
             {
               label:
-                'Jeg har gått fra chat og autofullføring til å bruke kodeagenter på større oppgaver',
+                '**Over til agenter:** Jeg bruker kodeagenter på større oppgaver i stedet for chat og autofullføring',
               value: 'shifted-to-agents',
             },
             {
               label:
-                'Jeg bruker verktøyene mer strukturert (f.eks. faste instruksfiler, tydeligere grenser, grundigere gjennomgang)',
+                '**Mer strukturert:** Jeg bruker verktøyene på en mer planlagt og kontrollert måte',
               value: 'more-structured',
             },
             {
               label:
-                'Jeg har trappet ned eller blitt mer forsiktig etter problemer med kvalitet, sikkerhet eller vedlikehold',
+                '**Trappet ned:** Jeg bruker verktøyene mindre eller mer forsiktig etter problemer',
               value: 'scaled-back',
             },
             {
-              label: 'Bruken min er stort sett uendret',
+              label: '**Uendret:** Bruken min er stort sett som før',
               value: 'unchanged',
               exclusive: true,
             },
             {
               label:
-                'Jeg begynte å bruke KI-kodeverktøy i løpet av de siste 12 månedene',
+                '**Ny bruker:** Jeg begynte å bruke KI-kodeverktøy i løpet av de siste 12 månedene',
               value: 'just-started',
             },
             { label: 'Vet ikke', value: 'unknown', exclusive: true },
