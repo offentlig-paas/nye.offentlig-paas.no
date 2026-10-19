@@ -76,7 +76,11 @@ export const adminSurveyRouter = router({
       surveys.map(async (survey: SurveyDefinition) => {
         const orgQid = getOrgQuestionId(survey)
         const [responseCount, orgCount] = await Promise.all([
-          repository.countBySurvey(survey.slug),
+          // Pilot surveys have no real answers yet; count the pilot ones.
+          repository.countBySurvey(
+            survey.slug,
+            survey.status === SurveyStatus.Pilot
+          ),
           repository.countUniqueOrganizations(survey.slug, orgQid),
         ])
         return {
