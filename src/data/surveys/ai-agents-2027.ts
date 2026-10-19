@@ -74,7 +74,7 @@ const usesAgents: QuestionCondition[] = [
 
 export const aiAgents2027: SurveyDefinition = {
   slug: 'ai-agents-2027',
-  version: 3,
+  version: 4,
   title: 'KI-kodeverktøy og kodeagenter i norsk offentlig sektor, runde 2',
   estimatedMinutes: '10',
   owners: [
@@ -923,7 +923,7 @@ export const aiAgents2027: SurveyDefinition = {
           title:
             'Hva får kodeagenten du bruker gjøre i systemene du har koblet den til?',
           description:
-            'Svar ut fra hva agenten faktisk kan gjøre i dag, ikke hva retningslinjene sier. «Lese og endre» betyr at agenten kan gjøre endringer selv, for eksempel pushe kode, starte bygg eller sende meldinger. Velg ett svar per rad.',
+            'Svar ut fra hva agenten faktisk kan gjøre i dag, ikke hva retningslinjene sier. «Lese og endre» betyr at agenten kan gjøre endringer selv, for eksempel pushe kode, starte bygg eller sende meldinger. Velg «Ingen tilgang» hvis agenten ikke får bruke systemet. Velg ett svar per rad.',
           required: true,
           showIf: usesAgents,
           rowsFrom: {
@@ -953,6 +953,7 @@ export const aiAgents2027: SurveyDefinition = {
             { value: 'chat', label: 'Chat (f.eks. Slack, Teams)' },
           ],
           options: [
+            { label: 'Ingen tilgang', value: 'none' },
             { label: 'Lese', value: 'read' },
             { label: 'Lese og endre', value: 'read-write' },
             { label: 'Vet ikke', value: 'unknown' },

@@ -68,11 +68,12 @@ describe('AI Agents Wave 2 routing', () => {
     ).toBe(31)
   })
 
-  it('has three columns in the Q26b matrix', () => {
+  it('has four columns in the Q26b matrix', () => {
     const q = aiAgents2027.sections
       .flatMap(s => s.questions)
       .find(q => q.id === 'q26b-system-access')
     expect(q?.type === 'matrix' && q.options.map(o => o.value)).toEqual([
+      'none',
       'read',
       'read-write',
       'unknown',
