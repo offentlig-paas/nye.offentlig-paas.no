@@ -14,6 +14,7 @@ import {
   type AggregatedSurveyResults,
 } from '../src/lib/surveys/aggregation'
 import type { FrozenAggregates } from '../src/lib/surveys/frozen'
+import { likertAverage } from '../src/lib/surveys/likert'
 import type { SurveyAnswer, SurveyDefinition } from '../src/lib/surveys/types'
 import { getVisibleQuestionIds } from '../src/lib/surveys/helpers'
 
@@ -55,6 +56,15 @@ function splitChoices(answer: string, values: string[]): string[] {
     i += opt ? opt.split(', ').length : 1
   }
   return [...found]
+}
+
+/** Distinct non-empty values in the «Organisasjon» column, case-insensitive. */
+function countOrganizations(header: string[], data: string[][]): number {
+  const col = header.indexOf('Organisasjon')
+  if (col < 0) return 0
+  return new Set(
+    data.map(r => (r[col] ?? '').trim().toLowerCase()).filter(Boolean)
+  ).size
 }
 
 export function aggregateCsv(
@@ -121,13 +131,16 @@ export function aggregateCsv(
         percentage: n > 0 ? Math.round((count / n) * 100) : 0,
       }
     })
+    const diverging = q.visualization === 'diverging'
+    const average = diverging ? likertAverage(options) : null
     out.push({
       id: prevId,
       title: q.title,
       type: q.type,
-      visualization: q.visualization === 'diverging' ? 'diverging' : 'bar',
+      visualization: diverging ? 'diverging' : 'bar',
       responseCount: n,
       options: suppressSmallBuckets(options, n, minBucket),
+      ...(average !== null && { average }),
     })
   }
 
@@ -136,6 +149,7 @@ export function aggregateCsv(
     title: meta.title,
     frozenAt: new Date().toISOString().slice(0, 10),
     totalResponses: data.length,
+    uniqueOrganizations: countOrganizations(header!, data),
     sections: [{ id: 'core', title: 'Kjernespørsmål', questions: out }],
   }
 }

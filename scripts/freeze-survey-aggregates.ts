@@ -15,6 +15,7 @@ import { join } from 'node:path'
 import { getSurvey } from '@/lib/surveys/helpers'
 import { aggregateSurveyResults } from '@/lib/surveys/aggregation'
 import type { FrozenAggregates } from '@/lib/surveys/frozen'
+import { likertAverage } from '@/lib/surveys/likert'
 import { SurveyResponseRepository } from '@/domains/survey-response/repository'
 
 const slug = process.argv[2]
@@ -34,11 +35,24 @@ const typeahead = survey.sections
   .filter(q => q.type === 'typeahead')
   .map(q => q.id)
 
+const excludeQuestionIds = new Set([orgQid, ...typeahead])
+const results = aggregateSurveyResults(survey, responses, {
+  excludeQuestionIds,
+  minBucketSize: 3,
+})
+// Store the Likert mean from unsuppressed counts so comparisons keep it.
+const raw = aggregateSurveyResults(survey, responses, { excludeQuestionIds })
+const rawById = new Map(
+  raw.sections.flatMap(s => s.questions).map(q => [q.id, q])
+)
+for (const q of results.sections.flatMap(s => s.questions)) {
+  if (q.visualization !== 'diverging') continue
+  const average = likertAverage(rawById.get(q.id)!.options)
+  if (average !== null) q.average = average
+}
+
 const frozen: FrozenAggregates = {
-  ...aggregateSurveyResults(survey, responses, {
-    excludeQuestionIds: new Set([orgQid, ...typeahead]),
-    minBucketSize: 3,
-  }),
+  ...results,
   title: survey.title,
   frozenAt: new Date().toISOString().slice(0, 10),
   uniqueOrganizations,

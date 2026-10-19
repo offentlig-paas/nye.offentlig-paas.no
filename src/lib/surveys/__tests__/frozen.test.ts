@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
-import { getFrozenAggregates, loadWaveResults } from '../frozen'
+import {
+  getFrozenAggregates,
+  loadWaveResults,
+  type FrozenAggregates,
+} from '../frozen'
 import { compareWaves } from '../comparison'
 import { getSurvey } from '../helpers'
 import type { SurveyDefinition } from '../types'
@@ -70,25 +74,84 @@ describe('import-sop-wave2-aggregates', () => {
     },
   }
   const csv = [
-    '"Har dere en applikasjonsplattform?","Hvorfor lager dere plattform?"',
-    ...Array(5).fill('Ja,"Sikkerhet, Kostoptimalisering"'),
-    'Ja,"Sikkerhet, fordi sjefen sa det"',
-    'Nei,',
+    'Organisasjon,"Har dere en applikasjonsplattform?","Hvorfor lager dere plattform?"',
+    ...Array(5).fill('A,Ja,"Sikkerhet, Kostoptimalisering"'),
+    'b,Ja,"Sikkerhet, fordi sjefen sa det"',
+    ' a ,Nei,',
   ].join('\n')
 
   it('counts options, folds free text into Annet and suppresses small groups', () => {
     const r = aggregateCsv(parseCsv(csv), survey, { slug: 'old', title: 'T' })
     const [platform, why] = r.sections[0]!.questions
     expect(r.totalResponses).toBe(7)
-    // "Nei" (1) is merged into the suppressed bucket.
-    expect(platform!.options.find(o => o.value === 'Nei')).toBeUndefined()
+    expect(r.uniqueOrganizations).toBe(2)
+    // "Nei" (1) is suppressed, and "Ja" with it so the bucket hides both.
+    const nei = platform!.options.find(o => o.value === 'Nei')!
+    expect(nei).toMatchObject({ count: 0, suppressed: true })
+    expect(platform!.options.find(o => o.value === 'Ja')?.suppressed).toBe(true)
     expect(platform!.options.find(o => o.value === '_suppressed')?.count).toBe(
-      1
+      7
     )
     // Only respondents with a platform see q9.
     expect(why!.responseCount).toBe(6)
     expect(why!.options.find(o => o.value === 'Sikkerhet')?.count).toBe(6)
-    expect(why!.options.find(o => o.value === 'Annet')).toBeUndefined()
+    expect(why!.options.find(o => o.value === 'Annet')?.suppressed).toBe(true)
     expect(JSON.stringify(r)).not.toContain('sjefen')
+  })
+})
+
+describe('compareWaves with frozen averages', () => {
+  it('prefers the stored pre-suppression average', () => {
+    const wave = (average?: number): FrozenAggregates => ({
+      surveySlug: 's',
+      title: 'T',
+      frozenAt: '2026-01-01',
+      totalResponses: 4,
+      sections: [
+        {
+          id: 'core',
+          title: 'C',
+          questions: [
+            {
+              id: 'q',
+              title: 'Q',
+              type: 'radio',
+              visualization: 'diverging',
+              responseCount: 4,
+              ...(average !== undefined && { average }),
+              options: [
+                {
+                  label: 'L',
+                  value: 'lo',
+                  count: 0,
+                  percentage: 0,
+                  suppressed: true,
+                },
+                { label: 'H', value: 'hi', count: 3, percentage: 75 },
+                {
+                  label: 'Andre',
+                  value: '_suppressed',
+                  count: 1,
+                  percentage: 25,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    })
+    const live = wave()
+    live.sections[0]!.questions[0]!.options = [
+      { label: 'L', value: 'lo', count: 1, percentage: 50 },
+      { label: 'H', value: 'hi', count: 1, percentage: 50 },
+    ]
+    expect(compareWaves(live, wave(1.75), { q: 'q' })[0]!.average).toEqual({
+      previous: 1.75,
+      current: 1.5,
+    })
+    expect(compareWaves(live, wave(), { q: 'q' })[0]!.average).toEqual({
+      previous: null,
+      current: null,
+    })
   })
 })

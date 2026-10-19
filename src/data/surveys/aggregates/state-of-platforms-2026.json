@@ -3,6 +3,7 @@
   "title": "Plattformundersøkelsen i offentlig sektor, runde 2",
   "frozenAt": "2026-10-19",
   "totalResponses": 48,
+  "uniqueOrganizations": 45,
   "sections": [
     {
       "id": "core",
@@ -52,6 +53,41 @@
               "percentage": 6
             },
             {
+              "label": "Kommune",
+              "value": "Kommune",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Kommunalt selskap",
+              "value": "Kommunalt selskap",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Universitet",
+              "value": "Universitet",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Forskningsinstitusjon",
+              "value": "Forskningsinstitusjon",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Annet",
+              "value": "Annet",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
               "label": "Andre (for få svar)",
               "value": "_suppressed",
               "count": 7,
@@ -67,6 +103,13 @@
           "responseCount": 48,
           "options": [
             {
+              "label": "<100",
+              "value": "<100",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
               "label": "100–499",
               "value": "100–499",
               "count": 18,
@@ -77,6 +120,20 @@
               "value": "500–999",
               "count": 7,
               "percentage": 15
+            },
+            {
+              "label": "1000–1999",
+              "value": "1000–1999",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "2000–4999",
+              "value": "2000–4999",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
             },
             {
               "label": "5000–14999",
@@ -112,6 +169,13 @@
               "percentage": 42
             },
             {
+              "label": "Applikasjonsutvikler",
+              "value": "Applikasjonsutvikler",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
               "label": "Arkitekt",
               "value": "Arkitekt",
               "count": 4,
@@ -128,6 +192,41 @@
               "value": "Leder",
               "count": 8,
               "percentage": 17
+            },
+            {
+              "label": "DevOps",
+              "value": "DevOps",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Drift/ops",
+              "value": "Drift/ops",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Sikkerhet",
+              "value": "Sikkerhet",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Test/QA",
+              "value": "Test/QA",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Annet",
+              "value": "Annet",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
             },
             {
               "label": "Andre (for få svar)",
@@ -210,8 +309,16 @@
             {
               "label": "Noen ville ha en plattform",
               "value": "Noen ville ha en plattform",
-              "count": 3,
-              "percentage": 7
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Alle andre har en plattform!",
+              "value": "Alle andre har en plattform!",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
             },
             {
               "label": "Annet",
@@ -222,8 +329,8 @@
             {
               "label": "Andre (for få svar)",
               "value": "_suppressed",
-              "count": 2,
-              "percentage": 5
+              "count": 5,
+              "percentage": 11
             }
           ]
         },
@@ -273,14 +380,22 @@
             {
               "label": "Nettverk/brannmur (eksterntrafikk)",
               "value": "Nettverk/brannmur (eksterntrafikk)",
-              "count": 26,
-              "percentage": 59
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Annet",
+              "value": "Annet",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
             },
             {
               "label": "Andre (for få svar)",
               "value": "_suppressed",
-              "count": 2,
-              "percentage": 5
+              "count": 28,
+              "percentage": 64
             }
           ]
         },
@@ -373,6 +488,20 @@
               "percentage": 18
             },
             {
+              "label": "PHP",
+              "value": "PHP",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Rust",
+              "value": "Rust",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
               "label": "Annet",
               "value": "Annet",
               "count": 0,
@@ -412,6 +541,20 @@
               "percentage": 27
             },
             {
+              "label": "Nivå 4, Optimalisering — Aktivert økosystem",
+              "value": "Nivå 4, Optimalisering — Aktivert økosystem",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "N/A",
+              "value": "N/A",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
               "label": "Andre (for få svar)",
               "value": "_suppressed",
               "count": 3,
@@ -443,6 +586,20 @@
               "value": "Nivå 3, Skalerbar — Innvendig dragning",
               "count": 22,
               "percentage": 50
+            },
+            {
+              "label": "Nivå 4, Optimalisering — Deltakende",
+              "value": "Nivå 4, Optimalisering — Deltakende",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "N/A",
+              "value": "N/A",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
             },
             {
               "label": "Andre (for få svar)",
@@ -480,14 +637,22 @@
             {
               "label": "Nivå 4, Optimalisering — Administrerte tjenester",
               "value": "Nivå 4, Optimalisering — Administrerte tjenester",
-              "count": 4,
-              "percentage": 9
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "N/A",
+              "value": "N/A",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
             },
             {
               "label": "Andre (for få svar)",
               "value": "_suppressed",
-              "count": 1,
-              "percentage": 2
+              "count": 5,
+              "percentage": 11
             }
           ]
         },
@@ -519,14 +684,22 @@
             {
               "label": "Nivå 4, Optimalisering — Administrerte tjenester",
               "value": "Nivå 4, Optimalisering — Administrerte tjenester",
-              "count": 5,
-              "percentage": 11
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "N/A",
+              "value": "N/A",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
             },
             {
               "label": "Andre (for få svar)",
               "value": "_suppressed",
-              "count": 1,
-              "percentage": 2
+              "count": 6,
+              "percentage": 14
             }
           ]
         },
@@ -554,6 +727,20 @@
               "value": "Nivå 3, Skalerbar — Innsikt",
               "count": 5,
               "percentage": 11
+            },
+            {
+              "label": "Nivå 4, Optimalisering — Kvantitativ og kvalitativ",
+              "value": "Nivå 4, Optimalisering — Kvantitativ og kvalitativ",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "N/A",
+              "value": "N/A",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
             },
             {
               "label": "Andre (for få svar)",
@@ -598,6 +785,27 @@
               "percentage": 18
             },
             {
+              "label": "2",
+              "value": "2",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "3",
+              "value": "3",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "4",
+              "value": "4",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
               "label": "5",
               "value": "5",
               "count": 5,
@@ -626,6 +834,13 @@
               "value": "9",
               "count": 5,
               "percentage": 13
+            },
+            {
+              "label": "10",
+              "value": "10",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
             },
             {
               "label": "Andre (for få svar)",
@@ -667,6 +882,20 @@
               "percentage": 8
             },
             {
+              "label": "50+",
+              "value": "50+",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Vet ikke",
+              "value": "Vet ikke",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
               "label": "Andre (for få svar)",
               "value": "_suppressed",
               "count": 4,
@@ -700,10 +929,24 @@
               "percentage": 18
             },
             {
+              "label": "1000-2000",
+              "value": "1000-2000",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
               "label": "2000+",
               "value": "2000+",
               "count": 4,
               "percentage": 10
+            },
+            {
+              "label": "Vet ikke",
+              "value": "Vet ikke",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
             },
             {
               "label": "Andre (for få svar)",
@@ -729,14 +972,22 @@
             {
               "label": "Nei",
               "value": "Nei",
-              "count": 17,
-              "percentage": 43
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Vet ikke",
+              "value": "Vet ikke",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
             },
             {
               "label": "Andre (for få svar)",
               "value": "_suppressed",
-              "count": 2,
-              "percentage": 5
+              "count": 19,
+              "percentage": 48
             }
           ]
         },
@@ -808,6 +1059,20 @@
               "percentage": 6
             },
             {
+              "label": "2",
+              "value": "2",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "3",
+              "value": "3",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
               "label": "4",
               "value": "4",
               "count": 5,
@@ -836,6 +1101,20 @@
               "value": "8",
               "count": 5,
               "percentage": 10
+            },
+            {
+              "label": "9",
+              "value": "9",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "10",
+              "value": "10",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
             },
             {
               "label": "Andre (for få svar)",
@@ -867,8 +1146,16 @@
             {
               "label": "Google Cloud Run",
               "value": "Google Cloud Run",
-              "count": 5,
-              "percentage": 10
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Google Cloud Functions",
+              "value": "Google Cloud Functions",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
             },
             {
               "label": "Annet",
@@ -879,8 +1166,8 @@
             {
               "label": "Andre (for få svar)",
               "value": "_suppressed",
-              "count": 1,
-              "percentage": 2
+              "count": 6,
+              "percentage": 13
             }
           ]
         },
@@ -916,16 +1203,24 @@
               "percentage": 17
             },
             {
+              "label": "Linkerd",
+              "value": "Linkerd",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
               "label": "Annet",
               "value": "Annet",
-              "count": 4,
-              "percentage": 8
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
             },
             {
               "label": "Andre (for få svar)",
               "value": "_suppressed",
-              "count": 2,
-              "percentage": 4
+              "count": 6,
+              "percentage": 13
             }
           ]
         },

@@ -31,6 +31,8 @@ export interface AggregatedQuestion {
   responseCount: number
   options: AggregatedOption[]
   freeTextCount?: number
+  /** Pre-suppression Likert mean, stored only in frozen aggregates. */
+  average?: number
 }
 
 export interface AggregatedOption {
@@ -183,7 +185,7 @@ function aggregateTypeahead(
   return options
 }
 
-/** Merge options with fewer than `minBucket` (but > 0) answers into one bucket. */
+/** Suppress options under `minBucket` in place (plus one more if alone) and add an «Andre» bucket. */
 export function suppressSmallBuckets(
   options: AggregatedOption[],
   responseCount: number,
