@@ -17,6 +17,7 @@ import {
   YouTubeIcon,
 } from '@/components/SocialIcons'
 import { SlackUsers } from '@/components/SlackUsers'
+import { OpenSurveysCard } from '@/components/SurveyCallToAction'
 import bluesky from '@/images/bluesky.png'
 import image1 from '@/images/photos/image-1.jpg'
 import image2 from '@/images/photos/image-2.jpg'
@@ -201,6 +202,7 @@ export default async function Home() {
           <Suspense>
             <UpcomingEvents className="lg:hidden" />
           </Suspense>
+          <OpenSurveysCard className="-mt-14 space-y-4 lg:hidden" />
           <div className="flex flex-col gap-16">
             {artikkel.map(article => (
               <Article key={article.slug} article={article} />
@@ -210,6 +212,7 @@ export default async function Home() {
             <Suspense>
               <UpcomingEvents className="hidden lg:block" />
             </Suspense>
+            <OpenSurveysCard className="hidden space-y-4 lg:block" />
             <Bluesky />
             <SlackUsers />
             <SlackJoin />

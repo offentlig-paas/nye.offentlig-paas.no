@@ -28,9 +28,9 @@ export default async function ResearchPage() {
       intro="Vi undersøker hvordan norske offentlige virksomheter bygger utviklerplattformer, bruker KI-verktøy og organiserer utviklingsarbeidet. Vi publiserer anonymiserte datasett, spørreskjemaer og analyseskript åpent."
     >
       {openSurveys.length > 0 && (
-        <div className="mt-8 space-y-4">
-          {openSurveys.map(({ project }) => (
-            <SurveyCallToAction key={project.slug} projectSlug={project.slug} />
+        <div className="mt-8">
+          {[...new Set(openSurveys.map(o => o.project.slug))].map(slug => (
+            <SurveyCallToAction key={slug} projectSlug={slug} />
           ))}
         </div>
       )}

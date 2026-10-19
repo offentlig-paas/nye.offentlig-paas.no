@@ -73,13 +73,24 @@ export function getProject(slug: string): ResearchProject | undefined {
 export function getOpenSurveys(): Array<{
   survey: ResearchSurvey
   project: ResearchProject
+  href: string
+  minutes?: string
 }> {
   return researchProjects.flatMap(project =>
     (project.surveys ?? [])
       .filter(
         s => getSurveyStatus(s) === SurveyStatus.Open && isSurveyLinkable(s)
       )
-      .map(survey => ({ survey, project }))
+      .map(survey => ({
+        survey,
+        project,
+        href: isInternalSurvey(survey)
+          ? `/forskning/${project.slug}/undersokelse`
+          : survey.url!,
+        minutes: isInternalSurvey(survey)
+          ? getSurvey(survey.surveySlug)?.estimatedMinutes
+          : undefined,
+      }))
   )
 }
 

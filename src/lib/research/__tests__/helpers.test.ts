@@ -65,6 +65,20 @@ describe('Research Helpers', () => {
         expect(project.slug).toBeTruthy()
       }
     })
+
+    it('links open internal surveys to the project form, never drafts', () => {
+      const open = getOpenSurveys()
+      const slugs = open.flatMap(({ survey }) =>
+        'surveySlug' in survey ? [survey.surveySlug] : []
+      )
+      expect(slugs).toContain('ai-agents-2027')
+      expect(slugs).not.toContain('state-of-platforms-2027') // pilot
+      const agents = open.find(
+        ({ survey }) =>
+          'surveySlug' in survey && survey.surveySlug === 'ai-agents-2027'
+      )
+      expect(agents?.href).toBe('/forskning/state-of-ai-agents/undersokelse')
+    })
   })
 
   describe('getResponseRate', () => {
