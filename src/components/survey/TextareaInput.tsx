@@ -34,7 +34,7 @@ export function TextareaInput({
         htmlFor={inputId}
         className="block text-base/7 font-medium text-zinc-900 dark:text-white"
       >
-        {question.title}
+        <Markdown inline>{question.title}</Markdown>
         {question.required && (
           <>
             <span className="ml-1 text-red-600 dark:text-red-400" aria-hidden>

@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react'
 import type { CheckboxQuestion } from '@/lib/surveys/types'
 import { shuffleOptions } from '@/lib/surveys/helpers'
-import { Markdown } from './Markdown'
+import { Markdown, stripMarkdown } from './Markdown'
 
 interface CheckboxGroupProps {
   question: CheckboxQuestion
@@ -100,7 +100,7 @@ export function CheckboxGroup({
       aria-invalid={error ? true : undefined}
     >
       <legend className="text-base/7 font-semibold text-zinc-900 dark:text-white">
-        {question.title}
+        <Markdown inline>{question.title}</Markdown>
         {question.required && (
           <>
             <span className="ml-1 text-red-600 dark:text-red-400" aria-hidden>
@@ -173,7 +173,7 @@ export function CheckboxGroup({
                   htmlFor={optionId}
                   className={`text-base/7 font-medium text-zinc-700 dark:text-zinc-300 ${disabled ? 'opacity-50' : ''}`}
                 >
-                  {option.label}
+                  <Markdown inline>{option.label}</Markdown>
                 </label>
               </div>
               {option.allowOtherText && checked && (
@@ -186,7 +186,7 @@ export function CheckboxGroup({
                       onChange(value, e.target.value)
                     }}
                     placeholder="Spesifiser"
-                    aria-label={`${option.label}: spesifiser`}
+                    aria-label={`${stripMarkdown(option.label)}: spesifiser`}
                     className="block w-full rounded-md bg-white px-3 py-2 text-base text-zinc-900 outline-1 -outline-offset-1 outline-zinc-300 placeholder:text-zinc-400 focus:outline-2 focus:-outline-offset-2 focus:outline-teal-500 sm:py-1.5 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-zinc-500 dark:focus:outline-teal-400"
                   />
                 </div>

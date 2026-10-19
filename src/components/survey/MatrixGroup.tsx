@@ -53,7 +53,7 @@ export function MatrixGroup({
       aria-invalid={error ? true : undefined}
     >
       <legend className="text-base/7 font-semibold text-zinc-900 dark:text-white">
-        {question.title}
+        <Markdown inline>{question.title}</Markdown>
         {question.required && (
           <>
             <span className="ml-1 text-red-600 dark:text-red-400" aria-hidden>
@@ -83,7 +83,7 @@ export function MatrixGroup({
           <span />
           {question.options.map(option => (
             <span key={option.value} className="self-end">
-              {option.label}
+              <Markdown inline>{option.label}</Markdown>
             </span>
           ))}
         </div>
@@ -100,7 +100,7 @@ export function MatrixGroup({
                 id={rowId}
                 className="text-sm/6 font-semibold text-zinc-800 sm:font-medium dark:text-zinc-200"
               >
-                {row.label}
+                <Markdown inline>{row.label}</Markdown>
               </p>
               <div className="mt-1 flex flex-wrap gap-x-5 gap-y-2 sm:contents">
                 {question.options.map(option => {
@@ -123,7 +123,7 @@ export function MatrixGroup({
                         htmlFor={optionId}
                         className="text-sm/6 text-zinc-700 sm:sr-only dark:text-zinc-300"
                       >
-                        {option.label}
+                        <Markdown inline>{option.label}</Markdown>
                       </label>
                     </div>
                   )

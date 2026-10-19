@@ -5,14 +5,31 @@ import ReactMarkdown from 'react-markdown'
 interface MarkdownProps {
   children: string
   className?: string
+  /** Inline text only (titles, labels): no paragraphs, lists or headings. */
+  inline?: boolean
 }
 
-export function Markdown({ children, className }: MarkdownProps) {
+/** Removes inline markdown markers for plain-text uses (aria-label, charts). */
+export function stripMarkdown(text: string): string {
+  return text.replace(/(\*\*|__|\*|`)(.+?)\1/g, '$2')
+}
+
+export function Markdown({ children, className, inline }: MarkdownProps) {
+  const Wrapper = inline ? 'span' : 'div'
   return (
-    <div className={className}>
+    <Wrapper className={className}>
       <ReactMarkdown
+        allowedElements={
+          inline ? ['p', 'strong', 'em', 'a', 'code'] : undefined
+        }
+        unwrapDisallowed
         components={{
-          p: ({ children }) => <p className="mt-2 first:mt-0">{children}</p>,
+          p: ({ children }) =>
+            inline ? (
+              <>{children}</>
+            ) : (
+              <p className="mt-2 first:mt-0">{children}</p>
+            ),
           strong: ({ children }) => (
             <strong className="font-semibold">{children}</strong>
           ),
@@ -42,6 +59,6 @@ export function Markdown({ children, className }: MarkdownProps) {
       >
         {children}
       </ReactMarkdown>
-    </div>
+    </Wrapper>
   )
 }
