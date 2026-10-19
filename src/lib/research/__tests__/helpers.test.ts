@@ -3,6 +3,7 @@ import {
   getAllProjects,
   getProject,
   getOpenSurveys,
+  findOpenSurvey,
   getResponseRate,
   getWaveResponseRate,
   getSurveyResponseRate,
@@ -64,6 +65,35 @@ describe('Research Helpers', () => {
       for (const { project } of open) {
         expect(project.slug).toBeTruthy()
       }
+    })
+
+    it('links open internal surveys to the project form, never drafts', () => {
+      const open = getOpenSurveys()
+      const slugs = open.flatMap(({ survey }) =>
+        'surveySlug' in survey ? [survey.surveySlug] : []
+      )
+      expect(slugs).toContain('ai-agents-2027')
+      expect(slugs).not.toContain('state-of-platforms-2027') // pilot
+      const agents = open.find(
+        ({ survey }) =>
+          'surveySlug' in survey && survey.surveySlug === 'ai-agents-2027'
+      )
+      expect(agents?.href).toBe('/forskning/state-of-ai-agents/undersokelse')
+    })
+  })
+
+  describe('findOpenSurvey', () => {
+    it('returns the open survey for a project', () => {
+      const found = findOpenSurvey('state-of-ai-agents')
+      expect(
+        found && 'surveySlug' in found.survey && found.survey.surveySlug
+      ).toBe('ai-agents-2027')
+    })
+
+    it('returns nothing when the pinned survey is closed', () => {
+      expect(
+        findOpenSurvey('state-of-ai-agents', 'ai-agents-2026')
+      ).toBeUndefined()
     })
   })
 
