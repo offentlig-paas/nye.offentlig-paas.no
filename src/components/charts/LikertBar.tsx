@@ -26,10 +26,11 @@ function color(i: number, total: number) {
 
 // Ordinal: one hue, light (lowest level) to dark (highest).
 const SEQUENTIAL = [
-  'bg-sky-200 text-zinc-900',
-  'bg-sky-400 text-zinc-900',
-  'bg-sky-600 text-white',
-  'bg-sky-800 text-white',
+  'bg-sky-100 text-zinc-900',
+  'bg-sky-300 text-zinc-900',
+  'bg-sky-500 text-zinc-900',
+  'bg-sky-700 text-white',
+  'bg-sky-900 text-white',
 ]
 
 function sequential(i: number, total: number) {
