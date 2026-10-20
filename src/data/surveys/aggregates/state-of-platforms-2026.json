@@ -1,9 +1,6 @@
 {
   "surveySlug": "state-of-platforms-2026",
-  "title": "Plattformundersøkelsen i offentlig sektor, runde 2",
-  "frozenAt": "2026-10-20",
   "totalResponses": 48,
-  "uniqueOrganizations": 45,
   "sections": [
     {
       "id": "core",
@@ -86,12 +83,6 @@
               "count": 0,
               "percentage": 0,
               "suppressed": true
-            },
-            {
-              "label": "Andre (for få svar)",
-              "value": "_suppressed",
-              "count": 7,
-              "percentage": 15
             }
           ]
         },
@@ -100,7 +91,7 @@
           "title": "Ansatte",
           "type": "radio",
           "visualization": "bar",
-          "responseCount": 48,
+          "responseCount": 43,
           "options": [
             {
               "label": "<100",
@@ -113,13 +104,13 @@
               "label": "100–499",
               "value": "100–499",
               "count": 18,
-              "percentage": 38
+              "percentage": 42
             },
             {
               "label": "500–999",
               "value": "500–999",
               "count": 7,
-              "percentage": 15
+              "percentage": 16
             },
             {
               "label": "1000–1999",
@@ -139,19 +130,13 @@
               "label": "5000–14999",
               "value": "5000–14999",
               "count": 6,
-              "percentage": 13
+              "percentage": 14
             },
             {
               "label": "15000+",
               "value": "15000+",
               "count": 7,
-              "percentage": 15
-            },
-            {
-              "label": "Andre (for få svar)",
-              "value": "_suppressed",
-              "count": 5,
-              "percentage": 10
+              "percentage": 16
             }
           ]
         },
@@ -227,12 +212,6 @@
               "count": 0,
               "percentage": 0,
               "suppressed": true
-            },
-            {
-              "label": "Andre (for få svar)",
-              "value": "_suppressed",
-              "count": 8,
-              "percentage": 17
             }
           ]
         },
@@ -309,9 +288,8 @@
             {
               "label": "Noen ville ha en plattform",
               "value": "Noen ville ha en plattform",
-              "count": 0,
-              "percentage": 0,
-              "suppressed": true
+              "count": 3,
+              "percentage": 7
             },
             {
               "label": "Alle andre har en plattform!",
@@ -325,12 +303,6 @@
               "value": "Annet",
               "count": 6,
               "percentage": 14
-            },
-            {
-              "label": "Andre (for få svar)",
-              "value": "_suppressed",
-              "count": 5,
-              "percentage": 11
             }
           ]
         },
@@ -380,9 +352,8 @@
             {
               "label": "Nettverk/brannmur (eksterntrafikk)",
               "value": "Nettverk/brannmur (eksterntrafikk)",
-              "count": 0,
-              "percentage": 0,
-              "suppressed": true
+              "count": 26,
+              "percentage": 59
             },
             {
               "label": "Annet",
@@ -390,12 +361,6 @@
               "count": 0,
               "percentage": 0,
               "suppressed": true
-            },
-            {
-              "label": "Andre (for få svar)",
-              "value": "_suppressed",
-              "count": 28,
-              "percentage": 64
             }
           ]
         },
@@ -506,12 +471,6 @@
               "value": "Annet",
               "count": 0,
               "percentage": 0
-            },
-            {
-              "label": "Andre (for få svar)",
-              "value": "_suppressed",
-              "count": 4,
-              "percentage": 9
             }
           ]
         },
@@ -554,12 +513,6 @@
               "count": 0,
               "percentage": 0,
               "suppressed": true
-            },
-            {
-              "label": "Andre (for få svar)",
-              "value": "_suppressed",
-              "count": 3,
-              "percentage": 7
             }
           ]
         },
@@ -602,12 +555,6 @@
               "count": 0,
               "percentage": 0,
               "suppressed": true
-            },
-            {
-              "label": "Andre (for få svar)",
-              "value": "_suppressed",
-              "count": 3,
-              "percentage": 7
             }
           ]
         },
@@ -639,9 +586,8 @@
             {
               "label": "Nivå 4, Optimalisering — Administrerte tjenester",
               "value": "Nivå 4, Optimalisering — Administrerte tjenester",
-              "count": 0,
-              "percentage": 0,
-              "suppressed": true
+              "count": 4,
+              "percentage": 9
             },
             {
               "label": "N/A",
@@ -650,14 +596,9 @@
               "count": 0,
               "percentage": 0,
               "suppressed": true
-            },
-            {
-              "label": "Andre (for få svar)",
-              "value": "_suppressed",
-              "count": 5,
-              "percentage": 11
             }
-          ]
+          ],
+          "average": 2.6
         },
         {
           "id": "q13d-operations",
@@ -687,9 +628,8 @@
             {
               "label": "Nivå 4, Optimalisering — Administrerte tjenester",
               "value": "Nivå 4, Optimalisering — Administrerte tjenester",
-              "count": 0,
-              "percentage": 0,
-              "suppressed": true
+              "count": 5,
+              "percentage": 11
             },
             {
               "label": "N/A",
@@ -698,14 +638,9 @@
               "count": 0,
               "percentage": 0,
               "suppressed": true
-            },
-            {
-              "label": "Andre (for få svar)",
-              "value": "_suppressed",
-              "count": 6,
-              "percentage": 14
             }
-          ]
+          ],
+          "average": 2.5
         },
         {
           "id": "q13e-measurement",
@@ -729,9 +664,8 @@
             {
               "label": "Nivå 3, Skalerbar — Innsikt",
               "value": "Nivå 3, Skalerbar — Innsikt",
-              "count": 0,
-              "percentage": 0,
-              "suppressed": true
+              "count": 5,
+              "percentage": 11
             },
             {
               "label": "Nivå 4, Optimalisering — Kvantitativ og kvalitativ",
@@ -747,12 +681,6 @@
               "count": 0,
               "percentage": 0,
               "suppressed": true
-            },
-            {
-              "label": "Andre (for få svar)",
-              "value": "_suppressed",
-              "count": 7,
-              "percentage": 16
             }
           ]
         },
@@ -847,12 +775,6 @@
               "count": 0,
               "percentage": 0,
               "suppressed": true
-            },
-            {
-              "label": "Andre (for få svar)",
-              "value": "_suppressed",
-              "count": 6,
-              "percentage": 15
             }
           ]
         },
@@ -900,12 +822,6 @@
               "count": 0,
               "percentage": 0,
               "suppressed": true
-            },
-            {
-              "label": "Andre (for få svar)",
-              "value": "_suppressed",
-              "count": 4,
-              "percentage": 10
             }
           ]
         },
@@ -953,12 +869,6 @@
               "count": 0,
               "percentage": 0,
               "suppressed": true
-            },
-            {
-              "label": "Andre (for få svar)",
-              "value": "_suppressed",
-              "count": 3,
-              "percentage": 8
             }
           ]
         },
@@ -978,9 +888,8 @@
             {
               "label": "Nei",
               "value": "Nei",
-              "count": 0,
-              "percentage": 0,
-              "suppressed": true
+              "count": 17,
+              "percentage": 43
             },
             {
               "label": "Vet ikke",
@@ -988,12 +897,6 @@
               "count": 0,
               "percentage": 0,
               "suppressed": true
-            },
-            {
-              "label": "Andre (for få svar)",
-              "value": "_suppressed",
-              "count": 19,
-              "percentage": 48
             }
           ]
         },
@@ -1023,25 +926,25 @@
           "title": "Hva er deres primære sky for applikasjoner?",
           "type": "radio",
           "visualization": "bar",
-          "responseCount": 48,
+          "responseCount": 34,
           "options": [
             {
               "label": "Azure",
               "value": "Azure",
               "count": 20,
-              "percentage": 42
+              "percentage": 59
             },
             {
               "label": "Google Cloud",
               "value": "Google Cloud",
               "count": 8,
-              "percentage": 17
+              "percentage": 24
             },
             {
               "label": "AWS",
               "value": "AWS",
               "count": 6,
-              "percentage": 13
+              "percentage": 18
             },
             {
               "label": "Annet",
@@ -1056,13 +959,13 @@
           "title": "Hvor mange år har dere kjørt applikasjoner i sky?",
           "type": "radio",
           "visualization": "bar",
-          "responseCount": 48,
+          "responseCount": 34,
           "options": [
             {
               "label": "1",
               "value": "1",
               "count": 3,
-              "percentage": 6
+              "percentage": 9
             },
             {
               "label": "2",
@@ -1082,31 +985,31 @@
               "label": "4",
               "value": "4",
               "count": 5,
-              "percentage": 10
+              "percentage": 15
             },
             {
               "label": "5",
               "value": "5",
               "count": 6,
-              "percentage": 13
+              "percentage": 18
             },
             {
               "label": "6",
               "value": "6",
               "count": 6,
-              "percentage": 13
+              "percentage": 18
             },
             {
               "label": "7",
               "value": "7",
               "count": 4,
-              "percentage": 8
+              "percentage": 12
             },
             {
               "label": "8",
               "value": "8",
               "count": 5,
-              "percentage": 10
+              "percentage": 15
             },
             {
               "label": "9",
@@ -1121,12 +1024,6 @@
               "count": 0,
               "percentage": 0,
               "suppressed": true
-            },
-            {
-              "label": "Andre (for få svar)",
-              "value": "_suppressed",
-              "count": 5,
-              "percentage": 10
             }
           ]
         },
@@ -1135,26 +1032,25 @@
           "title": "Benytter dere serverless funksjoner?",
           "type": "checkbox",
           "visualization": "bar",
-          "responseCount": 48,
+          "responseCount": 20,
           "options": [
             {
               "label": "Azure Functions",
               "value": "Azure Functions",
               "count": 8,
-              "percentage": 17
+              "percentage": 40
             },
             {
               "label": "AWS Lambda",
               "value": "AWS Lambda",
               "count": 7,
-              "percentage": 15
+              "percentage": 35
             },
             {
               "label": "Google Cloud Run",
               "value": "Google Cloud Run",
-              "count": 0,
-              "percentage": 0,
-              "suppressed": true
+              "count": 5,
+              "percentage": 25
             },
             {
               "label": "Google Cloud Functions",
@@ -1168,12 +1064,6 @@
               "value": "Annet",
               "count": 0,
               "percentage": 0
-            },
-            {
-              "label": "Andre (for få svar)",
-              "value": "_suppressed",
-              "count": 6,
-              "percentage": 13
             }
           ]
         },
@@ -1182,31 +1072,31 @@
           "title": "Hva bruker dere for nettverksikkerhet?",
           "type": "checkbox",
           "visualization": "bar",
-          "responseCount": 48,
+          "responseCount": 34,
           "options": [
             {
               "label": "NetworkPolicies",
               "value": "NetworkPolicies",
               "count": 18,
-              "percentage": 38
+              "percentage": 53
             },
             {
               "label": "cert-manager",
               "value": "cert-manager",
               "count": 14,
-              "percentage": 29
+              "percentage": 41
             },
             {
               "label": "Cilium",
               "value": "Cilium",
               "count": 13,
-              "percentage": 27
+              "percentage": 38
             },
             {
               "label": "Istio",
               "value": "Istio",
               "count": 8,
-              "percentage": 17
+              "percentage": 24
             },
             {
               "label": "Linkerd",
@@ -1218,15 +1108,8 @@
             {
               "label": "Annet",
               "value": "Annet",
-              "count": 0,
-              "percentage": 0,
-              "suppressed": true
-            },
-            {
-              "label": "Andre (for få svar)",
-              "value": "_suppressed",
-              "count": 6,
-              "percentage": 13
+              "count": 4,
+              "percentage": 12
             }
           ]
         },
@@ -1235,47 +1118,50 @@
           "title": "Hva bruker dere for applikasjonsikkerhet?",
           "type": "checkbox",
           "visualization": "bar",
-          "responseCount": 48,
+          "responseCount": 29,
           "options": [
             {
               "label": "Kyverno",
               "value": "Kyverno",
               "count": 13,
-              "percentage": 27
+              "percentage": 45
             },
             {
               "label": "Open Policy Agent (OPA)",
               "value": "Open Policy Agent (OPA)",
               "count": 6,
-              "percentage": 13
+              "percentage": 21
             },
             {
               "label": "Falco",
               "value": "Falco",
               "count": 3,
-              "percentage": 6
+              "percentage": 10
             },
             {
               "label": "Sysdig",
               "value": "Sysdig",
               "count": 3,
-              "percentage": 6
+              "percentage": 10
             },
             {
               "label": "Trivy",
               "value": "Trivy",
               "count": 4,
-              "percentage": 8
+              "percentage": 14
             },
             {
               "label": "Annet",
               "value": "Annet",
               "count": 11,
-              "percentage": 23
+              "percentage": 38
             }
           ]
         }
       ]
     }
-  ]
+  ],
+  "title": "Plattformundersøkelsen i offentlig sektor, runde 2",
+  "frozenAt": "2026-10-20",
+  "uniqueOrganizations": 45
 }

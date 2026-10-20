@@ -1,4 +1,8 @@
 /**
+ * Fallback: freeze a closed survey from Sanity when it has no open dataset.
+ * Prefer freeze-from-open-dataset.ts, so the results page shows the same
+ * numbers as the published dataset.
+ *
  * Freeze a closed survey's results before its raw responses are deleted.
  *
  * Reads the real (non-pilot) responses from Sanity, aggregates them the same

@@ -89,6 +89,24 @@ async function ResultsContent({ slug }: { slug: string }) {
           },
         ]}
       />
+      {data.fromOpenDataset && (
+        <p className="mb-6 text-sm text-zinc-600 dark:text-zinc-400">
+          {data.openDatasetUrl ? (
+            <>
+              Tallene er hentet fra{' '}
+              <a
+                href={data.openDatasetUrl}
+                className="text-teal-600 underline hover:text-teal-700 dark:text-teal-400"
+              >
+                det åpne datasettet
+              </a>
+              .
+            </>
+          ) : (
+            'Tallene er hentet fra det åpne datasettet.'
+          )}
+        </p>
+      )}
       <SurveyResultsRenderer
         results={data}
         uniqueOrganizations={data.uniqueOrganizations}

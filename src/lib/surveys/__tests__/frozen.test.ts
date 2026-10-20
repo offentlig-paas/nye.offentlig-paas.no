@@ -6,17 +6,19 @@ import {
   renderAggregatesIndex,
 } from '../../../../scripts/aggregates-index'
 import {
+  getClosedSurveyFrozen,
   getFrozenAggregates,
   loadWaveResults,
   type FrozenAggregates,
 } from '../frozen'
 import { compareWaves } from '../comparison'
 import { getSurvey } from '../helpers'
-import type { SurveyDefinition } from '../types'
+import { SurveyStatus } from '../types'
 import {
-  aggregateCsv,
-  parseCsv,
-} from '../../../../scripts/import-sop-wave2-aggregates'
+  aggregateOpenDataset,
+  columnTitle,
+  resolveTarget,
+} from '../../../../scripts/freeze-from-open-dataset'
 
 describe('getFrozenAggregates', () => {
   it('returns the frozen wave 2 file and null for unknown slugs', () => {
@@ -71,38 +73,99 @@ describe('loadWaveResults', () => {
   })
 })
 
-describe('import-sop-wave2-aggregates', () => {
-  const survey: SurveyDefinition = {
-    ...getSurvey('state-of-platforms-2027')!,
-    comparesTo: {
-      slug: 'old',
-      questionMap: { 'q7-platform': 'q7-platform', 'q9-why': 'q9-why' },
-    },
-  }
-  const csv = [
-    'Organisasjon,"Har dere en applikasjonsplattform?","Hvorfor lager dere plattform?"',
-    ...Array(5).fill('A,Ja,"Sikkerhet, Kostoptimalisering"'),
-    'b,Ja,"Sikkerhet, fordi sjefen sa det"',
-    ' a ,Nei,',
-  ].join('\n')
-
-  it('counts options, folds free text into Annet and suppresses small groups', () => {
-    const r = aggregateCsv(parseCsv(csv), survey, { slug: 'old', title: 'T' })
-    const [platform, why] = r.sections[0]!.questions
-    expect(r.totalResponses).toBe(7)
-    expect(r.uniqueOrganizations).toBe(2)
-    // "Nei" (1) is suppressed, and "Ja" with it so the bucket hides both.
-    const nei = platform!.options.find(o => o.value === 'Nei')!
-    expect(nei).toMatchObject({ count: 0, suppressed: true })
-    expect(platform!.options.find(o => o.value === 'Ja')?.suppressed).toBe(true)
-    expect(platform!.options.find(o => o.value === '_suppressed')?.count).toBe(
-      7
+describe('freeze-from-open-dataset', () => {
+  it('maps tagged column titles to question ids', () => {
+    expect(columnTitle('Hvor sikker er du på svaret over? (Q5b)')).toBe(
+      'Hvor sikker er du på svaret over?'
     )
-    // Only respondents with a platform see q9.
-    expect(why!.responseCount).toBe(6)
-    expect(why!.options.find(o => o.value === 'Sikkerhet')?.count).toBe(6)
-    expect(why!.options.find(o => o.value === 'Annet')?.suppressed).toBe(true)
-    expect(JSON.stringify(r)).not.toContain('sjefen')
+    const t = resolveTarget('state-of-platforms-2026')
+    expect(t.idFor('q7-platform')).toBe('q7-platform')
+    expect(
+      resolveTarget('ai-agents-2026')
+        .sections.flatMap(s => s.questions)
+        .map(q => q.id)
+    ).not.toContain('q1-org')
+  })
+
+  it('aggregates a row-level dataset, keeping recoded values as published', () => {
+    const csv = [
+      'Hva er din primærrolle?,Bruker du KI-kodeverktøy?,Hvilke måter bruker du KI-kodeverktøy på?',
+      ...Array(4).fill('practitioner,yes,chat;planning'),
+      'technical-leadership,yes,chat',
+      'practitioner,no,',
+    ].join('\n')
+    const r = aggregateOpenDataset(csv, 'ai-agents-2026', { title: 'T' })
+    const q = (id: string) =>
+      r.sections.flatMap(s => s.questions).find(q => q.id === id)!
+    expect(r.totalResponses).toBe(6)
+    expect(q('q2-role').options.map(o => o.value)).toEqual([
+      'practitioner',
+      'technical-leadership',
+      '_suppressed',
+    ])
+    // Only users see the usage questions.
+    expect(q('q9-usage-modes').responseCount).toBe(5)
+    expect(
+      q('q9-usage-modes').options.find(o => o.value === 'chat')?.count
+    ).toBe(5)
+    expect(q('q20-trust')).toBeUndefined()
+  })
+
+  it('copies an aggregate table and keeps its hidden counts hidden', () => {
+    const csv = [
+      'column,question,answer,n',
+      ',responses,,10',
+      '7,Har dere en applikasjonsplattform?,Ja,8',
+      '7,Har dere en applikasjonsplattform?,Nei,<3',
+    ].join('\n')
+    const survey = getSurvey('state-of-platforms-2027')!
+    const r = aggregateOpenDataset(csv, 'old', { title: 'T' }, [
+      {
+        ...survey,
+        comparesTo: { slug: 'old', questionMap: { 'q7-platform': 'p' } },
+      },
+    ])
+    const q = r.sections[0]!.questions[0]!
+    expect(q.id).toBe('p')
+    expect(q.responseCount).toBe(10)
+    expect(q.options).toEqual([
+      expect.objectContaining({ value: 'Ja', count: 8 }),
+      expect.objectContaining({ value: 'Nei', count: 0, suppressed: true }),
+    ])
+  })
+})
+
+describe('closed surveys', () => {
+  it('are served from frozen aggregates; open ones are not', async () => {
+    const closed = getSurvey('ai-agents-2026')!
+    expect(getClosedSurveyFrozen(closed)).toBe(
+      getFrozenAggregates('ai-agents-2026')
+    )
+    expect(
+      getClosedSurveyFrozen({ ...closed, status: SurveyStatus.Open })
+    ).toBeNull()
+    const fetch = vi.fn()
+    expect(await loadWaveResults('ai-agents-2026', fetch)).toBe(
+      getFrozenAggregates('ai-agents-2026')
+    )
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
+  it('frozen files never show a count of 1 or 2', () => {
+    for (const slug of ['ai-agents-2026', 'state-of-platforms-2026']) {
+      for (const q of getFrozenAggregates(slug)!.sections.flatMap(
+        s => s.questions
+      )) {
+        for (const o of q.options) {
+          if (o.value === '_suppressed') {
+            expect(o.count).toBeGreaterThanOrEqual(3)
+            expect(
+              q.options.filter(x => x.suppressed).length
+            ).toBeGreaterThanOrEqual(2)
+          } else expect([1, 2]).not.toContain(o.count)
+        }
+      }
+    }
   })
 })
 

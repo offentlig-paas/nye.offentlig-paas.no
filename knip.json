@@ -11,7 +11,7 @@
     "src/data/surveys/index.ts",
     "src/lib/surveys/helpers.ts",
     "src/lib/surveys/types.ts",
-    "scripts/import-sop-wave2-aggregates.ts"
+    "scripts/freeze-from-open-dataset.ts"
   ],
   "project": [
     "src/**/*.{ts,tsx,js,jsx}",

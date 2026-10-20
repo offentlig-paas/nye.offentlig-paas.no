@@ -64,6 +64,8 @@ export interface ResultsConfig {
   typeaheadGroupingLimit?: number
   minResponses?: number
   minBucketSize?: number
+  /** Published open dataset; linked when results are served from it. */
+  openDatasetUrl?: string
 }
 
 export interface SurveySection {
