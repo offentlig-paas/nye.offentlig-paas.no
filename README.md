@@ -195,6 +195,24 @@ Prosjekter er definert i `data/platforms.ts`. For å legge til en ny platform, l
 
 Arrangement er definert i `src/data/events.ts`. Legg til en ny oppføring med program, foredragsholdere, og metadata.
 
+### Avslutte en undersøkelse
+
+Rådataene ligger i Sanity til de åpne datasettene er laget og studien er ferdig. Gjør dette i rekkefølge:
+
+1. **Lukk undersøkelsen.** Sett `status` til `SurveyStatus.Closed` i `src/data/surveys/<slug>.ts`.
+2. **Lag de åpne datasettene** i [offentlig-paas/forskning](https://github.com/offentlig-paas/forskning).
+3. **Frys resultatene.** Prøv først uten å røre repoet:
+
+   ```bash
+   pnpm tsx --conditions=react-server --env-file=.env.local scripts/freeze-survey-aggregates.ts <slug> --out /tmp/frys
+   ```
+
+   Kjør så uten `--out`. Da skrives `src/data/surveys/aggregates/<slug>.json`, og `index.ts` i samme mappe oppdateres, slik at nettsiden finner filen.
+
+4. **Kontroller filen.** Hver `_suppressed`-bøtte («Andre (for få svar)») skal ha minst 3 svar og samle minst 2 svaralternativer.
+5. **Commit** JSON-filen og `index.ts`.
+6. **Slett rådataene** fra Sanity når studien er ferdig.
+
 ## Admin-funksjoner
 
 Administratorer har tilgang til `/admin` hvor de kan:

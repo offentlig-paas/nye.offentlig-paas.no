@@ -1,4 +1,10 @@
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
+import {
+  aggregatesDir,
+  renderAggregatesIndex,
+} from '../../../../scripts/aggregates-index'
 import {
   getFrozenAggregates,
   loadWaveResults,
@@ -153,5 +159,13 @@ describe('compareWaves with frozen averages', () => {
       previous: null,
       current: null,
     })
+  })
+})
+
+describe('aggregates index', () => {
+  it('lists every JSON file in the aggregates directory', () => {
+    expect(readFileSync(join(aggregatesDir, 'index.ts'), 'utf-8')).toBe(
+      renderAggregatesIndex()
+    )
   })
 })
