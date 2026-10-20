@@ -271,6 +271,9 @@ const MIN_PANEL = 5
 /** A panel count of 1 or 2, shown as "<3". */
 type PanelCount = number | '<3'
 const mask = (n: number): PanelCount => (n > 0 && n < 3 ? '<3' : n)
+/** One small count can be solved from the others (after = before + gained - lost), so a row with any hides all. */
+const maskRow = (ns: number[]): PanelCount[] =>
+  ns.some(n => mask(n) === '<3') ? ns.map(() => '<3' as const) : ns
 
 interface PanelQuestion {
   id: string
@@ -355,13 +358,18 @@ export function panelAnalysis(
           else same++
         }
         const hidden = [up, same, down].some(n => mask(n) === '<3')
+        const [mu, ms, md] = maskRow([up, same, down]) as [
+          PanelCount,
+          PanelCount,
+          PanelCount,
+        ]
         return [
           {
             ...base,
             scale: {
-              up: mask(up),
-              same: mask(same),
-              down: mask(down),
+              up: mu,
+              same: ms,
+              down: md,
               p: hidden ? null : mcnemarExact(up, down),
             },
           },
@@ -378,12 +386,18 @@ export function panelAnalysis(
         ).length
         const hidden = [before, after, gained, lost].some(n => mask(n) === '<3')
         const p = hidden ? null : mcnemarExact(gained, lost)
+        const [mb, ma, mg, ml] = maskRow([before, after, gained, lost]) as [
+          PanelCount,
+          PanelCount,
+          PanelCount,
+          PanelCount,
+        ]
         return {
           label: o.label,
-          before: mask(before),
-          after: mask(after),
-          gained: mask(gained),
-          lost: mask(lost),
+          before: mb,
+          after: ma,
+          gained: mg,
+          lost: ml,
           p,
           significant: p !== null && p * q.options.length < 0.05,
         }

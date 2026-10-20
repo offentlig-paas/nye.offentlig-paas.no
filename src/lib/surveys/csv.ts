@@ -34,7 +34,7 @@ export function aggregatedToCsv(results: AggregatedSurveyResults): string {
           o.label,
           o.count,
           o.percentage,
-          q.responseCount,
+          q.nIsLowerBound ? `minst ${q.responseCount}` : q.responseCount,
         ])
       }
     }

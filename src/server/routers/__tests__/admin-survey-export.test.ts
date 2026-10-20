@@ -94,3 +94,24 @@ describe('aggregatedToCsv', () => {
     expect(csv).toContain('"Andre (for få svar)","4"')
   })
 })
+
+describe('aggregatedToCsv lower bound', () => {
+  it('writes "minst N" when the response count is a lower bound', () => {
+    const results = {
+      sections: [
+        {
+          title: 'S',
+          questions: [
+            {
+              title: 'Q',
+              responseCount: 12,
+              nIsLowerBound: true,
+              options: [{ label: 'Ja', count: 5, percentage: 42 }],
+            },
+          ],
+        },
+      ],
+    } as unknown as Parameters<typeof aggregatedToCsv>[0]
+    expect(aggregatedToCsv(results)).toContain('"Ja","5","42","minst 12"')
+  })
+})

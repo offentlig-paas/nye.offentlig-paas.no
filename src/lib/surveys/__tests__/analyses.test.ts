@@ -129,7 +129,7 @@ describe('panelAnalysis', () => {
     expect(panelAnalysis(survey, cur, survey, prev.slice(0, 4), {})).toBeNull()
   })
 
-  it('hides counts of 1 or 2 and their p-value', () => {
+  it('hides the whole row and p-value when any count is 1 or 2', () => {
     const orgs = ['A', 'B', 'C', 'D', 'E', 'F']
     const prev = orgs.map(o => resp(o, 'dev', 'no'))
     const cur = orgs.map((o, i) => resp(o, 'dev', i < 2 ? 'yes' : 'no'))
@@ -137,8 +137,29 @@ describe('panelAnalysis', () => {
     const yes = p.questions[0]!.options!.find(o => o.label === 'Ja')!
     expect(yes.gained).toBe('<3')
     expect(yes.after).toBe('<3')
-    expect(yes.lost).toBe(0)
+    expect(yes.lost).toBe('<3')
+    expect(yes.before).toBe('<3')
     expect(yes.p).toBeNull()
     expect(yes.significant).toBe(false)
+  })
+})
+
+describe('panelAnalysis masking', () => {
+  it('masks every count of a row when one is small (before 10, after 9, gained 1, lost 2)', () => {
+    const orgs = Array.from({ length: 20 }, (_, i) => `O${i}`)
+    // 10 yes before: 2 drop to no (lost 2), 8 stay; 1 no becomes yes (gained 1)
+    const prev = orgs.map((o, i) => resp(o, 'dev', i < 10 ? 'yes' : 'no'))
+    const cur = orgs.map((o, i) =>
+      resp(o, 'dev', i < 8 || i === 10 ? 'yes' : 'no')
+    )
+    const p = panelAnalysis(survey, cur, survey, prev, { q: 'q' })!
+    const yes = p.questions[0]!.options!.find(o => o.label === 'Ja')!
+    expect([yes.before, yes.after, yes.gained, yes.lost]).toEqual([
+      '<3',
+      '<3',
+      '<3',
+      '<3',
+    ])
+    expect(yes.p).toBeNull()
   })
 })

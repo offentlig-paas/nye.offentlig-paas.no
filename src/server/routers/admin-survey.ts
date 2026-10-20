@@ -325,8 +325,8 @@ export const adminSurveyRouter = router({
         panelNote,
         hasPreviousWave: Boolean(comparesTo),
       }
-      // ponytail: per-instance Map keyed on counts; an edited answer with the
-      // same count shows stale analyses until the instance restarts.
+      // ponytail: per-instance Map; mutations that change responses or org
+      // links clear it, other instances catch up when counts change.
       if (analysesCache.size > 50) analysesCache.clear()
       analysesCache.set(key, result)
       return result
@@ -553,6 +553,7 @@ export const adminSurveyRouter = router({
         })
       }
       const deleted = await repository.deletePilotBySurvey(ctx.survey.slug)
+      analysesCache.clear()
       return { deleted }
     }),
 
@@ -602,6 +603,7 @@ export const adminSurveyRouter = router({
         overriddenBy: adminName,
         overriddenAt: new Date().toISOString(),
       })
+      analysesCache.clear()
 
       return { success: true }
     }),
