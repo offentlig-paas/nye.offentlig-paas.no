@@ -36,9 +36,10 @@ export function AdminAttendeesClient() {
   const [isUpdatingStatus, setIsUpdatingStatus] = useState<string | null>(null)
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [isImportModalOpen, setIsImportModalOpen] = useState(false)
-  const { showSuccess, showError } = useToast()
+  const [isBulkUpdating, setIsBulkUpdating] = useState(false)
+  const { showSuccess, showError, showInfo } = useToast()
   const router = useRouter()
-  const [_isPending, startTransition] = useTransition()
+  const [isPending, startTransition] = useTransition()
 
   const handleDeleteRegistration = async (registrationId: string) => {
     if (!confirm('Er du sikker på at du vil slette denne påmeldingen?')) {
@@ -95,6 +96,11 @@ export function AdminAttendeesClient() {
       return
     }
 
+    setIsBulkUpdating(true)
+    showInfo(
+      'Oppdaterer',
+      `Oppdaterer ${selectedRegistrations.length} påmeldinger. Dette kan ta litt tid.`
+    )
     try {
       const result = await bulkUpdateRegistrationStatus(
         slug,
@@ -110,6 +116,8 @@ export function AdminAttendeesClient() {
     } catch (error) {
       console.error('Error bulk updating status:', error)
       showError('Feil', 'Noe gikk galt ved bulk-oppdatering')
+    } finally {
+      setIsBulkUpdating(false)
     }
   }
 
@@ -229,6 +237,7 @@ export function AdminAttendeesClient() {
         onError={message => showError('Feil', message)}
         selectedCount={selectedRegistrations.length}
         onBulkStatusUpdate={handleBulkStatusUpdate}
+        isBulkUpdating={isBulkUpdating || isPending}
         onClearSelection={() => setSelectedRegistrations([])}
       />
 
