@@ -249,9 +249,12 @@ export class EventRegistrationService {
     ids: string[],
     status: RegistrationStatus
   ): Promise<EventRegistration[]> {
-    const updates = await Promise.all(
-      ids.map(id => this.updateRegistrationStatus(id, status))
-    )
+    // Sequential: parallel patches hit Sanity's mutation rate limit, and
+    // concurrent waitlist promotions race each other.
+    const updates: EventRegistration[] = []
+    for (const id of ids) {
+      updates.push(await this.updateRegistrationStatus(id, status))
+    }
     return updates
   }
 
