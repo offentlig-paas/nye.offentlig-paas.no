@@ -52,7 +52,13 @@ function Bar({ question }: { question: AggregatedQuestion }) {
               className={`flex items-center justify-center overflow-hidden text-xs whitespace-nowrap ${color(i, scale.length)}`}
               style={{ width: `${pct}%` }}
             >
-              {pct >= 22 && `${Math.round(pct)} % (${o.count})`}
+              {pct >= 12 && (
+                <span
+                  className={`overflow-hidden px-0.5 text-ellipsis whitespace-nowrap ${pct >= 25 ? '' : 'hidden sm:inline'}`}
+                >
+                  {`${Math.round(pct)} % (${o.count})`}
+                </span>
+              )}
             </div>
           )
         })}
@@ -93,9 +99,9 @@ export function LikertBar({ questions }: { questions: AggregatedQuestion[] }) {
                 {q.description}
               </p>
             )}
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
               <Bar question={q} />
-              <p className="w-16 shrink-0 text-xs leading-tight text-zinc-600 tabular-nums sm:w-28 dark:text-zinc-400">
+              <p className="shrink-0 text-xs leading-tight whitespace-nowrap text-zinc-600 tabular-nums dark:text-zinc-400">
                 {avg !== null && (
                   <>
                     Gjennomsnitt{' '}
@@ -106,70 +112,64 @@ export function LikertBar({ questions }: { questions: AggregatedQuestion[] }) {
                 )}
               </p>
             </div>
-            <p className="text-xs text-zinc-500 tabular-nums dark:text-zinc-400">
-              Antall svar: {q.responseCount}
-            </p>
-            {outside.length > 0 && (
-              <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-500 dark:text-zinc-400">
-                {outside.map(o => (
-                  <li key={o.value} className="flex items-center gap-1.5">
-                    <span
-                      aria-hidden="true"
-                      className={`inline-block h-3 w-3 rounded-sm ${NEUTRAL}`}
-                    />
-                    {stripMarkdown(o.label)}:{' '}
-                    {o.suppressed ? 'for få' : `${o.count} (${o.percentage} %)`}
-                  </li>
-                ))}
-              </ul>
-            )}
             {suppressed && (
               <p className="text-xs text-zinc-500 dark:text-zinc-400">
                 {suppressed.count} svar er slått sammen fordi for få valgte
                 hvert av alternativene.
               </p>
             )}
-            <details className="text-xs">
-              <summary className="cursor-pointer text-zinc-600 dark:text-zinc-400">
-                Vis tall
-              </summary>
-              <table className="mt-2 w-full">
-                <thead>
-                  <tr className="text-left text-zinc-500 dark:text-zinc-400">
-                    <th scope="col" className="py-1 pr-3 font-medium">
-                      Svar
-                    </th>
-                    <th
-                      scope="col"
-                      className="py-1 pr-3 text-right font-medium"
-                    >
-                      Antall
-                    </th>
-                    <th scope="col" className="py-1 text-right font-medium">
-                      Andel av dem som svarte
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="text-zinc-700 tabular-nums dark:text-zinc-300">
-                  {q.options.map(o => (
-                    <tr key={o.value}>
-                      <th
-                        scope="row"
-                        className="py-0.5 pr-3 text-left font-normal"
-                      >
-                        {stripMarkdown(o.label)}
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-xs">
+              <p className="text-zinc-500 tabular-nums dark:text-zinc-400">
+                {[
+                  `${q.responseCount} svar`,
+                  ...outside.map(
+                    o =>
+                      `${stripMarkdown(o.label)} ${o.suppressed ? 'for få' : `${o.count} (${o.percentage} %)`}`
+                  ),
+                ].join(' · ')}
+              </p>
+              <details className="open:basis-full">
+                <summary className="cursor-pointer text-zinc-600 dark:text-zinc-400">
+                  Vis tall
+                </summary>
+                <table className="mt-2 w-full">
+                  <thead>
+                    <tr className="text-left text-zinc-500 dark:text-zinc-400">
+                      <th scope="col" className="py-1 pr-3 font-medium">
+                        Svar
                       </th>
-                      <td className="py-0.5 pr-3 text-right">
-                        {o.suppressed ? 'for få' : o.count}
-                      </td>
-                      <td className="py-0.5 text-right">
-                        {o.suppressed ? '–' : `${o.percentage} %`}
-                      </td>
+                      <th
+                        scope="col"
+                        className="py-1 pr-3 text-right font-medium"
+                      >
+                        Antall
+                      </th>
+                      <th scope="col" className="py-1 text-right font-medium">
+                        Andel av dem som svarte
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </details>
+                  </thead>
+                  <tbody className="text-zinc-700 tabular-nums dark:text-zinc-300">
+                    {q.options.map(o => (
+                      <tr key={o.value}>
+                        <th
+                          scope="row"
+                          className="py-0.5 pr-3 text-left font-normal"
+                        >
+                          {stripMarkdown(o.label)}
+                        </th>
+                        <td className="py-0.5 pr-3 text-right">
+                          {o.suppressed ? 'for få' : o.count}
+                        </td>
+                        <td className="py-0.5 text-right">
+                          {o.suppressed ? '–' : `${o.percentage} %`}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </details>
+            </div>
           </div>
         )
       })}
