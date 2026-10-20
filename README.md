@@ -201,15 +201,21 @@ Rådataene ligger i Sanity til de åpne datasettene er laget og studien er ferdi
 
 1. **Lukk undersøkelsen.** Sett `status` til `SurveyStatus.Closed` i `src/data/surveys/<slug>.ts`.
 2. **Lag de åpne datasettene** i [offentlig-paas/forskning](https://github.com/offentlig-paas/forskning).
-3. **Frys resultatene.** Prøv først uten å røre repoet:
+3. **Frys resultatene fra det åpne datasettet.** Når undersøkelsen er lukket, viser resultatsiden bare de frosne tallene, så siden, de frosne tallene og datasettet viser det samme. Prøv først uten å røre repoet:
+
+   ```bash
+   pnpm tsx scripts/freeze-from-open-dataset.ts <slug> <datasett.csv> --organizations <antall> --out /tmp/frys
+   ```
+
+   Skriptet leser både datasett med ett svar per rad og tabeller med antall per svar (`column,question,answer,n`). Kjør så uten `--out`. Da skrives `src/data/surveys/aggregates/<slug>.json`, og `index.ts` i samme mappe oppdateres. Sett `resultsConfig.openDatasetUrl` til adressen til datasettet.
+
+   Finnes det ikke noe åpent datasett, kan du fryse fra Sanity i stedet:
 
    ```bash
    pnpm tsx --conditions=react-server --env-file=.env.local scripts/freeze-survey-aggregates.ts <slug> --out /tmp/frys
    ```
 
-   Kjør så uten `--out`. Da skrives `src/data/surveys/aggregates/<slug>.json`, og `index.ts` i samme mappe oppdateres, slik at nettsiden finner filen.
-
-4. **Kontroller filen.** Hver `_suppressed`-bøtte («Andre (for få svar)») skal ha minst 3 svar og samle minst 2 svaralternativer.
+4. **Kontroller filen.** Hver `_suppressed`-bøtte («Andre (for få svar)») skal ha minst 3 svar og samle minst 2 svaralternativer. Testen i `src/lib/surveys/__tests__/frozen.test.ts` sjekker dette.
 5. **Commit** JSON-filen og `index.ts`.
 6. **Slett rådataene** fra Sanity når studien er ferdig.
 

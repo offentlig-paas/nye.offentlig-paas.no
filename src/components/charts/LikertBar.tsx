@@ -150,7 +150,7 @@ export function LikertBar({ questions }: { questions: AggregatedQuestion[] }) {
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-xs">
               <p className="text-zinc-500 tabular-nums dark:text-zinc-400">
                 {[
-                  `${q.responseCount} svar`,
+                  `${q.nIsLowerBound ? 'minst ' : ''}${q.responseCount} svar`,
                   ...outside.map(
                     o =>
                       `${stripMarkdown(o.label)} ${o.suppressed ? 'for få' : `${o.count} (${o.percentage} %)`}`

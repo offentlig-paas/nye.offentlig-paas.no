@@ -7,6 +7,7 @@ import { isValidPilotToken } from '@/lib/surveys/pilot'
 import { surveyResponseService } from '@/domains/survey-response/service'
 import { SurveyResponseRepository } from '@/domains/survey-response/repository'
 import { aggregateSurveyResults } from '@/lib/surveys/aggregation'
+import { getClosedSurveyFrozen } from '@/lib/surveys/frozen'
 import { TRPCError } from '@trpc/server'
 
 const MAX_STRING_LENGTH = 10_000
@@ -122,6 +123,20 @@ export const surveyRouter = router({
         })
       }
 
+      const { heroText, methodologyNote, openDatasetUrl } = survey.resultsConfig
+      // Closed: the open dataset (frozen) is the only source, same numbers.
+      const frozen = getClosedSurveyFrozen(survey)
+      if (frozen) {
+        return {
+          ...frozen,
+          uniqueOrganizations: frozen.uniqueOrganizations ?? 0,
+          heroText,
+          methodologyNote,
+          fromOpenDataset: true,
+          openDatasetUrl,
+        }
+      }
+
       const repository = new SurveyResponseRepository()
       const orgQid = survey.organizationQuestionId ?? 'q1-org'
 
@@ -163,8 +178,10 @@ export const surveyRouter = router({
       return {
         ...aggregated,
         uniqueOrganizations: uniqueOrgs.size,
-        heroText: survey.resultsConfig.heroText,
-        methodologyNote: survey.resultsConfig.methodologyNote,
+        heroText,
+        methodologyNote,
+        fromOpenDataset: false,
+        openDatasetUrl: undefined,
       }
     }),
 })

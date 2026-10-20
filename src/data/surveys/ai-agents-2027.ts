@@ -81,9 +81,10 @@ export const aiAgents2027: SurveyDefinition = {
     slug: 'ai-agents-2026',
     // Same wording and option values in both waves. Checkbox questions that
     // gained options in wave 2 (q6, q9, q11, q20) are left out: new choices
-    // shift the shares, so the change would not be comparable.
+    // shift the shares, so the change would not be comparable. Role is left
+    // out too: the wave 1 open dataset, which the frozen results come from,
+    // only publishes three role groups.
     questionMap: {
-      'q3-role': 'q2-role',
       'q4-dev-count': 'q3-dev-count',
       'q5-adoption-level': 'q5-adoption-level',
       'q8-personal-use': 'q8-personal-use',
@@ -797,6 +798,7 @@ export const aiAgents2027: SurveyDefinition = {
           type: 'radio',
           title: 'Hvordan forholder du deg til KI-generert kode?',
           required: true,
+          visualization: 'diverging',
           options: [
             {
               label:
@@ -819,6 +821,7 @@ export const aiAgents2027: SurveyDefinition = {
             {
               label: 'Ikke aktuelt — jeg bruker ikke KI-kodeverktøy',
               value: 'not-applicable',
+              scale: false,
             },
           ],
         },
@@ -828,6 +831,7 @@ export const aiAgents2027: SurveyDefinition = {
           title:
             'Er det et gap mellom hva organisasjonen din tillater og hva du mener er forsvarlig?',
           required: true,
+          visualization: 'diverging',
           options: [
             {
               label:
@@ -848,8 +852,13 @@ export const aiAgents2027: SurveyDefinition = {
               label:
                 'Organisasjonen har ingen tydelig tilnærming, så det er vanskelig å si',
               value: 'no-approach',
+              scale: false,
             },
-            { label: 'Vet ikke / har ingen mening', value: 'unknown' },
+            {
+              label: 'Vet ikke / har ingen mening',
+              value: 'unknown',
+              scale: false,
+            },
           ],
         },
       ],

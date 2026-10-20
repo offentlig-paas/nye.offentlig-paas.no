@@ -53,7 +53,7 @@ export const stateOfPlatforms2027: SurveyDefinition = {
   organizationQuestionId: 'q1-org',
   comparesTo: {
     // Wave 2 exists only as frozen aggregates, built from the 2026 CSV by
-    // scripts/import-sop-wave2-aggregates.ts with the same question ids.
+    // scripts/freeze-from-open-dataset.ts with the same question ids.
     // Mapped: unchanged wording and options. Left out: free text, Q15, Q26,
     // Q28, Q31 (options removed) and Q20 (options differ from wave 2).
     slug: 'state-of-platforms-2026',

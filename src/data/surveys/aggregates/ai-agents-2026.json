@@ -1,0 +1,1013 @@
+{
+  "surveySlug": "ai-agents-2026",
+  "totalResponses": 115,
+  "sections": [
+    {
+      "id": "demographics",
+      "title": "Om deg og din organisasjon",
+      "questions": [
+        {
+          "id": "q2-role",
+          "title": "Hva er din primærrolle?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 115,
+          "options": [
+            {
+              "label": "IT-leder / leder",
+              "value": "organizational-leadership",
+              "count": 15,
+              "percentage": 13
+            },
+            {
+              "label": "Utvikler / plattform",
+              "value": "practitioner",
+              "count": 56,
+              "percentage": 49
+            },
+            {
+              "label": "Teknisk leder / teamleder",
+              "value": "technical-leadership",
+              "count": 44,
+              "percentage": 38
+            }
+          ]
+        },
+        {
+          "id": "q3-dev-count",
+          "title": "Omtrent hvor mange utviklere og teknisk personell har organisasjonen din?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 115,
+          "options": [
+            {
+              "label": "Ingen — vi har ikke utviklere",
+              "value": "none",
+              "count": 0,
+              "percentage": 0
+            },
+            {
+              "label": "1–10",
+              "value": "1-10",
+              "count": 4,
+              "percentage": 3
+            },
+            {
+              "label": "11–50",
+              "value": "11-50",
+              "count": 24,
+              "percentage": 21
+            },
+            {
+              "label": "51–200",
+              "value": "51-200",
+              "count": 47,
+              "percentage": 41
+            },
+            {
+              "label": "Flere enn 200",
+              "value": "200+",
+              "count": 36,
+              "percentage": 31
+            },
+            {
+              "label": "Vet ikke",
+              "value": "unknown",
+              "count": 4,
+              "percentage": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "adoption-org",
+      "title": "Adopsjon av KI-kodeverktøy",
+      "questions": [
+        {
+          "id": "q5-adoption-level",
+          "title": "Hva beskriver best organisasjonens bruk av KI-kodeverktøy i dag?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 115,
+          "options": [
+            {
+              "label": "Ikke i bruk, så vidt jeg vet",
+              "value": "not-in-use",
+              "count": 0,
+              "percentage": 0
+            },
+            {
+              "label": "Enkeltpersoner bruker KI-verktøy på eget initiativ",
+              "value": "individual",
+              "count": 8,
+              "percentage": 7
+            },
+            {
+              "label": "Noen team har tatt i bruk KI-verktøy, men det finnes ingen organisasjonsomfattende tilnærming",
+              "value": "some-teams",
+              "count": 17,
+              "percentage": 15
+            },
+            {
+              "label": "Organisasjonen har offisielt godkjent eller anskaffet KI-kodeverktøy, men ikke alle team bruker dem ennå",
+              "value": "officially-approved",
+              "count": 45,
+              "percentage": 39
+            },
+            {
+              "label": "De fleste utviklere har tilgang til og bruker KI-kodeverktøy",
+              "value": "most-developers",
+              "count": 45,
+              "percentage": 39
+            },
+            {
+              "label": "Vet ikke",
+              "value": "unknown",
+              "count": 0,
+              "percentage": 0
+            }
+          ]
+        },
+        {
+          "id": "q6-approved-tools",
+          "title": "Hvilke KI-kodeverktøy er offisielt godkjent eller anskaffet i organisasjonen din?",
+          "type": "checkbox",
+          "visualization": "bar",
+          "responseCount": 115,
+          "options": [
+            {
+              "label": "GitHub Copilot",
+              "value": "copilot",
+              "count": 94,
+              "percentage": 82
+            },
+            {
+              "label": "Cursor",
+              "value": "cursor",
+              "count": 13,
+              "percentage": 11
+            },
+            {
+              "label": "Codex",
+              "value": "codex",
+              "count": 16,
+              "percentage": 14
+            },
+            {
+              "label": "Claude Code",
+              "value": "claude-code",
+              "count": 40,
+              "percentage": 35
+            },
+            {
+              "label": "Amazon Q Developer",
+              "value": "amazon-q",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Gemini Code Assist",
+              "value": "gemini",
+              "count": 3,
+              "percentage": 3
+            },
+            {
+              "label": "JetBrains AI Assistant",
+              "value": "jetbrains-ai",
+              "count": 9,
+              "percentage": 8
+            },
+            {
+              "label": "Ingen offisielt godkjente verktøy",
+              "value": "none",
+              "count": 9,
+              "percentage": 8
+            },
+            {
+              "label": "Vet ikke",
+              "value": "unknown",
+              "count": 4,
+              "percentage": 3
+            },
+            {
+              "label": "Intern plattform",
+              "value": "internal-platform",
+              "count": 6,
+              "percentage": 5
+            },
+            {
+              "label": "Andre verktøy",
+              "value": "other-tool",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "KI-verktøy for kodegjennomgang",
+              "value": "code-review-ai",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Open source-verktøy",
+              "value": "open-source",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            }
+          ]
+        },
+        {
+          "id": "q7-introduction-path",
+          "title": "Hva var den viktigste måten KI-kodeverktøy ble innført i organisasjonen din?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 115,
+          "options": [
+            {
+              "label": "Sentral anskaffelse eller IT-avdeling bestemte",
+              "value": "central",
+              "count": 45,
+              "percentage": 39
+            },
+            {
+              "label": "Team eller avdeling valgte selv",
+              "value": "team",
+              "count": 11,
+              "percentage": 10
+            },
+            {
+              "label": "Enkeltpersoner begynte å bruke verktøy, og det ble etter hvert akseptert",
+              "value": "bottom-up",
+              "count": 17,
+              "percentage": 15
+            },
+            {
+              "label": "Verktøyet fulgte med en eksisterende avtale (f.eks. Microsoft/GitHub-avtale)",
+              "value": "bundled",
+              "count": 23,
+              "percentage": 20
+            },
+            {
+              "label": "Ikke aktuelt — vi bruker ikke KI-kodeverktøy",
+              "value": "not-applicable",
+              "count": 4,
+              "percentage": 3
+            },
+            {
+              "label": "Vet ikke",
+              "value": "unknown",
+              "count": 7,
+              "percentage": 6
+            },
+            {
+              "label": "Annet",
+              "value": "other",
+              "count": 8,
+              "percentage": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "personal-screening",
+      "title": "Din personlige bruk",
+      "questions": [
+        {
+          "id": "q8-personal-use",
+          "title": "Bruker du KI-kodeverktøy?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 115,
+          "options": [
+            {
+              "label": "Ja",
+              "value": "yes",
+              "count": 106,
+              "percentage": 92
+            },
+            {
+              "label": "Nei",
+              "value": "no",
+              "count": 9,
+              "percentage": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "personal-usage",
+      "title": "Bruksmønster og fordeler",
+      "questions": [
+        {
+          "id": "q8b-personal-tools",
+          "title": "Hvilke KI-kodeverktøy bruker du?",
+          "type": "checkbox",
+          "visualization": "bar",
+          "responseCount": 106,
+          "options": [
+            {
+              "label": "GitHub Copilot",
+              "value": "copilot",
+              "count": 78,
+              "percentage": 74
+            },
+            {
+              "label": "Cursor",
+              "value": "cursor",
+              "count": 9,
+              "percentage": 8
+            },
+            {
+              "label": "Codex",
+              "value": "codex",
+              "count": 17,
+              "percentage": 16
+            },
+            {
+              "label": "Windsurf / Antigravity",
+              "value": "windsurf",
+              "count": 7,
+              "percentage": 7
+            },
+            {
+              "label": "Claude Code",
+              "value": "claude-code",
+              "count": 48,
+              "percentage": 45
+            },
+            {
+              "label": "Gemini Code Assist / Gemini CLI",
+              "value": "gemini",
+              "count": 11,
+              "percentage": 10
+            },
+            {
+              "label": "JetBrains AI Assistant",
+              "value": "jetbrains-ai",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "ChatGPT, Claude eller lignende via nettleser/API (ikke dedikert kodeverktøy)",
+              "value": "browser-llm",
+              "count": 45,
+              "percentage": 42
+            },
+            {
+              "label": "Aider, OpenCode eller andre open source-verktøy",
+              "value": "open-source",
+              "count": 18,
+              "percentage": 17
+            },
+            {
+              "label": "Andre verktøy",
+              "value": "other-tool",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "KI-verktøy for kodegjennomgang",
+              "value": "code-review-ai",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            }
+          ]
+        },
+        {
+          "id": "q9-usage-modes",
+          "title": "Hvilke måter bruker du KI-kodeverktøy på?",
+          "type": "checkbox",
+          "visualization": "bar",
+          "responseCount": 106,
+          "options": [
+            {
+              "label": "Autofullføring av kode (verktøyet foreslår kode mens jeg skriver)",
+              "value": "autocomplete",
+              "count": 58,
+              "percentage": 55
+            },
+            {
+              "label": "Chat i editoren (jeg stiller spørsmål og får svar)",
+              "value": "chat",
+              "count": 87,
+              "percentage": 82
+            },
+            {
+              "label": "Planlegging av oppgaver (KI hjelper meg å bryte ned og planlegge arbeid)",
+              "value": "planning",
+              "count": 68,
+              "percentage": 64
+            },
+            {
+              "label": "Agentmodus lokalt (verktøyet gjør endringer på tvers av flere filer på min maskin)",
+              "value": "local-agent",
+              "count": 77,
+              "percentage": 73
+            },
+            {
+              "label": "Agentmodus i skyen (f.eks. GitHub Copilot coding agent som kjører uten at jeg er til stede)",
+              "value": "cloud-agent",
+              "count": 24,
+              "percentage": 23
+            },
+            {
+              "label": "Kodegjennomgang med KI (f.eks. Copilot code review)",
+              "value": "code-review",
+              "count": 55,
+              "percentage": 52
+            },
+            {
+              "label": "Testgenerering",
+              "value": "test-generation",
+              "count": 52,
+              "percentage": 49
+            },
+            {
+              "label": "Feilsøking / debugging",
+              "value": "debugging",
+              "count": 70,
+              "percentage": 66
+            }
+          ]
+        },
+        {
+          "id": "q10-integrations",
+          "title": "Har du koblet KI-kodeverktøyet ditt til andre systemer?",
+          "type": "checkbox",
+          "visualization": "bar",
+          "responseCount": 106,
+          "options": [
+            {
+              "label": "Nei, jeg bruker bare kodegenerering og chat",
+              "value": "none",
+              "count": 55,
+              "percentage": 52
+            },
+            {
+              "label": "Kodeadministrasjon (f.eks. GitHub, GitLab)",
+              "value": "scm",
+              "count": 40,
+              "percentage": 38
+            },
+            {
+              "label": "Oppgavehåndtering (f.eks. Jira, Linear, Azure Boards)",
+              "value": "project-mgmt",
+              "count": 17,
+              "percentage": 16
+            },
+            {
+              "label": "CI/CD (f.eks. GitHub Actions, Jenkins)",
+              "value": "cicd",
+              "count": 19,
+              "percentage": 18
+            },
+            {
+              "label": "Infrastruktur og drift (f.eks. Kubernetes, Terraform)",
+              "value": "infra",
+              "count": 14,
+              "percentage": 13
+            },
+            {
+              "label": "Overvåking og logger (f.eks. Grafana, Datadog)",
+              "value": "monitoring",
+              "count": 13,
+              "percentage": 12
+            },
+            {
+              "label": "Kommunikasjon (f.eks. Slack, Teams)",
+              "value": "communication",
+              "count": 6,
+              "percentage": 6
+            },
+            {
+              "label": "Vet ikke hva dette betyr",
+              "value": "unknown",
+              "count": 0,
+              "percentage": 0
+            },
+            {
+              "label": "Andre",
+              "value": "other",
+              "count": 7,
+              "percentage": 7
+            }
+          ]
+        },
+        {
+          "id": "q11-frequency",
+          "title": "Hvor ofte bruker du KI-kodeverktøy i arbeidet ditt?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 106,
+          "options": [
+            {
+              "label": "Daglig",
+              "value": "daily",
+              "count": 73,
+              "percentage": 69
+            },
+            {
+              "label": "Flere ganger i uken",
+              "value": "several-weekly",
+              "count": 15,
+              "percentage": 14
+            },
+            {
+              "label": "Ukentlig",
+              "value": "weekly",
+              "count": 10,
+              "percentage": 9
+            },
+            {
+              "label": "Noen ganger i måneden",
+              "value": "monthly",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Sjelden eller aldri",
+              "value": "rarely",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            }
+          ]
+        },
+        {
+          "id": "q11b-benefit",
+          "title": "Hva er den viktigste fordelen du opplever med KI-kodeverktøy?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 106,
+          "options": [
+            {
+              "label": "Økt hastighet — jeg skriver kode raskere",
+              "value": "speed",
+              "count": 38,
+              "percentage": 36
+            },
+            {
+              "label": "Bedre kvalitet — KI hjelper meg å skrive bedre kode",
+              "value": "quality",
+              "count": 8,
+              "percentage": 8
+            },
+            {
+              "label": "Læring — jeg lærer nye teknikker og mønstre",
+              "value": "learning",
+              "count": 14,
+              "percentage": 13
+            },
+            {
+              "label": "Redusert kjedelig arbeid — KI tar seg av repetitive oppgaver",
+              "value": "reduced-toil",
+              "count": 27,
+              "percentage": 25
+            },
+            {
+              "label": "Jeg opplever ikke vesentlige fordeler",
+              "value": "no-benefit",
+              "count": 6,
+              "percentage": 6
+            },
+            {
+              "label": "Annet",
+              "value": "other",
+              "count": 13,
+              "percentage": 12
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "governance",
+      "title": "Styring og organisatorisk støtte",
+      "questions": [
+        {
+          "id": "q12-policy",
+          "title": "Har organisasjonen din retningslinjer eller policy for bruk av KI-kodeverktøy?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 115,
+          "options": [
+            {
+              "label": "Ja, spesifikt for KI-kodeverktøy",
+              "value": "specific",
+              "count": 47,
+              "percentage": 41
+            },
+            {
+              "label": "Ja, som del av en generell KI-policy",
+              "value": "general",
+              "count": 49,
+              "percentage": 43
+            },
+            {
+              "label": "Nei",
+              "value": "no",
+              "count": 8,
+              "percentage": 7
+            },
+            {
+              "label": "Vet ikke",
+              "value": "unknown",
+              "count": 11,
+              "percentage": 10
+            }
+          ]
+        },
+        {
+          "id": "q13-support",
+          "title": "Hvordan støtter organisasjonen din utviklere i bruk av KI-kodeverktøy?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 115,
+          "options": [
+            {
+              "label": "Ingen støtte eller opplæring",
+              "value": "none",
+              "count": 5,
+              "percentage": 4
+            },
+            {
+              "label": "Uformell kunnskapsdeling mellom utviklere",
+              "value": "informal",
+              "count": 50,
+              "percentage": 43
+            },
+            {
+              "label": "Delte ressurser eller retningslinjer er tilgjengelige (f.eks. wiki, beste praksis)",
+              "value": "shared-resources",
+              "count": 26,
+              "percentage": 23
+            },
+            {
+              "label": "Organisert opplæring eller kurs",
+              "value": "training",
+              "count": 22,
+              "percentage": 19
+            },
+            {
+              "label": "Strukturert program (f.eks. champions-nettverk, dedikerte ressurspersoner, tilbakemeldingsrutiner)",
+              "value": "structured",
+              "count": 9,
+              "percentage": 8
+            },
+            {
+              "label": "Vet ikke",
+              "value": "unknown",
+              "count": 3,
+              "percentage": 3
+            }
+          ]
+        },
+        {
+          "id": "q14-decision-authority",
+          "title": "Hvordan avgjøres det hvilke KI-kodeverktøy utviklere kan bruke?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 115,
+          "options": [
+            {
+              "label": "Sentralt besluttet (f.eks. IT-avdelingen eller ledelsen velger for hele organisasjonen)",
+              "value": "central",
+              "count": 50,
+              "percentage": 43
+            },
+            {
+              "label": "Via en godkjenningsprosess (f.eks. risikovurdering/ROS, så kan team eller utviklere foreslå verktøy)",
+              "value": "approval-process",
+              "count": 34,
+              "percentage": 30
+            },
+            {
+              "label": "Teamet eller tech lead bestemmer",
+              "value": "team",
+              "count": 7,
+              "percentage": 6
+            },
+            {
+              "label": "Hver enkelt utvikler bestemmer selv",
+              "value": "individual",
+              "count": 8,
+              "percentage": 7
+            },
+            {
+              "label": "Ingen har eksplisitt bestemt dette",
+              "value": "undecided",
+              "count": 7,
+              "percentage": 6
+            },
+            {
+              "label": "Vet ikke",
+              "value": "unknown",
+              "count": 9,
+              "percentage": 8
+            }
+          ]
+        },
+        {
+          "id": "q15-data-sovereignty",
+          "title": "Har organisasjonen din avklart hvilke KI-leverandører som behandler kildekoden deres?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 115,
+          "options": [
+            {
+              "label": "Ja, det er tydelig avklart",
+              "value": "clarified",
+              "count": 59,
+              "percentage": 51
+            },
+            {
+              "label": "Delvis — noe er avklart, men ikke for alle verktøy",
+              "value": "partial",
+              "count": 34,
+              "percentage": 30
+            },
+            {
+              "label": "Nei",
+              "value": "no",
+              "count": 7,
+              "percentage": 6
+            },
+            {
+              "label": "Vet ikke",
+              "value": "unknown",
+              "count": 15,
+              "percentage": 13
+            }
+          ]
+        },
+        {
+          "id": "q16-measurement",
+          "title": "Hvordan vurderer organisasjonen din effekten av KI-kodeverktøy?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 115,
+          "options": [
+            {
+              "label": "Vi vurderer ikke effekten",
+              "value": "none",
+              "count": 8,
+              "percentage": 7
+            },
+            {
+              "label": "Uformelle tilbakemeldinger og anekdoter",
+              "value": "informal",
+              "count": 50,
+              "percentage": 43
+            },
+            {
+              "label": "Vi følger med på bruksdata fra verktøyleverandøren (f.eks. antall brukere, akseptrate)",
+              "value": "vendor-data",
+              "count": 14,
+              "percentage": 12
+            },
+            {
+              "label": "Vi måler effekten med egne metrikker (f.eks. leveransetakt, kvalitet, utvikleropplevelse)",
+              "value": "own-metrics",
+              "count": 13,
+              "percentage": 11
+            },
+            {
+              "label": "Vet ikke",
+              "value": "unknown",
+              "count": 30,
+              "percentage": 26
+            }
+          ]
+        },
+        {
+          "id": "q17-code-review",
+          "title": "Hvordan håndteres KI-generert kode i kodegjennomgang (code review)?",
+          "type": "radio",
+          "visualization": "bar",
+          "responseCount": 115,
+          "options": [
+            {
+              "label": "Ingen spesiell håndtering — KI-generert kode gjennomgås som all annen kode",
+              "value": "no-special",
+              "count": 71,
+              "percentage": 62
+            },
+            {
+              "label": "Vi har muntlige retningslinjer om å være ekstra oppmerksom på KI-generert kode",
+              "value": "verbal",
+              "count": 14,
+              "percentage": 12
+            },
+            {
+              "label": "Vi har skriftlige retningslinjer for gjennomgang av KI-generert kode",
+              "value": "written",
+              "count": 8,
+              "percentage": 7
+            },
+            {
+              "label": "Vi har skriftlige retningslinjer og bruker automatiserte verktøy for å sjekke KI-generert kode",
+              "value": "written-automated",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Ikke aktuelt — vi bruker ikke KI-kodeverktøy eller har ikke kodegjennomgang",
+              "value": "not-applicable",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Vet ikke",
+              "value": "unknown",
+              "count": 13,
+              "percentage": 11
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "barriers",
+      "title": "Bekymringer og barrierer",
+      "questions": [
+        {
+          "id": "q18-concerns",
+          "title": "Hva er dine viktigste bekymringer knyttet til bruk av KI-kodeverktøy?",
+          "type": "checkbox",
+          "visualization": "bar",
+          "responseCount": 115,
+          "options": [
+            {
+              "label": "Sikkerhetssårbarheter i KI-generert kode",
+              "value": "security",
+              "count": 39,
+              "percentage": 34
+            },
+            {
+              "label": "Kodekvalitet og teknisk gjeld",
+              "value": "code-quality",
+              "count": 65,
+              "percentage": 57
+            },
+            {
+              "label": "Personvern og datahåndtering (kildekode sendes til ekstern leverandør)",
+              "value": "privacy",
+              "count": 31,
+              "percentage": 27
+            },
+            {
+              "label": "Immaterielle rettigheter og lisenser (hvem eier KI-generert kode?)",
+              "value": "ip",
+              "count": 8,
+              "percentage": 7
+            },
+            {
+              "label": "Tap av kompetanse eller ferdigheter over tid",
+              "value": "skill-loss",
+              "count": 82,
+              "percentage": 71
+            },
+            {
+              "label": "Kostnad i forhold til nytte",
+              "value": "cost",
+              "count": 20,
+              "percentage": 17
+            },
+            {
+              "label": "Feil og hallusinasjoner (KI-verktøyet genererer kode som ser riktig ut men er feil)",
+              "value": "hallucinations",
+              "count": 46,
+              "percentage": 40
+            },
+            {
+              "label": "Arbeidsflyt (verktøyet forstyrrer mer enn det hjelper)",
+              "value": "workflow",
+              "count": 8,
+              "percentage": 7
+            },
+            {
+              "label": "Jeg har ingen vesentlige bekymringer",
+              "value": "no-concerns",
+              "count": 5,
+              "percentage": 4
+            },
+            {
+              "label": "Andre",
+              "value": "other",
+              "count": 8,
+              "percentage": 7
+            }
+          ]
+        },
+        {
+          "id": "q20-trust",
+          "title": "Hvordan forholder du deg til KI-generert kode?",
+          "type": "radio",
+          "visualization": "diverging",
+          "responseCount": 115,
+          "options": [
+            {
+              "label": "Jeg godtar aldri KI-forslag uten å gjennomgå og forstå koden",
+              "value": "always-review",
+              "count": 28,
+              "percentage": 24
+            },
+            {
+              "label": "Jeg gjennomgår det meste, men godtar enkle forslag uten grundig sjekk",
+              "value": "mostly-review",
+              "count": 50,
+              "percentage": 43
+            },
+            {
+              "label": "Jeg godtar ofte KI-forslag etter en rask sjekk",
+              "value": "quick-check",
+              "count": 18,
+              "percentage": 16
+            },
+            {
+              "label": "Jeg godtar som regel KI-forslag som ser riktige ut",
+              "value": "usually-accept",
+              "count": 9,
+              "percentage": 8
+            },
+            {
+              "label": "Ikke aktuelt — jeg bruker ikke KI-kodeverktøy",
+              "value": "not-applicable",
+              "scale": false,
+              "count": 10,
+              "percentage": 9
+            }
+          ],
+          "average": 2.1
+        },
+        {
+          "id": "q21-perception-gap",
+          "title": "Er det et gap mellom hva organisasjonen din tillater og hva du mener er forsvarlig?",
+          "type": "radio",
+          "visualization": "diverging",
+          "responseCount": 115,
+          "options": [
+            {
+              "label": "Organisasjonen er for restriktiv — vi burde bruke KI-verktøy mer",
+              "value": "too-restrictive",
+              "count": 18,
+              "percentage": 16
+            },
+            {
+              "label": "Organisasjonens tilnærming samsvarer med det jeg mener er forsvarlig",
+              "value": "aligned",
+              "count": 48,
+              "percentage": 42
+            },
+            {
+              "label": "Organisasjonen er for liberal — vi burde ha strengere retningslinjer",
+              "value": "too-liberal",
+              "count": 23,
+              "percentage": 20
+            },
+            {
+              "label": "Organisasjonen har ingen tydelig tilnærming, så det er vanskelig å si",
+              "value": "no-approach",
+              "scale": false,
+              "count": 21,
+              "percentage": 18
+            },
+            {
+              "label": "Vet ikke / har ingen mening",
+              "value": "unknown",
+              "scale": false,
+              "count": 5,
+              "percentage": 4
+            }
+          ],
+          "average": 2.1
+        }
+      ]
+    },
+    {
+      "id": "followup",
+      "title": "Oppfølging",
+      "questions": []
+    },
+    {
+      "id": "contact",
+      "title": "Kontaktinformasjon for intervju",
+      "questions": []
+    }
+  ],
+  "title": "KI-kodeverktøy i norsk offentlig sektor",
+  "frozenAt": "2026-10-20",
+  "uniqueOrganizations": 57
+}

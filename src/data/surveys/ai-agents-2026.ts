@@ -27,6 +27,8 @@ export const aiAgents2026: SurveyDefinition = {
   sensitiveQuestionIds: ['q24-email'],
   resultsConfig: {
     published: true,
+    openDatasetUrl:
+      'https://github.com/offentlig-paas/open-data/tree/main/state-of-ai-agents/2026',
     heroText:
       'Resultater fra kartleggingen av KI-kodeverktøy i norsk offentlig sektor. Undersøkelsen er avsluttet. Svarene ble samlet inn i april og mai 2026.',
     methodologyNote:
