@@ -41,6 +41,8 @@ export interface SurveyDefinition {
   researchers?: SlackUser[]
   organizationQuestionId?: string
   sensitiveQuestionIds?: string[]
+  /** Single-choice questions (e.g. role) to break results down by in admin. */
+  segmentQuestionIds?: string[]
   /** Shown in pilot invitations, e.g. "10–15". */
   estimatedMinutes?: string
   resultsConfig?: ResultsConfig

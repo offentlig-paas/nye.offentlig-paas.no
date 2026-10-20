@@ -19,23 +19,16 @@ import { aggregateSurveyResults } from '@/lib/surveys/aggregation'
 import { aggregatedToCsv, toCsv } from '@/lib/surveys/csv'
 import { getAppUrl } from '@/server/lib/environment'
 import { getSlackUsersForMember } from '@/lib/members-slack'
-import { members, findMemberByName, canonicalOrgName } from '@/data/members'
+import { members, findMemberByName } from '@/data/members'
+import {
+  panelAnalysis,
+  resolveOrganization,
+  segmentBreakdowns,
+  withinOrgAgreement,
+} from '@/lib/surveys/analyses'
 import { SurveyStatus, type SurveyDefinition } from '@/lib/surveys/types'
 
 const repository = new SurveyResponseRepository()
-
-function resolveOrganization(
-  response: {
-    answers: { questionId: string; value?: string }[]
-    organizationOverride?: { memberName: string }
-  },
-  orgQid: string
-): string {
-  const org =
-    response.organizationOverride?.memberName ||
-    response.answers.find(a => a.questionId === orgQid)?.value
-  return org === undefined ? 'Ukjent' : canonicalOrgName(org)
-}
 
 const surveyAccessForSlug = createSurveyAccessMiddleware(
   (input: unknown) => (input as { slug: string }).slug
@@ -260,6 +253,54 @@ export const adminSurveyRouter = router({
         previousTotal: previous.totalResponses,
         currentTotal: current.totalResponses,
         questions: compareWaves(current, previous, comparesTo.questionMap),
+      }
+    }),
+
+  /**
+   * Analyses that need raw answers with org identity. Aggregates only; null
+   * fields mean the raw answers are gone (or, for the panel, why it is missing).
+   */
+  getAnalyses: adminSurveyProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async ({ ctx }) => {
+      if (ctx.surveyRole !== 'owner' && ctx.surveyRole !== 'researcher') {
+        throw new TRPCError({ code: 'FORBIDDEN' })
+      }
+      const { survey } = ctx
+      const responses = await repository.findBySurvey(survey.slug)
+      if (responses.length === 0) return { live: false as const }
+      const { comparesTo } = survey
+      const previous = comparesTo && getSurvey(comparesTo.slug)
+      let panel: ReturnType<typeof panelAnalysis> = null
+      let panelNote: string | null = null
+      if (!comparesTo) {
+        // No previous wave: nothing to compare.
+      } else if (!previous)
+        panelNote = 'Forrige bølge finnes bare som låste tall.'
+      else {
+        const prevResponses = await repository.findBySurvey(previous.slug)
+        if (prevResponses.length === 0)
+          panelNote =
+            'Forrige bølge har ikke rådata lenger, så vi kan ikke følge de samme organisasjonene.'
+        else {
+          panel = panelAnalysis(
+            survey,
+            responses,
+            previous,
+            prevResponses,
+            comparesTo.questionMap
+          )
+          if (!panel)
+            panelNote = 'Færre enn 5 organisasjoner har svart i begge bølgene.'
+        }
+      }
+      return {
+        live: true as const,
+        agreement: withinOrgAgreement(survey, responses),
+        segments: segmentBreakdowns(survey, responses),
+        panel,
+        panelNote,
+        hasPreviousWave: Boolean(comparesTo),
       }
     }),
 

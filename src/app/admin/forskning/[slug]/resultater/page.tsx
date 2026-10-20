@@ -8,10 +8,12 @@ import { SurveyResponseRepository } from '@/domains/survey-response/repository'
 import { aggregateSurveyResults } from '@/lib/surveys/aggregation'
 import { getFrozenAggregates } from '@/lib/surveys/frozen'
 import { requireAdminOrSurveyAccess } from '@/lib/auth-guards'
+import { aggregateByOrganization } from '@/lib/surveys/analyses'
+import { Analyses, RAW_GONE } from './Analyses'
 
 interface AdminSurveyResultsPageProps {
   params: Promise<{ slug: string }>
-  searchParams: Promise<{ pilot?: string }>
+  searchParams: Promise<{ pilot?: string; niva?: string }>
 }
 
 function ResultsSkeleton() {
@@ -39,10 +41,12 @@ async function ResultsContent({
   slug,
   pilot,
   pilotCount,
+  orgLevel,
 }: {
   slug: string
   pilot: boolean
   pilotCount: number
+  orgLevel: boolean
 }) {
   const survey = getSurvey(slug)
   if (!survey) notFound()
@@ -64,6 +68,7 @@ async function ResultsContent({
           className="mb-6 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
         >
           Resultatene er låst etter at undersøkelsen ble avsluttet.
+          {orgLevel && ` Visning per organisasjon: ${RAW_GONE}`}
         </p>
         <SurveyResultsRenderer
           results={frozen}
@@ -71,6 +76,7 @@ async function ResultsContent({
           heroText={survey.resultsConfig?.heroText}
           methodologyNote={survey.resultsConfig?.methodologyNote}
         />
+        <Analyses slug={slug} />
       </>
     )
   }
@@ -89,15 +95,30 @@ async function ResultsContent({
     )
   }
 
-  const aggregated = aggregateSurveyResults(survey, responses)
+  const aggregated = orgLevel
+    ? aggregateByOrganization(survey, responses)
+    : aggregateSurveyResults(survey, responses)
 
   return (
-    <SurveyResultsRenderer
-      results={aggregated}
-      uniqueOrganizations={uniqueOrgs}
-      heroText={survey.resultsConfig?.heroText}
-      methodologyNote={survey.resultsConfig?.methodologyNote}
-    />
+    <>
+      {orgLevel && (
+        <p
+          role="status"
+          className="mb-6 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+        >
+          Hver organisasjon teller én gang. Der man velger ett svar, gjelder
+          flertallet i organisasjonen (like mange stemmer gir «uavklart»). Der
+          man kan velge flere, teller alt noen i organisasjonen har valgt.
+        </p>
+      )}
+      <SurveyResultsRenderer
+        results={aggregated}
+        uniqueOrganizations={uniqueOrgs}
+        heroText={survey.resultsConfig?.heroText}
+        methodologyNote={survey.resultsConfig?.methodologyNote}
+      />
+      {!pilot && <Analyses slug={slug} />}
+    </>
   )
 }
 
@@ -106,7 +127,9 @@ export default async function AdminSurveyResultsPage({
   searchParams,
 }: AdminSurveyResultsPageProps) {
   const { slug } = await params
-  const pilot = (await searchParams).pilot === '1'
+  const query = await searchParams
+  const pilot = query.pilot === '1'
+  const orgLevel = !pilot && query.niva === 'org'
 
   const session = await requireAdminOrSurveyAccess()
   const survey = getSurvey(slug)
@@ -149,6 +172,27 @@ export default async function AdminSurveyResultsPage({
           </Link>
         </nav>
       )}
+      {!pilot && (
+        <nav
+          aria-label="Velg nivå"
+          className="mb-4 ml-2 inline-flex gap-1 rounded-lg bg-gray-100 p-1 dark:bg-gray-800 print:hidden"
+        >
+          <Link
+            href={resultsHref}
+            aria-current={orgLevel ? undefined : 'page'}
+            className={tabClass(!orgLevel)}
+          >
+            Per svar
+          </Link>
+          <Link
+            href={`${resultsHref}?niva=org`}
+            aria-current={orgLevel ? 'page' : undefined}
+            className={tabClass(orgLevel)}
+          >
+            Per organisasjon
+          </Link>
+        </nav>
+      )}
       {pilot && (
         <p
           role="status"
@@ -178,7 +222,12 @@ export default async function AdminSurveyResultsPage({
         ]}
       />
       <Suspense fallback={<ResultsSkeleton />}>
-        <ResultsContent slug={slug} pilot={pilot} pilotCount={pilotCount} />
+        <ResultsContent
+          slug={slug}
+          pilot={pilot}
+          pilotCount={pilotCount}
+          orgLevel={orgLevel}
+        />
       </Suspense>
     </div>
   )
