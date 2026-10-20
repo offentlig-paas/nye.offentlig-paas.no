@@ -29,6 +29,7 @@ interface AdminEventActionsProps {
   showExport?: boolean
   selectedCount?: number
   onBulkStatusUpdate?: (status: RegistrationStatus) => void
+  isBulkUpdating?: boolean
   onClearSelection?: () => void
   variant?: 'bar' | 'card'
 }
@@ -48,6 +49,7 @@ export function AdminEventActions({
   showExport = true,
   selectedCount = 0,
   onBulkStatusUpdate,
+  isBulkUpdating = false,
   onClearSelection,
   variant = 'bar',
 }: AdminEventActionsProps) {
@@ -173,32 +175,36 @@ export function AdminEventActions({
         {hasSelection ? (
           <div className="flex flex-wrap items-center gap-2">
             <span className="rounded-full bg-blue-600 px-2.5 py-0.5 text-xs font-semibold text-white">
-              {selectedCount} valgt
+              {isBulkUpdating ? 'Oppdaterer …' : `${selectedCount} valgt`}
             </span>
 
             <div className="mx-1 h-4 w-px bg-blue-200 dark:bg-blue-800" />
 
             <button
               onClick={() => onBulkStatusUpdate?.('confirmed')}
-              className="inline-flex items-center rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white shadow-2xs transition hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-600"
+              disabled={isBulkUpdating}
+              className="inline-flex items-center rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white shadow-2xs transition hover:bg-emerald-700 disabled:cursor-wait disabled:opacity-50 dark:bg-emerald-700 dark:hover:bg-emerald-600"
             >
               Bekreft
             </button>
             <button
               onClick={() => onBulkStatusUpdate?.('attended')}
-              className="inline-flex items-center rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 shadow-2xs transition hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-600"
+              disabled={isBulkUpdating}
+              className="inline-flex items-center rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 shadow-2xs transition hover:bg-zinc-50 disabled:cursor-wait disabled:opacity-50 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-600"
             >
               Merk som deltok
             </button>
             <button
               onClick={() => onBulkStatusUpdate?.('no-show')}
-              className="inline-flex items-center rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 shadow-2xs transition hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-600"
+              disabled={isBulkUpdating}
+              className="inline-flex items-center rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 shadow-2xs transition hover:bg-zinc-50 disabled:cursor-wait disabled:opacity-50 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-600"
             >
               Ikke møtt
             </button>
             <button
               onClick={() => onBulkStatusUpdate?.('waitlist')}
-              className="inline-flex items-center rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 shadow-2xs transition hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-600"
+              disabled={isBulkUpdating}
+              className="inline-flex items-center rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 shadow-2xs transition hover:bg-zinc-50 disabled:cursor-wait disabled:opacity-50 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-600"
             >
               Venteliste
             </button>

@@ -142,7 +142,7 @@ export function AdminEventChecklist({
                         ? item.actionLink
                         : `/admin/events/${eventSlug}${item.actionLink}`
                     }
-                    className="inline-flex items-center gap-1 rounded-lg border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-xs font-semibold text-zinc-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 dark:border-zinc-700 dark:bg-zinc-700/60 dark:text-zinc-200 dark:hover:border-zinc-600 dark:hover:bg-zinc-700"
+                    className="inline-flex items-center gap-1 rounded-lg border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-xs font-semibold text-zinc-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 dark:border-zinc-700 dark:bg-zinc-700/60 dark:text-zinc-200 dark:hover:border-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-white"
                   >
                     <span>{item.actionLabel}</span>
                     <ArrowRightIcon className="h-3 w-3" />
