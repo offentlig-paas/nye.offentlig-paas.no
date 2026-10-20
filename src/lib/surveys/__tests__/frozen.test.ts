@@ -152,11 +152,61 @@ describe('freeze-from-open-dataset', () => {
     ])
     const q = r.sections[0]!.questions[0]!
     expect(q.id).toBe('p')
-    expect(q.responseCount).toBe(10)
+    // No gate and "(no answer)" hidden: only the visible answers are known.
+    expect(q.responseCount).toBe(8)
+    expect(q.nIsLowerBound).toBe(true)
     expect(q.options).toEqual([
       expect.objectContaining({ value: 'Ja', count: 8 }),
       expect.objectContaining({ value: 'Nei', count: 0, suppressed: true }),
     ])
+  })
+})
+
+describe('freeze-from-open-dataset gating', () => {
+  it('takes n from the showIf gate when "(no answer)" is hidden', () => {
+    const csv = [
+      'column,question,answer,n',
+      ',responses,,10',
+      '7,Har dere en applikasjonsplattform?,Ja,7',
+      '7,Har dere en applikasjonsplattform?,Nei,3',
+      '10,Har plattformen selvbetjening?,Ja,4',
+      '10,Har plattformen selvbetjening?,(no answer),suppressed',
+    ].join('\n')
+    const survey = getSurvey('state-of-platforms-2027')!
+    const r = aggregateOpenDataset(csv, 'old', { title: 'T' }, [
+      {
+        ...survey,
+        sections: [
+          {
+            id: 's',
+            title: 'S',
+            questions: [
+              survey.sections
+                .flatMap(s => s.questions)
+                .find(q => q.id === 'q7-platform')!,
+              {
+                id: 'q10',
+                type: 'radio',
+                required: false,
+                title: 'Har plattformen selvbetjening?',
+                showIf: [{ questionId: 'q7-platform', anyOf: ['Ja'] }],
+                options: [
+                  { label: 'Ja', value: 'Ja' },
+                  { label: 'Nei', value: 'Nei' },
+                ],
+              },
+            ],
+          },
+        ],
+        comparesTo: {
+          slug: 'old',
+          questionMap: { 'q7-platform': 'p', q10: 'q10' },
+        },
+      },
+    ])
+    const q = r.sections[0]!.questions.find(q => q.id === 'q10')!
+    expect(q.responseCount).toBe(7)
+    expect(q.nIsLowerBound).toBeUndefined()
   })
 })
 

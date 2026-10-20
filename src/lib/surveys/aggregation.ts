@@ -33,6 +33,8 @@ export interface AggregatedQuestion {
   freeTextCount?: number
   /** Pre-suppression Likert mean (1 decimal), stored only in frozen aggregates and omitted when a scale point is suppressed. */
   average?: number
+  /** n is only the visible answers: some were hidden by the open dataset. */
+  nIsLowerBound?: true
 }
 
 export interface AggregatedOption {

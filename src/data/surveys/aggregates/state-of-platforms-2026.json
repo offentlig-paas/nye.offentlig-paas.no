@@ -312,49 +312,49 @@
           "title": "Hvilke selvbetjente tjenester består plattformen deres av?",
           "type": "checkbox",
           "visualization": "bar",
-          "responseCount": 48,
+          "responseCount": 44,
           "options": [
             {
               "label": "Kildekode og versjonskontroll",
               "value": "Kildekode og versjonskontroll",
               "count": 38,
-              "percentage": 79
+              "percentage": 86
             },
             {
               "label": "Bygg, deploy og kjøre applikasjoner",
               "value": "Bygg, deploy og kjøre applikasjoner",
               "count": 40,
-              "percentage": 83
+              "percentage": 91
             },
             {
               "label": "Logg, metrikker, dashbaords og alarmer",
               "value": "Logg, metrikker, dashbaords og alarmer",
               "count": 40,
-              "percentage": 83
+              "percentage": 91
             },
             {
               "label": "Databaser, meldingskøer og lagring",
               "value": "Databaser, meldingskøer og lagring",
               "count": 38,
-              "percentage": 79
+              "percentage": 86
             },
             {
               "label": "Sikkerhet- og sårbarhets-scanning",
               "value": "Sikkerhet- og sårbarhets-scanning",
               "count": 33,
-              "percentage": 69
+              "percentage": 75
             },
             {
               "label": "Nettverk/brannmur (interntrafikk)",
               "value": "Nettverk/brannmur (interntrafikk)",
               "count": 28,
-              "percentage": 58
+              "percentage": 64
             },
             {
               "label": "Nettverk/brannmur (eksterntrafikk)",
               "value": "Nettverk/brannmur (eksterntrafikk)",
               "count": 26,
-              "percentage": 54
+              "percentage": 59
             },
             {
               "label": "Annet",
@@ -606,31 +606,31 @@
           "title": "Hvordan planlegges, prioriteres, utvikles og vedlikeholdes plattformer og deres funksjonalitet?",
           "type": "radio",
           "visualization": "ordinal",
-          "responseCount": 48,
+          "responseCount": 44,
           "options": [
             {
               "label": "Nivå 1, Provisorisk — På forespørsel",
               "value": "Nivå 1, Provisorisk — På forespørsel",
               "count": 8,
-              "percentage": 17
+              "percentage": 18
             },
             {
               "label": "Nivå 2, Operasjonalisert — Sentralt registrert",
               "value": "Nivå 2, Operasjonalisert — Sentralt registrert",
               "count": 10,
-              "percentage": 21
+              "percentage": 23
             },
             {
               "label": "Nivå 3, Skalerbar — Sentralt aktivert",
               "value": "Nivå 3, Skalerbar — Sentralt aktivert",
               "count": 20,
-              "percentage": 42
+              "percentage": 45
             },
             {
               "label": "Nivå 4, Optimalisering — Administrerte tjenester",
               "value": "Nivå 4, Optimalisering — Administrerte tjenester",
               "count": 5,
-              "percentage": 10
+              "percentage": 11
             },
             {
               "label": "N/A",
@@ -648,25 +648,25 @@
           "title": "Hva er prosessen for å samle inn og lære av tilbakemeldinger?",
           "type": "radio",
           "visualization": "ordinal",
-          "responseCount": 48,
+          "responseCount": 44,
           "options": [
             {
               "label": "Nivå 1, Provisorisk – Ad hoc",
               "value": "Nivå 1, Provisorisk – Ad hoc",
               "count": 21,
-              "percentage": 44
+              "percentage": 48
             },
             {
               "label": "Nivå 2, Operasjonalisert — Konsekvent innsamling",
               "value": "Nivå 2, Operasjonalisert — Konsekvent innsamling",
               "count": 16,
-              "percentage": 33
+              "percentage": 36
             },
             {
               "label": "Nivå 3, Skalerbar — Innsikt",
               "value": "Nivå 3, Skalerbar — Innsikt",
               "count": 5,
-              "percentage": 10
+              "percentage": 11
             },
             {
               "label": "Nivå 4, Optimalisering — Kvantitativ og kvalitativ",
@@ -878,19 +878,19 @@
           "title": "Utvikler dere egne Kubernetes operators?",
           "type": "radio",
           "visualization": "bar",
-          "responseCount": 48,
+          "responseCount": 40,
           "options": [
             {
               "label": "Ja",
               "value": "Ja",
               "count": 21,
-              "percentage": 44
+              "percentage": 53
             },
             {
               "label": "Nei",
               "value": "Nei",
               "count": 17,
-              "percentage": 35
+              "percentage": 43
             },
             {
               "label": "Vet ikke",

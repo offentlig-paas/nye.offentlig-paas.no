@@ -15,7 +15,8 @@
  *   suppression) was hidden by the dataset; it is written as a suppressed
  *   option with count 0 and no «Andre» bucket, because the table gives no
  *   total for the hidden cells and we do not invent one. A hidden
- *   "(no answer)" makes n the total responses (an upper bound). Visible counts
+ *   "(no answer)" makes n the visible count of the question's showIf gate,
+ *   or else the sum of visible answers, flagged nIsLowerBound. Visible counts
  *   are already 3 or more, so suppressSmallBuckets changes nothing. n per
  *   question is the total minus "(no answer)", and "other" is the «Annet»
  *   option.
@@ -253,21 +254,39 @@ function fromAggregateTable(
   const [, ...data] = rows
   const total = Number(data.find(r => r[1] === 'responses')?.[3])
   if (!total) throw new Error('aggregate table has no "responses" row')
+  const all = target.sections.flatMap(s => s.questions)
+  const entriesFor = (q: ChoiceQuestion) =>
+    data.filter(r => columnTitle(r[1] ?? '') === q.title)
+  /**
+   * Respondents shown q: the visible count of its single gating answer set,
+   * or undefined when there is no such gate or a gating cell is hidden.
+   */
+  const gateCount = (q: ChoiceQuestion) => {
+    const [cond, ...more] = q.showIf ?? []
+    const gate = all.find(g => g.id === cond?.questionId)
+    if (!cond?.anyOf || more.length || !gate) return undefined
+    let sum = 0
+    for (const [, , answer = '', n = ''] of entriesFor(gate)) {
+      if (!cond.anyOf.includes(answer)) continue
+      if (isHidden(n)) return undefined
+      sum += Number(n)
+    }
+    return sum
+  }
   const sections = target.sections.map(section => ({
     id: section.id,
     title: section.title,
     questions: section.questions.map(q => {
-      const entries = data.filter(r => columnTitle(r[1] ?? '') === q.title)
+      const entries = entriesFor(q)
       if (entries.length === 0)
         throw new Error(`${q.id}: no rows for "${q.title}"`)
       const values = q.options.map(o => o.value)
       const counts = new Map<string, number>()
       const hidden = new Set<string>()
-      let noAnswer = 0
+      let noAnswer: number | undefined = 0
       for (const [, , answer = '', n = ''] of entries) {
         if (answer === '(no answer)') {
-          // Hidden: n falls back to all responses (an upper bound).
-          noAnswer = isHidden(n) ? 0 : Number(n)
+          noAnswer = isHidden(n) ? undefined : Number(n)
           continue
         }
         const value =
@@ -277,14 +296,30 @@ function fromAggregateTable(
         if (isHidden(n)) hidden.add(value)
         else counts.set(value, Number(n))
       }
-      return buildQuestion(
+      if (noAnswer !== undefined)
+        return buildQuestion(
+          q,
+          target,
+          q.options,
+          counts,
+          hidden,
+          total - noAnswer
+        )
+      // Hidden "(no answer)": n is the gate's count when the question has
+      // one; otherwise only the visible answers are known (a lower bound).
+      const gated = gateCount(q)
+      const visible = [...counts.values()].reduce((a, b) => a + b, 0)
+      const question = buildQuestion(
         q,
         target,
         q.options,
         counts,
         hidden,
-        total - noAnswer
+        gated ?? visible
       )
+      return gated === undefined
+        ? { ...question, nIsLowerBound: true as const }
+        : question
     }),
   }))
   return { surveySlug: '', totalResponses: total, sections }
