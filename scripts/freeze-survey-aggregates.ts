@@ -10,7 +10,7 @@
  *
  * Usage: pnpm tsx --conditions=react-server --env-file=.env.local scripts/freeze-survey-aggregates.ts <slug> [--out <dir>]
  */
-import { writeFileSync } from 'node:fs'
+import { mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { parseArgs } from 'node:util'
 import { aggregatesDir, writeAggregatesIndex } from './aggregates-index'
@@ -66,6 +66,7 @@ const frozen: FrozenAggregates = {
 }
 
 const dst = join(values.out ?? aggregatesDir, `${survey.slug}.json`)
+if (values.out) mkdirSync(values.out, { recursive: true })
 writeFileSync(dst, JSON.stringify(frozen, null, 2) + '\n')
 console.log(`Wrote ${dst} (${responses.length} responses)`)
 if (!values.out) writeAggregatesIndex()
