@@ -17,9 +17,11 @@
  *   Questions the dataset left out are left out here too.
  * - Aggregate table (columns column,question,answer,n, as in
  *   open-data/state-of-platforms/2026/state-of-platforms-2026-aggregate.csv):
- *   counts are copied. An `n` of "<3" was hidden by the dataset; it is
- *   written as a suppressed option with no count and no «Andre» bucket,
- *   because the hidden total cannot be derived from the table. Visible counts
+ *   counts are copied. An `n` of "<3" or "suppressed" (secondary
+ *   suppression) was hidden by the dataset; it is written as a suppressed
+ *   option with count 0 and no «Andre» bucket, because the table gives no
+ *   total for the hidden cells and we do not invent one. A hidden
+ *   "(no answer)" makes n the total responses (an upper bound). Visible counts
  *   are already 3 or more, so suppressSmallBuckets changes nothing. n per
  *   question is the total minus "(no answer)", and "other" is the «Annet»
  *   option.
@@ -58,6 +60,9 @@ import type {
 } from '../src/lib/surveys/types'
 
 const MIN_BUCKET = 3
+
+/** Cells the dataset hid: "<3", or "suppressed" (secondary suppression). */
+const isHidden = (n: string) => n === '<3' || n === 'suppressed'
 
 /** Labels for values an open dataset recoded into groups of its own. */
 const RECODED_LABELS: Record<string, string> = {
@@ -249,15 +254,15 @@ function fromAggregateTable(
       let noAnswer = 0
       for (const [, , answer = '', n = ''] of entries) {
         if (answer === '(no answer)') {
-          if (n === '<3') throw new Error(`${q.id}: "(no answer)" is hidden`)
-          noAnswer = Number(n)
+          // Hidden: n falls back to all responses (an upper bound).
+          noAnswer = isHidden(n) ? 0 : Number(n)
           continue
         }
         const value =
           answer === 'other' && values.includes('Annet') ? 'Annet' : answer
         if (!values.includes(value))
           throw new Error(`${q.id}: "${answer}" is not an option`)
-        if (n === '<3') hidden.add(value)
+        if (isHidden(n)) hidden.add(value)
         else counts.set(value, Number(n))
       }
       const responseCount = total - noAnswer

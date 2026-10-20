@@ -117,6 +117,7 @@ describe('freeze-from-open-dataset', () => {
       ',responses,,10',
       '7,Har dere en applikasjonsplattform?,Ja,8',
       '7,Har dere en applikasjonsplattform?,Nei,<3',
+      '7,Har dere en applikasjonsplattform?,(no answer),suppressed',
     ].join('\n')
     const survey = getSurvey('state-of-platforms-2027')!
     const r = aggregateOpenDataset(csv, 'old', { title: 'T' }, [

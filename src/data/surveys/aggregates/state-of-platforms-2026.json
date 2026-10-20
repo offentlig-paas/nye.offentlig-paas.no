@@ -288,8 +288,9 @@
             {
               "label": "Noen ville ha en plattform",
               "value": "Noen ville ha en plattform",
-              "count": 3,
-              "percentage": 7
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
             },
             {
               "label": "Alle andre har en plattform!",
@@ -311,49 +312,49 @@
           "title": "Hvilke selvbetjente tjenester består plattformen deres av?",
           "type": "checkbox",
           "visualization": "bar",
-          "responseCount": 44,
+          "responseCount": 48,
           "options": [
             {
               "label": "Kildekode og versjonskontroll",
               "value": "Kildekode og versjonskontroll",
               "count": 38,
-              "percentage": 86
+              "percentage": 79
             },
             {
               "label": "Bygg, deploy og kjøre applikasjoner",
               "value": "Bygg, deploy og kjøre applikasjoner",
               "count": 40,
-              "percentage": 91
+              "percentage": 83
             },
             {
               "label": "Logg, metrikker, dashbaords og alarmer",
               "value": "Logg, metrikker, dashbaords og alarmer",
               "count": 40,
-              "percentage": 91
+              "percentage": 83
             },
             {
               "label": "Databaser, meldingskøer og lagring",
               "value": "Databaser, meldingskøer og lagring",
               "count": 38,
-              "percentage": 86
+              "percentage": 79
             },
             {
               "label": "Sikkerhet- og sårbarhets-scanning",
               "value": "Sikkerhet- og sårbarhets-scanning",
               "count": 33,
-              "percentage": 75
+              "percentage": 69
             },
             {
               "label": "Nettverk/brannmur (interntrafikk)",
               "value": "Nettverk/brannmur (interntrafikk)",
               "count": 28,
-              "percentage": 64
+              "percentage": 58
             },
             {
               "label": "Nettverk/brannmur (eksterntrafikk)",
               "value": "Nettverk/brannmur (eksterntrafikk)",
               "count": 26,
-              "percentage": 59
+              "percentage": 54
             },
             {
               "label": "Annet",
@@ -586,8 +587,9 @@
             {
               "label": "Nivå 4, Optimalisering — Administrerte tjenester",
               "value": "Nivå 4, Optimalisering — Administrerte tjenester",
-              "count": 4,
-              "percentage": 9
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
             },
             {
               "label": "N/A",
@@ -597,39 +599,38 @@
               "percentage": 0,
               "suppressed": true
             }
-          ],
-          "average": 2.6
+          ]
         },
         {
           "id": "q13d-operations",
           "title": "Hvordan planlegges, prioriteres, utvikles og vedlikeholdes plattformer og deres funksjonalitet?",
           "type": "radio",
           "visualization": "ordinal",
-          "responseCount": 44,
+          "responseCount": 48,
           "options": [
             {
               "label": "Nivå 1, Provisorisk — På forespørsel",
               "value": "Nivå 1, Provisorisk — På forespørsel",
               "count": 8,
-              "percentage": 18
+              "percentage": 17
             },
             {
               "label": "Nivå 2, Operasjonalisert — Sentralt registrert",
               "value": "Nivå 2, Operasjonalisert — Sentralt registrert",
               "count": 10,
-              "percentage": 23
+              "percentage": 21
             },
             {
               "label": "Nivå 3, Skalerbar — Sentralt aktivert",
               "value": "Nivå 3, Skalerbar — Sentralt aktivert",
               "count": 20,
-              "percentage": 45
+              "percentage": 42
             },
             {
               "label": "Nivå 4, Optimalisering — Administrerte tjenester",
               "value": "Nivå 4, Optimalisering — Administrerte tjenester",
               "count": 5,
-              "percentage": 11
+              "percentage": 10
             },
             {
               "label": "N/A",
@@ -647,25 +648,25 @@
           "title": "Hva er prosessen for å samle inn og lære av tilbakemeldinger?",
           "type": "radio",
           "visualization": "ordinal",
-          "responseCount": 44,
+          "responseCount": 48,
           "options": [
             {
               "label": "Nivå 1, Provisorisk – Ad hoc",
               "value": "Nivå 1, Provisorisk – Ad hoc",
               "count": 21,
-              "percentage": 48
+              "percentage": 44
             },
             {
               "label": "Nivå 2, Operasjonalisert — Konsekvent innsamling",
               "value": "Nivå 2, Operasjonalisert — Konsekvent innsamling",
               "count": 16,
-              "percentage": 36
+              "percentage": 33
             },
             {
               "label": "Nivå 3, Skalerbar — Innsikt",
               "value": "Nivå 3, Skalerbar — Innsikt",
               "count": 5,
-              "percentage": 11
+              "percentage": 10
             },
             {
               "label": "Nivå 4, Optimalisering — Kvantitativ og kvalitativ",
@@ -877,19 +878,19 @@
           "title": "Utvikler dere egne Kubernetes operators?",
           "type": "radio",
           "visualization": "bar",
-          "responseCount": 40,
+          "responseCount": 48,
           "options": [
             {
               "label": "Ja",
               "value": "Ja",
               "count": 21,
-              "percentage": 53
+              "percentage": 44
             },
             {
               "label": "Nei",
               "value": "Nei",
               "count": 17,
-              "percentage": 43
+              "percentage": 35
             },
             {
               "label": "Vet ikke",
@@ -1049,8 +1050,9 @@
             {
               "label": "Google Cloud Run",
               "value": "Google Cloud Run",
-              "count": 5,
-              "percentage": 25
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
             },
             {
               "label": "Google Cloud Functions",
@@ -1108,8 +1110,9 @@
             {
               "label": "Annet",
               "value": "Annet",
-              "count": 4,
-              "percentage": 12
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
             }
           ]
         },

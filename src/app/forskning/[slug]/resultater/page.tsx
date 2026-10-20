@@ -104,7 +104,10 @@ async function ResultsContent({ slug }: { slug: string }) {
             </>
           ) : (
             'Tallene er hentet fra det åpne datasettet.'
-          )}
+          )}{' '}
+          Tallene kan avvike litt fra tidligere versjoner av siden, fordi det
+          åpne datasettet fjerner opplysninger som kan identifisere noen, og
+          slår sammen noen svar.
         </p>
       )}
       <SurveyResultsRenderer
