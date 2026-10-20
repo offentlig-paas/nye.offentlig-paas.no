@@ -81,10 +81,11 @@ export const aiAgents2027: SurveyDefinition = {
     slug: 'ai-agents-2026',
     // Same wording and option values in both waves. Checkbox questions that
     // gained options in wave 2 (q6, q9, q11, q20) are left out: new choices
-    // shift the shares, so the change would not be comparable. Role and
-    // developer count are left out too: the wave 1 open dataset, which the
-    // frozen results come from, groups them differently.
+    // shift the shares, so the change would not be comparable. Role is left
+    // out too: the wave 1 open dataset, which the frozen results come from,
+    // only publishes three role groups.
     questionMap: {
+      'q4-dev-count': 'q3-dev-count',
       'q5-adoption-level': 'q5-adoption-level',
       'q8-personal-use': 'q8-personal-use',
       'q10-usage-modes': 'q9-usage-modes',

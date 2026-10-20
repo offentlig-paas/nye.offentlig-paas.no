@@ -6,15 +6,9 @@
  *
  * Two dataset formats are read, picked by the header:
  *
- * - Row level (one response per row, as in
- *   open-data/state-of-ai-agents/2026/ai-agents-2026-anonymous.csv): column
- *   headers are question titles (a trailing " (Q5b)" tag is ignored), cells
- *   are option values, checkbox answers are ";"-joined. The rows are fed to
- *   the same aggregateSurveyResults as the live page, with groups below 3
- *   merged by suppressSmallBuckets. Values the dataset recoded (e.g. role
- *   groups, merged size bands) are kept as published: they become options of
- *   their own, and form options the dataset no longer has are dropped.
- *   Questions the dataset left out are left out here too.
+ * - Per-option tables (columns table,measure,value,n,unit,question_id, as in
+ *   open-data/state-of-ai-agents/2026/respondent-level-aggregates.csv v1.2):
+ *   see fromOptionTables. Hidden cells are handled as below.
  * - Aggregate table (columns column,question,answer,n, as in
  *   open-data/state-of-platforms/2026/state-of-platforms-2026-aggregate.csv):
  *   counts are copied. An `n` of "<3" or "suppressed" (secondary
@@ -41,13 +35,11 @@ import { parseArgs } from 'node:util'
 import { aggregatesDir, writeAggregatesIndex } from './aggregates-index'
 import { surveys } from '../src/data/surveys'
 import {
-  aggregateSurveyResults,
   suppressSmallBuckets,
   type AggregatedOption,
   type AggregatedQuestion,
   type AggregatedSurveyResults,
 } from '../src/lib/surveys/aggregation'
-import type { SurveyResponse } from '../src/domains/survey-response/types'
 import {
   getFrozenAggregates,
   type FrozenAggregates,
@@ -69,7 +61,10 @@ const RECODED_LABELS: Record<string, string> = {
   practitioner: 'Utvikler / plattform',
   'technical-leadership': 'Teknisk leder / teamleder',
   'organizational-leadership': 'IT-leder / leder',
-  '1-200': '1–200',
+  'other-tool': 'Andre verktøy',
+  'code-review-ai': 'KI-verktøy for kodegjennomgang',
+  'internal-platform': 'Intern plattform',
+  'open-source': 'Open source-verktøy',
 }
 
 type ChoiceQuestion = RadioQuestion | CheckboxQuestion
@@ -151,87 +146,104 @@ export function resolveTarget(slug: string, all = surveys): Target {
   }
 }
 
-function fromRows(
+/**
+ * Per-option tables (state-of-ai-agents/2026/respondent-level-aggregates.csv
+ * v1.2): one row per option, keyed by question_id. A question's "survey
+ * option values" table wins; a question without one falls back to its other
+ * table (v1.1 original codes/bands/categories). Survey options missing from
+ * a table count 0. A table with values the survey does not have was recoded
+ * by the dataset (role groups, tool categories): then only the published
+ * values are shown, labelled by RECODED_LABELS.
+ */
+function fromOptionTables(
   rows: string[][],
-  survey: SurveyDefinition,
   target: Target
 ): AggregatedSurveyResults {
-  const [header, ...data] = rows
-  const cols = header!.map(columnTitle)
-  const included = target.sections.flatMap(s => s.questions)
-  const columns = new Map<string, number>()
-  for (const q of included) {
-    const col = cols.indexOf(q.title)
-    if (col >= 0) columns.set(q.id, col)
-    else console.warn(`${q.id}: not in the open dataset, left out`)
+  const [, ...data] = rows
+  const tableFor = new Map<string, string>()
+  for (const [table = '', , , , , id] of data) {
+    if (!id) continue
+    if (!tableFor.has(id) || table.endsWith(', survey option values'))
+      tableFor.set(id, table)
   }
-  const split = (q: ChoiceQuestion, cell: string) =>
-    q.type === 'checkbox' ? cell.split(';').filter(Boolean) : [cell]
-
-  // Keep recoded values as published: options of their own.
-  const recoded = new Map<string, ChoiceQuestion>()
-  for (const q of included) {
-    const col = columns.get(q.id)
-    if (col === undefined) continue
-    const seen = new Set(data.flatMap(r => split(q, (r[col] ?? '').trim())))
-    const known = new Set(q.options.map(o => o.value))
-    const extra = [...seen].filter(v => v && !known.has(v))
-    if (extra.length === 0) continue
-    recoded.set(q.id, {
-      ...q,
-      options: [
-        ...q.options.filter(o => seen.has(o.value)),
-        ...extra.map(v => ({ label: RECODED_LABELS[v] ?? v, value: v })),
-      ],
-    })
-  }
-  const asPublished: SurveyDefinition = {
-    ...survey,
-    sections: survey.sections.map(s => ({
-      ...s,
-      questions: s.questions.map(q => recoded.get(q.id) ?? q),
-    })),
-  }
-
-  const responses: SurveyResponse[] = data.map((r, i) => ({
-    _id: String(i),
-    surveySlug: survey.slug,
-    surveyVersion: survey.version,
-    submittedAt: '',
-    answers: [...columns].flatMap(([id, col]): SurveyResponse['answers'] => {
-      const q = included.find(q => q.id === id)!
-      const cell = (r[col] ?? '').trim()
-      if (!cell) return []
-      return q.type === 'checkbox'
-        ? [{ questionId: id, arrayValue: split(q, cell) }]
-        : [{ questionId: id, value: cell }]
+  const total = Math.max(...data.map(r => Number(r[3]) || 0))
+  const sections = target.sections.map(section => ({
+    id: section.id,
+    title: section.title,
+    questions: section.questions.flatMap(q => {
+      const table = tableFor.get(q.id)
+      if (!table) {
+        console.warn(`${q.id}: not in the open dataset, left out`)
+        return []
+      }
+      const counts = new Map<string, number>()
+      const hidden = new Set<string>()
+      let n = 0
+      let empty = 0
+      for (const [t, value = '', count = '', rowN = ''] of data) {
+        if (t !== table || value === '(no answer)') continue
+        if (value === '(empty)') {
+          if (isHidden(count)) throw new Error(`${q.id}: hidden (empty)`)
+          empty = Number(count)
+          continue
+        }
+        n = Number(rowN)
+        if (isHidden(count)) hidden.add(value)
+        else counts.set(value, Number(count))
+      }
+      const published = new Set([...counts.keys(), ...hidden])
+      const known = new Set(q.options.map(o => o.value))
+      const extra = [...published].filter(v => !known.has(v))
+      const shown = extra.length
+        ? [
+            ...q.options.filter(o => published.has(o.value)),
+            ...extra.map(v => ({ label: RECODED_LABELS[v] ?? v, value: v })),
+          ]
+        : q.options
+      return [buildQuestion(q, target, shown, counts, hidden, n - empty)]
     }),
   }))
+  return { surveySlug: '', totalResponses: total, sections }
+}
 
-  const keep = new Set(columns.keys())
-  const excludeQuestionIds = new Set(
-    survey.sections
-      .flatMap(s => s.questions)
-      .map(q => q.id)
-      .filter(id => !keep.has(id))
-  )
-  const results = aggregateSurveyResults(asPublished, responses, {
-    excludeQuestionIds,
-    minBucketSize: MIN_BUCKET,
+/**
+ * Copies counts. A hidden cell becomes a suppressed option with count 0 and
+ * no «Andre» bucket: the dataset gives no total for it and we do not invent
+ * one. Visible counts are 3 or more, so suppressSmallBuckets changes nothing.
+ */
+function buildQuestion(
+  q: ChoiceQuestion,
+  target: Target,
+  shown: { label: string; value: string; scale?: false }[],
+  counts: Map<string, number>,
+  hidden: Set<string>,
+  responseCount: number
+): AggregatedQuestion {
+  const options: AggregatedOption[] = shown.map(o => {
+    const count = counts.get(o.value) ?? 0
+    return {
+      label: o.label,
+      value: o.value,
+      ...(o.scale === false && { scale: false as const }),
+      count,
+      percentage:
+        responseCount > 0 ? Math.round((count / responseCount) * 100) : 0,
+      ...(hidden.has(o.value) && { suppressed: true as const }),
+    }
   })
-  // Store the Likert mean from unsuppressed counts so comparisons keep it.
-  const raw = aggregateSurveyResults(asPublished, responses, {
-    excludeQuestionIds,
-  })
-  const rawById = new Map(
-    raw.sections.flatMap(s => s.questions).map(q => [q.id, q])
-  )
-  for (const q of results.sections.flatMap(s => s.questions)) {
-    if (!isScale(q)) continue
-    const average = storedAverage(rawById.get(q.id)!.options, q.options)
-    if (average !== undefined) q.average = average
+  const safe = suppressSmallBuckets(options, responseCount, MIN_BUCKET)
+  const average = isScale(q) ? storedAverage(options, safe) : undefined
+  return {
+    id: target.idFor(q.id),
+    title: q.title,
+    type: q.type,
+    visualization: (isScale(q)
+      ? q.visualization
+      : 'bar') as AggregatedQuestion['visualization'],
+    responseCount,
+    options: safe,
+    ...(average !== undefined && { average }),
   }
-  return results
 }
 
 function fromAggregateTable(
@@ -265,32 +277,14 @@ function fromAggregateTable(
         if (isHidden(n)) hidden.add(value)
         else counts.set(value, Number(n))
       }
-      const responseCount = total - noAnswer
-      const options: AggregatedOption[] = q.options.map(o => {
-        const count = counts.get(o.value) ?? 0
-        return {
-          label: o.label,
-          value: o.value,
-          ...(o.scale === false && { scale: false as const }),
-          count,
-          percentage:
-            responseCount > 0 ? Math.round((count / responseCount) * 100) : 0,
-          ...(hidden.has(o.value) && { suppressed: true as const }),
-        }
-      })
-      const safe = suppressSmallBuckets(options, responseCount, MIN_BUCKET)
-      const average = isScale(q) ? storedAverage(options, safe) : undefined
-      return {
-        id: target.idFor(q.id),
-        title: q.title,
-        type: q.type,
-        visualization: (isScale(q)
-          ? q.visualization
-          : 'bar') as AggregatedQuestion['visualization'],
-        responseCount,
-        options: safe,
-        ...(average !== undefined && { average }),
-      }
+      return buildQuestion(
+        q,
+        target,
+        q.options,
+        counts,
+        hidden,
+        total - noAnswer
+      )
     }),
   }))
   return { surveySlug: '', totalResponses: total, sections }
@@ -304,12 +298,15 @@ export function aggregateOpenDataset(
 ): FrozenAggregates {
   const rows = parseCsv(text).filter(r => r.some(Boolean))
   const target = resolveTarget(slug, all)
-  const isTable = rows[0]?.join(',') === 'column,question,answer,n'
-  if (!isTable && !target.survey)
-    throw new Error(`${slug}: a row-level dataset needs a survey definition`)
-  const results = isTable
-    ? fromAggregateTable(rows, target)
-    : fromRows(rows, target.survey!, target)
+  const header = rows[0]?.join(',')
+  const results =
+    header === 'column,question,answer,n'
+      ? fromAggregateTable(rows, target)
+      : header === 'table,measure,value,n,unit,question_id'
+        ? fromOptionTables(rows, target)
+        : (() => {
+            throw new Error(`${slug}: unknown dataset header "${header}"`)
+          })()
   return {
     ...results,
     surveySlug: slug,

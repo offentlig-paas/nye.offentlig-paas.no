@@ -87,27 +87,51 @@ describe('freeze-from-open-dataset', () => {
     ).not.toContain('q1-org')
   })
 
-  it('aggregates a row-level dataset, keeping recoded values as published', () => {
+  it('reads per-option tables, preferring survey option values', () => {
+    const t = (name: string, id: string, rows: string[]) =>
+      rows.map(r => `"${name}",${r},respondents,${id}`)
     const csv = [
-      'Hva er din primærrolle?,Bruker du KI-kodeverktøy?,Hvilke måter bruker du KI-kodeverktøy på?',
-      ...Array(4).fill('practitioner,yes,chat;planning'),
-      'technical-leadership,yes,chat',
-      'practitioner,no,',
+      'table,measure,value,n,unit,question_id',
+      ...t('role (Q2), groups', 'q2-role', ['developer,99,10']),
+      ...t('q2-role, survey option values', 'q2-role', [
+        'technical-leadership,4,10',
+        'practitioner,6,10',
+      ]),
+      ...t('q9-usage-modes, survey option values', 'q9-usage-modes', [
+        'planning,<3,8',
+        'chat,5,8',
+        'debugging,suppressed,8',
+        '(no answer),2,10',
+      ]),
+      ...t('frequency, original codes', 'q11-frequency', [
+        'daily,5,10',
+        '(empty),2,10',
+      ]),
     ].join('\n')
     const r = aggregateOpenDataset(csv, 'ai-agents-2026', { title: 'T' })
     const q = (id: string) =>
       r.sections.flatMap(s => s.questions).find(q => q.id === id)!
-    expect(r.totalResponses).toBe(6)
-    expect(q('q2-role').options.map(o => o.value)).toEqual([
-      'practitioner',
-      'technical-leadership',
-      '_suppressed',
+    expect(r.totalResponses).toBe(10)
+    // Recoded groups are shown as published, in published order.
+    expect(q('q2-role').options.map(o => [o.value, o.count])).toEqual([
+      ['technical-leadership', 4],
+      ['practitioner', 6],
     ])
-    // Only users see the usage questions.
-    expect(q('q9-usage-modes').responseCount).toBe(5)
-    expect(
-      q('q9-usage-modes').options.find(o => o.value === 'chat')?.count
-    ).toBe(5)
+    const usage = q('q9-usage-modes')
+    expect(usage.responseCount).toBe(8)
+    // Survey order, missing options 0, hidden cells suppressed, no bucket.
+    expect(usage.options.map(o => o.value)).toEqual(
+      resolveTarget('ai-agents-2026')
+        .sections.flatMap(s => s.questions)
+        .find(q => q.id === 'q9-usage-modes')!
+        .options.map(o => o.value)
+    )
+    expect(usage.options.filter(o => o.suppressed).map(o => o.value)).toEqual([
+      'planning',
+      'debugging',
+    ])
+    expect(usage.options.find(o => o.value === 'chat')?.count).toBe(5)
+    expect(q('q11-frequency').responseCount).toBe(8)
     expect(q('q20-trust')).toBeUndefined()
   })
 

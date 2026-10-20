@@ -14,10 +14,10 @@
           "responseCount": 115,
           "options": [
             {
-              "label": "Teknisk leder / teamleder",
-              "value": "technical-leadership",
-              "count": 44,
-              "percentage": 38
+              "label": "IT-leder / leder",
+              "value": "organizational-leadership",
+              "count": 15,
+              "percentage": 13
             },
             {
               "label": "Utvikler / plattform",
@@ -26,21 +26,44 @@
               "percentage": 49
             },
             {
-              "label": "IT-leder / leder",
-              "value": "organizational-leadership",
-              "count": 15,
-              "percentage": 13
+              "label": "Teknisk leder / teamleder",
+              "value": "technical-leadership",
+              "count": 44,
+              "percentage": 38
             }
           ]
         },
         {
           "id": "q3-dev-count",
           "title": "Omtrent hvor mange utviklere og teknisk personell har organisasjonen din?",
-          "description": "Inkluder både fast ansatte og innleide konsulenter som skriver eller vedlikeholder kode for organisasjonen.",
           "type": "radio",
           "visualization": "bar",
           "responseCount": 115,
           "options": [
+            {
+              "label": "Ingen — vi har ikke utviklere",
+              "value": "none",
+              "count": 0,
+              "percentage": 0
+            },
+            {
+              "label": "1–10",
+              "value": "1-10",
+              "count": 4,
+              "percentage": 3
+            },
+            {
+              "label": "11–50",
+              "value": "11-50",
+              "count": 24,
+              "percentage": 21
+            },
+            {
+              "label": "51–200",
+              "value": "51-200",
+              "count": 47,
+              "percentage": 41
+            },
             {
               "label": "Flere enn 200",
               "value": "200+",
@@ -52,12 +75,6 @@
               "value": "unknown",
               "count": 4,
               "percentage": 3
-            },
-            {
-              "label": "1–200",
-              "value": "1-200",
-              "count": 75,
-              "percentage": 65
             }
           ]
         }
@@ -66,12 +83,10 @@
     {
       "id": "adoption-org",
       "title": "Adopsjon av KI-kodeverktøy",
-      "description": "I denne delen spør vi om organisasjonens bruk av KI-kodeverktøy. Svar basert på det du vet om organisasjonen som helhet. Det er helt greit å svare «vet ikke».\n\nMed «KI-kodeverktøy» mener vi verktøy som hjelper utviklere med å skrive, forstå eller endre kode ved hjelp av kunstig intelligens — for eksempel GitHub Copilot, Cursor, Claude Code, Amazon Q, eller lignende.",
       "questions": [
         {
           "id": "q5-adoption-level",
           "title": "Hva beskriver best organisasjonens bruk av KI-kodeverktøy i dag?",
-          "description": "Velg det alternativet som best beskriver situasjonen i organisasjonen i dag.",
           "type": "radio",
           "visualization": "bar",
           "responseCount": 115,
@@ -140,12 +155,6 @@
               "percentage": 14
             },
             {
-              "label": "Windsurf / Antigravity",
-              "value": "windsurf",
-              "count": 0,
-              "percentage": 0
-            },
-            {
               "label": "Claude Code",
               "value": "claude-code",
               "count": 40,
@@ -155,7 +164,8 @@
               "label": "Amazon Q Developer",
               "value": "amazon-q",
               "count": 0,
-              "percentage": 0
+              "percentage": 0,
+              "suppressed": true
             },
             {
               "label": "Gemini Code Assist",
@@ -182,10 +192,31 @@
               "percentage": 3
             },
             {
-              "label": "Andre",
-              "value": "other",
-              "count": 11,
-              "percentage": 10
+              "label": "Intern plattform",
+              "value": "internal-platform",
+              "count": 6,
+              "percentage": 5
+            },
+            {
+              "label": "Andre verktøy",
+              "value": "other-tool",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "KI-verktøy for kodegjennomgang",
+              "value": "code-review-ai",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
+            },
+            {
+              "label": "Open source-verktøy",
+              "value": "open-source",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
             }
           ]
         },
@@ -245,7 +276,6 @@
     {
       "id": "personal-screening",
       "title": "Din personlige bruk",
-      "description": "Nå spør vi om din egen bruk av KI-kodeverktøy — uavhengig av hva organisasjonen offisielt tilbyr.",
       "questions": [
         {
           "id": "q8-personal-use",
@@ -312,12 +342,6 @@
               "percentage": 45
             },
             {
-              "label": "Amazon Q Developer",
-              "value": "amazon-q",
-              "count": 0,
-              "percentage": 0
-            },
-            {
               "label": "Gemini Code Assist / Gemini CLI",
               "value": "gemini",
               "count": 11,
@@ -343,17 +367,18 @@
               "percentage": 17
             },
             {
-              "label": "Andre",
-              "value": "other",
+              "label": "Andre verktøy",
+              "value": "other-tool",
               "count": 0,
               "percentage": 0,
               "suppressed": true
             },
             {
-              "label": "Andre (for få svar)",
-              "value": "_suppressed",
-              "count": 5,
-              "percentage": 5
+              "label": "KI-verktøy for kodegjennomgang",
+              "value": "code-review-ai",
+              "count": 0,
+              "percentage": 0,
+              "suppressed": true
             }
           ]
         },
@@ -417,7 +442,6 @@
         {
           "id": "q10-integrations",
           "title": "Har du koblet KI-kodeverktøyet ditt til andre systemer?",
-          "description": "Noen KI-verktøy kan kobles til eksterne systemer via integrasjoner (f.eks. MCP-servere eller innebygde integrasjoner). Velg alle som gjelder.",
           "type": "checkbox",
           "visualization": "bar",
           "responseCount": 106,
@@ -511,17 +535,11 @@
               "suppressed": true
             },
             {
-              "label": "other",
-              "value": "other",
+              "label": "Sjelden eller aldri",
+              "value": "rarely",
               "count": 0,
               "percentage": 0,
               "suppressed": true
-            },
-            {
-              "label": "Andre (for få svar)",
-              "value": "_suppressed",
-              "count": 8,
-              "percentage": 8
             }
           ]
         },
@@ -575,7 +593,6 @@
     {
       "id": "governance",
       "title": "Styring og organisatorisk støtte",
-      "description": "I denne delen spør vi om hvordan organisasjonen din styrer og støtter bruken av KI-kodeverktøy. Svar basert på det du vet — det er helt greit å svare «vet ikke».",
       "questions": [
         {
           "id": "q12-policy",
@@ -703,7 +720,6 @@
         {
           "id": "q15-data-sovereignty",
           "title": "Har organisasjonen din avklart hvilke KI-leverandører som behandler kildekoden deres?",
-          "description": "Når du bruker KI-kodeverktøy, sendes kildekode til en ekstern modell-leverandør (f.eks. OpenAI, Anthropic, Google) for behandling. Noen organisasjoner har avklart dette gjennom databehandleravtaler eller risikovurderinger.",
           "type": "radio",
           "visualization": "bar",
           "responseCount": 115,
@@ -737,7 +753,6 @@
         {
           "id": "q16-measurement",
           "title": "Hvordan vurderer organisasjonen din effekten av KI-kodeverktøy?",
-          "description": "Velg det høyeste nivået som passer for organisasjonen din. Hvert nivå inkluderer de under.",
           "type": "radio",
           "visualization": "bar",
           "responseCount": 115,
@@ -777,7 +792,6 @@
         {
           "id": "q17-code-review",
           "title": "Hvordan håndteres KI-generert kode i kodegjennomgang (code review)?",
-          "description": "Med «KI-generert kode» mener vi all kode som er skrevet eller vesentlig endret med hjelp av KI-verktøy.",
           "type": "radio",
           "visualization": "bar",
           "responseCount": 115,
@@ -808,23 +822,17 @@
               "suppressed": true
             },
             {
-              "label": "Vet ikke",
-              "value": "unknown",
-              "count": 13,
-              "percentage": 11
-            },
-            {
-              "label": "other",
-              "value": "other",
+              "label": "Ikke aktuelt — vi bruker ikke KI-kodeverktøy eller har ikke kodegjennomgang",
+              "value": "not-applicable",
               "count": 0,
               "percentage": 0,
               "suppressed": true
             },
             {
-              "label": "Andre (for få svar)",
-              "value": "_suppressed",
-              "count": 9,
-              "percentage": 8
+              "label": "Vet ikke",
+              "value": "unknown",
+              "count": 13,
+              "percentage": 11
             }
           ]
         }
@@ -833,12 +841,10 @@
     {
       "id": "barriers",
       "title": "Bekymringer og barrierer",
-      "description": "Nå spør vi om dine personlige oppfatninger og bekymringer rundt KI-kodeverktøy.",
       "questions": [
         {
           "id": "q18-concerns",
           "title": "Hva er dine viktigste bekymringer knyttet til bruk av KI-kodeverktøy?",
-          "description": "Velg de tre viktigste.",
           "type": "checkbox",
           "visualization": "bar",
           "responseCount": 115,
@@ -989,6 +995,16 @@
           "average": 2.1
         }
       ]
+    },
+    {
+      "id": "followup",
+      "title": "Oppfølging",
+      "questions": []
+    },
+    {
+      "id": "contact",
+      "title": "Kontaktinformasjon for intervju",
+      "questions": []
     }
   ],
   "title": "KI-kodeverktøy i norsk offentlig sektor",
