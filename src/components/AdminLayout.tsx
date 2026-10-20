@@ -30,7 +30,7 @@ export function AdminLayout({
               {backButton && (
                 <Link
                   href={backButton.href}
-                  className="group mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white shadow-xs ring-1 ring-zinc-900/10 transition hover:bg-zinc-50 hover:ring-zinc-900/20 dark:border dark:border-zinc-700/60 dark:bg-zinc-800 dark:ring-0 dark:hover:border-zinc-600"
+                  className="group mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white shadow-xs ring-1 ring-zinc-900/10 transition hover:bg-zinc-50 hover:ring-zinc-900/20 dark:border dark:border-zinc-700/60 dark:bg-zinc-800 dark:ring-0 dark:hover:border-zinc-600 dark:hover:bg-zinc-700"
                   aria-label={backButton.label || 'Tilbake'}
                 >
                   <ArrowLeftIcon className="h-4 w-4 stroke-zinc-500 transition group-hover:stroke-zinc-700 dark:stroke-zinc-400 dark:group-hover:stroke-zinc-200" />

@@ -95,7 +95,7 @@ export function AdminSurveyOverviewClient({
               Ingen svar ennå –{' '}
               <Link
                 href={`/admin/forskning/${overview.survey.slug}/resultater?pilot=1`}
-                className="text-teal-600 hover:text-teal-500 dark:text-teal-400"
+                className="text-teal-600 hover:text-teal-500 dark:text-teal-400 dark:hover:text-teal-300"
               >
                 {overview.pilotCount} pilotsvar
               </Link>
@@ -109,7 +109,7 @@ export function AdminSurveyOverviewClient({
           Statistikken vises her når de første svarene kommer inn.{' '}
           <Link
             href={`/admin/forskning/${overview.survey.slug}/forhandsvisning`}
-            className="font-medium text-teal-600 hover:text-teal-500 dark:text-teal-400"
+            className="font-medium text-teal-600 hover:text-teal-500 dark:text-teal-400 dark:hover:text-teal-300"
           >
             Se forhåndsvisning av undersøkelsen
           </Link>
