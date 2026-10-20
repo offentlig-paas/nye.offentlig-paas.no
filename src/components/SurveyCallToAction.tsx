@@ -23,9 +23,10 @@ export async function SurveyCallToAction({
 
   const responses =
     'surveySlug' in survey
-      ? await surveyResponseService.getUniqueOrganizationCount(
-          survey.surveySlug
-        )
+      ? // A Sanity hiccup must not take down the page this block sits on.
+        await surveyResponseService
+          .getUniqueOrganizationCount(survey.surveySlug)
+          .catch(() => 0)
       : 0
   const total = members.length
   const rate = total > 0 ? Math.round((responses / total) * 100) : 0
