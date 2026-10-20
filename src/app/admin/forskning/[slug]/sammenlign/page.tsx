@@ -159,8 +159,13 @@ export default async function AdminSurveyComparePage({
 
   const caller = await createCaller()
   const data = await caller.admin.surveys.getComparison({ slug })
+  // The dot plot's 1–5 agreement axis fits diverging questions only;
+  // ordinal means stay in each question's table.
   const likert = data.questions.filter(
-    q => q.average?.previous != null && q.average?.current != null
+    q =>
+      q.visualization === 'diverging' &&
+      q.average?.previous != null &&
+      q.average?.current != null
   )
 
   return (
@@ -195,7 +200,7 @@ export default async function AdminSurveyComparePage({
           <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
             {q.title}
           </h2>
-          {!q.average && (
+          {!likert.includes(q) && (
             <>
               <Legend
                 items={[

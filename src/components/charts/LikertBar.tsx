@@ -24,11 +24,32 @@ function color(i: number, total: number) {
   return POSITIVE[Math.min(p, POSITIVE.length - 1)]!
 }
 
+// Ordinal: one hue, light (lowest level) to dark (highest).
+const SEQUENTIAL = [
+  'bg-sky-100 text-zinc-900',
+  'bg-sky-300 text-zinc-900',
+  'bg-sky-500 text-zinc-900',
+  'bg-sky-700 text-white',
+  'bg-sky-900 text-white',
+]
+
+function sequential(i: number, total: number) {
+  const last = SEQUENTIAL.length - 1
+  return SEQUENTIAL[total <= 1 ? last : Math.round((i * last) / (total - 1))]!
+}
+
+type Variant = AggregatedQuestion['visualization']
+
+function fill(variant: Variant, i: number, total: number) {
+  return variant === 'ordinal' ? sequential(i, total) : color(i, total)
+}
+
 function share(count: number, total: number) {
   return total > 0 ? (count / total) * 100 : 0
 }
 
 function Bar({ question }: { question: AggregatedQuestion }) {
+  const ordinal = question.visualization === 'ordinal'
   const scale = scaleOptions(question.options)
   const total = scale.reduce((s, o) => s + o.count, 0)
   const left = divergingLeft(scale.map(o => share(o.count, total)))
@@ -41,20 +62,26 @@ function Bar({ question }: { question: AggregatedQuestion }) {
     >
       <div
         className="absolute inset-y-0 flex gap-px"
-        style={{ left: `${50 - left / 2}%`, width: '50%' }}
+        style={
+          ordinal
+            ? { left: 0, width: '100%' }
+            : { left: `${50 - left / 2}%`, width: '50%' }
+        }
       >
         {scale.map((o, i) => {
           const pct = share(o.count, total)
           if (pct === 0) return null
+          // Label room in diverging units: the ordinal track is twice as wide.
+          const room = ordinal ? pct * 2 : pct
           return (
             <div
               key={o.value}
-              className={`flex items-center justify-center overflow-hidden text-xs whitespace-nowrap ${color(i, scale.length)}`}
+              className={`flex items-center justify-center overflow-hidden text-xs whitespace-nowrap ${fill(question.visualization, i, scale.length)}`}
               style={{ width: `${pct}%` }}
             >
-              {pct >= 12 && (
+              {room >= 12 && (
                 <span
-                  className={`overflow-hidden px-0.5 text-ellipsis whitespace-nowrap ${pct >= 25 ? '' : 'hidden sm:inline'}`}
+                  className={`overflow-hidden px-0.5 text-ellipsis whitespace-nowrap ${room >= 25 ? '' : 'hidden sm:inline'}`}
                 >
                   {`${Math.round(pct)} % (${o.count})`}
                 </span>
@@ -63,7 +90,9 @@ function Bar({ question }: { question: AggregatedQuestion }) {
           )
         })}
       </div>
-      <div className="absolute -inset-y-1 left-1/2 w-0.5 -translate-x-1/2 bg-zinc-900 dark:bg-zinc-100" />
+      {!ordinal && (
+        <div className="absolute -inset-y-1 left-1/2 w-0.5 -translate-x-1/2 bg-zinc-900 dark:bg-zinc-100" />
+      )}
     </div>
   )
 }
@@ -78,7 +107,7 @@ export function LikertBar({ questions }: { questions: AggregatedQuestion[] }) {
           <li key={o.value} className="flex items-center gap-1.5">
             <span
               aria-hidden="true"
-              className={`inline-block h-3 w-3 rounded-full ${color(i, scale.length)}`}
+              className={`inline-block h-3 w-3 rounded-full ${fill(questions[0]!.visualization, i, scale.length)}`}
             />
             {stripMarkdown(o.label)}
           </li>

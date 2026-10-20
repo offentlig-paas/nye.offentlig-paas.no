@@ -45,20 +45,24 @@ export function formatPp(delta: number) {
   return `${r > 0 ? '+' : '−'}${Math.abs(r)} pp`
 }
 
+/** Rendered as a scale bar (diverging or ordinal) rather than a table. */
+export const isScale = <T extends { visualization?: string }>(
+  q: T
+): q is T & { visualization: 'diverging' | 'ordinal' } =>
+  q.visualization === 'diverging' || q.visualization === 'ordinal'
+
 const scaleKey = (q: AggregatedQuestion) =>
-  scaleOptions(q.options)
-    .map(o => o.label)
-    .join('\u0000')
+  [q.visualization, ...scaleOptions(q.options).map(o => o.label)].join('\u0000')
 
 type QuestionGroup =
   | { kind: 'single'; question: AggregatedQuestion }
   | { kind: 'likert'; questions: AggregatedQuestion[] }
 
-/** Group consecutive diverging questions that share the same scale labels. */
+/** Group consecutive scale questions that share the same scale labels. */
 export function groupQuestions(questions: AggregatedQuestion[]) {
   const groups: QuestionGroup[] = []
   for (const q of questions) {
-    if (q.visualization !== 'diverging') {
+    if (!isScale(q)) {
       groups.push({ kind: 'single', question: q })
       continue
     }

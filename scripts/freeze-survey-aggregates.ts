@@ -17,7 +17,7 @@ import { aggregatesDir, writeAggregatesIndex } from './aggregates-index'
 import { getSurvey } from '@/lib/surveys/helpers'
 import { aggregateSurveyResults } from '@/lib/surveys/aggregation'
 import type { FrozenAggregates } from '@/lib/surveys/frozen'
-import { storedAverage } from '@/lib/surveys/likert'
+import { isScale, storedAverage } from '@/lib/surveys/likert'
 import { SurveyResponseRepository } from '@/domains/survey-response/repository'
 
 const { positionals, values } = parseArgs({
@@ -53,7 +53,7 @@ const rawById = new Map(
   raw.sections.flatMap(s => s.questions).map(q => [q.id, q])
 )
 for (const q of results.sections.flatMap(s => s.questions)) {
-  if (q.visualization !== 'diverging') continue
+  if (!isScale(q)) continue
   const average = storedAverage(rawById.get(q.id)!.options, q.options)
   if (average !== undefined) q.average = average
 }

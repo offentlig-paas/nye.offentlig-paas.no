@@ -15,7 +15,7 @@ import {
   type AggregatedSurveyResults,
 } from '../src/lib/surveys/aggregation'
 import type { FrozenAggregates } from '../src/lib/surveys/frozen'
-import { storedAverage } from '../src/lib/surveys/likert'
+import { isScale, storedAverage } from '../src/lib/surveys/likert'
 import type { SurveyAnswer, SurveyDefinition } from '../src/lib/surveys/types'
 import { getVisibleQuestionIds } from '../src/lib/surveys/helpers'
 
@@ -128,18 +128,19 @@ export function aggregateCsv(
       return {
         label: o.label,
         value: o.value,
+        ...(o.scale === false && { scale: false as const }),
         count,
         percentage: n > 0 ? Math.round((count / n) * 100) : 0,
       }
     })
-    const diverging = q.visualization === 'diverging'
+    const visualization = isScale(q) ? q.visualization : 'bar'
     const safe = suppressSmallBuckets(options, n, minBucket)
-    const average = diverging ? storedAverage(options, safe) : undefined
+    const average = isScale(q) ? storedAverage(options, safe) : undefined
     out.push({
       id: prevId,
       title: q.title,
       type: q.type,
-      visualization: diverging ? 'diverging' : 'bar',
+      visualization,
       responseCount: n,
       options: safe,
       ...(average !== undefined && { average }),

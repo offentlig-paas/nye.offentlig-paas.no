@@ -27,7 +27,7 @@ export interface AggregatedQuestion {
   title: string
   description?: string
   type: SurveyQuestion['type']
-  visualization: 'bar' | 'diverging'
+  visualization: 'bar' | 'diverging' | 'ordinal'
   responseCount: number
   options: AggregatedOption[]
   freeTextCount?: number
@@ -48,7 +48,7 @@ export interface AggregatedOption {
 
 function getEffectiveVisualization(
   question: SurveyQuestion
-): 'bar' | 'diverging' | 'hidden' {
+): 'bar' | 'diverging' | 'ordinal' | 'hidden' {
   if (question.visualization) return question.visualization
   if (question.type === 'text' || question.type === 'textarea') return 'hidden'
   // ponytail: matrix answers are not charted; add a per-row breakdown when results are published

@@ -77,6 +77,17 @@ describe('groupQuestions', () => {
       groups.map(g => (g.kind === 'likert' ? g.questions.length : 's'))
     ).toEqual([2, 1, 's', 1])
   })
+  it('groups ordinal questions but never with diverging ones', () => {
+    const s = ['1', '2']
+    const groups = groupQuestions([
+      q('a', s, 'ordinal'),
+      q('b', s, 'ordinal'),
+      q('c', s),
+    ])
+    expect(
+      groups.map(g => (g.kind === 'likert' ? g.questions.length : 's'))
+    ).toEqual([2, 1])
+  })
 })
 
 describe('storedAverage', () => {
