@@ -1,7 +1,7 @@
 {
   "surveySlug": "state-of-platforms-2026",
   "title": "Plattformundersøkelsen i offentlig sektor, runde 2",
-  "frozenAt": "2026-10-19",
+  "frozenAt": "2026-10-20",
   "totalResponses": 48,
   "uniqueOrganizations": 45,
   "sections": [
@@ -519,7 +519,7 @@
           "id": "q13a-investment",
           "title": "Hvordan allokeres ansatte og midler til plattformfunksjoner",
           "type": "radio",
-          "visualization": "bar",
+          "visualization": "ordinal",
           "responseCount": 44,
           "options": [
             {
@@ -550,6 +550,7 @@
             {
               "label": "N/A",
               "value": "N/A",
+              "scale": false,
               "count": 0,
               "percentage": 0,
               "suppressed": true
@@ -566,7 +567,7 @@
           "id": "q13b-adoption",
           "title": "Hvordan oppdager brukere interne plattformer og plattformfunksjonalitet?",
           "type": "radio",
-          "visualization": "bar",
+          "visualization": "ordinal",
           "responseCount": 44,
           "options": [
             {
@@ -597,6 +598,7 @@
             {
               "label": "N/A",
               "value": "N/A",
+              "scale": false,
               "count": 0,
               "percentage": 0,
               "suppressed": true
@@ -613,7 +615,7 @@
           "id": "q13c-interfaces",
           "title": "Hvordan benytter brukere plattformfunksjonalitet?",
           "type": "radio",
-          "visualization": "bar",
+          "visualization": "ordinal",
           "responseCount": 44,
           "options": [
             {
@@ -644,6 +646,7 @@
             {
               "label": "N/A",
               "value": "N/A",
+              "scale": false,
               "count": 0,
               "percentage": 0,
               "suppressed": true
@@ -660,7 +663,7 @@
           "id": "q13d-operations",
           "title": "Hvordan planlegges, prioriteres, utvikles og vedlikeholdes plattformer og deres funksjonalitet?",
           "type": "radio",
-          "visualization": "bar",
+          "visualization": "ordinal",
           "responseCount": 44,
           "options": [
             {
@@ -691,6 +694,7 @@
             {
               "label": "N/A",
               "value": "N/A",
+              "scale": false,
               "count": 0,
               "percentage": 0,
               "suppressed": true
@@ -707,7 +711,7 @@
           "id": "q13e-measurement",
           "title": "Hva er prosessen for å samle inn og lære av tilbakemeldinger?",
           "type": "radio",
-          "visualization": "bar",
+          "visualization": "ordinal",
           "responseCount": 44,
           "options": [
             {
@@ -739,6 +743,7 @@
             {
               "label": "N/A",
               "value": "N/A",
+              "scale": false,
               "count": 0,
               "percentage": 0,
               "suppressed": true

@@ -100,7 +100,11 @@ interface QuestionBase {
   showIf?: QuestionCondition[]
   /** Make the question required when all conditions are met. */
   requiredIf?: QuestionCondition[]
-  visualization?: 'bar' | 'diverging' | 'hidden'
+  /**
+   * `diverging`: bipolar scale centred on neutral. `ordinal`: one-directional
+   * scale of evenly spaced levels (sequential colours, mean shown).
+   */
+  visualization?: 'bar' | 'diverging' | 'ordinal' | 'hidden'
 }
 
 export interface TextQuestion extends QuestionBase {

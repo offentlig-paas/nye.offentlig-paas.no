@@ -6,7 +6,7 @@ function results(
   qid: string,
   n: number,
   options: [string, number][],
-  visualization: 'bar' | 'diverging' = 'bar'
+  visualization: 'bar' | 'diverging' | 'ordinal' = 'bar'
 ): AggregatedSurveyResults {
   return {
     surveySlug: 's',
@@ -111,6 +111,19 @@ describe('compareWaves', () => {
     expect(compareWaves(cur, prev, { new: 'old' })[0]!.average).toEqual({
       previous: null,
       current: null,
+    })
+  })
+
+  it('averages ordinal questions too', () => {
+    const rows: [string, number][] = [
+      ['lo', 1],
+      ['hi', 1],
+    ]
+    const cur = results('new', 2, rows, 'ordinal')
+    const prev = results('old', 2, rows, 'ordinal')
+    expect(compareWaves(cur, prev, { new: 'old' })[0]!.average).toEqual({
+      previous: 1.5,
+      current: 1.5,
     })
   })
 })

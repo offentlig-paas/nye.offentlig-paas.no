@@ -1,5 +1,5 @@
-import type { AggregatedSurveyResults } from './aggregation'
-import { likertAverage } from './likert'
+import type { AggregatedQuestion, AggregatedSurveyResults } from './aggregation'
+import { isScale, likertAverage } from './likert'
 
 interface ComparedOption {
   value: string
@@ -17,7 +17,8 @@ export interface ComparedQuestion {
   previousN: number
   currentN: number
   options: ComparedOption[]
-  /** Mean scale position (1 = first; N/A options excluded), for diverging questions. */
+  visualization: AggregatedQuestion['visualization']
+  /** Mean scale position (1 = first; N/A options excluded), for diverging and ordinal questions. */
   average?: { previous: number | null; current: number | null }
 }
 
@@ -77,8 +78,9 @@ export function compareWaves(
       previousN: p.responseCount,
       currentN: c.responseCount,
       options,
+      visualization: c.visualization,
     }
-    if (c.visualization === 'diverging' || p.visualization === 'diverging') {
+    if (isScale(c) || isScale(p)) {
       // Frozen waves carry the mean computed before suppression.
       const previousAvg = p.average ?? likertAverage(p.options)
       const currentAvg = c.average ?? likertAverage(c.options)

@@ -25,6 +25,10 @@ const core = (labels: string[]): QuestionOption[] =>
       : { label, value: label }
   )
 
+/** CNCF maturity levels 1–4 in order; N/A sits outside the scale. */
+const maturity = (labels: string[]): QuestionOption[] =>
+  core(labels).map(o => (o.value === 'N/A' ? { ...o, scale: false } : o))
+
 const scale1to10 = core(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'])
 
 const hasPlatform: QuestionCondition[] = [
@@ -281,7 +285,8 @@ export const stateOfPlatforms2027: SurveyDefinition = {
           title: 'Hvordan allokeres ansatte og midler til plattformfunksjoner',
           required: false,
           showIf: hasPlatform,
-          options: core([
+          visualization: 'ordinal',
+          options: maturity([
             'Nivå 1, Provisorisk – Frivillig eller midlertidig',
             'Nivå 2, Operasjonalisert — Dedikert team',
             'Nivå 3, Skalerbar — Som produkt',
@@ -296,7 +301,8 @@ export const stateOfPlatforms2027: SurveyDefinition = {
             'Hvordan oppdager brukere interne plattformer og plattformfunksjonalitet?',
           required: false,
           showIf: hasPlatform,
-          options: core([
+          visualization: 'ordinal',
+          options: maturity([
             'Nivå 1, Provisorisk — Uregelmessig',
             'Nivå 2, Operasjonalisert — Utvendig dytt',
             'Nivå 3, Skalerbar — Innvendig dragning',
@@ -310,7 +316,8 @@ export const stateOfPlatforms2027: SurveyDefinition = {
           title: 'Hvordan benytter brukere plattformfunksjonalitet?',
           required: false,
           showIf: hasPlatform,
-          options: core([
+          visualization: 'ordinal',
+          options: maturity([
             'Nivå 1, Provisorisk – Tilpassede prosesser',
             'Nivå 2, Operasjonalisert — Standardverktøy',
             'Nivå 3, Skalerbar — Selvbetjeningsløsninger',
@@ -325,7 +332,8 @@ export const stateOfPlatforms2027: SurveyDefinition = {
             'Hvordan planlegges, prioriteres, utvikles og vedlikeholdes plattformer og deres funksjonalitet?',
           required: false,
           showIf: hasPlatform,
-          options: core([
+          visualization: 'ordinal',
+          options: maturity([
             'Nivå 1, Provisorisk — På forespørsel',
             'Nivå 2, Operasjonalisert — Sentralt registrert',
             'Nivå 3, Skalerbar — Sentralt aktivert',
@@ -340,7 +348,8 @@ export const stateOfPlatforms2027: SurveyDefinition = {
             'Hva er prosessen for å samle inn og lære av tilbakemeldinger?',
           required: false,
           showIf: hasPlatform,
-          options: core([
+          visualization: 'ordinal',
+          options: maturity([
             'Nivå 1, Provisorisk – Ad hoc',
             'Nivå 2, Operasjonalisert — Konsekvent innsamling',
             'Nivå 3, Skalerbar — Innsikt',
