@@ -2,12 +2,22 @@ import { vi } from 'vitest'
 import type { Session } from 'next-auth'
 
 const deletePilotBySurvey = vi.fn(async () => 3)
+const findBySurvey = vi.fn(async () => [
+  {
+    _id: 'r1',
+    surveySlug: 'state-of-platforms-2027',
+    surveyVersion: 1,
+    submittedAt: '',
+    answers: [],
+  },
+])
 
 vi.mock('@/auth', () => ({ auth: vi.fn() }))
 vi.mock('@/domains/survey-response/repository', () => ({
   SurveyResponseRepository: vi.fn(function () {
     return {
       deletePilotBySurvey,
+      findBySurvey,
       findBySurveyPaginated: vi.fn(async () => ({ responses: [], total: 0 })),
       countBySurvey: vi.fn(async () => 0),
     }
@@ -106,5 +116,15 @@ describe('researcher access to pilot responses', () => {
       researcher().deletePilotResponses({ slug: 'ai-agents-2027' })
     ).rejects.toMatchObject({ code: 'FORBIDDEN' })
     expect(deletePilotBySurvey).not.toHaveBeenCalled()
+  })
+})
+
+describe('admin.surveys.getAnalyses cache', () => {
+  it('is cleared when pilot responses are deleted', async () => {
+    const slug = 'state-of-platforms-2027'
+    const a = await caller(true).getAnalyses({ slug })
+    expect(await caller(true).getAnalyses({ slug })).toBe(a)
+    await caller(true).deletePilotResponses({ slug })
+    expect(await caller(true).getAnalyses({ slug })).not.toBe(a)
   })
 })

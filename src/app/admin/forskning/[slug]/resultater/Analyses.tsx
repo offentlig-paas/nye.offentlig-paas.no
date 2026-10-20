@@ -177,7 +177,9 @@ export async function Analyses({ slug }: { slug: string }) {
                 {data.panel.returning} organisasjoner har svart i begge bølgene,{' '}
                 {data.panel.newOrgs} er nye. Hver organisasjon teller én gang
                 (flertallssvar). McNemars test sier om endringen blant de samme
-                organisasjonene er større enn tilfeldig variasjon.
+                organisasjonene er større enn tilfeldig variasjon. Når ett tall
+                er under 3, skjules hele raden, fordi tallene ellers kan regnes
+                ut fra hverandre.
               </p>
               {data.panel.questions.map(q => (
                 <details key={q.id} className="text-sm">
