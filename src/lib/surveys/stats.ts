@@ -170,7 +170,7 @@ export function seededRandom(seed: number): () => number {
 export function groupDisagreementTest(
   values: string[],
   groups: number[][],
-  { permutations = 10_000, seed = 42 } = {}
+  { permutations = 2_000, seed = 42 } = {}
 ) {
   const disagree = (v: string[]) =>
     groups.filter(g => new Set(g.map(i => v[i])).size > 1).length /

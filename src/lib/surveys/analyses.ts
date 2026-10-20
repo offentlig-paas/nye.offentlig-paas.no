@@ -268,20 +268,31 @@ export function segmentBreakdowns(
 
 const MIN_PANEL = 5
 
+/** A panel count of 1 or 2, shown as "<3". */
+type PanelCount = number | '<3'
+const mask = (n: number): PanelCount => (n > 0 && n < 3 ? '<3' : n)
+
 interface PanelQuestion {
   id: string
   title: string
   pairs: number
   /** Ordinal scale: movement along the scale, with a sign test (exact McNemar). */
-  scale?: { up: number; same: number; down: number; p: number }
+  scale?: {
+    up: PanelCount
+    same: PanelCount
+    down: PanelCount
+    /** null when a count is hidden: p and the other count would reveal it. */
+    p: number | null
+  }
   /** Other questions: per option, orgs that started or stopped choosing it. */
   options?: {
     label: string
-    before: number
-    after: number
-    gained: number
-    lost: number
-    p: number
+    before: PanelCount
+    after: PanelCount
+    gained: PanelCount
+    lost: PanelCount
+    /** null when a count is hidden: p and the other count would reveal it. */
+    p: number | null
     significant: boolean
   }[]
 }
@@ -343,8 +354,17 @@ export function panelAnalysis(
           else if (j < i) down++
           else same++
         }
+        const hidden = [up, same, down].some(n => mask(n) === '<3')
         return [
-          { ...base, scale: { up, same, down, p: mcnemarExact(up, down) } },
+          {
+            ...base,
+            scale: {
+              up: mask(up),
+              same: mask(same),
+              down: mask(down),
+              p: hidden ? null : mcnemarExact(up, down),
+            },
+          },
         ]
       }
       const options = q.options.map(o => {
@@ -356,17 +376,18 @@ export function panelAnalysis(
         const lost = pairs.filter(
           ([a, b]) => a.includes(o.value) && !b.includes(o.value)
         ).length
+        const hidden = [before, after, gained, lost].some(n => mask(n) === '<3')
+        const p = hidden ? null : mcnemarExact(gained, lost)
         return {
           label: o.label,
-          before,
-          after,
-          gained,
-          lost,
-          p: mcnemarExact(gained, lost),
-          significant: false,
+          before: mask(before),
+          after: mask(after),
+          gained: mask(gained),
+          lost: mask(lost),
+          p,
+          significant: p !== null && p * q.options.length < 0.05,
         }
       })
-      for (const o of options) o.significant = o.p * options.length < 0.05
       return [{ ...base, options }]
     }
   )

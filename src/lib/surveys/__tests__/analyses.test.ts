@@ -128,4 +128,17 @@ describe('panelAnalysis', () => {
     expect(yes.p).toBeCloseTo(0.03125)
     expect(panelAnalysis(survey, cur, survey, prev.slice(0, 4), {})).toBeNull()
   })
+
+  it('hides counts of 1 or 2 and their p-value', () => {
+    const orgs = ['A', 'B', 'C', 'D', 'E', 'F']
+    const prev = orgs.map(o => resp(o, 'dev', 'no'))
+    const cur = orgs.map((o, i) => resp(o, 'dev', i < 2 ? 'yes' : 'no'))
+    const p = panelAnalysis(survey, cur, survey, prev, { q: 'q' })!
+    const yes = p.questions[0]!.options!.find(o => o.label === 'Ja')!
+    expect(yes.gained).toBe('<3')
+    expect(yes.after).toBe('<3')
+    expect(yes.lost).toBe(0)
+    expect(yes.p).toBeNull()
+    expect(yes.significant).toBe(false)
+  })
 })

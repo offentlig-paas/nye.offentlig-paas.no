@@ -1,3 +1,4 @@
+import { SUPPRESSED_VALUE } from '@/lib/surveys/likert'
 import { createCaller } from '@/server/root'
 
 const nb = (d: number) =>
@@ -26,7 +27,9 @@ export async function Analyses({ slug }: { slug: string }) {
     return (
       <section className="mt-12 space-y-2 print:hidden">
         <h2 className={h2}>Analyser</h2>
-        <p className={explain}>{RAW_GONE}</p>
+        <p className={explain}>
+          {data.closed ? RAW_GONE : 'Ingen svar å analysere ennå.'}
+        </p>
       </section>
     )
 
@@ -37,7 +40,7 @@ export async function Analyses({ slug }: { slug: string }) {
         <p className={explain}>
           Svarer kolleger i samme organisasjon likt? Vi teller hvor mange
           organisasjoner med minst to svar som har ulike svar, og sammenligner
-          med hva vi ville sett om svarene var fordelt tilfeldig (10 000
+          med hva vi ville sett om svarene var fordelt tilfeldig (2 000
           stokkinger). En lav p-verdi betyr at kolleger er mer enige enn
           tilfeldighetene tilsier.
         </p>
@@ -88,7 +91,9 @@ export async function Analyses({ slug }: { slug: string }) {
             ikke, og svar med færre enn 3 er slått sammen.
           </p>
           {seg.questions.map(q => {
-            const values = q.segments[0]!.options.map(o => o.value)
+            const values = q.segments[0]!.options.map(o => o.value).filter(
+              v => v !== SUPPRESSED_VALUE
+            )
             const significant =
               q.test && q.test.p * Math.max(1, seg.tests) < 0.05
             return (
@@ -133,13 +138,13 @@ export async function Analyses({ slug }: { slug: string }) {
                         </tr>
                       ))}
                       {q.segments.some(s =>
-                        s.options.some(o => o.value === '_suppressed')
+                        s.options.some(o => o.value === SUPPRESSED_VALUE)
                       ) && (
                         <tr>
                           <td className="px-3 py-2">Andre (for få svar)</td>
                           {q.segments.map(s => {
                             const o = s.options.find(
-                              x => x.value === '_suppressed'
+                              x => x.value === SUPPRESSED_VALUE
                             )
                             return (
                               <td key={s.label} className={td}>
@@ -186,7 +191,8 @@ export async function Analyses({ slug }: { slug: string }) {
                     {q.scale ? (
                       <p className={explain}>
                         Opp på skalaen: {q.scale.up}. Uendret: {q.scale.same}.
-                        Ned på skalaen: {q.scale.down}. {formatP(q.scale.p)}
+                        Ned på skalaen: {q.scale.down}.{' '}
+                        {q.scale.p !== null && formatP(q.scale.p)}
                       </p>
                     ) : (
                       <table className={table}>
@@ -209,7 +215,7 @@ export async function Analyses({ slug }: { slug: string }) {
                               <td className={td}>{o.gained}</td>
                               <td className={td}>{o.lost}</td>
                               <td className={td}>
-                                {formatP(o.p)}
+                                {o.p === null ? '–' : formatP(o.p)}
                                 {o.significant && ' *'}
                               </td>
                             </tr>

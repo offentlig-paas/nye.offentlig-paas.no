@@ -52,6 +52,18 @@ async function getRespondedOrgNames(
   return responded
 }
 
+const analysesCache = new Map<
+  string,
+  {
+    live: true
+    agreement: ReturnType<typeof withinOrgAgreement>
+    segments: ReturnType<typeof segmentBreakdowns>
+    panel: ReturnType<typeof panelAnalysis>
+    panelNote: string | null
+    hasPreviousWave: boolean
+  }
+>()
+
 export const adminSurveyRouter = router({
   list: protectedProcedure.query(async ({ ctx }) => {
     const surveys = getAccessibleSurveys(ctx.user)
@@ -257,7 +269,9 @@ export const adminSurveyRouter = router({
     }),
 
   /**
-   * Analyses that need raw answers with org identity. Aggregates only; null
+   * Analyses that need raw answers with org identity. Results are cached per
+   * slug and response counts (the permutation test is seeded, so the same
+   * answers give the same result). Aggregates only; null
    * fields mean the raw answers are gone (or, for the panel, why it is missing).
    */
   getAnalyses: adminSurveyProcedure
@@ -268,9 +282,19 @@ export const adminSurveyRouter = router({
       }
       const { survey } = ctx
       const responses = await repository.findBySurvey(survey.slug)
-      if (responses.length === 0) return { live: false as const }
+      if (responses.length === 0)
+        return {
+          live: false as const,
+          closed: survey.status === SurveyStatus.Closed,
+        }
       const { comparesTo } = survey
       const previous = comparesTo && getSurvey(comparesTo.slug)
+      const prevResponses = previous
+        ? await repository.findBySurvey(previous.slug)
+        : []
+      const key = `${survey.slug}:${responses.length}:${prevResponses.length}`
+      const hit = analysesCache.get(key)
+      if (hit) return hit
       let panel: ReturnType<typeof panelAnalysis> = null
       let panelNote: string | null = null
       if (!comparesTo) {
@@ -278,7 +302,6 @@ export const adminSurveyRouter = router({
       } else if (!previous)
         panelNote = 'Forrige bølge finnes bare som låste tall.'
       else {
-        const prevResponses = await repository.findBySurvey(previous.slug)
         if (prevResponses.length === 0)
           panelNote =
             'Forrige bølge har ikke rådata lenger, så vi kan ikke følge de samme organisasjonene.'
@@ -294,7 +317,7 @@ export const adminSurveyRouter = router({
             panelNote = 'Færre enn 5 organisasjoner har svart i begge bølgene.'
         }
       }
-      return {
+      const result = {
         live: true as const,
         agreement: withinOrgAgreement(survey, responses),
         segments: segmentBreakdowns(survey, responses),
@@ -302,6 +325,11 @@ export const adminSurveyRouter = router({
         panelNote,
         hasPreviousWave: Boolean(comparesTo),
       }
+      // ponytail: per-instance Map keyed on counts; an edited answer with the
+      // same count shows stale analyses until the instance restarts.
+      if (analysesCache.size > 50) analysesCache.clear()
+      analysesCache.set(key, result)
+      return result
     }),
 
   getOrganizations: adminSurveyProcedure
