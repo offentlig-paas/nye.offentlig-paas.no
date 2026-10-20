@@ -185,7 +185,12 @@ function aggregateTypeahead(
   return options
 }
 
-/** Suppress options under `minBucket` in place (plus one more if alone) and add an «Andre» bucket. */
+/**
+ * Suppress options under `minBucket` in place and add an «Andre» bucket.
+ * Keeps adding the next-smallest option until the bucket holds at least two
+ * options and a total of at least `minBucket`; if options run out first, the
+ * bucket is dropped and only the hidden rows remain.
+ */
 export function suppressSmallBuckets(
   options: AggregatedOption[],
   responseCount: number,

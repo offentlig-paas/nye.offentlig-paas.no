@@ -4,23 +4,30 @@
  * Reads the real (non-pilot) responses from Sanity, aggregates them the same
  * way as the results page, drops free text, typeahead (organization names)
  * and sensitive questions, merges groups smaller than 3, and writes
- * src/data/surveys/aggregates/<slug>.json. Then register the file in
- * src/lib/surveys/frozen.ts and commit it. Run it only after the survey has
- * closed and the open datasets are generated.
+ * src/data/surveys/aggregates/<slug>.json and regenerates the index there.
+ * With `--out <dir>` it writes only the JSON to <dir> (dry run). Run it only
+ * after the survey has closed and the open datasets are generated.
  *
- * Usage: pnpm tsx --conditions=react-server --env-file=.env.local scripts/freeze-survey-aggregates.ts <slug>
+ * Usage: pnpm tsx --conditions=react-server --env-file=.env.local scripts/freeze-survey-aggregates.ts <slug> [--out <dir>]
  */
-import { writeFileSync } from 'node:fs'
+import { mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { parseArgs } from 'node:util'
+import { aggregatesDir, writeAggregatesIndex } from './aggregates-index'
 import { getSurvey } from '@/lib/surveys/helpers'
 import { aggregateSurveyResults } from '@/lib/surveys/aggregation'
 import type { FrozenAggregates } from '@/lib/surveys/frozen'
 import { storedAverage } from '@/lib/surveys/likert'
 import { SurveyResponseRepository } from '@/domains/survey-response/repository'
 
-const slug = process.argv[2]
+const { positionals, values } = parseArgs({
+  allowPositionals: true,
+  options: { out: { type: 'string' } },
+})
+const slug = positionals[0]
 const survey = slug && getSurvey(slug)
-if (!survey) throw new Error(`Usage: freeze-survey-aggregates.ts <slug>`)
+if (!survey)
+  throw new Error(`Usage: freeze-survey-aggregates.ts <slug> [--out <dir>]`)
 
 const repository = new SurveyResponseRepository()
 const orgQid = survey.organizationQuestionId ?? 'q1-org'
@@ -58,10 +65,8 @@ const frozen: FrozenAggregates = {
   uniqueOrganizations,
 }
 
-const dst = join(
-  import.meta.dirname,
-  '..',
-  `src/data/surveys/aggregates/${survey.slug}.json`
-)
+const dst = join(values.out ?? aggregatesDir, `${survey.slug}.json`)
+if (values.out) mkdirSync(values.out, { recursive: true })
 writeFileSync(dst, JSON.stringify(frozen, null, 2) + '\n')
 console.log(`Wrote ${dst} (${responses.length} responses)`)
+if (!values.out) writeAggregatesIndex()

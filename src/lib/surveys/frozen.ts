@@ -4,7 +4,7 @@ import {
 } from './aggregation'
 import { getSurvey } from './helpers'
 import type { SurveyResponse } from '@/domains/survey-response/types'
-import stateOfPlatforms2026 from '@/data/surveys/aggregates/state-of-platforms-2026.json'
+import aggregates from '@/data/surveys/aggregates'
 
 /**
  * Aggregated results kept in the repo, so results and comparisons survive
@@ -16,10 +16,8 @@ export interface FrozenAggregates extends AggregatedSurveyResults {
   uniqueOrganizations?: number
 }
 
-/** Register files written by scripts/freeze-survey-aggregates.ts here. */
-const registry: Record<string, FrozenAggregates> = {
-  'state-of-platforms-2026': stateOfPlatforms2026 as FrozenAggregates,
-}
+/** Every <slug>.json in src/data/surveys/aggregates, via its generated index. */
+const registry = aggregates as Record<string, FrozenAggregates>
 
 export function getFrozenAggregates(slug: string): FrozenAggregates | null {
   return registry[slug] ?? null

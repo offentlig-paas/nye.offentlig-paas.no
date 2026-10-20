@@ -7,6 +7,7 @@
  * Usage: pnpm tsx scripts/import-sop-wave2-aggregates.ts <path/to/state-of-platforms-2026.csv>
  */
 import { readFileSync, writeFileSync } from 'node:fs'
+import { aggregatesDir, writeAggregatesIndex } from './aggregates-index'
 import { join } from 'node:path'
 import { stateOfPlatforms2027 } from '../src/data/surveys/state-of-platforms-2027'
 import {
@@ -166,11 +167,8 @@ if (process.argv[1]?.endsWith('import-sop-wave2-aggregates.ts')) {
       title: 'Plattformundersøkelsen i offentlig sektor, runde 2',
     }
   )
-  const dst = join(
-    import.meta.dirname,
-    '..',
-    'src/data/surveys/aggregates/state-of-platforms-2026.json'
-  )
+  const dst = join(aggregatesDir, 'state-of-platforms-2026.json')
   writeFileSync(dst, JSON.stringify(result, null, 2) + '\n')
+  writeAggregatesIndex()
   console.log(`Wrote ${dst}`)
 }
