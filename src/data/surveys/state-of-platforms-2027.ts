@@ -51,6 +51,7 @@ export const stateOfPlatforms2027: SurveyDefinition = {
     },
   ],
   organizationQuestionId: 'q1-org',
+  segmentQuestionIds: ['q3-org-type'],
   comparesTo: {
     // Wave 2 exists only as frozen aggregates, built from the 2026 CSV by
     // scripts/freeze-from-open-dataset.ts with the same question ids.

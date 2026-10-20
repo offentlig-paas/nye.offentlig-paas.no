@@ -114,6 +114,7 @@ export const aiAgents2027: SurveyDefinition = {
     },
   ],
   organizationQuestionId: 'q1-org',
+  segmentQuestionIds: ['q3-role'],
   sensitiveQuestionIds: ['q24-email', 'q24-later-rounds'],
   description:
     'Offentlig PAAS gjennomfører denne undersøkelsen for å kartlegge hvordan KI-kodeverktøy og kodeagenter brukes, styres og oppleves i norsk offentlig sektor. Dette er runde 2.',

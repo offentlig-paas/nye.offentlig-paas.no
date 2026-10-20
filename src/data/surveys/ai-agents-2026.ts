@@ -24,6 +24,7 @@ export const aiAgents2026: SurveyDefinition = {
     },
   ],
   organizationQuestionId: 'q1-org',
+  segmentQuestionIds: ['q2-role'],
   sensitiveQuestionIds: ['q24-email'],
   resultsConfig: {
     published: true,

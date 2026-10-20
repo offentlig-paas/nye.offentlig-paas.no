@@ -36,6 +36,25 @@ function results(
 }
 
 describe('compareWaves', () => {
+  it('adds Wilson intervals and Bonferroni-corrected Fisher tests', () => {
+    const [q] = compareWaves(
+      results('q', 100, [
+        ['a', 40],
+        ['b', 60],
+      ]),
+      results('q', 100, [
+        ['a', 10],
+        ['b', 90],
+      ]),
+      { q: 'q' }
+    )
+    const a = q!.options[0]!
+    expect(a.current!.ci![0]).toBeLessThan(40)
+    expect(a.current!.ci![1]).toBeGreaterThan(40)
+    expect(a.p).toBeLessThan(0.001)
+    expect(a.significant).toBe(true)
+  })
+
   it('computes percentage-point deltas and marks missing options', () => {
     const [q] = compareWaves(
       results('new', 10, [

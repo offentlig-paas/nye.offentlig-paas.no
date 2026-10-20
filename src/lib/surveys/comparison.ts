@@ -1,14 +1,26 @@
 import type { AggregatedQuestion, AggregatedSurveyResults } from './aggregation'
 import { isScale, likertAverage } from './likert'
+import { fisherExact, wilson } from './stats'
+
+interface ComparedCell {
+  count: number
+  percentage: number
+  /** Wilson 95 % interval in percent; absent for suppressed counts. */
+  ci?: [number, number]
+}
 
 interface ComparedOption {
   value: string
   label: string
   /** null when the option does not exist in that wave. */
-  previous: { count: number; percentage: number } | null
-  current: { count: number; percentage: number } | null
+  previous: ComparedCell | null
+  current: ComparedCell | null
   /** Percentage points, current minus previous; null if either is missing. */
   delta: number | null
+  /** Fisher's exact p for the change; null when untestable (missing or suppressed). */
+  p: number | null
+  /** p < 0.05 after Bonferroni over the tested options in the question. */
+  significant: boolean
 }
 
 export interface ComparedQuestion {
@@ -29,6 +41,22 @@ function questionsById(results: AggregatedSurveyResults) {
 }
 
 const pct = (count: number, n: number) => (n > 0 ? (count / n) * 100 : 0)
+
+const testable = (o: { value: string; suppressed?: true } | undefined) =>
+  !!o && !o.suppressed && !o.value.startsWith('_')
+
+function toCell(
+  o: { count: number; value: string; suppressed?: true } | undefined,
+  n: number
+): ComparedCell | null {
+  if (!o) return null
+  const cell: ComparedCell = { count: o.count, percentage: pct(o.count, n) }
+  if (testable(o) && n > 0) {
+    const [lo, hi] = wilson(o.count, n)
+    cell.ci = [lo * 100, hi * 100]
+  }
+  return cell
+}
 
 /** Compare mapped questions; options are matched by value. */
 export function compareWaves(
@@ -54,12 +82,17 @@ export function compareWaves(
     const options = values.map(value => {
       const co = c.options.find(o => o.value === value)
       const po = p.options.find(o => o.value === value)
-      const currentCell = co
-        ? { count: co.count, percentage: pct(co.count, c.responseCount) }
-        : null
-      const previousCell = po
-        ? { count: po.count, percentage: pct(po.count, p.responseCount) }
-        : null
+      const currentCell = toCell(co, c.responseCount)
+      const previousCell = toCell(po, p.responseCount)
+      const pValue =
+        testable(co) && testable(po)
+          ? fisherExact(
+              po!.count,
+              p.responseCount - po!.count,
+              co!.count,
+              c.responseCount - co!.count
+            )
+          : null
       return {
         value,
         label: (co ?? po)!.label,
@@ -69,8 +102,12 @@ export function compareWaves(
           currentCell && previousCell
             ? currentCell.percentage - previousCell.percentage
             : null,
+        p: pValue,
+        significant: false,
       }
     })
+    const tests = options.filter(o => o.p !== null).length
+    for (const o of options) o.significant = o.p !== null && o.p * tests < 0.05
 
     const question: ComparedQuestion = {
       id: curId,
