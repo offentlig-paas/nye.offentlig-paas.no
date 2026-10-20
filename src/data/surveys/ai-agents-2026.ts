@@ -8,6 +8,8 @@ export const aiAgents2026: SurveyDefinition = {
   slug: 'ai-agents-2026',
   version: 1,
   title: 'KI-kodeverktøy i norsk offentlig sektor',
+  // Responses were collected in April and May 2026 (see heroText).
+  waveLabel: 'Våren 2026',
   owners: [
     {
       name: 'Hans Kristian Flaatten',

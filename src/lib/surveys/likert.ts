@@ -28,6 +28,23 @@ export function formatNb(n: number, digits = 1) {
   })
 }
 
+/**
+ * Percent of the scale that sits left of the centre line: all negative
+ * shares plus half the neutral one (odd-length scales).
+ */
+export function divergingLeft(shares: number[]) {
+  const mid = Math.floor(shares.length / 2)
+  const neutral = shares.length % 2 === 1 ? shares[mid]! / 2 : 0
+  return shares.slice(0, mid).reduce((s, x) => s + x, 0) + neutral
+}
+
+/** Signed percentage-point change with nb minus sign, e.g. "−1 pp". */
+export function formatPp(delta: number) {
+  const r = Math.round(delta)
+  if (r === 0) return '0 pp'
+  return `${r > 0 ? '+' : '−'}${Math.abs(r)} pp`
+}
+
 const scaleKey = (q: AggregatedQuestion) =>
   scaleOptions(q.options)
     .map(o => o.label)
