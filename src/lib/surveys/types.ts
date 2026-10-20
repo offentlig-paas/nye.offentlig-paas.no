@@ -30,6 +30,8 @@ export interface SurveyDefinition {
   slug: string
   version: number
   title: string
+  /** Collection period shown in wave comparisons, e.g. "Høsten 2026". */
+  waveLabel?: string
   description?: string
   consent: SurveyConsent
   thankYouMessage?: string

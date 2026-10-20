@@ -2,15 +2,18 @@ import { stripMarkdown } from '@/lib/markdown'
 import type { AggregatedQuestion } from '@/lib/surveys/aggregation'
 import {
   SUPPRESSED_VALUE,
+  divergingLeft,
   formatNb,
   likertAverage,
   nonScaleOptions,
   scaleOptions,
 } from '@/lib/surveys/likert'
 
-const NEGATIVE = ['bg-red-500', 'bg-orange-400', 'bg-amber-300']
-const POSITIVE = ['bg-emerald-300', 'bg-teal-500', 'bg-teal-700']
-const NEUTRAL = 'bg-zinc-300 dark:bg-zinc-500'
+// Nearest the centre first. Strong ends carry white text, light steps dark
+// text; the same fills read on both light and dark page backgrounds.
+const NEGATIVE = ['bg-red-200 text-zinc-900', 'bg-red-700 text-white']
+const POSITIVE = ['bg-emerald-200 text-zinc-900', 'bg-emerald-700 text-white']
+const NEUTRAL = 'bg-zinc-300 text-zinc-900'
 
 function color(i: number, total: number) {
   const mid = Math.floor(total / 2)
@@ -28,36 +31,33 @@ function share(count: number, total: number) {
 function Bar({ question }: { question: AggregatedQuestion }) {
   const scale = scaleOptions(question.options)
   const total = scale.reduce((s, o) => s + o.count, 0)
-  const mid = Math.floor(scale.length / 2)
-  const hasNeutral = scale.length % 2 === 1
-  const left =
-    scale.slice(0, mid).reduce((s, o) => s + share(o.count, total), 0) +
-    (hasNeutral ? share(scale[mid]!.count, total) / 2 : 0)
+  const left = divergingLeft(scale.map(o => share(o.count, total)))
 
   // Track spans -100..100 %, so every percent is half a percent of width.
   return (
     <div
       aria-hidden="true"
-      className="relative h-7 rounded bg-zinc-100 [-webkit-print-color-adjust:exact] [print-color-adjust:exact] dark:bg-zinc-800"
+      className="relative h-7 min-w-0 flex-1 [-webkit-print-color-adjust:exact] [print-color-adjust:exact]"
     >
-      <div className="absolute inset-y-0 left-1/2 w-px bg-zinc-400 dark:bg-zinc-500" />
       <div
-        className="absolute inset-y-0 flex"
+        className="absolute inset-y-0 flex gap-px"
         style={{ left: `${50 - left / 2}%`, width: '50%' }}
       >
         {scale.map((o, i) => {
           const pct = share(o.count, total)
+          if (pct === 0) return null
           return (
             <div
               key={o.value}
-              className={`flex items-center justify-center overflow-hidden text-[11px] whitespace-nowrap text-zinc-900 ${color(i, scale.length)}`}
+              className={`flex items-center justify-center overflow-hidden text-xs whitespace-nowrap ${color(i, scale.length)}`}
               style={{ width: `${pct}%` }}
             >
-              {pct >= 18 && `${Math.round(pct)} % (${o.count})`}
+              {pct >= 22 && `${Math.round(pct)} % (${o.count})`}
             </div>
           )
         })}
       </div>
+      <div className="absolute -inset-y-1 left-1/2 w-0.5 -translate-x-1/2 bg-zinc-900 dark:bg-zinc-100" />
     </div>
   )
 }
@@ -72,9 +72,9 @@ export function LikertBar({ questions }: { questions: AggregatedQuestion[] }) {
           <li key={o.value} className="flex items-center gap-1.5">
             <span
               aria-hidden="true"
-              className={`inline-block h-3 w-3 rounded-sm ${color(i, scale.length)}`}
+              className={`inline-block h-3 w-3 rounded-full ${color(i, scale.length)}`}
             />
-            {i + 1}. {stripMarkdown(o.label)}
+            {stripMarkdown(o.label)}
           </li>
         ))}
       </ul>
@@ -85,21 +85,30 @@ export function LikertBar({ questions }: { questions: AggregatedQuestion[] }) {
         const outside = nonScaleOptions(q.options)
         return (
           <div key={q.id} className="break-inside-avoid space-y-1.5">
-            <div className="flex flex-wrap items-baseline justify-between gap-x-3">
-              <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                {q.title}
-              </h4>
-              <p className="text-xs text-zinc-500 tabular-nums dark:text-zinc-400">
-                {avg !== null && <>Gjennomsnitt {formatNb(avg)} · </>}
-                Antall svar: {q.responseCount}
-              </p>
-            </div>
+            <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+              {q.title}
+            </h4>
             {q.description && (
               <p className="text-xs text-zinc-500 dark:text-zinc-400">
                 {q.description}
               </p>
             )}
-            <Bar question={q} />
+            <div className="flex items-center gap-3">
+              <Bar question={q} />
+              <p className="w-16 shrink-0 text-xs leading-tight text-zinc-600 tabular-nums sm:w-28 dark:text-zinc-400">
+                {avg !== null && (
+                  <>
+                    Gjennomsnitt{' '}
+                    <span className="font-semibold text-zinc-900 dark:text-zinc-100">
+                      {formatNb(avg)}
+                    </span>
+                  </>
+                )}
+              </p>
+            </div>
+            <p className="text-xs text-zinc-500 tabular-nums dark:text-zinc-400">
+              Antall svar: {q.responseCount}
+            </p>
             {outside.length > 0 && (
               <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-500 dark:text-zinc-400">
                 {outside.map(o => (

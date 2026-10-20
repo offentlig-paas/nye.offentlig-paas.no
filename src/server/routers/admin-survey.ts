@@ -251,7 +251,9 @@ export const adminSurveyRouter = router({
       ])
       if (!current || !previous) throw new TRPCError({ code: 'NOT_FOUND' })
       return {
-        previousTitle:
+        currentLabel: ctx.survey.waveLabel ?? ctx.survey.title,
+        previousLabel:
+          getSurvey(comparesTo.slug)?.waveLabel ??
           getSurvey(comparesTo.slug)?.title ??
           getFrozenAggregates(comparesTo.slug)?.title ??
           comparesTo.slug,
