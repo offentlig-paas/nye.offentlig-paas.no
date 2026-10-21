@@ -7,6 +7,7 @@ import {
   mcnemarExact,
   seededRandom,
   wilson,
+  meanPermutationTest,
 } from '../stats'
 
 describe('wilson', () => {
@@ -93,5 +94,17 @@ describe('groupDisagreementTest', () => {
     expect(a.nullMean).toBeGreaterThan(0.5)
     expect(a.p).toBeLessThan(0.01)
     expect(a.nullInterval[0]).toBeLessThanOrEqual(a.nullInterval[1])
+  })
+})
+
+describe('meanPermutationTest', () => {
+  it('is deterministic, ≈1 for equal counts and small for a big shift', () => {
+    const a = [10, 10, 10, 10, 10]
+    const b = [2, 5, 10, 15, 18]
+    expect(meanPermutationTest(a, b)).toBe(meanPermutationTest(a, b))
+    expect(meanPermutationTest(a, a)).toBeGreaterThan(0.95)
+    expect(
+      meanPermutationTest([30, 20, 0, 0, 0], [0, 0, 0, 20, 30])
+    ).toBeLessThan(0.01)
   })
 })

@@ -1,6 +1,6 @@
 import type { AggregatedQuestion, AggregatedSurveyResults } from './aggregation'
-import { isScale, likertAverage } from './likert'
-import { fisherExact, wilson } from './stats'
+import { isScale, likertAverage, scaleOptions } from './likert'
+import { fisherExact, meanPermutationTest, wilson } from './stats'
 
 interface ComparedCell {
   count: number
@@ -36,6 +36,40 @@ export interface ComparedQuestion {
   visualization: AggregatedQuestion['visualization']
   /** Mean scale position (1 = first; N/A options excluded), for diverging and ordinal questions. */
   average?: { previous: number | null; current: number | null }
+  /** Diverging questions only: Δ snitt and Δ øvre del (share above the midpoint). */
+  likert?: LikertChange
+}
+
+interface LikertChange {
+  /** Scale option values in order (N/A options excluded). */
+  scaleValues: string[]
+  /** Labels of the points above the midpoint, counted in Δ øvre del. */
+  upperLabels: string[]
+  /** Statement wording differs between waves, so the change is not like for like. */
+  changed: boolean
+  /** Percent of scale answers on the positive side; null when a scale point is suppressed. */
+  agree: { previous: number | null; current: number | null }
+  meanDelta: number | null
+  meanSignificant: boolean
+  /** Percentage points. */
+  agreeDelta: number | null
+  agreeSignificant: boolean
+}
+
+/** Scale counts in order, or null when a point is suppressed or nobody answered. */
+function scaleCounts(q: AggregatedQuestion) {
+  const scale = scaleOptions(q.options)
+  if (scale.some(o => o.suppressed)) return null
+  const counts = scale.map(o => o.count)
+  return counts.some(c => c > 0) ? counts : null
+}
+
+/** Answers above the midpoint (neutral excluded) and the scale total. */
+export function agreeCounts(counts: number[]) {
+  const positive = counts
+    .slice(Math.ceil(counts.length / 2))
+    .reduce((s, c) => s + c, 0)
+  return { positive, total: counts.reduce((s, c) => s + c, 0) }
 }
 
 function questionsById(results: AggregatedSurveyResults) {
@@ -80,6 +114,8 @@ export function compareWaves(
   const cur = questionsById(current)
   const prev = questionsById(previous)
   const out: ComparedQuestion[] = []
+  const meanPs: [LikertChange, number][] = []
+  const agreePs: [LikertChange, number][] = []
 
   for (const [curId, prevId] of Object.entries(questionMap)) {
     const c = cur.get(curId)
@@ -137,7 +173,15 @@ export function compareWaves(
       options:
         c.visualization === 'ordinal'
           ? options
-          : options.filter(o => !isEmpty(o.previous) || !isEmpty(o.current)),
+          : options.filter(
+              o =>
+                !isEmpty(o.previous) ||
+                !isEmpty(o.current) ||
+                // Diverging scale points stay so the bars line up.
+                (c.visualization === 'diverging' &&
+                  o.scale !== false &&
+                  !o.value.startsWith('_'))
+            ),
       visualization: c.visualization,
     }
     if (isScale(c) || isScale(p)) {
@@ -150,7 +194,52 @@ export function compareWaves(
           ? { previous: null, current: null }
           : { previous: previousAvg, current: currentAvg }
     }
+    if (c.visualization === 'diverging') {
+      const pc = scaleCounts(p)
+      const cc = scaleCounts(c)
+      const same = !!pc && !!cc && pc.length === cc.length
+      const pa = pc && agreeCounts(pc)
+      const ca = cc && agreeCounts(cc)
+      const avg = question.average!
+      // Changed wording is not like for like: no Δ and no test.
+      const like = same && c.title === p.title
+      const scale = scaleOptions(c.options)
+      question.likert = {
+        scaleValues: scale.map(o => o.value),
+        upperLabels: scale.slice(Math.ceil(scale.length / 2)).map(o => o.label),
+        changed: c.title !== p.title,
+        agree: {
+          previous: pa && pct(pa.positive, pa.total),
+          current: ca && pct(ca.positive, ca.total),
+        },
+        meanDelta:
+          like && avg.previous !== null && avg.current !== null
+            ? avg.current - avg.previous
+            : null,
+        agreeDelta:
+          like && pa && ca
+            ? pct(ca.positive, ca.total) - pct(pa.positive, pa.total)
+            : null,
+        meanSignificant: false,
+        agreeSignificant: false,
+      }
+      if (like) {
+        meanPs.push([question.likert, meanPermutationTest(pc, cc)])
+        agreePs.push([
+          question.likert,
+          fisherExact(
+            pa!.positive,
+            pa!.total - pa!.positive,
+            ca!.positive,
+            ca!.total - ca!.positive
+          ),
+        ])
+      }
+    }
     out.push(question)
   }
+  // Bonferroni per measure, over all Likert questions in the comparison.
+  for (const p of meanPs) p[0].meanSignificant = p[1] * meanPs.length < 0.05
+  for (const p of agreePs) p[0].agreeSignificant = p[1] * agreePs.length < 0.05
   return out
 }

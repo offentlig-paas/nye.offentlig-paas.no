@@ -15,7 +15,7 @@ const NEGATIVE = ['bg-red-200 text-zinc-900', 'bg-red-700 text-white']
 const POSITIVE = ['bg-emerald-200 text-zinc-900', 'bg-emerald-700 text-white']
 const NEUTRAL = 'bg-zinc-300 text-zinc-900'
 
-function color(i: number, total: number) {
+export function diverging(i: number, total: number) {
   const mid = Math.floor(total / 2)
   const hasNeutral = total % 2 === 1
   if (hasNeutral && i === mid) return NEUTRAL
@@ -41,7 +41,7 @@ export function sequential(i: number, total: number) {
 type Variant = AggregatedQuestion['visualization']
 
 function fill(variant: Variant, i: number, total: number) {
-  return variant === 'ordinal' ? sequential(i, total) : color(i, total)
+  return variant === 'ordinal' ? sequential(i, total) : diverging(i, total)
 }
 
 function share(count: number, total: number) {

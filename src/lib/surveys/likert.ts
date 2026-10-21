@@ -1,9 +1,11 @@
-import type { AggregatedOption, AggregatedQuestion } from './aggregation'
+import type { AggregatedOption } from './aggregation'
 
 export const SUPPRESSED_VALUE = '_suppressed'
 
 /** Scale options in order, without the k-anonymity bucket or N/A-style options. */
-export function scaleOptions(options: AggregatedOption[]) {
+export function scaleOptions<O extends { value: string; scale?: false }>(
+  options: O[]
+) {
   return options.filter(o => o.value !== SUPPRESSED_VALUE && o.scale !== false)
 }
 
@@ -51,16 +53,20 @@ export const isScale = <T extends { visualization?: string }>(
 ): q is T & { visualization: 'diverging' | 'ordinal' } =>
   q.visualization === 'diverging' || q.visualization === 'ordinal'
 
-const scaleKey = (q: AggregatedQuestion) =>
+interface Groupable {
+  visualization?: string
+  options: { value: string; label: string; scale?: false }[]
+}
+
+const scaleKey = (q: Groupable) =>
   [q.visualization, ...scaleOptions(q.options).map(o => o.label)].join('\u0000')
 
-type QuestionGroup =
-  | { kind: 'single'; question: AggregatedQuestion }
-  | { kind: 'likert'; questions: AggregatedQuestion[] }
+type QuestionGroup<Q> =
+  { kind: 'single'; question: Q } | { kind: 'likert'; questions: Q[] }
 
 /** Group consecutive scale questions that share the same scale labels. */
-export function groupQuestions(questions: AggregatedQuestion[]) {
-  const groups: QuestionGroup[] = []
+export function groupQuestions<Q extends Groupable>(questions: Q[]) {
+  const groups: QuestionGroup<Q>[] = []
   for (const q of questions) {
     if (!isScale(q)) {
       groups.push({ kind: 'single', question: q })
