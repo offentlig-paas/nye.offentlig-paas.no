@@ -1,5 +1,6 @@
 'use client'
 
+import { readUploadResponse, shrinkPhoto } from '@/lib/photos/prepare-upload'
 import { useState, useRef } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -57,23 +58,28 @@ export function EventAdditionalPhotosGallery({
 
     setIsUploading(true)
     try {
-      const formData = new FormData()
-      if (caption.trim()) {
-        formData.append('caption', caption.trim())
-      }
-      selectedFiles.forEach((file, index) => {
-        formData.append(`file${index}`, file)
-      })
+      let uploaded = 0
+      for (const file of selectedFiles) {
+        const formData = new FormData()
+        if (caption.trim()) {
+          formData.append('caption', caption.trim())
+        }
+        formData.append('file0', await shrinkPhoto(file))
 
-      const response = await fetch(`/api/events/${eventSlug}/photos`, {
-        method: 'POST',
-        body: formData,
-      })
+        const response = await fetch(`/api/events/${eventSlug}/photos`, {
+          method: 'POST',
+          body: formData,
+        })
 
-      const data = await response.json()
-      if (!response.ok) {
-        throw new Error(data.message || 'Kunne ikke laste opp bilder')
+        const data = await readUploadResponse(response)
+        if (!response.ok) {
+          throw new Error(
+            (data.message as string) || 'Kunne ikke laste opp bilder'
+          )
+        }
+        uploaded += Number(data.success) || 0
       }
+      const data = { success: uploaded }
 
       showSuccess(
         data.success === 1
