@@ -32,6 +32,14 @@ export function EventAdditionalPhotosGallery({
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [caption, setCaption] = useState('')
   const [isUploading, setIsUploading] = useState(false)
+  const [previews, setPreviews] = useState<string[]>([])
+  const [uploadedCount, setUploadedCount] = useState(0)
+
+  const selectFiles = (files: File[]) => {
+    previews.forEach(url => URL.revokeObjectURL(url))
+    setPreviews(files.map(file => URL.createObjectURL(file)))
+    setSelectedFiles(files)
+  }
 
   const registrationStatus = eventData?.userRegistration?.status
   const canUpload = Boolean(
@@ -48,8 +56,7 @@ export function EventAdditionalPhotosGallery({
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return
-    const files = Array.from(e.target.files).slice(0, 5)
-    setSelectedFiles(files)
+    selectFiles(Array.from(e.target.files).slice(0, 5))
   }
 
   const handleUpload = async (e: React.FormEvent) => {
@@ -57,6 +64,7 @@ export function EventAdditionalPhotosGallery({
     if (!eventSlug || selectedFiles.length === 0) return
 
     setIsUploading(true)
+    setUploadedCount(0)
     try {
       let uploaded = 0
       for (const file of selectedFiles) {
@@ -78,6 +86,7 @@ export function EventAdditionalPhotosGallery({
           )
         }
         uploaded += Number(data.success) || 0
+        setUploadedCount(n => n + 1)
       }
       const data = { success: uploaded }
 
@@ -86,7 +95,7 @@ export function EventAdditionalPhotosGallery({
           ? 'Bilde lastet opp!'
           : `${data.success} bilder lastet opp!`
       )
-      setSelectedFiles([])
+      selectFiles([])
       setCaption('')
       setIsUploadOpen(false)
       if (fileInputRef.current) {
@@ -130,25 +139,55 @@ export function EventAdditionalPhotosGallery({
         >
           <div className="space-y-4">
             <div>
-              <label
-                htmlFor="participant-photo-files"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
+              <p className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Velg bilder (maks 5 om gangen, 10 MB per fil)
-              </label>
+              </p>
               <input
                 ref={fileInputRef}
                 id="participant-photo-files"
                 type="file"
                 accept="image/jpeg,image/png,image/webp,image/gif"
                 multiple
+                disabled={isUploading}
                 onChange={handleFileChange}
-                className="mt-1.5 block w-full text-sm text-gray-600 file:mr-4 file:rounded-lg file:border-0 file:bg-teal-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-teal-700 hover:file:bg-teal-100 dark:text-gray-300 dark:file:bg-teal-900/30 dark:file:text-teal-300"
+                className="peer sr-only"
               />
-              {selectedFiles.length > 0 && (
-                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  Valgt: {selectedFiles.map(f => f.name).join(', ')}
-                </p>
+              {/* Native picker is hidden: Safari renders its thumbnail as a black box. */}
+              <label
+                htmlFor="participant-photo-files"
+                className={`mt-1.5 inline-flex cursor-pointer ${isUploading ? 'pointer-events-none opacity-50' : ''} items-center rounded-lg bg-teal-50 px-4 py-2 text-sm font-semibold text-teal-700 transition peer-focus-visible:ring-2 peer-focus-visible:ring-teal-500 hover:bg-teal-100 dark:bg-teal-900/30 dark:text-teal-300 dark:hover:bg-teal-900/50 dark:hover:text-teal-200`}
+              >
+                {selectedFiles.length > 0 ? 'Velg andre bilder' : 'Velg bilder'}
+              </label>
+              {previews.length > 0 && (
+                <ul className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-5">
+                  {previews.map((url, i) => (
+                    <li
+                      key={url}
+                      className="relative aspect-square overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-700"
+                    >
+                      <Image
+                        src={url}
+                        alt={selectedFiles[i]?.name ?? ''}
+                        fill
+                        unoptimized
+                        className={`object-cover transition-opacity ${
+                          isUploading && i >= uploadedCount ? 'opacity-50' : ''
+                        }`}
+                      />
+                      {isUploading && i === uploadedCount && (
+                        <span className="absolute inset-0 flex items-center justify-center">
+                          <span className="h-6 w-6 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                        </span>
+                      )}
+                      {isUploading && i < uploadedCount && (
+                        <span className="absolute top-1 right-1 rounded-full bg-teal-600 px-1.5 text-xs font-bold text-white">
+                          ✓
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
               )}
             </div>
 
@@ -176,7 +215,7 @@ export function EventAdditionalPhotosGallery({
                 variant="secondary"
                 onClick={() => {
                   setIsUploadOpen(false)
-                  setSelectedFiles([])
+                  selectFiles([])
                   setCaption('')
                 }}
                 disabled={isUploading}
@@ -190,7 +229,9 @@ export function EventAdditionalPhotosGallery({
                 className="flex items-center gap-2"
               >
                 <ArrowUpTrayIcon className="h-4 w-4" aria-hidden="true" />
-                {isUploading ? 'Laster opp...' : 'Last opp'}
+                {isUploading
+                  ? `Laster opp ${Math.min(uploadedCount + 1, selectedFiles.length)} av ${selectedFiles.length} …`
+                  : 'Last opp'}
               </Button>
             </div>
           </div>

@@ -208,7 +208,7 @@ export function TalkAttachmentUpload({
                   type="file"
                   onChange={handleFileSelect}
                   accept=".pdf,.pptx,.ppt,.key,.odp,.zip"
-                  className="block w-full text-sm text-zinc-500 file:mr-4 file:rounded-md file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-sm file:font-medium file:text-blue-700 hover:file:bg-blue-100 dark:text-zinc-400 dark:file:bg-blue-900 dark:file:text-blue-200"
+                  className="block w-full text-sm text-zinc-500 file:mr-4 file:rounded-md file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-sm file:font-medium file:text-blue-700 hover:file:bg-blue-100 dark:text-zinc-400 dark:file:bg-blue-900 dark:file:text-blue-200 dark:hover:file:bg-blue-800"
                 />
               </div>
               {selectedFile && (

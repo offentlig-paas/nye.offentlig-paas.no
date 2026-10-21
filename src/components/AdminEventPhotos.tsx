@@ -410,7 +410,12 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
                   {uploadProgress.uploading ? (
                     <div className="space-y-2">
                       <p className="text-sm font-medium text-zinc-900 dark:text-white">
-                        Laster opp {uploadProgress.total} bilder...
+                        Laster opp{' '}
+                        {Math.min(
+                          uploadProgress.completed + uploadProgress.failed + 1,
+                          uploadProgress.total
+                        )}{' '}
+                        av {uploadProgress.total} bilder …
                       </p>
                       <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
                         <div className="h-full animate-pulse bg-blue-600" />
@@ -510,7 +515,12 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
                   {uploadProgress.uploading ? (
                     <div className="space-y-2">
                       <p className="text-xs font-medium text-zinc-900 dark:text-white">
-                        Laster opp {uploadProgress.total}...
+                        Laster opp{' '}
+                        {Math.min(
+                          uploadProgress.completed + uploadProgress.failed + 1,
+                          uploadProgress.total
+                        )}{' '}
+                        av {uploadProgress.total} …
                       </p>
                       <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
                         <div className="h-full animate-pulse bg-blue-600" />
