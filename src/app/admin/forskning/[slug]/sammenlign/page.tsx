@@ -449,9 +449,11 @@ export default async function AdminSurveyComparePage({
           <Fragment key={q.id}>
             {group && scale && (
               <section className="space-y-3">
-                <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
-                  Gjennomsnitt per spørsmål
-                </h2>
+                {group.length >= 2 && (
+                  <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
+                    Gjennomsnitt per spørsmål
+                  </h2>
+                )}
                 <Legend
                   items={[
                     [`${data.previousLabel} · n ${data.previousTotal}`, PREV],
@@ -578,12 +580,14 @@ export default async function AdminSurveyComparePage({
                           <td className={td}>{cell(q.average.previous)}</td>
                           <td className={td}>{cell(q.average.current)}</td>
                           <td className={td}>
-                            {q.average.previous !== null &&
-                            q.average.current !== null
-                              ? nbSigned.format(
-                                  q.average.current - q.average.previous
-                                )
-                              : '–'}
+                            {q.likert
+                              ? deltaMean(q.likert)
+                              : q.average.previous !== null &&
+                                  q.average.current !== null
+                                ? nbSigned.format(
+                                    q.average.current - q.average.previous
+                                  )
+                                : '–'}
                           </td>
                           <td className={td} />
                         </tr>
