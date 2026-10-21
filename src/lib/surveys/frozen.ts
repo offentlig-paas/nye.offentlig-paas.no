@@ -13,6 +13,8 @@ import aggregates from '@/data/surveys/aggregates'
  */
 export interface FrozenAggregates extends AggregatedSurveyResults {
   title: string
+  /** Collection period for wave comparisons, e.g. "Våren 2026". */
+  waveLabel?: string
   frozenAt: string
   uniqueOrganizations?: number
 }

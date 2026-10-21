@@ -65,6 +65,7 @@ for (const q of results.sections.flatMap(s => s.questions)) {
 const frozen: FrozenAggregates = {
   ...results,
   title: survey.title,
+  ...(survey.waveLabel !== undefined && { waveLabel: survey.waveLabel }),
   frozenAt: new Date().toISOString().slice(0, 10),
   uniqueOrganizations,
 }

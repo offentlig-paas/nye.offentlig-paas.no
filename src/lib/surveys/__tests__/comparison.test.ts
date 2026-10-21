@@ -164,6 +164,32 @@ describe('compareWaves', () => {
     )
     expect(q!.options.map(o => o.value)).toEqual(['a', 'hidden'])
     expect(q!.options[1]!.previous?.suppressed).toBe(true)
+    expect(q!.options[1]!.delta).toBeNull()
+  })
+
+  it('keeps zero rows on ordinal scales', () => {
+    const [q] = compareWaves(
+      results(
+        'q',
+        10,
+        [
+          ['a', 10],
+          ['b', 0],
+        ],
+        'ordinal'
+      ),
+      results(
+        'q',
+        10,
+        [
+          ['a', 10],
+          ['b', 0],
+        ],
+        'ordinal'
+      ),
+      { q: 'q' }
+    )
+    expect(q!.options).toHaveLength(2)
   })
 })
 

@@ -27,7 +27,7 @@
  *
  * Usage: pnpm tsx scripts/freeze-from-open-dataset.ts <slug> <dataset.csv>
  *          [--organizations <n>] [--title <title>] [--out <dir>]
- * --organizations and --title default to the current frozen file's values.
+ * --organizations, --title and --wave-label default to the current frozen file's values.
  * With --out it writes only the JSON to <dir> (dry run).
  */
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
@@ -328,7 +328,7 @@ function fromAggregateTable(
 export function aggregateOpenDataset(
   text: string,
   slug: string,
-  meta: { title: string; uniqueOrganizations?: number },
+  meta: { title: string; waveLabel?: string; uniqueOrganizations?: number },
   all = surveys
 ): FrozenAggregates {
   const rows = parseCsv(text).filter(r => r.some(Boolean))
@@ -346,6 +346,7 @@ export function aggregateOpenDataset(
     ...results,
     surveySlug: slug,
     title: meta.title,
+    ...(meta.waveLabel !== undefined && { waveLabel: meta.waveLabel }),
     frozenAt: new Date().toISOString().slice(0, 10),
     ...(meta.uniqueOrganizations !== undefined && {
       uniqueOrganizations: meta.uniqueOrganizations,
@@ -360,12 +361,13 @@ if (process.argv[1]?.endsWith('freeze-from-open-dataset.ts')) {
       out: { type: 'string' },
       organizations: { type: 'string' },
       title: { type: 'string' },
+      'wave-label': { type: 'string' },
     },
   })
   const [slug, csvPath] = positionals
   if (!slug || !csvPath)
     throw new Error(
-      'Usage: freeze-from-open-dataset.ts <slug> <dataset.csv> [--organizations <n>] [--title <title>] [--out <dir>]'
+      'Usage: freeze-from-open-dataset.ts <slug> <dataset.csv> [--organizations <n>] [--title <title>] [--wave-label <label>] [--out <dir>]'
     )
   const current = getFrozenAggregates(slug)
   const title =
@@ -373,6 +375,10 @@ if (process.argv[1]?.endsWith('freeze-from-open-dataset.ts')) {
   if (!title) throw new Error(`${slug}: pass --title`)
   const result = aggregateOpenDataset(readFileSync(csvPath, 'utf-8'), slug, {
     title,
+    waveLabel:
+      values['wave-label'] ??
+      surveys.find(s => s.slug === slug)?.waveLabel ??
+      current?.waveLabel,
     uniqueOrganizations: values.organizations
       ? Number(values.organizations)
       : current?.uniqueOrganizations,

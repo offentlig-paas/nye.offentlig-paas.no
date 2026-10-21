@@ -134,7 +134,7 @@ const formatP = (p: number | null) =>
 // Interval band behind the bar end and its caps: the bar colour, faded.
 const BAND = {
   [PREV]: [
-    'bg-zinc-400/30 dark:bg-zinc-500/30',
+    'bg-zinc-400/45 dark:bg-zinc-500/30',
     'bg-zinc-500/60 dark:bg-zinc-400/60',
   ],
   [CUR]: [
@@ -230,7 +230,10 @@ function StackedBars({
   q: ComparedQuestion
   labels: [string, string]
 }) {
-  const scale = q.options.filter(o => !o.value.startsWith('_'))
+  const scale = q.options.filter(
+    o => o.scale !== false && !o.value.startsWith('_')
+  )
+  const other = q.options.filter(o => !scale.includes(o))
   const rows = (['previous', 'current'] as const).map((wave, w) => {
     const total = scale.reduce((s, o) => s + (o[wave]?.count ?? 0), 0)
     return {
@@ -238,6 +241,14 @@ function StackedBars({
       parts: scale.map(o =>
         total > 0 ? ((o[wave]?.count ?? 0) / total) * 100 : 0
       ),
+      hidden: scale.some(o => o[wave]?.suppressed),
+      // N/A and similar, as text beside the bar (like LikertBar).
+      other: other
+        .filter(o => o[wave])
+        .map(
+          o => `${o.label}: ${o[wave]!.suppressed ? 'skjult' : o[wave]!.count}`
+        )
+        .join(' · '),
     }
   })
   return (
@@ -245,25 +256,37 @@ function StackedBars({
       <Legend
         items={scale.map((o, i) => [o.label, sequential(i, scale.length)])}
       />
-      {rows.map(r => (
-        <div key={r.label} className="sm:flex sm:items-center sm:gap-4">
-          <p className="text-xs text-zinc-600 sm:w-[25%] dark:text-zinc-400">
-            {r.label}
-          </p>
-          <div className="mt-1 flex h-6 flex-1 overflow-hidden rounded-sm sm:mt-0">
-            {r.parts.map((v, i) =>
-              v > 0 ? (
-                <div
-                  key={scale[i]!.value}
-                  className={`flex items-center justify-center text-xs tabular-nums ${sequential(i, scale.length)}`}
-                  style={{ width: `${v}%` }}
-                  title={`${scale[i]!.label}: ${Math.round(v)} %`}
-                >
-                  {v >= 8 && `${Math.round(v)} %`}
-                </div>
-              ) : null
+      {rows.map((r, w) => (
+        <div key={w}>
+          <div className="sm:flex sm:items-center sm:gap-4">
+            <p className="text-xs text-zinc-600 sm:w-[25%] dark:text-zinc-400">
+              {r.label}
+            </p>
+            <div className="mt-1 flex h-6 flex-1 overflow-hidden rounded-sm sm:mt-0">
+              {r.parts.map((v, i) =>
+                v > 0 ? (
+                  <div
+                    key={scale[i]!.value}
+                    className={`flex items-center justify-center overflow-hidden text-xs tabular-nums ${sequential(i, scale.length)}`}
+                    style={{ width: `${v}%` }}
+                    title={`${scale[i]!.label}: ${Math.round(v)} %`}
+                  >
+                    {v >= 8 && `${Math.round(v)} %`}
+                  </div>
+                ) : null
+              )}
+            </div>
+            {r.other && (
+              <span className="mt-1 block text-xs whitespace-nowrap text-zinc-600 tabular-nums sm:mt-0 dark:text-zinc-400">
+                {r.other}
+              </span>
             )}
           </div>
+          {r.hidden && (
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+              Noen svaralternativer er skjult. Se tabellen.
+            </p>
+          )}
         </div>
       ))}
     </div>
@@ -341,7 +364,7 @@ export default async function AdminSurveyComparePage({
                   <p className="text-xs text-zinc-500 dark:text-zinc-400">
                     pp = prosentpoeng. Det lyse feltet ved enden av søylen viser
                     95 % konfidensintervall: området der den sanne andelen
-                    trolig ligger. Uthevet med * = {SIG_NOTE}.
+                    trolig ligger. Uthevet og merket med * betyr {SIG_NOTE}.
                   </p>
                 </>
               )}

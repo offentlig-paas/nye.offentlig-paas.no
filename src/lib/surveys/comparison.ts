@@ -14,6 +14,8 @@ interface ComparedCell {
 interface ComparedOption {
   value: string
   label: string
+  /** false when not a point on the scale (e.g. N/A). */
+  scale?: false
   /** null when the option does not exist in that wave. */
   previous: ComparedCell | null
   current: ComparedCell | null
@@ -109,8 +111,13 @@ export function compareWaves(
         label: (co ?? po)!.label,
         previous: previousCell,
         current: currentCell,
+        ...((co ?? po)!.scale === false && { scale: false as const }),
+        // A suppressed count reads as 0 %, so a change against it would mislead.
         delta:
-          currentCell && previousCell
+          currentCell &&
+          previousCell &&
+          !currentCell.suppressed &&
+          !previousCell.suppressed
             ? currentCell.percentage - previousCell.percentage
             : null,
         p: pValue,
@@ -126,7 +133,11 @@ export function compareWaves(
       previousN: p.responseCount,
       currentN: c.responseCount,
       // Filtered after Bonferroni so hiding empty rows does not change the stats.
-      options: options.filter(o => !isEmpty(o.previous) || !isEmpty(o.current)),
+      // Ordinal scales keep every point so the stacked bars stay comparable.
+      options:
+        c.visualization === 'ordinal'
+          ? options
+          : options.filter(o => !isEmpty(o.previous) || !isEmpty(o.current)),
       visualization: c.visualization,
     }
     if (isScale(c) || isScale(p)) {
