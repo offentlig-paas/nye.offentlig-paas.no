@@ -91,17 +91,24 @@ export async function createChannel(
   }
 
   try {
-    const existing = await slack.conversations.list({
-      exclude_archived: true,
+    // Page through every channel, archived included: an archived channel
+    // still holds its name, so creating a new one would fail with name_taken.
+    let existingChannel: { id?: string; is_archived?: boolean } | undefined
+    for await (const page of slack.paginate('conversations.list', {
+      exclude_archived: false,
       types: 'public_channel',
       limit: 1000,
-    })
-
-    const existingChannel = existing.channels?.find(
-      channel => channel.name === channelName
-    )
+    }) as AsyncIterable<{
+      channels?: { id?: string; name?: string; is_archived?: boolean }[]
+    }>) {
+      existingChannel = page.channels?.find(c => c.name === channelName)
+      if (existingChannel) break
+    }
 
     if (existingChannel?.id) {
+      if (existingChannel.is_archived) {
+        await slack.conversations.unarchive({ channel: existingChannel.id })
+      }
       await ensureBotInChannel(slack, existingChannel.id)
       return {
         id: existingChannel.id,
