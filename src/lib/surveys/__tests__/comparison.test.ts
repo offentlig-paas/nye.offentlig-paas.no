@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { compareWaves } from '../comparison'
+import { compareWaves, waveName } from '../comparison'
 import type { AggregatedSurveyResults } from '../aggregation'
 
 function results(
@@ -144,5 +144,61 @@ describe('compareWaves', () => {
       previous: 1.5,
       current: 1.5,
     })
+  })
+
+  it('hides options with zero answers in both waves, keeps suppressed ones', () => {
+    const prev = results('q', 10, [
+      ['a', 5],
+      ['zero', 0],
+      ['hidden', 0],
+    ])
+    prev.sections[0]!.questions[0]!.options[2]!.suppressed = true
+    const [q] = compareWaves(
+      results('q', 10, [
+        ['a', 4],
+        ['zero', 0],
+        ['hidden', 0],
+      ]),
+      prev,
+      { q: 'q' }
+    )
+    expect(q!.options.map(o => o.value)).toEqual(['a', 'hidden'])
+    expect(q!.options[1]!.previous?.suppressed).toBe(true)
+    expect(q!.options[1]!.delta).toBeNull()
+  })
+
+  it('keeps zero rows on ordinal scales', () => {
+    const [q] = compareWaves(
+      results(
+        'q',
+        10,
+        [
+          ['a', 10],
+          ['b', 0],
+        ],
+        'ordinal'
+      ),
+      results(
+        'q',
+        10,
+        [
+          ['a', 10],
+          ['b', 0],
+        ],
+        'ordinal'
+      ),
+      { q: 'q' }
+    )
+    expect(q!.options).toHaveLength(2)
+  })
+})
+
+describe('waveName', () => {
+  it('uses waveLabel, then the year in the slug', () => {
+    expect(waveName({ slug: 'x-2026', waveLabel: 'Våren 2026' })).toBe(
+      'Våren 2026'
+    )
+    expect(waveName({ slug: 'state-of-platforms-2026' })).toBe('2026')
+    expect(waveName({ slug: 'pilot' })).toBe('pilot')
   })
 })

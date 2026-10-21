@@ -76,6 +76,7 @@ export const aiAgents2027: SurveyDefinition = {
   slug: 'ai-agents-2027',
   version: 4,
   title: 'KI-kodeverktøy og kodeagenter i norsk offentlig sektor, runde 2',
+  waveLabel: 'Høsten 2026',
   estimatedMinutes: '10',
   comparesTo: {
     slug: 'ai-agents-2026',

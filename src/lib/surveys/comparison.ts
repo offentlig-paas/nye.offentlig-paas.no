@@ -7,11 +7,15 @@ interface ComparedCell {
   percentage: number
   /** Wilson 95 % interval in percent; absent for suppressed counts. */
   ci?: [number, number]
+  /** Count hidden below minBucketSize; shown as "skjult", never as zero. */
+  suppressed?: true
 }
 
 interface ComparedOption {
   value: string
   label: string
+  /** false when not a point on the scale (e.g. N/A). */
+  scale?: false
   /** null when the option does not exist in that wave. */
   previous: ComparedCell | null
   current: ComparedCell | null
@@ -51,11 +55,20 @@ function toCell(
 ): ComparedCell | null {
   if (!o) return null
   const cell: ComparedCell = { count: o.count, percentage: pct(o.count, n) }
+  if (o.suppressed) cell.suppressed = true
   if (testable(o) && n > 0) {
     const [lo, hi] = wilson(o.count, n)
     cell.ci = [lo * 100, hi * 100]
   }
   return cell
+}
+
+const isEmpty = (c: ComparedCell | null) =>
+  !c || (c.count === 0 && !c.suppressed)
+
+/** Legend name for a wave: its waveLabel, else the year in its slug. */
+export function waveName(survey: { slug: string; waveLabel?: string }) {
+  return survey.waveLabel ?? survey.slug.match(/\d{4}$/)?.[0] ?? survey.slug
 }
 
 /** Compare mapped questions; options are matched by value. */
@@ -98,8 +111,13 @@ export function compareWaves(
         label: (co ?? po)!.label,
         previous: previousCell,
         current: currentCell,
+        ...((co ?? po)!.scale === false && { scale: false as const }),
+        // A suppressed count reads as 0 %, so a change against it would mislead.
         delta:
-          currentCell && previousCell
+          currentCell &&
+          previousCell &&
+          !currentCell.suppressed &&
+          !previousCell.suppressed
             ? currentCell.percentage - previousCell.percentage
             : null,
         p: pValue,
@@ -114,7 +132,12 @@ export function compareWaves(
       title: c.title,
       previousN: p.responseCount,
       currentN: c.responseCount,
-      options,
+      // Filtered after Bonferroni so hiding empty rows does not change the stats.
+      // Ordinal scales keep every point so the stacked bars stay comparable.
+      options:
+        c.visualization === 'ordinal'
+          ? options
+          : options.filter(o => !isEmpty(o.previous) || !isEmpty(o.current)),
       visualization: c.visualization,
     }
     if (isScale(c) || isScale(p)) {
