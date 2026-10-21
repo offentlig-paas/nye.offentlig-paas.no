@@ -42,6 +42,7 @@ export const stateOfPlatforms2027: SurveyDefinition = {
   slug: 'state-of-platforms-2027',
   version: 2,
   title: 'Plattformundersøkelsen i offentlig sektor, runde 3',
+  waveLabel: 'Høsten 2026',
   estimatedMinutes: '8–14',
   owners: [
     {

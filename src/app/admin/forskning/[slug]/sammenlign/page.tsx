@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { createCaller } from '@/server/root'
 import { getSurvey } from '@/lib/surveys/helpers'
 import { formatPp } from '@/lib/surveys/likert'
+import { sequential } from '@/components/charts/LikertBar'
 import type { ComparedQuestion } from '@/lib/surveys/comparison'
 
 interface AdminSurveyComparePageProps {
@@ -107,17 +108,53 @@ function DotPlot({ rows }: { rows: ComparedQuestion[] }) {
 type Cell = ComparedQuestion['options'][number]['current']
 
 const share = (c: Cell) =>
-  c ? `${Math.round(c.percentage)} % (${c.count})` : '—'
+  !c
+    ? '—'
+    : c.suppressed
+      ? 'skjult'
+      : `${Math.round(c.percentage)} % (${c.count})`
 
 const SIG_NOTE = 'p < 0,05 etter Bonferroni-korreksjon'
 
+const ciText = (c: Cell) =>
+  c?.ci
+    ? `95 % konfidensintervall: ${Math.round(c.ci[0])}–${Math.round(c.ci[1])} %`
+    : undefined
+
 const withCi = (c: Cell) =>
-  c
-    ? `${nb1.format(c.percentage)}${c.ci ? ` (${Math.round(c.ci[0])}–${Math.round(c.ci[1])})` : ''}`
-    : '—'
+  !c
+    ? '—'
+    : c.suppressed
+      ? 'skjult'
+      : `${nb1.format(c.percentage)}${c.ci ? ` (${Math.round(c.ci[0])}–${Math.round(c.ci[1])})` : ''}`
 
 const formatP = (p: number | null) =>
   p === null ? '—' : p < 0.001 ? '< 0,001' : p.toFixed(3).replace('.', ',')
+
+// Interval band behind the bar end and its caps: the bar colour, faded.
+const BAND = {
+  [PREV]: [
+    'bg-zinc-400/30 dark:bg-zinc-500/30',
+    'bg-zinc-500/60 dark:bg-zinc-400/60',
+  ],
+  [CUR]: [
+    'bg-blue-600/30 dark:bg-blue-400/30',
+    'bg-blue-700/60 dark:bg-blue-300/60',
+  ],
+}
+
+function PpBadge({ o }: { o: ComparedQuestion['options'][number] }) {
+  if (o.delta === null) return null
+  return (
+    <span
+      className={`shrink-0 rounded bg-zinc-100 px-1.5 py-0.5 text-xs whitespace-nowrap text-zinc-700 tabular-nums dark:bg-zinc-800 dark:text-zinc-300 ${o.significant ? 'font-semibold' : ''}`}
+      title={o.significant ? SIG_NOTE : undefined}
+    >
+      {formatPp(o.delta)}
+      {o.significant && ' *'}
+    </span>
+  )
+}
 
 function PairedBars({ q }: { q: ComparedQuestion }) {
   const max = Math.max(
@@ -128,46 +165,104 @@ function PairedBars({ q }: { q: ComparedQuestion }) {
   )
   const x = (v: number) => `${(v / max) * 100}%`
   return (
-    <div aria-hidden="true" className={`space-y-3 ${exact}`}>
+    <div className={`space-y-3 ${exact}`}>
       {q.options.map(o => (
         <div key={o.value} className="sm:flex sm:items-center sm:gap-4">
-          <p className="flex justify-between gap-2 text-sm text-zinc-800 sm:w-[40%] dark:text-zinc-200">
-            <span>{o.label}</span>
-            {o.delta !== null && (
-              <span
-                className="shrink-0 text-xs text-zinc-600 tabular-nums dark:text-zinc-400"
-                title={o.significant ? SIG_NOTE : undefined}
-              >
-                {formatPp(o.delta)}
-                {o.significant && ' *'}
-              </span>
-            )}
+          <p className="text-sm text-zinc-800 sm:w-[40%] dark:text-zinc-200">
+            {o.label}
           </p>
-          <div className="mt-1 space-y-0.5 sm:mt-0 sm:flex-1">
-            {(
-              [
-                [o.previous, PREV],
-                [o.current, CUR],
-              ] as const
-            ).map(([c, color]) => (
-              <div key={color} className="flex items-center gap-2">
-                <div className="relative h-3 w-3/4">
-                  <div
-                    className={`h-3 rounded-sm ${color}`}
-                    style={{ width: x(c?.percentage ?? 0) }}
-                  />
-                  {c?.ci && (
+          <div className="mt-1 flex items-center gap-3 sm:mt-0 sm:flex-1">
+            <div className="flex-1 space-y-0.5">
+              {(
+                [
+                  [o.previous, PREV],
+                  [o.current, CUR],
+                ] as const
+              ).map(([c, color]) => (
+                <div
+                  key={color}
+                  className="flex items-center gap-2"
+                  title={ciText(c)}
+                >
+                  <div className="relative h-3 w-3/4">
+                    {c?.ci && (
+                      <>
+                        <div
+                          className={`absolute inset-y-0 rounded-sm ${BAND[color][0]}`}
+                          style={{
+                            left: x(c.ci[0]),
+                            width: x(c.ci[1] - c.ci[0]),
+                          }}
+                        />
+                        {c.ci.map((v, i) => (
+                          <div
+                            key={i}
+                            className={`absolute inset-y-0.5 w-px ${BAND[color][1]}`}
+                            style={{ left: x(v) }}
+                          />
+                        ))}
+                      </>
+                    )}
                     <div
-                      className="absolute top-1/2 h-px -translate-y-1/2 bg-zinc-900 dark:bg-zinc-100"
-                      style={{ left: x(c.ci[0]), width: x(c.ci[1] - c.ci[0]) }}
+                      className={`relative h-3 rounded-sm ${color}`}
+                      style={{ width: x(c?.percentage ?? 0) }}
                     />
-                  )}
+                  </div>
+                  <span className="text-xs whitespace-nowrap text-zinc-600 tabular-nums dark:text-zinc-400">
+                    {share(c)}
+                  </span>
                 </div>
-                <span className="text-xs whitespace-nowrap text-zinc-600 tabular-nums dark:text-zinc-400">
-                  {share(c)}
-                </span>
-              </div>
-            ))}
+              ))}
+            </div>
+            <PpBadge o={o} />
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+/** Ordinal questions: one 100 % bar per wave, light (lowest) to dark (highest). */
+function StackedBars({
+  q,
+  labels,
+}: {
+  q: ComparedQuestion
+  labels: [string, string]
+}) {
+  const scale = q.options.filter(o => !o.value.startsWith('_'))
+  const rows = (['previous', 'current'] as const).map((wave, w) => {
+    const total = scale.reduce((s, o) => s + (o[wave]?.count ?? 0), 0)
+    return {
+      label: labels[w]!,
+      parts: scale.map(o =>
+        total > 0 ? ((o[wave]?.count ?? 0) / total) * 100 : 0
+      ),
+    }
+  })
+  return (
+    <div className={`space-y-2 ${exact}`}>
+      <Legend
+        items={scale.map((o, i) => [o.label, sequential(i, scale.length)])}
+      />
+      {rows.map(r => (
+        <div key={r.label} className="sm:flex sm:items-center sm:gap-4">
+          <p className="text-xs text-zinc-600 sm:w-[25%] dark:text-zinc-400">
+            {r.label}
+          </p>
+          <div className="mt-1 flex h-6 flex-1 overflow-hidden rounded-sm sm:mt-0">
+            {r.parts.map((v, i) =>
+              v > 0 ? (
+                <div
+                  key={scale[i]!.value}
+                  className={`flex items-center justify-center text-xs tabular-nums ${sequential(i, scale.length)}`}
+                  style={{ width: `${v}%` }}
+                  title={`${scale[i]!.label}: ${Math.round(v)} %`}
+                >
+                  {v >= 8 && `${Math.round(v)} %`}
+                </div>
+              ) : null
+            )}
           </div>
         </div>
       ))}
@@ -226,18 +321,30 @@ export default async function AdminSurveyComparePage({
           </h2>
           {!likert.includes(q) && (
             <>
-              <Legend
-                items={[
-                  [`${data.previousLabel} · n ${q.previousN}`, PREV],
-                  [`${data.currentLabel} · n ${q.currentN}`, CUR],
-                ]}
-              />
-              <PairedBars q={q} />
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                pp = prosentpoeng. Den tynne streken viser 95 %
-                konfidensintervall: området der den sanne andelen trolig ligger.
-                * = {SIG_NOTE}.
-              </p>
+              {q.visualization === 'ordinal' ? (
+                <StackedBars
+                  q={q}
+                  labels={[
+                    `${data.previousLabel} · n ${q.previousN}`,
+                    `${data.currentLabel} · n ${q.currentN}`,
+                  ]}
+                />
+              ) : (
+                <>
+                  <Legend
+                    items={[
+                      [`${data.previousLabel} · n ${q.previousN}`, PREV],
+                      [`${data.currentLabel} · n ${q.currentN}`, CUR],
+                    ]}
+                  />
+                  <PairedBars q={q} />
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                    pp = prosentpoeng. Det lyse feltet ved enden av søylen viser
+                    95 % konfidensintervall: området der den sanne andelen
+                    trolig ligger. Uthevet med * = {SIG_NOTE}.
+                  </p>
+                </>
+              )}
             </>
           )}
           <details className="text-sm">

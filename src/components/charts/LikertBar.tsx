@@ -33,7 +33,7 @@ const SEQUENTIAL = [
   'bg-sky-900 text-white',
 ]
 
-function sequential(i: number, total: number) {
+export function sequential(i: number, total: number) {
   const last = SEQUENTIAL.length - 1
   return SEQUENTIAL[total <= 1 ? last : Math.round((i * last) / (total - 1))]!
 }

@@ -13,8 +13,8 @@ import {
   getProjectForSurvey,
   getSurvey,
 } from '@/lib/surveys/helpers'
-import { compareWaves } from '@/lib/surveys/comparison'
-import { getFrozenAggregates, loadWaveResults } from '@/lib/surveys/frozen'
+import { compareWaves, waveName } from '@/lib/surveys/comparison'
+import { loadWaveResults } from '@/lib/surveys/frozen'
 import { aggregateSurveyResults } from '@/lib/surveys/aggregation'
 import { aggregatedToCsv, toCsv } from '@/lib/surveys/csv'
 import { getAppUrl } from '@/server/lib/environment'
@@ -256,12 +256,8 @@ export const adminSurveyRouter = router({
       ])
       if (!current || !previous) throw new TRPCError({ code: 'NOT_FOUND' })
       return {
-        currentLabel: ctx.survey.waveLabel ?? ctx.survey.title,
-        previousLabel:
-          getSurvey(comparesTo.slug)?.waveLabel ??
-          getSurvey(comparesTo.slug)?.title ??
-          getFrozenAggregates(comparesTo.slug)?.title ??
-          comparesTo.slug,
+        currentLabel: waveName(ctx.survey),
+        previousLabel: waveName(getSurvey(comparesTo.slug) ?? comparesTo),
         previousTotal: previous.totalResponses,
         currentTotal: current.totalResponses,
         questions: compareWaves(current, previous, comparesTo.questionMap),
