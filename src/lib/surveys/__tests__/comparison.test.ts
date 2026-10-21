@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { compareWaves, waveName } from '../comparison'
+import { agreeCounts, compareWaves, waveName } from '../comparison'
 import type { AggregatedSurveyResults } from '../aggregation'
 
 function results(
@@ -200,5 +200,66 @@ describe('waveName', () => {
     )
     expect(waveName({ slug: 'state-of-platforms-2026' })).toBe('2026')
     expect(waveName({ slug: 'pilot' })).toBe('pilot')
+  })
+})
+
+describe('Likert change', () => {
+  const scale = (counts: number[]): [string, number][] =>
+    counts.map((c, i) => [String(i + 1), c])
+
+  it('counts answers above the midpoint as agreeing', () => {
+    expect(agreeCounts([1, 2, 3, 4, 5])).toEqual({ positive: 9, total: 15 })
+    expect(agreeCounts([1, 2, 3, 4])).toEqual({ positive: 7, total: 10 })
+  })
+
+  it('computes Δ øvre del and Δ snitt with significance', () => {
+    const [q] = compareWaves(
+      results('q', 100, scale([5, 5, 10, 40, 40]), 'diverging'),
+      results('q', 100, scale([30, 30, 10, 15, 15]), 'diverging'),
+      { q: 'q' }
+    )
+    expect(q!.likert!.agree).toEqual({ previous: 30, current: 80 })
+    expect(q!.likert!.agreeDelta).toBe(50)
+    expect(q!.likert!.agreeSignificant).toBe(true)
+    expect(q!.likert!.meanDelta).toBeCloseTo(4.05 - 2.55)
+    expect(q!.likert!.meanSignificant).toBe(true)
+    expect(q!.likert!.changed).toBe(false)
+  })
+
+  it('omits Δ when a scale point is suppressed', () => {
+    const cur = results('q', 50, scale([0, 5, 10, 15, 20]), 'diverging')
+    cur.sections[0]!.questions[0]!.options[0]!.suppressed = true
+    const [q] = compareWaves(
+      cur,
+      results('q', 50, scale([10, 10, 10, 10, 10]), 'diverging'),
+      { q: 'q' }
+    )
+    expect(q!.likert!.agree.current).toBeNull()
+    expect(q!.likert!.agreeDelta).toBeNull()
+    expect(q!.likert!.meanDelta).toBeNull()
+    expect(q!.likert!.agreeSignificant).toBe(false)
+  })
+
+  it('flags statements whose wording changed', () => {
+    const prev = results('p', 20, scale([4, 4, 4, 4, 4]), 'diverging')
+    prev.sections[0]!.questions[0]!.title = 'Old wording'
+    const [q] = compareWaves(
+      results('q', 20, scale([4, 4, 4, 4, 4]), 'diverging'),
+      prev,
+      { q: 'p' }
+    )
+    expect(q!.likert!.changed).toBe(true)
+    expect(q!.likert!.meanDelta).toBeNull()
+    expect(q!.likert!.agreeDelta).toBeNull()
+  })
+
+  it('keeps scale points that are empty in both waves', () => {
+    const [q] = compareWaves(
+      results('q', 20, scale([0, 5, 5, 5, 5]), 'diverging'),
+      results('q', 20, scale([0, 4, 4, 6, 6]), 'diverging'),
+      { q: 'q' }
+    )
+    expect(q!.options.map(o => o.value)).toEqual(['1', '2', '3', '4', '5'])
+    expect(q!.likert!.upperLabels).toEqual(['4', '5'])
   })
 })

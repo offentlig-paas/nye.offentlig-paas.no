@@ -198,3 +198,38 @@ export function groupDisagreementTest(
     p: nul.filter(v => v <= observed).length / permutations,
   }
 }
+
+/**
+ * Two-sided permutation test for a difference in means between two waves,
+ * given answer counts per scale point (value i + 1 for index i).
+ */
+export function meanPermutationTest(
+  a: number[],
+  b: number[],
+  { permutations = 2_000, seed = 42 } = {}
+) {
+  const values = [a, b].flatMap(counts =>
+    counts.flatMap((c, i) => Array<number>(c).fill(i + 1))
+  )
+  const nA = a.reduce((s, c) => s + c, 0)
+  const nB = values.length - nA
+  if (nA === 0 || nB === 0) return 1
+  const total = values.reduce((s, v) => s + v, 0)
+  const diff = (sumA: number) => (total - sumA) / nB - sumA / nA
+  const observed = Math.abs(
+    diff(values.slice(0, nA).reduce((s, v) => s + v, 0))
+  )
+  const rng = seededRandom(seed)
+  let extreme = 0
+  for (let n = 0; n < permutations; n++) {
+    // Partial Fisher–Yates: only the first nA slots need shuffling.
+    let sumA = 0
+    for (let i = 0; i < nA; i++) {
+      const j = i + Math.floor(rng() * (values.length - i))
+      ;[values[i], values[j]] = [values[j]!, values[i]!]
+      sumA += values[i]!
+    }
+    if (Math.abs(diff(sumA)) >= observed - 1e-9) extreme++
+  }
+  return (extreme + 1) / (permutations + 1)
+}
