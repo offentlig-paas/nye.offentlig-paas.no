@@ -1,5 +1,6 @@
 'use client'
 
+import { readUploadResponse, shrinkPhoto } from '@/lib/photos/prepare-upload'
 import { useState, useRef } from 'react'
 import Image from 'next/image'
 import { trpc } from '@/lib/trpc/client'
@@ -184,23 +185,33 @@ export function AdminEventPhotos({ slug, event }: AdminEventPhotosProps) {
     })
 
     try {
-      const formData = new FormData()
-      formData.append('eventSlug', slug)
-      validFiles.forEach((file, index) => {
-        formData.append(`file${index}`, file)
-      })
+      const result = { success: 0, failed: 0 }
+      for (const file of validFiles) {
+        const formData = new FormData()
+        formData.append('eventSlug', slug)
+        formData.append('file0', await shrinkPhoto(file))
 
-      const response = await fetch('/api/admin/events/photos/upload', {
-        method: 'POST',
-        body: formData,
-      })
+        const response = await fetch('/api/admin/events/photos/upload', {
+          method: 'POST',
+          body: formData,
+        })
 
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.message || 'Opplasting feilet')
+        const data = await readUploadResponse(response)
+        if (!response.ok) {
+          throw new Error((data.message as string) || 'Opplasting feilet')
+        }
+        result.success += Number(data.success) || 0
+        result.failed += Number(data.failed) || 0
+        setUploadProgress(
+          prev =>
+            prev && {
+              ...prev,
+              completed: result.success,
+              failed: result.failed,
+            }
+        )
       }
 
-      const result = await response.json()
       setUploadProgress({
         total: validFiles.length,
         completed: result.success || 0,
