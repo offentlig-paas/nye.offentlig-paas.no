@@ -1,3 +1,4 @@
+import { stripMarkdown } from '@/lib/markdown'
 import type { AggregatedOption } from './aggregation'
 
 export const SUPPRESSED_VALUE = '_suppressed'
@@ -91,4 +92,12 @@ export function storedAverage(
   if (scaleOptions(suppressed).some(o => o.suppressed)) return undefined
   const avg = likertAverage(raw)
   return avg === null ? undefined : Math.round(avg * 10) / 10
+}
+
+/** "Δ enig" on agree scales (upper labels say "enig", not "uenig"), else "Δ øvre del". */
+export function upperShareLabel(upperLabels: string[]) {
+  const t = upperLabels.map(l => stripMarkdown(l).toLowerCase())
+  return t.some(l => l.includes('enig')) && !t.some(l => l.includes('uenig'))
+    ? 'Δ enig'
+    : 'Δ øvre del'
 }

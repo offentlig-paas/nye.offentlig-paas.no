@@ -2,7 +2,12 @@ import { Fragment } from 'react'
 import { notFound } from 'next/navigation'
 import { createCaller } from '@/server/root'
 import { getSurvey } from '@/lib/surveys/helpers'
-import { divergingLeft, formatPp, groupQuestions } from '@/lib/surveys/likert'
+import {
+  divergingLeft,
+  formatPp,
+  groupQuestions,
+  upperShareLabel,
+} from '@/lib/surveys/likert'
 import { stripMarkdown } from '@/lib/markdown'
 import { diverging, sequential } from '@/components/charts/LikertBar'
 import type { ComparedQuestion } from '@/lib/surveys/comparison'
@@ -84,7 +89,7 @@ function DotPlot({ rows }: { rows: Likert[] }) {
           Δ snitt
         </span>
         <span className={`${num} font-medium text-zinc-600 dark:text-zinc-400`}>
-          Δ øvre del
+          {upperShareLabel(rows[0]!.likert.upperLabels)}
         </span>
       </div>
       {rows.map(q => {
@@ -463,7 +468,8 @@ export default async function AdminSurveyComparePage({
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">
                   1 er {quote(scale[0])}, {scale.length} er{' '}
                   {quote(scale.at(-1))}. Δ snitt er endringen i gjennomsnittet
-                  på skalaen. Δ øvre del = endring i andelen som svarte{' '}
+                  på skalaen. {upperShareLabel(group[0]!.likert.upperLabels)} =
+                  endring i andelen som svarte{' '}
                   {group[0]!.likert.upperLabels
                     .map(l => quote({ label: l }))
                     .join(' eller ')}
@@ -494,7 +500,7 @@ export default async function AdminSurveyComparePage({
                         {`Δ snitt ${deltaMean(q.likert)}`}
                       </Badge>
                       <Badge sig={q.likert.agreeSignificant}>
-                        {`Δ øvre del ${deltaAgree(q.likert)}`}
+                        {`${upperShareLabel(q.likert.upperLabels)} ${deltaAgree(q.likert)}`}
                       </Badge>
                     </div>
                   )

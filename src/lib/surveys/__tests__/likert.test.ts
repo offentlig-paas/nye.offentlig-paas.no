@@ -5,6 +5,7 @@ import {
   groupQuestions,
   likertAverage,
   storedAverage,
+  upperShareLabel,
 } from '../likert'
 
 const opt = (label: string, count: number, value = label) => ({
@@ -101,5 +102,13 @@ describe('storedAverage', () => {
       ...raw.slice(1),
     ]
     expect(storedAverage(raw, safe)).toBeUndefined()
+  })
+})
+
+describe('upperShareLabel', () => {
+  it('says Δ enig only on agree scales', () => {
+    expect(upperShareLabel(['**Enig**', 'Helt enig'])).toBe('Δ enig')
+    expect(upperShareLabel(['Ofte', 'Alltid'])).toBe('Δ øvre del')
+    expect(upperShareLabel(['Uenig'])).toBe('Δ øvre del')
   })
 })
