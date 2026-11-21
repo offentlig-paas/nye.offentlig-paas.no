@@ -74,6 +74,19 @@ export function getProjectForSurvey(
   )
 }
 
+export function getPreviousSurvey(
+  surveySlug: string
+): SurveyDefinition | undefined {
+  const linked = getProjectForSurvey(surveySlug)?.surveys ?? []
+  const index = linked.findIndex(
+    s => 'surveySlug' in s && s.surveySlug === surveySlug
+  )
+  const previous = linked[index - 1]
+  return previous && 'surveySlug' in previous
+    ? getSurvey(previous.surveySlug)
+    : undefined
+}
+
 export function getConsentContact(
   surveySlug: string
 ): ConsentContact | undefined {

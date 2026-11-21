@@ -21,6 +21,8 @@ vi.mock('@/data/surveys', () => ({
     def('w2', SurveyStatus.Closed, true),
     def('w3', SurveyStatus.Open),
     def('w4', SurveyStatus.Draft),
+    def('x1', SurveyStatus.Closed),
+    def('x3', SurveyStatus.Open),
   ],
 }))
 vi.mock('@/data/research', () => ({
@@ -29,10 +31,18 @@ vi.mock('@/data/research', () => ({
       slug: 'p',
       surveys: ['w1', 'w2', 'w3', 'w4'].map(surveySlug => ({ surveySlug })),
     },
+    {
+      slug: 'q',
+      surveys: [
+        { surveySlug: 'x1' },
+        { title: 'x2', status: SurveyStatus.Closed },
+        { surveySlug: 'x3' },
+      ],
+    },
   ],
 }))
 
-const { getSurveyForProject } = await import('../helpers')
+const { getSurveyForProject, getPreviousSurvey } = await import('../helpers')
 
 describe('getSurveyForProject rule', () => {
   it('form: newest open survey, never a draft', () => {
@@ -41,5 +51,20 @@ describe('getSurveyForProject rule', () => {
 
   it('results: newest survey with published results', () => {
     expect(getSurveyForProject('p', 'results')?.slug).toBe('w2')
+  })
+})
+
+describe('getPreviousSurvey', () => {
+  it('returns the survey listed directly before', () => {
+    expect(getPreviousSurvey('w2')?.slug).toBe('w1')
+  })
+
+  it('returns undefined for the first wave and unknown surveys', () => {
+    expect(getPreviousSurvey('w1')).toBeUndefined()
+    expect(getPreviousSurvey('nope')).toBeUndefined()
+  })
+
+  it('returns undefined when the previous wave is external', () => {
+    expect(getPreviousSurvey('x3')).toBeUndefined()
   })
 })
