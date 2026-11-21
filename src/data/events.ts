@@ -8,6 +8,95 @@ import {
 
 export const events: Event[] = [
   {
+    slug: '2026-12-10-julemote-ki-plattform',
+    title: 'Offentlig PaaS Julemøte: Hvor skal vibekoden fra sjefen kjøre?',
+    bannerImage: {
+      src: '/images/events/2026-12-10-julemote-ki-plattform.jpg',
+      alt: 'En flat 2D-illustrasjon på mørk bakgrunn med snøfnugg og kodesymboler for Offentlig PaaS sitt digitale julemøte. Til venstre sitter en robot med nisselue ved en bærbar PC som sender ut en strøm av gaver, linjer og «vibekode», mens en mindre robot på en plattform med rekkverk merket «PaaS» strekker seg ut for å ta imot. Bildet har teksten «ØFFENTLIG PaaS & JULEMØTE», «Hvor skal vibekoden fra sjefen kjøre??» og «Torsdag 10. desember kl. 12:00 • Digitalt».',
+    },
+    ingress:
+      'Bli med på digitalt julemøte i Offentlig PaaS torsdag 10. desember kl. 12:00! Vi tar for oss hvordan KI påvirker plattformene våre – fra plattformteamets egen hverdag til hvor vibekoden fra sjefen egentlig skal kjøre.',
+    description:
+      'Før vi logger av for juleferien samles vi digitalt for årets siste fagpåfyll – denne gangen med fokus på elefanten i rommet: Hvordan påvirker KI egentlig plattformene våre?\n\nKI-verktøy og kodeagenter har på kort tid endret tempoet og måten applikasjoner lages på. Flere enn før kan skrive kode, volumet øker, og terskelen for å snekre sammen en tjeneste har aldri vært lavere. Blir plattformene mindre viktige når KI kan generere konfigurasjon og infrastruktur på sekunder – eller er det nettopp nå gode «paved roads», rekkverk og trygge kjøremiljøer blir helt avgjørende?\n\nTEMAENE VI ØNSKER Å BELYSE:\n- Trenger vi fortsatt plattformer når vi har KI?\n- Hvordan bruker plattformteamene selv KI i sin hverdag?\n- Hvordan merker plattformene at applikasjoner i større grad utvikles ved hjelp av KI?\n- Hvor skal vibekoden fra sjefen kjøre?\n\nVI TRENGER DEG PÅ PROGRAMMET!\nAgendaen formes av hvem som ønsker å dele. Terskelen er lav: en lyntale på 5–15 minutter, en kjapp demo eller en ærlig problemstilling dere står midt oppi er gull verdt. Ta kontakt med arrangør på Slack hvis du har noe å dele eller vil tipse om noen vi bør prikke på skulderen.\n\nFORMAT:\nDigitalt julemøte med korte innlegg etterfulgt av åpen diskusjon. Som vanlig kjører vi Chatham House Rule på diskusjonene, så her er det lov å dele både det som funker og det som knirker.\n\nSpørsmål eller forslag til innlegg? Ta kontakt i Offentlig PaaS-Slacken.',
+    start: new Date('2026-12-10T12:00+01:00'),
+    end: new Date('2026-12-10T14:00+01:00'),
+    audience: Audience.PublicSector,
+    location: 'Digitalt',
+    registration: {
+      disabled: false,
+      attendanceTypes: [AttendanceType.Digital],
+    },
+    participantInfo: {
+      notes:
+        'Møtet gjennomføres digitalt. Diskusjonsdelen følger Chatham House Rule. Finn frem kaffe eller gløgg!',
+    },
+    organizers: [
+      {
+        name: 'Hans Kristian Flaatten',
+        org: 'Nav',
+        url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+      },
+    ],
+    schedule: [
+      {
+        time: '12:00 - 12:10',
+        title: 'Velkommen og rammesetting',
+        description:
+          'Kort intro til temaet, kaffe/gløgg og gjennomgang av dagens program.',
+        speakers: [
+          {
+            name: 'Hans Kristian Flaatten',
+            org: 'Nav',
+            url: 'https://offentlig-paas-no.slack.com/team/U7DQV0KUY',
+          },
+        ],
+        type: ItemType.Info,
+      },
+      {
+        time: '12:10 - 12:25',
+        title: 'TBA: Lyntale #1',
+        description:
+          'Ledig plass! Har du erfaringer med KI i plattformteamet eller nye behov fra utviklerne? Ta kontakt på Slack.',
+        type: ItemType.Talk,
+      },
+      {
+        time: '12:25 - 12:40',
+        title: 'TBA: Lyntale #2',
+        description:
+          'Ledig plass! Korte demoer, ærlige erfaringer eller ubesvarte problemstillinger er hjertelig velkomne.',
+        type: ItemType.Talk,
+      },
+      {
+        time: '12:40 - 12:55',
+        title: 'TBA: Lyntale #3',
+        description:
+          'Ledig plass! Hvor kjører vibekoden hos dere – eller hvordan planlegger dere å håndtere det?',
+        type: ItemType.Talk,
+      },
+      {
+        time: '12:55 - 13:05',
+        title: 'Beinstrekk',
+        description:
+          'Kort pause for påfyll i koppen før vi går inn i diskusjonsdelen.',
+        type: ItemType.Break,
+      },
+      {
+        time: '13:05 - 13:55',
+        title: 'Åpen diskusjon og erfaringsutveksling',
+        description:
+          'Ufiltrert diskusjon i plenum (eller grupper ved mange deltakere) under Chatham House Rule. Vi tar utgangspunkt i innleggene og spørsmålene fra deltakerne.',
+        type: ItemType.OpenSpace,
+      },
+      {
+        time: '13:55 - 14:00',
+        title: 'Avrunding og god jul',
+        description:
+          'Kort oppsummering og takk for året som gikk i Offentlig PaaS.',
+        type: ItemType.Info,
+      },
+    ],
+  },
+  {
     slug: '2026-10-20-kripos',
     title: 'Offentlig KI-kodeagenter Fagdag',
     bannerImage: {
